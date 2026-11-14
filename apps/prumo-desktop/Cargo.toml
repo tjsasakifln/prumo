@@ -1,0 +1,20 @@
+[package]
+name = "prumo-desktop"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+[dependencies]
+prumo-domain.workspace = true
+prumo-app.workspace = true
+prumo-ui.workspace = true
+eframe.workspace = true
+
+[dev-dependencies]
+egui_kittest = "=0.37.0"
+tempfile.workspace = true
+
+[lints]
+workspace = true
+

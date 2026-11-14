@@ -1,0 +1,29 @@
+[package]
+name = "prumo-mcp-server"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "prumo-mcp"
+path = "src/main.rs"
+
+[dependencies]
+prumo-app = { path = "../../crates/prumo-app" }
+prumo-mcp = { path = "../../crates/prumo-mcp" }
+rmcp.workspace = true
+tokio.workspace = true
+
+[dev-dependencies]
+prumo-domain = { path = "../../crates/prumo-domain" }
+prumo-desktop = { path = "../prumo-desktop" }
+egui_kittest = "=0.37.0"
+egui.workspace = true
+rmcp = { workspace = true, features = ["client", "transport-child-process"] }
+serde_json.workspace = true
+tempfile.workspace = true
+
+[lints]
+workspace = true
