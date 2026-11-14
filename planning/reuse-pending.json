@@ -6,12 +6,14 @@
     {
       "name": "Tauri",
       "status": "research_pending",
-      "approved_for_incorporation": false
+      "approved_for_incorporation": false,
+      "role": "Contêiner/atualizador condicional a autoria Rust ou Rust/WASM e à qualificação da arquitetura."
     },
     {
       "name": "React",
-      "status": "research_pending",
-      "approved_for_incorporation": false
+      "status": "superseded_for_first_party_ui",
+      "approved_for_incorporation": false,
+      "role": "Registro da alternativa anterior; não selecionável para autoria própria da interface após a decisão Rust."
     },
     {
       "name": "SuiteSparse",
@@ -66,7 +68,9 @@
     {
       "name": "Tauri updater",
       "status": "research_pending",
-      "approved_for_incorporation": false
+      "approved_for_incorporation": false,
+      "role": "Contêiner/atualizador condicional a autoria Rust ou Rust/WASM e à qualificação da arquitetura."
     }
-  ]
+  ],
+  "technology_policy": "TEC-RUST-01"
 }

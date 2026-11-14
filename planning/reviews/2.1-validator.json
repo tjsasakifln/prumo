@@ -1,0 +1,255 @@
+{
+  "reviewed_at": "2026-11-14T07:13:57.692373+00:00",
+  "scope": "planning_integrity_only",
+  "nature": "Testes dirigidos do planejamento em cópias temporárias. Não validam código de produto, cálculos de engenharia, compilação Rust ou publicação remota.",
+  "shared_repository_mutations_by_test_runner": false,
+  "remote_actions": false,
+  "cases": [
+    {
+      "name": "issue_language_missing",
+      "changed_file": "planning/backlog.json",
+      "returncode": 1,
+      "rejected": true,
+      "matched_diagnostic": "ERRO: PRU-001: implementation_language deve ser Rust, conforme REQ-15.",
+      "no_traceback": true
+    },
+    {
+      "name": "issue_language_python",
+      "changed_file": "planning/backlog.json",
+      "returncode": 1,
+      "rejected": true,
+      "matched_diagnostic": "ERRO: PRU-121: implementation_language deve ser Rust, conforme REQ-15.",
+      "no_traceback": true
+    },
+    {
+      "name": "issue_policy_missing",
+      "changed_file": "planning/backlog.json",
+      "returncode": 1,
+      "rejected": true,
+      "matched_diagnostic": "ERRO: PRU-250: technology_policy deve ser TEC-RUST-01.",
+      "no_traceback": true
+    },
+    {
+      "name": "policy_optional",
+      "changed_file": "planning/technology.json",
+      "returncode": 1,
+      "rejected": true,
+      "matched_diagnostic": "ERRO: dados do planejamento inválidos: planning/technology.json: status deve ser \"accepted_by_owner\".",
+      "no_traceback": true
+    },
+    {
+      "name": "requirement15_optional",
+      "changed_file": "planning/requirements.json",
+      "returncode": 1,
+      "rejected": true,
+      "matched_diagnostic": "ERRO: REQ-15 perdeu condição obrigatória.",
+      "no_traceback": true
+    },
+    {
+      "name": "requirement15_loses_issue",
+      "changed_file": "planning/requirements.json",
+      "returncode": 1,
+      "rejected": true,
+      "matched_diagnostic": "ERRO: REQ-15 deve abranger todas as 250 issues, uma vez cada.",
+      "no_traceback": true
+    },
+    {
+      "name": "requirement15_duplicate_issue",
+      "changed_file": "planning/requirements.json",
+      "returncode": 1,
+      "rejected": true,
+      "matched_diagnostic": "ERRO: REQ-15 deve abranger todas as 250 issues, uma vez cada.",
+      "no_traceback": true
+    },
+    {
+      "name": "ui_not_rust",
+      "changed_file": "planning/technology.json",
+      "returncode": 1,
+      "rejected": true,
+      "matched_diagnostic": "ERRO: dados do planejamento inválidos: planning/technology.json: ui_authored_in_rust deve ser true.",
+      "no_traceback": true
+    },
+    {
+      "name": "external_allows_non_rust_business_logic",
+      "changed_file": "planning/technology.json",
+      "returncode": 1,
+      "rejected": true,
+      "matched_diagnostic": "ERRO: dados do planejamento inválidos: planning/technology.json: external_components.new_non_rust_business_logic_allowed deve ser false.",
+      "no_traceback": true
+    },
+    {
+      "name": "policy_boolean_as_integer",
+      "changed_file": "planning/technology.json",
+      "returncode": 1,
+      "rejected": true,
+      "matched_diagnostic": "ERRO: dados do planejamento inválidos: planning/technology.json: ui_authored_in_rust deve ser true.",
+      "no_traceback": true
+    },
+    {
+      "name": "toolchain_requirement_missing",
+      "changed_file": "planning/technology.json",
+      "returncode": 1,
+      "rejected": true,
+      "matched_diagnostic": "ERRO: dados do planejamento inválidos: planning/technology.json: rust_toolchain_pinned_required deve ser true.",
+      "no_traceback": true
+    },
+    {
+      "name": "policy_file_missing",
+      "changed_file": "planning/technology.json",
+      "returncode": 1,
+      "rejected": true,
+      "matched_diagnostic": "ERRO: dados do planejamento inválidos: Não foi possível ler planning/technology.json: [Errno 2] No such file or directory: '/tmp/prumo-rust-review-til1euq5/policy_file_missing/planning/technology.json'",
+      "no_traceback": true
+    },
+    {
+      "name": "policy_json_malformed",
+      "changed_file": "planning/technology.json",
+      "returncode": 1,
+      "rejected": true,
+      "matched_diagnostic": "ERRO: dados do planejamento inválidos: Não foi possível ler planning/technology.json: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)",
+      "no_traceback": true
+    },
+    {
+      "name": "policy_json_wrong_type",
+      "changed_file": "planning/technology.json",
+      "returncode": 1,
+      "rejected": true,
+      "matched_diagnostic": "ERRO: dados do planejamento inválidos: planning/technology.json deve conter um objeto JSON.",
+      "no_traceback": true
+    },
+    {
+      "name": "regression_issue_count",
+      "changed_file": "planning/backlog.json",
+      "returncode": 1,
+      "rejected": true,
+      "matched_diagnostic": "ERRO: A fila inicial precisa conter 250 issues únicas.",
+      "no_traceback": true
+    },
+    {
+      "name": "regression_required_capability",
+      "changed_file": "planning/coverage.json",
+      "returncode": 1,
+      "rejected": true,
+      "matched_diagnostic": "ERRO: Capacidades obrigatórias ausentes: MEP-01.",
+      "no_traceback": true
+    },
+    {
+      "name": "regression_requirement14",
+      "changed_file": "planning/requirements.json",
+      "returncode": 1,
+      "rejected": true,
+      "matched_diagnostic": "ERRO: Os requisitos permanentes devem preservar REQ-01 a REQ-15.",
+      "no_traceback": true
+    },
+    {
+      "name": "regression_readme_encoded_brand",
+      "changed_file": "README.md",
+      "returncode": 1,
+      "rejected": true,
+      "matched_diagnostic": "ERRO: Nome de software de referência na apresentação: README.md",
+      "no_traceback": true
+    },
+    {
+      "name": "regression_render_contract_removed",
+      "changed_file": "planning/issues/001.md",
+      "returncode": 1,
+      "rejected": true,
+      "matched_diagnostic": "ERRO: Renderização desatualizada: planning/issues/001.md",
+      "no_traceback": true
+    },
+    {
+      "name": "regression_manifest_stale_hash",
+      "changed_file": "planning/github-issues.json",
+      "returncode": 1,
+      "rejected": true,
+      "matched_diagnostic": "Texto publicado fora de sincronia: 250",
+      "no_traceback": true,
+      "fixture": "synthetic_temporary_manifest_only"
+    }
+  ],
+  "reviewed_paths_sha256": {
+    "scripts/render_plan.py": "85a87af887bbf5aaafd6aaa18fe8e353a8eca774a0d9b8cf883505ed8b4eeea4",
+    "scripts/validate_plan.py": "db2f0c26d6a2b8739cb5348bdffa7a3b3f6901eeffd8159b8c7dc808a4734fcf",
+    "planning/backlog.json": "ede37a8da683d794f68d2f7c9fe72ae0b7199657f55015817f935d816c81e122",
+    "planning/requirements.json": "4bc414ae8f85a8733c95385001a140a4bf7c21e202be93c1d9c6b5782618af09",
+    "planning/technology.json": "8975d3c6fd5214460ff2f1ffcc7f66b28d8290b1e62fe446c5c8a999751c6edf",
+    "planning/coverage.json": "5af1e0cd7ab3738ebe876fb3e0e3b4952e32eab9caa0bc1b8703fc062f97d6a6",
+    "docs/RUST.md": "606b782408dad8f144957959c19e21aef36cf0c87c504ca3a17fa87ccaa6867e",
+    "docs/fontes-rust.json": "04d0eed362fe701171f46c981095957f1113c1125cfe0570362a0ca026ab5a30"
+  },
+  "scripts_sha256": {
+    "render_plan.py": "85a87af887bbf5aaafd6aaa18fe8e353a8eca774a0d9b8cf883505ed8b4eeea4",
+    "validate_plan.py": "db2f0c26d6a2b8739cb5348bdffa7a3b3f6901eeffd8159b8c7dc808a4734fcf"
+  },
+  "baseline": {
+    "status": "ok",
+    "scope": "planning_integrity_only",
+    "issues": 250,
+    "capabilities": 72,
+    "requirements": 15,
+    "sources": 222,
+    "technology_policy": "TEC-RUST-01",
+    "first_party_language": "Rust"
+  },
+  "render_check": {
+    "returncode": 0,
+    "stdout": "Roadmap e especificações de issues conferidos."
+  },
+  "rust_contract_in_rendered_issues": 250,
+  "rendered_issues_combined_sha256": "bcac48dabebf282209b646c1fd14579a6daad8281827f8a7ae4dbb0a8a4eb9f2",
+  "roadmap_sha256": "9b2183a74a2e9d789fdf3390cd23b19201883884dda80366e81e8f4d0b509b02",
+  "renderer_file_diagnostics": [
+    {
+      "case": "policy_file_missing",
+      "returncode": 1,
+      "diagnostic": "ERRO: dados do planejamento não renderizáveis: Não foi possível ler planning/technology.json: [Errno 2] No such file or directory: '/tmp/prumo-rust-review-til1euq5/policy_file_missing/planning/technology.json'",
+      "no_traceback": true
+    },
+    {
+      "case": "policy_json_malformed",
+      "returncode": 1,
+      "diagnostic": "ERRO: dados do planejamento não renderizáveis: Não foi possível ler planning/technology.json: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)",
+      "no_traceback": true
+    },
+    {
+      "case": "policy_json_wrong_type",
+      "returncode": 1,
+      "diagnostic": "ERRO: dados do planejamento não renderizáveis: planning/technology.json deve conter um objeto JSON.",
+      "no_traceback": true
+    }
+  ],
+  "synthetic_manifest_positive": {
+    "passed": true,
+    "scope": "validator_unit_fixture_only",
+    "remote_readback_performed": false
+  },
+  "negative_cases": 20,
+  "all_mutations_rejected": true,
+  "scripts_unchanged_during_tests": true,
+  "independent_review": {
+    "reviewer": "/root/rust_scope_audit",
+    "method": "Leitura dos dois scripts e comparação com research/prumo-before-rust, comunicada ao autor e ao root.",
+    "finding": "Sem regressão bloqueadora nos controles pedidos. Limite: não detecta contradições semânticas na prosa nem audita código real.",
+    "reviewed_scripts_sha256": {
+      "render_plan.py": "85a87af887bbf5aaafd6aaa18fe8e353a8eca774a0d9b8cf883505ed8b4eeea4",
+      "validate_plan.py": "db2f0c26d6a2b8739cb5348bdffa7a3b3f6901eeffd8159b8c7dc808a4734fcf"
+    }
+  },
+  "final_snapshot_recheck": {
+    "approved_backlog_sha256": "da21aed1be1f4a6c3dd1689ee952092ce099653290f233b8a0718557f42fb9cb",
+    "published_backlog_sha256": "400dbf2461fd04f4ed04c3ed44a46e6a4270b8a86a89365ef626b5deba33bbe2",
+    "checks": {
+      "render_check": {
+        "returncode": 0,
+        "output": "Roadmap e especificações de issues conferidos."
+      },
+      "full_plan_validation": {
+        "returncode": 0,
+        "output": "{\"status\": \"ok\", \"scope\": \"planning_integrity_only\", \"issues\": 250, \"capabilities\": 72, \"requirements\": 15, \"sources\": 222, \"technology_policy\": \"TEC-RUST-01\", \"first_party_language\": \"Rust\"}"
+      }
+    },
+    "scope": "planning_integrity_only",
+    "remote_publication_evidence": "planning/github-issues.json",
+    "note": "Somente prosa, fontes de critérios e estado de publicação mudaram após os ensaios dirigidos; scripts e política permanecem nos hashes testados."
+  }
+}

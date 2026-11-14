@@ -33,3 +33,7 @@ O catálogo registra a licença observada ou a pendência concreta. A decisão d
 Para RVT/RTE e DWG, avaliar SDK/conversor autorizado e alternativas com desempenho e compatibilidade medidos. A capacidade só será aceita com importação real das versões declaradas. Catálogos de fabricantes, símbolos, curvas e bancos meteorológicos também exigem origem e direitos de uso.
 
 Nomes genéricos como biblioteca térmica, gerador de documentos ou motor de regras nas issues indicam uma função a pesquisar. Eles não representam um componente aprovado. As pendências nominais anteriores continuam no [registro de pesquisa pendente](../planning/reuse-pending.json).
+
+## Implementação própria em Rust
+
+REQ-15 aplica-se a todas as disciplinas. As bibliotecas Python, C/C++, JavaScript ou de outras linguagens desta pesquisa continuam candidatas a funções externas qualificadas ou referências independentes. O domínio de redes, os cálculos próprios, a interface, os comandos, o MCP e os adaptadores desenvolvidos pelo Prumo serão Rust. A escolha entre FFI, processo isolado e WASM deve comprovar unidades, conversões, falhas, limites, licença e empacotamento, conforme [RUST.md](RUST.md). O componente externo não recebe autoridade direta sobre o modelo do projeto.

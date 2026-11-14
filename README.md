@@ -6,6 +6,10 @@ O Prumo será um sistema profissional brasileiro para conceber, calcular, dimens
 
 **Estado em 14/11/2026: especificação e planejamento. O software de engenharia ainda não está implementado.** A fila contém **250 issues sequenciais**. Capacidades, desempenho e confiabilidade deverão ser comprovados durante a implementação.
 
+## Implementação em Rust
+
+**O Prumo será implementado em Rust**, incluindo interface, núcleo BIM, regras de engenharia, persistência, serviços e servidor MCP. Essa decisão é obrigatória nas 250 issues. Componentes externos qualificados podem conservar sua linguagem original, com integração própria em Rust e testes de contrato. Os critérios estão em [Implementação em Rust](docs/RUST.md).
+
 ## Começar pela próxima issue
 
 A implementação segue **#1 até #250**, em ordem. A primeira entrega já exige criar, salvar, reabrir e consultar um projeto BIM real pela interface e por um cliente MCP. Cada disciplina acrescenta seus próprios comandos, cálculos, desenhos e ensaios. A última entrega libera o produto completo após as verificações técnicas e de operação.
@@ -59,6 +63,7 @@ Cada projeto preservará as versões, hipóteses e dados utilizados. A qualifica
 | [Instalações](docs/INSTALACOES.md) | Disciplinas, funções e integração com estruturas |
 | [Normas](docs/NORMAS.md) | Edições, acesso e interpretação das regras |
 | [Arquitetura](docs/ARQUITETURA.md) | Modelo compartilhado, persistência e motores |
+| [Rust](docs/RUST.md) | Linguagem obrigatória, compilação, interface, MCP e integrações |
 | [MCP](docs/MCP.md) | Comandos, permissões e operação por agentes |
 | [Experiência de uso](docs/UX.md) | Montagem intuitiva, acessibilidade e métricas |
 | [Reuso](docs/REUSO.md) | Seleção e qualificação de componentes |
@@ -68,7 +73,7 @@ Cada projeto preservará as versões, hipóteses e dados utilizados. A qualifica
 
 ## Verificação do planejamento
 
-Execute `python3 scripts/validate_plan.py` para conferir sequência, dependências, cobertura, fontes, textos das issues, identidade da apresentação e registro publicado. Esse verificador avalia a integridade do plano; os cálculos de engenharia terão suas próprias campanhas de qualificação.
+Execute `python3 scripts/validate_plan.py` para conferir sequência, dependências, cobertura, fontes, textos das issues, política Rust, identidade da apresentação e registro publicado. Os scripts Python de manutenção do planejamento ficam fora do runtime do produto. Esse verificador avalia a integridade do plano; os cálculos de engenharia terão suas próprias campanhas de qualificação.
 
 ## Direitos e procedência
 

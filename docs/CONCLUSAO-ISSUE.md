@@ -8,6 +8,12 @@ Ler as fontes pertinentes, conferir a versão do repositório e validar a conclu
 
 Examinar componentes abertos adequados e registrar uma decisão de reuso. Para qualquer componente incorporado, verificar procedência, licença por trecho, dependências, versão, manutenção e testes próprios. Uma alternativa descartada deve ter motivo concreto.
 
+## Linguagem e fronteiras
+
+Conferir REQ-15, TEC-RUST-01 e [RUST.md](RUST.md). Código próprio do produto deve ser Rust, incluindo interface e MCP. A parcela entregue deve usar a base Cargo, toolchain e dependências fixadas, com as verificações pertinentes. Componentes externos precisam de origem, função, licença, versão, adaptador Rust e testes de fronteira. Conferir também trechos unsafe e FFI quando aplicáveis.
+
+Alterações apenas do planejamento usam o verificador documental existente; não se deve inventar execução Cargo antes da implementação da issue 1. A evidência deve distinguir código de produto, recursos declarativos, ferramentas administrativas e componentes externos.
+
 ## Entrega funcional
 
 O comportamento solicitado precisa existir e ser utilizável. Não encerrar com telas vazias, respostas fixas, retornos simulados ou rascunhos apresentados como função concluída. Fixtures são permitidas nos testes quando identificadas e independentes de resultados reais.

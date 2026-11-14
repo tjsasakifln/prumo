@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0",
+  "policy_id": "TEC-RUST-01",
+  "requirement_id": "REQ-15",
+  "status": "accepted_by_owner",
+  "accepted_on": "2026-11-14",
+  "first_party_language": "Rust",
+  "ui_authored_in_rust": true,
+  "cargo_workspace_required": true,
+  "rust_toolchain_pinned_required": true,
+  "release_issue": "PRU-250",
+  "source_ids": [
+    "USR-05",
+    "RS-001",
+    "RS-002",
+    "RS-003",
+    "RS-004",
+    "RS-005",
+    "RS-006",
+    "RS-007",
+    "RS-008",
+    "RS-009",
+    "RS-010",
+    "RS-011",
+    "RS-012",
+    "RS-013"
+  ],
+  "first_party_scope": [
+    "interface",
+    "BIM e redes",
+    "comandos",
+    "regras normativas",
+    "cálculo próprio",
+    "persistência",
+    "CLI",
+    "servidor MCP",
+    "serviços",
+    "adaptadores e orquestração"
+  ],
+  "external_components": {
+    "allowed": true,
+    "new_non_rust_business_logic_allowed": false,
+    "interfaces": [
+      "FFI com contrato seguro",
+      "processo isolado com protocolo versionado",
+      "WebAssembly qualificado"
+    ],
+    "conditions": [
+      "origem e código reutilizado identificados",
+      "versão/commit e licença conferidos",
+      "adaptação própria em Rust",
+      "testes de contrato e falhas",
+      "domínio numérico e limitações demonstrados",
+      "inventário e empacotamento das dependências"
+    ]
+  },
+  "planning_tools_may_use_other_languages": true,
+  "product_implemented": false,
+  "documentation": "docs/RUST.md"
+}

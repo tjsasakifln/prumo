@@ -1,21 +1,23 @@
 # Arquitetura do Prumo
 
-**Estado:** especificação inicial de produto, ainda sem implementação. **Data:** 14/11/2026. A escolha tecnológica inicial deve ser confirmada por decisão de arquitetura registrada nas issues #1 e #3, com comparação de componentes existentes, licença e ensaios reproduzíveis. Os requisitos de domínio, rastreabilidade e operação descritos aqui são critérios de aceitação, não afirmações de capacidade já entregue.
+**Estado:** especificação inicial de produto, ainda sem implementação. **Data:** 14/11/2026. Rust é a linguagem obrigatória do código próprio, conforme [RUST.md](RUST.md), REQ-15 e TEC-RUST-01. As issues #1 e #3 selecionam frameworks e componentes dentro dessa decisão, com licença e ensaios reproduzíveis. Os requisitos de domínio, rastreabilidade e operação descritos aqui são critérios de aceitação, não afirmações de capacidade já entregue.
 
 ## 1. Decisão inicial
 
 Aplicativo desktop para Windows com operação local completa e interface web reutilizável. Um projeto deve poder abrir, editar, calcular e produzir documentos sem depender de conexão, conta remota ou provedor de agentes. A colaboração hospedada e o processamento remoto só podem ser oferecidos quando sua capacidade, autenticação e isolamento estiverem implementados e testados.
 
-A combinação inicial para avaliação é **Tauri + TypeScript/React na interface, domínio e persistência em Rust, motor numérico em processo separado e adaptadores BIM**. Tauri documenta capacidades para restringir acesso das janelas aos serviços locais e empacotamento de binários auxiliares. Isso permite avaliar fronteiras claras entre interface e processamento, mas não demonstra por si só segurança ou desempenho do Prumo. [Documentação de capacidades](https://tauri.app/security/capabilities/) e [processos auxiliares](https://tauri.app/develop/sidecar/).
+A implementação própria será **Rust em todas as camadas**, incluindo a interface, o servidor MCP e os cálculos desenvolvidos pelo Prumo. A interface poderá usar execução nativa ou Rust/WASM. Motores externos poderão executar em processo separado, por FFI ou por WASM, com adaptação Rust, contratos e qualificação. A arquitetura preserva a operação local e o reaproveitamento web da interface.
 
-| Alternativa | Quando considerar | Evidência exigida antes da escolha |
+| Candidato de interface/gráficos | Papel possível | Evidência exigida antes da escolha |
 | --- | --- | --- |
-| Tauri + interface web + domínio Rust | Opção inicial, reutilização da interface e autoridade local sobre arquivos | Build Windows, acessibilidade, impressão, gráficos grandes, empacotamento e atualização de workers |
-| Electron + interface web + worker nativo | Caso experiência da equipe e uniformidade de navegador compensem outras diferenças | Consumo de memória, superfície de privilégios e manutenção do runtime no mesmo cenário de referência |
-| Qt/C++ | Caso edição CAD nativa e experiência da equipe tragam benefício demonstrável | Licenças por módulo, acessibilidade e esforço de manter o canal web |
-| Aplicação somente web | Possível canal complementar de revisão e colaboração | Arquivos locais, offline, limites de memória, consistência do solver e recuperação de falhas |
+| egui/eframe | Autoria Rust com destinos nativos e web | Acessibilidade, edição CAD/BIM, grandes coordenadas, impressão, múltiplas vistas e consumo no caso de referência |
+| Dioxus | Autoria Rust em desktop/WebView e web | Integração gráfica, limites de recursos, impressão e operação local; identificar renderizadores experimentais |
+| wgpu | Camada gráfica Rust de uma interface qualificada | Backends/targets, precisão visual, seleção, escala, memória e recuperação de falha; não é uma interface BIM completa |
+| Contêiner opcional com interface Rust/WASM | Tauri ou solução compatível, se houver benefício demonstrado | Autoria Rust preservada, permissões, integração local, empacotamento e atualização |
 
-Não exigir que o cliente instale Python, compiladores ou ferramentas de desenvolvimento. Se uma biblioteca Python for aprovada, o aplicativo deve distribuir o runtime necessário, com versão fixa, avisos e obrigações correspondentes. A [política de reuso](REUSO.md) aplica-se também ao solver, geometria, parser IFC, visualização e MCP.
+Essas opções são candidatos, não uma seleção concluída. O ADR compara alternativas plausíveis com o mesmo projeto e as metas de [UX.md](UX.md). Fontes e limites: [fontes-rust.json](fontes-rust.json). As capacidades e o empacotamento de Tauri, quando pertinente, seguem sua [documentação oficial](https://tauri.app/security/capabilities/) e os testes do Prumo.
+
+Não exigir que o cliente instale Python, compiladores ou ferramentas de desenvolvimento. Se uma biblioteca externa Python ou de outra linguagem for aprovada, o aplicativo deve distribuir o runtime necessário, com versão fixa, avisos e obrigações correspondentes. Essa integração não autoriza código próprio do produto fora de Rust. A [política de reuso](REUSO.md) aplica-se também ao solver, geometria, parser IFC, visualização e MCP.
 
 ## 2. Componentes e responsabilidades
 
@@ -32,7 +34,7 @@ Não exigir que o cliente instale Python, compiladores ou ferramentas de desenvo
 | MCP | Ferramentas e recursos para agentes | Os mesmos comandos e permissões da interface; sem shell ou SQL arbitrários |
 | Serviços hospedados | Compartilhamento, identidade, sincronização e jobs remotos, quando aprovados | Autenticação, autorização por projeto, isolamento e comportamento de falha testados |
 
-Estrutura inicial proposta: `apps/desktop`, `apps/web-review`, `packages/contracts`, `crates/domain`, `crates/commands`, `crates/persistence`, `workers/solver`, `packages/mcp`, `adapters/ifc`, `adapters/documents`, `norms`, `verification`, `fixtures` e `docs/adr`. Os diretórios não representam módulos entregues; serão criados conforme a sequência de implementação.
+O código futuro será organizado em workspace Cargo. Estrutura possível: `apps/prumo-desktop`, `apps/prumo-cli`, `apps/prumo-mcp`, `crates/prumo-domain`, `crates/prumo-commands`, `crates/prumo-contracts`, `crates/prumo-persistence`, `crates/prumo-numerics`, `crates/prumo-norms`, `crates/prumo-ui`, `crates/prumo-render` e `crates/prumo-adapters`, além de `verification`, `fixtures` e `docs/adr`. Os diretórios não representam módulos entregues; serão criados conforme comportamento e responsabilidade reais. Compilação, toolchain, lockfile e dependências externas seguem [RUST.md](RUST.md).
 
 ## 3. BIM nativo e modelo analítico
 
@@ -103,7 +105,7 @@ DWG deve possuir decisão própria de SDK, licença e compatibilidade. Não conv
 
 ## 8. Entrega incremental e critérios arquiteturais
 
-Desde a issue #1: projeto mínimo real, persistência, comando pela interface e pelo MCP, falha diagnosticada e teste de equivalência. Conforme novas famílias estruturais e de instalações forem implementadas, seus comandos, desenhos, relatórios e verificações evoluem juntos. Não concentrar toda a integração em uma etapa final.
+Desde a issue #1: workspace Cargo funcional, interface e servidor MCP em Rust, projeto mínimo real, persistência, comando pelas duas superfícies, falha diagnosticada e teste de equivalência. Conforme novas famílias estruturais e de instalações forem implementadas, seus comandos, desenhos, relatórios e verificações evoluem juntos. Não concentrar toda a integração em uma etapa final.
 
 Critérios transversais: reabrir sem perda; rejeitar unidades inválidas; impedir mutação concorrente silenciosa; repetir comando sem duplicação; bloquear emissão obsoleta; recuperar queda do worker; demonstrar equivalência UI/MCP; explicar perdas do intercâmbio; preservar procedência e licenças de código reutilizado.
 

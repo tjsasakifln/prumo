@@ -4,7 +4,7 @@
 
 ## 1. Princípios
 
-O MCP é um adaptador para os mesmos comandos usados pelo usuário. O agente não altera diretamente banco, arquivos de resultados ou parâmetros internos do solver. Modelagem, cálculo, verificação e documentação são funções determinísticas, com entradas e saídas rastreáveis.
+O servidor MCP próprio será implementado em Rust. O MCP é um adaptador para os mesmos comandos Rust usados pelo usuário, conforme [RUST.md](RUST.md). O agente não altera diretamente banco, arquivos de resultados ou parâmetros internos do solver. Modelagem, cálculo, verificação e documentação são funções determinísticas, com entradas e saídas rastreáveis.
 
 O agente pode propor alternativas, montar um modelo, consultar dados, solicitar cálculos, explicar diagnósticos e preparar documentos dentro da autorização recebida. O cálculo não é executado por geração de texto. Uma explicação deve apontar o resultado, a hipótese, a verificação e a versão correspondentes.
 
@@ -24,7 +24,7 @@ A referência pública atual consultada é **MCP 2026-07-28**. Ela usa versão e
 
 **HTTP:** somente disponibilizar após implementação e testes específicos. Na revisão moderna o endpoint utiliza POST, sem sessão de protocolo nem endpoint GET de fluxo. Validar origem e autenticação; quando local, restringir a interface de rede autorizada. Requisições devem conter os metadados e cabeçalhos exigidos pela revisão. [Streamable HTTP](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http).
 
-A presença do SDK não basta para afirmar compatibilidade. Testar com versões fixas de pelo menos dois clientes independentes que implementem o perfil anunciado. O [SDK TypeScript oficial](https://github.com/modelcontextprotocol/typescript-sdk) e [IfcMCP](https://docs.ifcopenshell.org/ifcmcp.html) são candidatos de reuso obrigatório na avaliação inicial, conforme [REUSO.md](REUSO.md).
+A presença do SDK não basta para afirmar compatibilidade. Testar com versões fixas de pelo menos dois clientes independentes que implementem o perfil anunciado. O [SDK Rust oficial rmcp](https://github.com/modelcontextprotocol/rust-sdk) é o candidato prioritário para o servidor próprio. Fixar versão/commit, features e revisão de protocolo; a declaração de main não qualifica automaticamente uma release. SDKs de outras linguagens podem servir a clientes externos de interoperabilidade. [IfcMCP](https://docs.ifcopenshell.org/ifcmcp.html) permanece candidato externo para funções IFC delimitadas, sem substituir os comandos Rust ou permitir mutações irrestritas. Aplicam-se [REUSO.md](REUSO.md) e [fontes-rust.json](fontes-rust.json).
 
 ## 3. Contratos de domínio
 
@@ -117,7 +117,7 @@ Aplicar ainda:
 - Tratamento de IFC, BCF, PDFs, nomes de objetos e comentários como conteúdo não confiável.
 - Restrição de arquivos e prevenção de acesso fora das raízes autorizadas.
 - Limites de tamanho, tempo, quantidade, expansão de arquivos e custo computacional.
-- Redação de logs para excluir segredos e minimizar conteúdo do projeto.
+- Supressão ou mascaramento de dados sensíveis nos logs, excluindo segredos e minimizando conteúdo do projeto.
 - Validação de tipo, enumeração, unidade, relações e valores antes de executar comandos.
 - Autorização explícita do destino antes de enviar projeto a provedor externo.
 - Testes de isolamento e de revogação, inclusive durante job e reconexão.
@@ -132,7 +132,7 @@ A ferramenta recusa emissão com resultados obsoletos, análise incompleta, erro
 
 ## 8. Aceitação da primeira operação e evolução
 
-A issue #1 deve demonstrar criação de projeto BIM real, objeto tipado mínimo, salvamento, reabertura e consulta, por interface e MCP. Reexecutar o mesmo comando nas duas superfícies deve produzir estado equivalente. Uma entrada inválida deve gerar diagnóstico sem corromper o projeto. Não usar cálculo ou objeto fictício para declarar conclusão.
+A issue #1 deve entregar servidor e interface próprios em Rust e demonstrar criação de projeto BIM real, objeto tipado mínimo, salvamento, reabertura e consulta, por interface e MCP. Reexecutar o mesmo comando nas duas superfícies deve produzir estado equivalente. Uma entrada inválida deve gerar diagnóstico sem corromper o projeto. Não usar cálculo ou objeto fictício para declarar conclusão.
 
 Novas famílias de engenharia acrescentam ferramentas ou comandos ao contrato comum, com casos de equivalência. Gate de lançamento: versões e clientes declarados testados; zero mutação fora do escopo; nenhuma emissão obsoleta; recuperação de retries; isolamento de projetos; diagnósticos úteis; documentação de instalação que corresponda ao pacote distribuído.
 

@@ -1,5 +1,5 @@
 {
-  "schema_version": "2.0",
+  "schema_version": "2.1",
   "project": "Prumo",
   "repository": "tjsasakifln/prumo",
   "baseline_date": "2026-11-14",
@@ -161,30 +161,36 @@
       "phase_name": "Base BIM, MCP e verificação",
       "goal": "Abrir o desenvolvimento com uma fatia real do produto, utilizável pela interface e por um cliente MCP.",
       "scope": [
-        "Monorepo, comandos de desenvolvimento e integração contínua em Windows e Linux",
-        "ADR inicial da aplicação desktop com interface reutilizável, domínio isolado e processo de cálculo separado",
+        "Workspace Cargo com aplicações e crates Rust por responsabilidade, comandos de desenvolvimento e CI em Windows e Linux",
+        "ADR inicial de aplicação desktop com interface própria em Rust, reaproveitamento web/WASM, domínio isolado e processo de cálculo separado; comparar frameworks Rust sem reabrir a escolha da linguagem",
         "Criar, salvar e reabrir projeto mínimo com unidades, revisão, um objeto físico e sua identidade analítica",
         "Servidor MCP local funcional usando os mesmos comandos de criação e consulta da interface",
-        "Contratos de domínio extensíveis para disciplinas, ambientes, redes e portas tipadas; ensaio de persistência e comando sem apresentar cálculos futuros como disponíveis"
+        "Contratos de domínio extensíveis para disciplinas, ambientes, redes e portas tipadas; ensaio de persistência e comando sem apresentar cálculos futuros como disponíveis",
+        "Versionar Cargo.toml, Cargo.lock e rust-toolchain.toml com versão estável exata; declarar edition, rust-version, resolver, features, targets e dependências nativas do pacote"
       ],
       "acceptance": [
         "Instalação limpa executa a interface e o servidor sem edição manual de arquivos de configuração",
         "Projeto criado pela interface é consultado e alterado pelo MCP, e o contrário, com identidade e revisão preservadas",
         "Nenhum cálculo simulado é apresentado como resultado estrutural e nenhum botão essencial é apenas decorativo",
         "Componentes usados nesta primeira etapa já passam por triagem de licença, versão e dependências; a issue 3 amplia a qualificação, sem autorizar uso prévio não examinado",
-        "MCP inicial é stdio local, limitado ao projeto selecionado, sem shell, SQL ou caminhos livres; autorização básica existe desde a primeira operação"
+        "MCP inicial é stdio local, limitado ao projeto selecionado, sem shell, SQL ou caminhos livres; autorização básica existe desde a primeira operação",
+        "Interface, modelo mínimo, comandos, persistência e servidor MCP são implementados em Rust e usam o mesmo domínio; não existe segundo núcleo de produto em TypeScript, Python ou C++",
+        "ADR compara autoria Rust nativa e/ou Rust/WASM com o mesmo caso BIM, incluindo acessibilidade, navegação 2D/3D, operação local, impressão e empacotamento; recursos experimentais ficam identificados"
       ],
       "validation": [
         "Teste de ponta a ponta UI > salvar > reiniciar > consultar por MCP",
         "Cliente MCP real negocia a revisão suportada e rejeita versão desconhecida",
-        "CI verifica contratos, lint, testes e build reproduzível"
+        "CI executa cargo fmt --all -- --check, Clippy, testes e build com --locked para os targets/features distribuídos; registra o compilador efetivo e as dependências nativas",
+        "Executar a operação BIM real por interface Rust e cliente MCP; confirmar equivalência após reabertura e erro de entrada, sem usar respostas fixas como implementação"
       ],
       "norms": [],
       "reuse_candidates": [
-        "Tauri",
-        "React",
-        "MCP TypeScript SDK",
-        "IfcMCP, sujeito a adaptação e qualificação do protocolo"
+        "MCP Rust SDK (rmcp)",
+        "egui/eframe",
+        "Dioxus",
+        "wgpu",
+        "Tauri como contêiner opcional de interface Rust/WASM",
+        "IfcOpenShell e IfcMCP como componentes externos a qualificar"
       ],
       "source_ids": [
         "A01",
@@ -195,12 +201,25 @@
         "A03",
         "A14",
         "A16",
-        "USR-03"
+        "USR-03",
+        "USR-05",
+        "RS-001",
+        "RS-003",
+        "RS-004",
+        "RS-005",
+        "RS-006",
+        "RS-007",
+        "RS-008",
+        "RS-009",
+        "RS-012",
+        "RS-013"
       ],
       "depends_on": [],
       "status": "planned",
       "github_number": 1,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/1"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/1",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 2,
@@ -240,14 +259,17 @@
         "N01",
         "USR-01",
         "USR-03",
-        "USR-04"
+        "USR-04",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-001"
       ],
       "status": "planned",
       "github_number": 2,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/2"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/2",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 3,
@@ -261,17 +283,21 @@
         "Registrar licença por arquivo e dependência, distribuição comercial, versões, manutenção, vulnerabilidades e testes",
         "Executar experiências delimitadas com candidatos a BIM, geometria, solver, seções e documentos",
         "Criar interfaces substituíveis, inventário de componentes e decisões de adoção ou rejeição",
-        "Incluir na estratégia de qualificação componentes para hidráulica, gás, elétrica, fotovoltaica, termodinâmica, roteamento e catálogos; aprovação de um domínio não se estende automaticamente a outro"
+        "Incluir na estratégia de qualificação componentes para hidráulica, gás, elétrica, fotovoltaica, termodinâmica, roteamento e catálogos; aprovação de um domínio não se estende automaticamente a outro",
+        "Registrar linguagem, origem, função e fronteira de cada dependência externa; manter adaptação, contratos e orquestração próprios em Rust",
+        "Qualificar FFI, processos isolados e WASM quanto a unidades, memória, erros, cancelamento, recursos e empacotamento; separar referência independente de motor de produção"
       ],
       "acceptance": [
         "Componente incorporado possui commit ou versão fixada, procedência e obrigações cumpridas",
         "Popularidade ou testes do fornecedor não são tratados como validação do Prumo",
-        "Nenhum motor é adotado fora do domínio demonstrado, e restrições comerciais não são presumidas resolvidas"
+        "Nenhum motor é adotado fora do domínio demonstrado, e restrições comerciais não são presumidas resolvidas",
+        "Componentes estrangeiros não introduzem nova lógica própria do produto em outra linguagem; bindings gerados e patches de terceiros têm escopo, origem e revisão identificados"
       ],
       "validation": [
         "Executar a mesma bateria mínima através do adaptador e contra referência independente",
         "Build limpo e auditoria de dependências transitivas",
-        "Medir desempenho, precisão, tamanho de distribuição e esforço de manutenção antes da decisão"
+        "Medir desempenho, precisão, tamanho de distribuição e esforço de manutenção antes da decisão",
+        "Exercitar entradas inválidas, falha e reinício nas fronteiras externas, além de conferência de ownership, ABI e encerramento de recursos quando houver FFI"
       ],
       "norms": [],
       "reuse_candidates": [
@@ -293,14 +319,20 @@
         "A16",
         "A17",
         "A18",
-        "USR-03"
+        "USR-03",
+        "USR-05",
+        "RS-010",
+        "RS-011",
+        "RS-013"
       ],
       "depends_on": [
         "PRU-002"
       ],
       "status": "planned",
       "github_number": 3,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/3"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/3",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 4,
@@ -319,7 +351,8 @@
       "acceptance": [
         "Objeto apenas visual nunca aparece como elemento dimensionado",
         "Conversões de unidade e orientação preservam a resposta física",
-        "Qualquer mudança relevante invalida os resultados dependentes de maneira rastreável"
+        "Qualquer mudança relevante invalida os resultados dependentes de maneira rastreável",
+        "Tipos, comandos e regras próprios desta entrega permanecem em crates Rust compartilhados; contratos externos convertem dados explicitamente sem criar autoridade paralela"
       ],
       "validation": [
         "Round trip do modelo nativo sem perda de identidade ou semântica",
@@ -334,14 +367,18 @@
         "TQ-05",
         "A09",
         "USR-01",
-        "USR-03"
+        "USR-03",
+        "USR-05",
+        "RS-006"
       ],
       "depends_on": [
         "PRU-003"
       ],
       "status": "planned",
       "github_number": 4,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/4"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/4",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 5,
@@ -360,7 +397,8 @@
         "Interrupção durante salvamento mantém a última revisão íntegra recuperável",
         "Projeto não depende da nuvem ou de um agente para abrir e calcular capacidades instaladas",
         "Migração preserva cópia original e identifica incompatibilidades sem descartar dados",
-        "Pacote e migrações preservam os futuros domínios de instalações sem descartar dados desconhecidos, com testes de extensão e versionamento"
+        "Pacote e migrações preservam os futuros domínios de instalações sem descartar dados desconhecidos, com testes de extensão e versionamento",
+        "Tipos, comandos e regras próprios desta entrega permanecem em crates Rust compartilhados; contratos externos convertem dados explicitamente sem criar autoridade paralela"
       ],
       "validation": [
         "Injetar queda em diferentes etapas de salvamento e recuperação",
@@ -375,14 +413,18 @@
       "source_ids": [
         "USR-01",
         "A09",
-        "USR-03"
+        "USR-03",
+        "USR-05",
+        "RS-006"
       ],
       "depends_on": [
         "PRU-004"
       ],
       "status": "planned",
       "github_number": 5,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/5"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/5",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 6,
@@ -401,7 +443,8 @@
       "acceptance": [
         "Repetir um comando idempotente não duplica objetos ou jobs",
         "Comando baseado em revisão ultrapassada falha com conflito inteligível",
-        "Interface e MCP passam pelos mesmos validadores e produzem o mesmo snapshot"
+        "Interface e MCP passam pelos mesmos validadores e produzem o mesmo snapshot",
+        "Tipos, comandos e regras próprios desta entrega permanecem em crates Rust compartilhados; contratos externos convertem dados explicitamente sem criar autoridade paralela"
       ],
       "validation": [
         "Dois clientes alteram o mesmo elemento e nenhum trabalho é sobrescrito silenciosamente",
@@ -415,14 +458,18 @@
       "source_ids": [
         "A01",
         "USR-01",
-        "USR-03"
+        "USR-03",
+        "USR-05",
+        "RS-006"
       ],
       "depends_on": [
         "PRU-005"
       ],
       "status": "planned",
       "github_number": 6,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/6"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/6",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 7,
@@ -436,7 +483,8 @@
         "Adaptador separado para clientes legados efetivamente escolhidos",
         "Escopos de leitura, modelagem, cálculo e documentos por projeto",
         "Resultado estruturado com unidades, revisão, estado e referências de evidência",
-        "Permissões e trilha de auditoria admitem disciplina e projeto; catálogo ou modelo importado não concede autorização"
+        "Permissões e trilha de auditoria admitem disciplina e projeto; catálogo ou modelo importado não concede autorização",
+        "Implementar o servidor MCP em Rust, avaliando prioritariamente rmcp; fixar versão, features, revisão de protocolo e transportes efetivamente usados"
       ],
       "acceptance": [
         "Cliente não recebe dados de projeto fora do seu escopo",
@@ -446,11 +494,12 @@
       "validation": [
         "Conformidade da revisão atual e compatibilidade legada testadas separadamente",
         "Negação de leitura, escrita e emissão sem escopo correspondente",
-        "Teste de repetição, desconexão, versão incompatível e entradas inválidas"
+        "Teste de repetição, desconexão, versão incompatível e entradas inválidas",
+        "Testar o binário Rust com clientes independentes reais nos perfis declarados; a versão de SDK adotada precisa comprovar os recursos anunciados, além do README de main"
       ],
       "norms": [],
       "reuse_candidates": [
-        "MCP TypeScript SDK"
+        "MCP Rust SDK (rmcp)"
       ],
       "source_ids": [
         "A01",
@@ -458,14 +507,20 @@
         "A03",
         "A05",
         "USR-01",
-        "USR-03"
+        "USR-03",
+        "USR-05",
+        "RS-001",
+        "RS-002",
+        "RS-013"
       ],
       "depends_on": [
         "PRU-006"
       ],
       "status": "planned",
       "github_number": 7,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/7"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/7",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 8,
@@ -479,7 +534,8 @@
         "Registro de independência entre implementação e referência",
         "Execução determinística, evidências por SHA e relatórios de regressão",
         "Casos aprovados e reprovados, fronteiras de norma, mecanismos e erros deliberados",
-        "Estrutura de protocolos admite pressão/vazão, grandezas elétricas, energia e térmica, com tolerâncias e independência específicas por domínio"
+        "Estrutura de protocolos admite pressão/vazão, grandezas elétricas, energia e térmica, com tolerâncias e independência específicas por domínio",
+        "Implementar a infraestrutura própria de execução e comparação em Rust; conservar ferramentas externas de referência identificadas e independentes do motor de produção"
       ],
       "acceptance": [
         "Tolerância é fixada e revisada antes de obter o resultado do código sob teste",
@@ -501,14 +557,19 @@
         "N19",
         "USR-01",
         "N16",
-        "USR-03"
+        "USR-03",
+        "USR-05",
+        "RS-006",
+        "RS-009"
       ],
       "depends_on": [
         "PRU-007"
       ],
       "status": "planned",
       "github_number": 8,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/8"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/8",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 9,
@@ -527,7 +588,8 @@
       "acceptance": [
         "Contato gráfico não cria vínculo resistente sem regra visível",
         "Modelo em coordenadas geográficas mantém precisão local",
-        "Correção automática não modifica dimensões ou conectividade sem registro"
+        "Correção automática não modifica dimensões ou conectividade sem registro",
+        "Geometria, topologia, tolerâncias e conversões próprias são implementadas em Rust; bibliotecas geométricas externas usam adaptador Rust e contrato qualificado sem alterar diretamente o modelo"
       ],
       "validation": [
         "Geometrias quase coincidentes, vãos muito curtos e grande extensão de coordenadas",
@@ -543,14 +605,19 @@
       "source_ids": [
         "A09",
         "USR-01",
-        "USR-03"
+        "USR-03",
+        "USR-05",
+        "RS-006",
+        "RS-010"
       ],
       "depends_on": [
         "PRU-008"
       ],
       "status": "planned",
       "github_number": 9,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/9"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/9",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 10,
@@ -585,14 +652,17 @@
         "CY-02",
         "EB-04",
         "USR-01",
-        "USR-03"
+        "USR-03",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-009"
       ],
       "status": "planned",
       "github_number": 10,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/10"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/10",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 11,
@@ -605,7 +675,8 @@
         "Planta, corte, 3D, árvore de objetos e propriedades sincronizadas",
         "Seleção, ocultação, isolamento, corte e localização de erros",
         "Comandos descobríveis, linguagem em português e ajuda contextual",
-        "Fluxos completos por teclado e mouse, sem gesto bimanual ou arraste obrigatório"
+        "Fluxos completos por teclado e mouse, sem gesto bimanual ou arraste obrigatório",
+        "Autoria Rust da interface e dos controladores gráficos, com framework definido por ADR e reuso externo por contrato; recursos declarativos e bindings gerados não hospedam lógica própria"
       ],
       "acceptance": [
         "Seleção de um objeto destaca a mesma identidade em todas as vistas",
@@ -616,26 +687,35 @@
       "validation": [
         "Teste de navegação por teclado e leitor de tela nas partes compatíveis",
         "Selecionar objeto oculto, sobreposto e de pavimento diferente",
-        "Verificação visual com escala de interface e alto contraste"
+        "Verificação visual com escala de interface e alto contraste",
+        "Medir precisão de seleção, grandes coordenadas, escala de interface, recuperação de falha gráfica e acessibilidade no backend Rust escolhido, além do mesmo projeto no destino web declarado"
       ],
       "norms": [],
       "reuse_candidates": [
-        "Three.js",
-        "React",
-        "Componentes acessíveis qualificados"
+        "egui/eframe",
+        "Dioxus",
+        "wgpu",
+        "Bibliotecas externas de visualização e acessibilidade qualificadas"
       ],
       "source_ids": [
         "EB-02",
         "CY-01",
         "USR-01",
-        "USR-03"
+        "USR-03",
+        "USR-05",
+        "RS-003",
+        "RS-004",
+        "RS-005",
+        "RS-012"
       ],
       "depends_on": [
         "PRU-010"
       ],
       "status": "planned",
       "github_number": 11,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/11"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/11",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 12,
@@ -667,14 +747,17 @@
       "source_ids": [
         "EB-02",
         "CY-01",
-        "USR-01"
+        "USR-01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-011"
       ],
       "status": "planned",
       "github_number": 12,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/12"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/12",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 13,
@@ -707,14 +790,17 @@
       "source_ids": [
         "EB-02",
         "CY-02",
-        "USR-01"
+        "USR-01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-012"
       ],
       "status": "planned",
       "github_number": 13,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/13"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/13",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 14,
@@ -746,14 +832,17 @@
       "source_ids": [
         "EB-02",
         "CY-01",
-        "TQ-02"
+        "TQ-02",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-013"
       ],
       "status": "planned",
       "github_number": 14,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/14"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/14",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 15,
@@ -785,14 +874,17 @@
       "source_ids": [
         "EB-02",
         "TQ-05",
-        "CY-01"
+        "CY-01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-014"
       ],
       "status": "planned",
       "github_number": 15,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/15"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/15",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 16,
@@ -824,14 +916,17 @@
       "source_ids": [
         "TQ-01",
         "CY-02",
-        "USR-01"
+        "USR-01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-015"
       ],
       "status": "planned",
       "github_number": 16,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/16"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/16",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 17,
@@ -866,14 +961,17 @@
       ],
       "source_ids": [
         "CY-01",
-        "USR-01"
+        "USR-01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-016"
       ],
       "status": "planned",
       "github_number": 17,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/17"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/17",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 18,
@@ -911,14 +1009,17 @@
         "A08",
         "A09",
         "TQ-05",
-        "USR-03"
+        "USR-03",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-017"
       ],
       "status": "planned",
       "github_number": 18,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/18"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/18",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 19,
@@ -952,14 +1053,17 @@
         "EB-02",
         "CY-01",
         "USR-01",
-        "USR-03"
+        "USR-03",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-018"
       ],
       "status": "planned",
       "github_number": 19,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/19"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/19",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 20,
@@ -990,14 +1094,17 @@
       ],
       "source_ids": [
         "USR-01",
-        "TQ-01"
+        "TQ-01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-019"
       ],
       "status": "planned",
       "github_number": 20,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/20"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/20",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 21,
@@ -1015,12 +1122,14 @@
       "acceptance": [
         "Resultado registra método, versão, tolerâncias e snapshot exato",
         "Matriz singular ou mal condicionada não produz aprovação aparente",
-        "Processo de cálculo não bloqueia a interface nem altera o projeto"
+        "Processo de cálculo não bloqueia a interface nem altera o projeto",
+        "Algoritmos e adaptação desenvolvidos para o Prumo são Rust; solver ou álgebra externos preservam versão, unidades, hipóteses, domínio qualificado e erro explícito pela fronteira de integração"
       ],
       "validation": [
         "Sistemas de equações de referência derivados independentemente de viga e treliça, com matrizes e soluções analíticas conhecidas; formulações completas de elemento entram na issue 22",
         "Invariância a ordenação de nós, sinais e sistema de unidades",
-        "Limites de memória, cancelamento e falha de worker testados"
+        "Limites de memória, cancelamento e falha de worker testados",
+        "Comparar o resultado no binário distribuível com referência de implementação independente e tolerâncias pré-registradas; cargo --locked e a linguagem não comprovam equivalência numérica"
       ],
       "norms": [],
       "reuse_candidates": [
@@ -1032,14 +1141,20 @@
         "N17",
         "N18",
         "N20",
-        "USR-02"
+        "USR-02",
+        "USR-05",
+        "RS-009",
+        "RS-010",
+        "RS-011"
       ],
       "depends_on": [
         "PRU-020"
       ],
       "status": "planned",
       "github_number": 21,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/21"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/21",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 22,
@@ -1076,14 +1191,17 @@
       "source_ids": [
         "CY-02",
         "N20",
-        "N22"
+        "N22",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-021"
       ],
       "status": "planned",
       "github_number": 22,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/22"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/22",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 23,
@@ -1101,12 +1219,14 @@
       "acceptance": [
         "Refinamento mostra estabilidade da grandeza de interesse",
         "Pico em singularidade não é convertido automaticamente em armadura sem método",
-        "Malha inválida, travamento ou elemento invertido são diagnosticados"
+        "Malha inválida, travamento ou elemento invertido são diagnosticados",
+        "Algoritmos e adaptação desenvolvidos para o Prumo são Rust; solver ou álgebra externos preservam versão, unidades, hipóteses, domínio qualificado e erro explícito pela fronteira de integração"
       ],
       "validation": [
         "Patch tests de membrana e flexão, placa analítica e casca de referência",
         "Sequências de malha e comparação de energia, reações e deslocamentos",
-        "Testes de razão de aspecto, espessura e orientação"
+        "Testes de razão de aspecto, espessura e orientação",
+        "Comparar o resultado no binário distribuível com referência de implementação independente e tolerâncias pré-registradas; cargo --locked e a linguagem não comprovam equivalência numérica"
       ],
       "norms": [],
       "reuse_candidates": [
@@ -1119,14 +1239,20 @@
         "CY-02",
         "N17",
         "N19",
-        "USR-02"
+        "USR-02",
+        "USR-05",
+        "RS-009",
+        "RS-010",
+        "RS-011"
       ],
       "depends_on": [
         "PRU-022"
       ],
       "status": "planned",
       "github_number": 23,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/23"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/23",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 24,
@@ -1158,14 +1284,17 @@
       "source_ids": [
         "TQ-01",
         "CY-01",
-        "USR-01"
+        "USR-01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-023"
       ],
       "status": "planned",
       "github_number": 24,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/24"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/24",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 25,
@@ -1199,14 +1328,17 @@
       "source_ids": [
         "TQ-01",
         "CY-01",
-        "N17"
+        "N17",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-024"
       ],
       "status": "planned",
       "github_number": 25,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/25"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/25",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 26,
@@ -1226,13 +1358,15 @@
         "Estrutura instável não é estabilizada por molas artificiais ocultas",
         "Método informa limitações para placas, barras e grandes deslocamentos",
         "Ausência de convergência bloqueia resultados finais",
-        "Tirante frouxo não conserva rigidez compressiva nem estabiliza artificialmente o modelo"
+        "Tirante frouxo não conserva rigidez compressiva nem estabiliza artificialmente o modelo",
+        "Algoritmos e adaptação desenvolvidos para o Prumo são Rust; solver ou álgebra externos preservam versão, unidades, hipóteses, domínio qualificado e erro explícito pela fronteira de integração"
       ],
       "validation": [
         "Coluna de Euler, pórtico deslocável e caso próximo da carga crítica",
         "Comparar trajetória carga-deslocamento com referência independente",
         "Verificar dependência de passo e perturbação inicial",
-        "Contraventamento cruzado sob inversão de vento e cabo com pré-tensão contra referência independente"
+        "Contraventamento cruzado sob inversão de vento e cabo com pré-tensão contra referência independente",
+        "Comparar o resultado no binário distribuível com referência de implementação independente e tolerâncias pré-registradas; cargo --locked e a linguagem não comprovam equivalência numérica"
       ],
       "norms": [],
       "reuse_candidates": [
@@ -1247,14 +1381,20 @@
         "TQ-01",
         "CY-03",
         "CY-04",
-        "CY-05"
+        "CY-05",
+        "USR-05",
+        "RS-009",
+        "RS-010",
+        "RS-011"
       ],
       "depends_on": [
         "PRU-025"
       ],
       "status": "planned",
       "github_number": 26,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/26"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/26",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 27,
@@ -1272,12 +1412,14 @@
       "acceptance": [
         "Lei e parâmetros usados constam do resultado",
         "Divergência e solução dependente de caminho ficam explícitas",
-        "Combinações não lineares não são obtidas por soma indevida de respostas"
+        "Combinações não lineares não são obtidas por soma indevida de respostas",
+        "Algoritmos e adaptação desenvolvidos para o Prumo são Rust; solver ou álgebra externos preservam versão, unidades, hipóteses, domínio qualificado e erro explícito pela fronteira de integração"
       ],
       "validation": [
         "Diagrama momento-curvatura independente e ensaio numérico de seção",
         "Ciclos de carga quando o modelo os declarar suportados",
-        "Sensibilidade a malha, regularização e tamanho de incremento"
+        "Sensibilidade a malha, regularização e tamanho de incremento",
+        "Comparar o resultado no binário distribuível com referência de implementação independente e tolerâncias pré-registradas; cargo --locked e a linguagem não comprovam equivalência numérica"
       ],
       "norms": [],
       "reuse_candidates": [
@@ -1288,14 +1430,20 @@
       "source_ids": [
         "TQ-01",
         "N17",
-        "N22"
+        "N22",
+        "USR-05",
+        "RS-009",
+        "RS-010",
+        "RS-011"
       ],
       "depends_on": [
         "PRU-026"
       ],
       "status": "planned",
       "github_number": 27,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/27"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/27",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 28,
@@ -1329,14 +1477,17 @@
       "source_ids": [
         "TQ-01",
         "CY-02",
-        "N17"
+        "N17",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-027"
       ],
       "status": "planned",
       "github_number": 28,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/28"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/28",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 29,
@@ -1370,14 +1521,17 @@
       "source_ids": [
         "TQ-01",
         "CY-02",
-        "N17"
+        "N17",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-028"
       ],
       "status": "planned",
       "github_number": 29,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/29"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/29",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 30,
@@ -1409,14 +1563,17 @@
       "source_ids": [
         "EB-01",
         "TQ-01",
-        "TQ-02"
+        "TQ-02",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-029"
       ],
       "status": "planned",
       "github_number": 30,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/30"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/30",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 31,
@@ -1450,14 +1607,17 @@
       "source_ids": [
         "TQ-01",
         "CY-01",
-        "N01"
+        "N01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-030"
       ],
       "status": "planned",
       "github_number": 31,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/31"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/31",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 32,
@@ -1492,14 +1652,17 @@
       "source_ids": [
         "N01",
         "TQ-01",
-        "CY-01"
+        "CY-01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-031"
       ],
       "status": "planned",
       "github_number": 32,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/32"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/32",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 33,
@@ -1532,14 +1695,17 @@
       "source_ids": [
         "EB-02",
         "CY-01",
-        "N01"
+        "N01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-032"
       ],
       "status": "planned",
       "github_number": 33,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/33"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/33",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 34,
@@ -1572,14 +1738,17 @@
       "source_ids": [
         "EB-02",
         "TQ-01",
-        "N01"
+        "N01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-033"
       ],
       "status": "planned",
       "github_number": 34,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/34"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/34",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 35,
@@ -1615,14 +1784,17 @@
       "source_ids": [
         "TQ-01",
         "CY-02",
-        "N01"
+        "N01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-034"
       ],
       "status": "planned",
       "github_number": 35,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/35"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/35",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 36,
@@ -1656,14 +1828,17 @@
       "source_ids": [
         "TQ-01",
         "EB-02",
-        "N01"
+        "N01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-035"
       ],
       "status": "planned",
       "github_number": 36,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/36"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/36",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 37,
@@ -1698,14 +1873,17 @@
       "source_ids": [
         "EB-02",
         "TQ-01",
-        "N01"
+        "N01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-036"
       ],
       "status": "planned",
       "github_number": 37,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/37"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/37",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 38,
@@ -1741,14 +1919,17 @@
       "source_ids": [
         "TQ-01",
         "CY-02",
-        "N01"
+        "N01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-037"
       ],
       "status": "planned",
       "github_number": 38,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/38"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/38",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 39,
@@ -1784,14 +1965,17 @@
       "source_ids": [
         "CY-01",
         "EB-02",
-        "N01"
+        "N01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-038"
       ],
       "status": "planned",
       "github_number": 39,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/39"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/39",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 40,
@@ -1824,14 +2008,17 @@
       "source_ids": [
         "TQ-01",
         "CY-01",
-        "USR-01"
+        "USR-01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-039"
       ],
       "status": "planned",
       "github_number": 40,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/40"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/40",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 41,
@@ -1866,14 +2053,17 @@
       "source_ids": [
         "N01",
         "EB-02",
-        "CY-01"
+        "CY-01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-040"
       ],
       "status": "planned",
       "github_number": 41,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/41"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/41",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 42,
@@ -1908,14 +2098,17 @@
       ],
       "source_ids": [
         "N01",
-        "TQ-01"
+        "TQ-01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-041"
       ],
       "status": "planned",
       "github_number": 42,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/42"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/42",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 43,
@@ -1947,14 +2140,17 @@
       "source_ids": [
         "EB-02",
         "CY-01",
-        "N01"
+        "N01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-042"
       ],
       "status": "planned",
       "github_number": 43,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/43"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/43",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 44,
@@ -1986,14 +2182,17 @@
       "source_ids": [
         "EB-02",
         "CY-01",
-        "N01"
+        "N01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-043"
       ],
       "status": "planned",
       "github_number": 44,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/44"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/44",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 45,
@@ -2025,14 +2224,17 @@
       "source_ids": [
         "EB-02",
         "TQ-01",
-        "N01"
+        "N01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-044"
       ],
       "status": "planned",
       "github_number": 45,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/45"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/45",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 46,
@@ -2064,14 +2266,17 @@
       "source_ids": [
         "EB-02",
         "TQ-02",
-        "CY-01"
+        "CY-01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-045"
       ],
       "status": "planned",
       "github_number": 46,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/46"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/46",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 47,
@@ -2104,14 +2309,17 @@
       "source_ids": [
         "EB-02",
         "CY-01",
-        "N01"
+        "N01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-046"
       ],
       "status": "planned",
       "github_number": 47,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/47"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/47",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 48,
@@ -2144,14 +2352,17 @@
       "source_ids": [
         "EB-02",
         "TQ-02",
-        "N01"
+        "N01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-047"
       ],
       "status": "planned",
       "github_number": 48,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/48"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/48",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 49,
@@ -2190,14 +2401,17 @@
         "EB-02",
         "N01",
         "TQ-07",
-        "N23"
+        "N23",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-048"
       ],
       "status": "planned",
       "github_number": 49,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/49"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/49",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 50,
@@ -2230,14 +2444,17 @@
       "source_ids": [
         "EB-02",
         "TQ-06",
-        "N01"
+        "N01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-049"
       ],
       "status": "planned",
       "github_number": 50,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/50"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/50",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 51,
@@ -2271,14 +2488,17 @@
       "source_ids": [
         "EB-02",
         "CY-01",
-        "TQ-06"
+        "TQ-06",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-050"
       ],
       "status": "planned",
       "github_number": 51,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/51"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/51",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 52,
@@ -2312,14 +2532,17 @@
       "source_ids": [
         "EB-02",
         "CY-01",
-        "TQ-06"
+        "TQ-06",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-051"
       ],
       "status": "planned",
       "github_number": 52,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/52"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/52",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 53,
@@ -2356,14 +2579,17 @@
         "TQ-02",
         "CY-01",
         "TQ-07",
-        "N23"
+        "N23",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-052"
       ],
       "status": "planned",
       "github_number": 53,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/53"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/53",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 54,
@@ -2397,14 +2623,17 @@
       "source_ids": [
         "EB-03",
         "TQ-02",
-        "TQ-06"
+        "TQ-06",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-053"
       ],
       "status": "planned",
       "github_number": 54,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/54"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/54",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 55,
@@ -2438,14 +2667,17 @@
       "source_ids": [
         "EB-03",
         "TQ-02",
-        "TQ-06"
+        "TQ-06",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-054"
       ],
       "status": "planned",
       "github_number": 55,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/55"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/55",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 56,
@@ -2479,14 +2711,17 @@
       "source_ids": [
         "EB-02",
         "CY-01",
-        "N01"
+        "N01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-055"
       ],
       "status": "planned",
       "github_number": 56,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/56"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/56",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 57,
@@ -2522,14 +2757,17 @@
         "EB-01",
         "TQ-06",
         "CY-01",
-        "TQ-09"
+        "TQ-09",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-056"
       ],
       "status": "planned",
       "github_number": 57,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/57"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/57",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 58,
@@ -2565,14 +2803,17 @@
       "source_ids": [
         "CY-01",
         "EB-02",
-        "TQ-06"
+        "TQ-06",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-057"
       ],
       "status": "planned",
       "github_number": 58,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/58"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/58",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 59,
@@ -2607,14 +2848,17 @@
       "source_ids": [
         "EB-02",
         "CY-01",
-        "N01"
+        "N01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-058"
       ],
       "status": "planned",
       "github_number": 59,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/59"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/59",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 60,
@@ -2656,14 +2900,17 @@
         "USR-01",
         "N16",
         "N23",
-        "TQ-07"
+        "TQ-07",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-059"
       ],
       "status": "planned",
       "github_number": 60,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/60"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/60",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 61,
@@ -2697,14 +2944,17 @@
       "source_ids": [
         "TQ-03",
         "N01",
-        "USR-01"
+        "USR-01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-060"
       ],
       "status": "planned",
       "github_number": 61,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/61"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/61",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 62,
@@ -2741,14 +2991,17 @@
       "source_ids": [
         "TQ-03",
         "EB-02",
-        "N01"
+        "N01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-061"
       ],
       "status": "planned",
       "github_number": 62,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/62"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/62",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 63,
@@ -2781,14 +3034,17 @@
       "source_ids": [
         "EB-02",
         "TQ-03",
-        "N01"
+        "N01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-062"
       ],
       "status": "planned",
       "github_number": 63,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/63"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/63",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 64,
@@ -2822,14 +3078,17 @@
       "source_ids": [
         "EB-02",
         "TQ-03",
-        "N01"
+        "N01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-063"
       ],
       "status": "planned",
       "github_number": 64,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/64"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/64",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 65,
@@ -2865,14 +3124,17 @@
       "source_ids": [
         "EB-02",
         "TQ-03",
-        "N01"
+        "N01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-064"
       ],
       "status": "planned",
       "github_number": 65,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/65"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/65",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 66,
@@ -2905,14 +3167,17 @@
       "source_ids": [
         "TQ-03",
         "CY-01",
-        "N01"
+        "N01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-065"
       ],
       "status": "planned",
       "github_number": 66,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/66"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/66",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 67,
@@ -2945,14 +3210,17 @@
       "source_ids": [
         "TQ-03",
         "EB-02",
-        "N17"
+        "N17",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-066"
       ],
       "status": "planned",
       "github_number": 67,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/67"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/67",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 68,
@@ -2987,14 +3255,17 @@
       "source_ids": [
         "EB-02",
         "CY-01",
-        "N01"
+        "N01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-067"
       ],
       "status": "planned",
       "github_number": 68,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/68"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/68",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 69,
@@ -3028,14 +3299,17 @@
       "source_ids": [
         "EB-02",
         "CY-01",
-        "TQ-03"
+        "TQ-03",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-068"
       ],
       "status": "planned",
       "github_number": 69,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/69"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/69",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 70,
@@ -3072,14 +3346,17 @@
         "N17",
         "N18",
         "N19",
-        "N16"
+        "N16",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-069"
       ],
       "status": "planned",
       "github_number": 70,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/70"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/70",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 71,
@@ -3119,14 +3396,17 @@
         "TQ-04",
         "CY-02",
         "N01",
-        "CY-05"
+        "CY-05",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-070"
       ],
       "status": "planned",
       "github_number": 71,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/71"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/71",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 72,
@@ -3166,14 +3446,17 @@
         "EB-04",
         "CY-02",
         "N01",
-        "CY-05"
+        "CY-05",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-071"
       ],
       "status": "planned",
       "github_number": 72,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/72"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/72",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 73,
@@ -3206,14 +3489,17 @@
         "CY-02",
         "TQ-04",
         "EB-04",
-        "N01"
+        "N01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-072"
       ],
       "status": "planned",
       "github_number": 73,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/73"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/73",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 74,
@@ -3247,14 +3533,17 @@
         "TQ-04",
         "CY-01",
         "CY-02",
-        "N01"
+        "N01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-073"
       ],
       "status": "planned",
       "github_number": 74,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/74"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/74",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 75,
@@ -3287,14 +3576,17 @@
       "source_ids": [
         "CY-02",
         "CY-01",
-        "N01"
+        "N01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-074"
       ],
       "status": "planned",
       "github_number": 75,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/75"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/75",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 76,
@@ -3328,14 +3620,17 @@
       "source_ids": [
         "CY-02",
         "N01",
-        "USR-01"
+        "USR-01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-075"
       ],
       "status": "planned",
       "github_number": 76,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/76"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/76",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 77,
@@ -3368,14 +3663,17 @@
       "reuse_candidates": [],
       "source_ids": [
         "CY-02",
-        "N01"
+        "N01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-076"
       ],
       "status": "planned",
       "github_number": 77,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/77"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/77",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 78,
@@ -3407,14 +3705,17 @@
       "reuse_candidates": [],
       "source_ids": [
         "CY-02",
-        "N01"
+        "N01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-077"
       ],
       "status": "planned",
       "github_number": 78,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/78"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/78",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 79,
@@ -3448,14 +3749,17 @@
       "source_ids": [
         "CY-02",
         "CY-01",
-        "N01"
+        "N01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-078"
       ],
       "status": "planned",
       "github_number": 79,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/79"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/79",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 80,
@@ -3493,14 +3797,17 @@
         "TQ-04",
         "N17",
         "N19",
-        "N16"
+        "N16",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-079"
       ],
       "status": "planned",
       "github_number": 80,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/80"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/80",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 81,
@@ -3532,14 +3839,17 @@
       "source_ids": [
         "CY-02",
         "N01",
-        "USR-01"
+        "USR-01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-080"
       ],
       "status": "planned",
       "github_number": 81,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/81"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/81",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 82,
@@ -3571,14 +3881,17 @@
       "source_ids": [
         "CY-02",
         "N01",
-        "USR-01"
+        "USR-01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-081"
       ],
       "status": "planned",
       "github_number": 82,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/82"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/82",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 83,
@@ -3610,14 +3923,17 @@
       "reuse_candidates": [],
       "source_ids": [
         "CY-02",
-        "N01"
+        "N01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-082"
       ],
       "status": "planned",
       "github_number": 83,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/83"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/83",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 84,
@@ -3651,14 +3967,17 @@
       "source_ids": [
         "CY-02",
         "N01",
-        "USR-01"
+        "USR-01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-083"
       ],
       "status": "planned",
       "github_number": 84,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/84"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/84",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 85,
@@ -3692,14 +4011,17 @@
       "source_ids": [
         "CY-02",
         "N01",
-        "USR-01"
+        "USR-01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-084"
       ],
       "status": "planned",
       "github_number": 85,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/85"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/85",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 86,
@@ -3731,14 +4053,17 @@
       "source_ids": [
         "CY-02",
         "N01",
-        "USR-01"
+        "USR-01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-085"
       ],
       "status": "planned",
       "github_number": 86,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/86"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/86",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 87,
@@ -3772,14 +4097,17 @@
       "source_ids": [
         "CY-02",
         "N01",
-        "USR-01"
+        "USR-01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-086"
       ],
       "status": "planned",
       "github_number": 87,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/87"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/87",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 88,
@@ -3813,14 +4141,17 @@
       "source_ids": [
         "CY-02",
         "N01",
-        "USR-01"
+        "USR-01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-087"
       ],
       "status": "planned",
       "github_number": 88,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/88"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/88",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 89,
@@ -3853,14 +4184,17 @@
       "source_ids": [
         "CY-02",
         "N01",
-        "USR-01"
+        "USR-01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-088"
       ],
       "status": "planned",
       "github_number": 89,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/89"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/89",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 90,
@@ -3896,14 +4230,17 @@
         "N17",
         "N19",
         "USR-01",
-        "N16"
+        "N16",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-089"
       ],
       "status": "planned",
       "github_number": 90,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/90"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/90",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 91,
@@ -3938,14 +4275,17 @@
         "EB-01",
         "EB-02",
         "CY-01",
-        "N01"
+        "N01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-090"
       ],
       "status": "planned",
       "github_number": 91,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/91"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/91",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 92,
@@ -3979,14 +4319,17 @@
       "source_ids": [
         "EB-01",
         "EB-02",
-        "CY-01"
+        "CY-01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-091"
       ],
       "status": "planned",
       "github_number": 92,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/92"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/92",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 93,
@@ -4023,14 +4366,17 @@
         "CY-01",
         "CY-02",
         "TQ-04",
-        "TQ-03"
+        "TQ-03",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-092"
       ],
       "status": "planned",
       "github_number": 93,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/93"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/93",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 94,
@@ -4062,14 +4408,17 @@
       "source_ids": [
         "CY-01",
         "CY-02",
-        "USR-01"
+        "USR-01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-093"
       ],
       "status": "planned",
       "github_number": 94,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/94"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/94",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 95,
@@ -4102,14 +4451,17 @@
       "source_ids": [
         "EB-02",
         "TQ-01",
-        "TQ-02"
+        "TQ-02",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-094"
       ],
       "status": "planned",
       "github_number": 95,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/95"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/95",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 96,
@@ -4141,14 +4493,17 @@
       "source_ids": [
         "CY-01",
         "EB-02",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-095"
       ],
       "status": "planned",
       "github_number": 96,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/96"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/96",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 97,
@@ -4181,14 +4536,17 @@
       "reuse_candidates": [],
       "source_ids": [
         "N01",
-        "USR-01"
+        "USR-01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-096"
       ],
       "status": "planned",
       "github_number": 97,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/97"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/97",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 98,
@@ -4202,7 +4560,8 @@
         "Snapshots independentes e cache por entradas/versionamento",
         "Múltiplas alternativas e comparação de diferenças",
         "CLI e MCP com consulta de progresso e resultado estruturado",
-        "Planejamento por agentes usa catálogo de capacidades existentes por domínio e não inventa motores de instalações ainda futuros"
+        "Planejamento por agentes usa catálogo de capacidades existentes por domínio e não inventa motores de instalações ainda futuros",
+        "Implementar em Rust agendamento, cancelamento, contratos de análise e coordenação UI/MCP sobre o mesmo núcleo; bibliotecas externas não alteram diretamente o projeto"
       ],
       "acceptance": [
         "Resultado de um job não é associado a revisão diferente da calculada",
@@ -4222,14 +4581,19 @@
         "A06",
         "USR-01",
         "USR-02",
-        "USR-03"
+        "USR-03",
+        "USR-05",
+        "RS-001",
+        "RS-006"
       ],
       "depends_on": [
         "PRU-097"
       ],
       "status": "planned",
       "github_number": 98,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/98"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/98",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 99,
@@ -4242,7 +4606,8 @@
         "Ferramentas de consulta, proposta, aplicação, cálculo, resultados e documentos",
         "Recursos de norma implementada, hipóteses, diagnósticos e modelos de partida",
         "Procedimentos de agentes para três tipologias com entradas e limites",
-        "Transporte remoto autenticado quando ativado, mantendo operação local"
+        "Transporte remoto autenticado quando ativado, mantendo operação local",
+        "Implementar em Rust agendamento, cancelamento, contratos de análise e coordenação UI/MCP sobre o mesmo núcleo; bibliotecas externas não alteram diretamente o projeto"
       ],
       "acceptance": [
         "Todos os fluxos disponíveis até esta issue têm equivalência UI/MCP; os fluxos das issues 101 a 110 devem nascer com seus comandos MCP e são requalificados nas issues 112 e 116",
@@ -4269,14 +4634,19 @@
         "USR-02",
         "A04",
         "A17",
-        "USR-03"
+        "USR-03",
+        "USR-05",
+        "RS-001",
+        "RS-006"
       ],
       "depends_on": [
         "PRU-098"
       ],
       "status": "planned",
       "github_number": 99,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/99"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/99",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 100,
@@ -4307,14 +4677,17 @@
       ],
       "source_ids": [
         "A05",
-        "USR-01"
+        "USR-01",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-099"
       ],
       "status": "planned",
       "github_number": 100,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/100"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/100",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 101,
@@ -4353,14 +4726,17 @@
         "CY-01",
         "TQ-06",
         "TQ-08",
-        "USR-03"
+        "USR-03",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-100"
       ],
       "status": "planned",
       "github_number": 101,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/101"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/101",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 102,
@@ -4395,14 +4771,17 @@
         "CY-01",
         "TQ-01",
         "USR-02",
-        "USR-03"
+        "USR-03",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-101"
       ],
       "status": "planned",
       "github_number": 102,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/102"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/102",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 103,
@@ -4421,7 +4800,8 @@
       "acceptance": [
         "Nenhum arquivo DXF renomeado é apresentado como DWG",
         "Exportação abre em leitores independentes preservando geometria e escala",
-        "Limitação ou perda de dados é relatada antes da conclusão"
+        "Limitação ou perda de dados é relatada antes da conclusão",
+        "Adaptadores próprios para CAD/BIM são Rust; bibliotecas ou SDKs externos têm fronteira, versão, licença, conversões e perdas verificadas, sem regras próprias ocultas em scripts"
       ],
       "validation": [
         "Round trip com blocos, cotas, layouts e textos portugueses",
@@ -4438,14 +4818,19 @@
         "CY-01",
         "EB-02",
         "USR-02",
-        "USR-03"
+        "USR-03",
+        "USR-05",
+        "RS-010",
+        "RS-011"
       ],
       "depends_on": [
         "PRU-102"
       ],
       "status": "planned",
       "github_number": 103,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/103"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/103",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 104,
@@ -4465,7 +4850,8 @@
         "Exportação passa validação de schema e verificações semânticas aplicáveis",
         "Reexportar o mesmo objeto preserva identidade conforme política",
         "Dados de solver, protensão ou dinâmica ausentes no IFC permanecem no .prumo e no relatório de perdas",
-        "O adaptador admite futura distribuição IFC e múltiplas disciplinas com perdas explícitas; a completude de redes, portas e equipamentos é qualificada após a ampliação"
+        "O adaptador admite futura distribuição IFC e múltiplas disciplinas com perdas explícitas; a completude de redes, portas e equipamentos é qualificada após a ampliação",
+        "Adaptadores próprios para CAD/BIM são Rust; bibliotecas ou SDKs externos têm fronteira, versão, licença, conversões e perdas verificadas, sem regras próprias ocultas em scripts"
       ],
       "validation": [
         "Reabertura em pelo menos dois leitores de implementação independente",
@@ -4486,14 +4872,19 @@
         "EB-02",
         "TQ-05",
         "EB-05",
-        "USR-03"
+        "USR-03",
+        "USR-05",
+        "RS-010",
+        "RS-011"
       ],
       "depends_on": [
         "PRU-103"
       ],
       "status": "planned",
       "github_number": 104,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/104"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/104",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 105,
@@ -4530,14 +4921,17 @@
         "A11",
         "EB-02",
         "TQ-05",
-        "USR-03"
+        "USR-03",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-104"
       ],
       "status": "planned",
       "github_number": 105,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/105"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/105",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 106,
@@ -4571,14 +4965,17 @@
         "USR-01",
         "N17",
         "N18",
-        "USR-03"
+        "USR-03",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-105"
       ],
       "status": "planned",
       "github_number": 106,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/106"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/106",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 107,
@@ -4596,7 +4993,8 @@
       "acceptance": [
         "Um usuário não acessa projeto de outra equipe por troca de identificador",
         "Conflito de edição não é resolvido por sobrescrita silenciosa",
-        "Queda do serviço não impede abrir dados locais e preservar trabalho"
+        "Queda do serviço não impede abrir dados locais e preservar trabalho",
+        "Serviços próprios de aplicação, sincronização e autorização são Rust; provedores e ferramentas externos usam contratos versionados, sem deslocar o núcleo próprio para outra linguagem"
       ],
       "validation": [
         "Dois usuários e um agente editando revisões concorrentes",
@@ -4610,14 +5008,18 @@
       "source_ids": [
         "A05",
         "USR-01",
-        "USR-02"
+        "USR-02",
+        "USR-05",
+        "RS-006"
       ],
       "depends_on": [
         "PRU-106"
       ],
       "status": "planned",
       "github_number": 107,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/107"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/107",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 108,
@@ -4632,13 +5034,15 @@
         "Ajuda contextual, exemplos completos e diagnóstico orientado à ação",
         "Compatibilidade de versões e migração de extensões",
         "Autoria de rotinas por programação visual e scripts restritos, usando comandos e permissões do núcleo",
-        "Conectores analíticos externos inventariados e implementados por especificação pública ou SDK autorizado, com relatório de perdas"
+        "Conectores analíticos externos inventariados e implementados por especificação pública ou SDK autorizado, com relatório de perdas",
+        "Implementar em Rust o host de extensões, a API e o executor de grafos/rotinas declarativas; scripts de terceiros ficam isolados, identificados como conteúdo de extensão e limitados aos comandos autorizados"
       ],
       "acceptance": [
         "Extensão não pode contornar validação, resultados obsoletos ou emissão",
         "Ajuda explica hipóteses e limites, além dos botões",
         "Atualização de extensão registra impacto e exige nova qualificação quando pertinente",
-        "Extensões e programação visual só chamam operações disponíveis; a mesma política inclui as futuras disciplinas de instalações"
+        "Extensões e programação visual só chamam operações disponíveis; a mesma política inclui as futuras disciplinas de instalações",
+        "A capacidade de programar rotinas é preservada sem transferir lógica própria do produto para outra linguagem; origem, permissões e limites de extensões externas ficam visíveis e auditáveis"
       ],
       "validation": [
         "Extensão legítima de conjunto paramétrico e extensão hostil",
@@ -4656,14 +5060,20 @@
         "USR-01",
         "USR-02",
         "EB-06",
-        "USR-03"
+        "USR-03",
+        "USR-05",
+        "RS-006",
+        "RS-010",
+        "RS-011"
       ],
       "depends_on": [
         "PRU-107"
       ],
       "status": "planned",
       "github_number": 108,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/108"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/108",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 109,
@@ -4681,7 +5091,8 @@
       "acceptance": [
         "Credenciais, modelos e documentos não entram em logs ou telemetria por acidente",
         "Usuário vê e escolhe o conteúdo transmitido ao suporte",
-        "Falha crítica possui caminho de reprodução e tratamento documentado"
+        "Falha crítica possui caminho de reprodução e tratamento documentado",
+        "Coleta, supressão ou mascaramento de dados sensíveis, diagnóstico e suporte desenvolvidos pelo Prumo são Rust; provedores externos usam contratos versionados, sem deslocar o núcleo próprio para outra linguagem"
       ],
       "validation": [
         "Inspeção de logs com credenciais e nomes confidenciais de teste",
@@ -4694,14 +5105,18 @@
       ],
       "source_ids": [
         "USR-01",
-        "USR-02"
+        "USR-02",
+        "USR-05",
+        "RS-006"
       ],
       "depends_on": [
         "PRU-108"
       ],
       "status": "planned",
       "github_number": 109,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/109"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/109",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 110,
@@ -4715,7 +5130,8 @@
         "Assinatura de pacote, inventário de componentes e requisitos de hardware",
         "Atualização atômica, reversão e preservação de projetos",
         "Modo offline, diagnóstico e teste em máquina limpa",
-        "Empacotamento e contratos de workers admitem motores especializados de instalações com isolamento e licenças próprias"
+        "Empacotamento e contratos de workers admitem motores especializados de instalações com isolamento e licenças próprias",
+        "Empacotar os binários Rust, bibliotecas nativas, módulos WASM e runtimes externos necessários; registrar compilador, lockfile, flags, SDKs e hashes dos artefatos"
       ],
       "acceptance": [
         "Cliente não precisa instalar Python, compilador ou dependência manualmente",
@@ -4725,25 +5141,32 @@
       "validation": [
         "Instalar, atualizar, reverter e remover em máquinas limpas",
         "Cálculo de benchmark pelo binário distribuído",
-        "Verificação de assinatura, licença e hashes dos componentes"
+        "Verificação de assinatura, licença e hashes dos componentes",
+        "Conferir que instalação limpa executa o código Rust do produto e cada dependência externa do inventário, sem exigir toolchain ou runtimes manuais do usuário"
       ],
       "norms": [],
       "reuse_candidates": [
-        "Tauri updater",
-        "Ferramentas de empacotamento qualificadas"
+        "Tauri updater somente se o contêiner Rust/WASM for adotado",
+        "Ferramentas de empacotamento qualificadas para aplicações Rust"
       ],
       "source_ids": [
         "A12",
         "A13",
         "USR-02",
-        "USR-03"
+        "USR-03",
+        "USR-05",
+        "RS-007",
+        "RS-008",
+        "RS-009"
       ],
       "depends_on": [
         "PRU-109"
       ],
       "status": "planned",
       "github_number": 110,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/110"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/110",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 111,
@@ -4777,14 +5200,17 @@
       "source_ids": [
         "USR-01",
         "USR-02",
-        "USR-03"
+        "USR-03",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-110"
       ],
       "status": "planned",
       "github_number": 111,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/111"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/111",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 112,
@@ -4817,14 +5243,17 @@
         "CY-01",
         "TQ-01",
         "USR-01",
-        "USR-03"
+        "USR-03",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-111"
       ],
       "status": "planned",
       "github_number": 112,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/112"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/112",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 113,
@@ -4866,14 +5295,17 @@
         "N16",
         "N23",
         "TQ-07",
-        "USR-03"
+        "USR-03",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-112"
       ],
       "status": "planned",
       "github_number": 113,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/113"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/113",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 114,
@@ -4913,14 +5345,17 @@
         "N19",
         "USR-01",
         "N16",
-        "USR-03"
+        "USR-03",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-113"
       ],
       "status": "planned",
       "github_number": 114,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/114"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/114",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 115,
@@ -4953,14 +5388,17 @@
         "N17",
         "N18",
         "N16",
-        "USR-03"
+        "USR-03",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-114"
       ],
       "status": "planned",
       "github_number": 115,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/115"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/115",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 116,
@@ -4974,7 +5412,8 @@
         "MCP local/remoto, autenticação, isolamento e dados de equipe",
         "Inventário de componentes, vulnerabilidades e assinatura de artefatos",
         "Plano de atualização, relato de falhas e tratamento de incidentes",
-        "Marco do incremento estrutural: o aceite cobre as capacidades disponíveis nesta etapa. As instalações e a revisão final do conjunto serão qualificadas nas issues 239 a 250; este marco não autoriza o lançamento comercial ampliado."
+        "Marco do incremento estrutural: o aceite cobre as capacidades disponíveis nesta etapa. As instalações e a revisão final do conjunto serão qualificadas nas issues 239 a 250; este marco não autoriza o lançamento comercial ampliado.",
+        "Auditar crates, dependências transitivas, trechos unsafe e FFI, parsers e workers; conferir contratos de memória, ABI, erros, concorrência e inventário do artefato efetivo"
       ],
       "acceptance": [
         "Nenhuma vulnerabilidade crítica explorável ou grave sem mitigação verificada permanece no escopo",
@@ -4984,7 +5423,8 @@
       "validation": [
         "Fuzzing de entradas, arquivos malformados e abuso de recursos",
         "Ataques de autorização, origem, repetição e instrução maliciosa",
-        "Teste independente de atualização e integridade da distribuição"
+        "Teste independente de atualização e integridade da distribuição",
+        "Inspecionar as fronteiras unsafe permitidas em crates próprios de integração e verificar que domínio, comandos e regras puros não contêm unsafe; testar falhas reais nas integrações aplicáveis"
       ],
       "norms": [],
       "reuse_candidates": [
@@ -4993,14 +5433,19 @@
       "source_ids": [
         "A05",
         "USR-02",
-        "USR-03"
+        "USR-03",
+        "USR-05",
+        "RS-010",
+        "RS-011"
       ],
       "depends_on": [
         "PRU-115"
       ],
       "status": "planned",
       "github_number": 116,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/116"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/116",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 117,
@@ -5034,14 +5479,17 @@
         "A19",
         "A20",
         "A21",
-        "USR-03"
+        "USR-03",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-116"
       ],
       "status": "planned",
       "github_number": 117,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/117"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/117",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 118,
@@ -5056,7 +5504,8 @@
         "Termos, política de privacidade, suporte e procedimento de atualização de normas",
         "Catálogo honesto de capacidades, limites e hardware suportado",
         "Se o modelo exigir cobrança: regras de renovação, cancelamento, estorno, suspensão e reativação de licença, sem prometer condições ainda não aprovadas pelo proprietário",
-        "Marco do incremento estrutural: o aceite cobre as capacidades disponíveis nesta etapa. As instalações e a revisão final do conjunto serão qualificadas nas issues 239 a 250; este marco não autoriza o lançamento comercial ampliado."
+        "Marco do incremento estrutural: o aceite cobre as capacidades disponíveis nesta etapa. As instalações e a revisão final do conjunto serão qualificadas nas issues 239 a 250; este marco não autoriza o lançamento comercial ampliado.",
+        "Reconciliar as licenças e a proveniência de crates Rust, bibliotecas nativas, WASM, runtimes, bindings gerados e patches de componentes externos presentes na distribuição"
       ],
       "acceptance": [
         "Não há componente com restrição comercial não resolvida",
@@ -5073,14 +5522,18 @@
       "source_ids": [
         "USR-01",
         "USR-02",
-        "USR-03"
+        "USR-03",
+        "USR-05",
+        "RS-013"
       ],
       "depends_on": [
         "PRU-117"
       ],
       "status": "planned",
       "github_number": 118,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/118"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/118",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 119,
@@ -5113,14 +5566,17 @@
       "source_ids": [
         "USR-01",
         "USR-02",
-        "USR-03"
+        "USR-03",
+        "USR-05"
       ],
       "depends_on": [
         "PRU-118"
       ],
       "status": "planned",
       "github_number": 119,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/119"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/119",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 120,
@@ -5149,7 +5605,8 @@
         "USR-03",
         "USR-02",
         "N17",
-        "USR-04"
+        "USR-04",
+        "USR-05"
       ],
       "key": "PRU-120",
       "phase": "12",
@@ -5159,7 +5616,9 @@
       ],
       "status": "planned",
       "github_number": 120,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/120"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/120",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 121,
@@ -5174,7 +5633,8 @@
       "acceptance": [
         "Projeto salva e reabre uma estrutura e redes de mais de uma disciplina sem perda de identidade ou associação",
         "Sobreposição geométrica de portas não cria ligação silenciosa; serviços incompatíveis são recusados com diagnóstico localizado",
-        "O grafo mínimo é editável e consultável pela interface e MCP, com as capacidades de cálculo futuras marcadas como indisponíveis"
+        "O grafo mínimo é editável e consultável pela interface e MCP, com as capacidades de cálculo futuras marcadas como indisponíveis",
+        "Entidades, grafos, persistência e comandos próprios de instalações são implementados em Rust, preservando o mesmo núcleo usado pelas estruturas e pelo servidor MCP"
       ],
       "validation": [
         "Fixture de duas redes com cruzamento sem conexão e equipamento com três portas distintas",
@@ -5187,13 +5647,16 @@
       "reuse_candidates": [
         "IfcOpenShell",
         "petgraph",
-        "MCP TypeScript SDK"
+        "MCP Rust SDK (rmcp)"
       ],
       "source_ids": [
         "QP-001",
         "QP-006",
         "QP-024",
-        "USR-03"
+        "USR-03",
+        "USR-05",
+        "RS-001",
+        "RS-006"
       ],
       "key": "PRU-121",
       "phase": "13",
@@ -5203,7 +5666,9 @@
       ],
       "status": "planned",
       "github_number": 121,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/121"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/121",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 122,
@@ -5237,7 +5702,8 @@
         "QP-004",
         "QP-005",
         "QP-006",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-122",
       "phase": "13",
@@ -5247,7 +5713,9 @@
       ],
       "status": "planned",
       "github_number": 122,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/122"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/122",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 123,
@@ -5280,7 +5748,8 @@
         "QP-011",
         "QP-024",
         "QP-025",
-        "USR-03"
+        "USR-03",
+        "USR-05"
       ],
       "key": "PRU-123",
       "phase": "13",
@@ -5290,7 +5759,9 @@
       ],
       "status": "planned",
       "github_number": 123,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/123"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/123",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 124,
@@ -5324,7 +5795,8 @@
         "QP-003",
         "QP-009",
         "QP-010",
-        "QP-024"
+        "QP-024",
+        "USR-05"
       ],
       "key": "PRU-124",
       "phase": "13",
@@ -5334,7 +5806,9 @@
       ],
       "status": "planned",
       "github_number": 124,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/124"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/124",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 125,
@@ -5368,7 +5842,8 @@
         "QP-024",
         "QP-028",
         "QP-029",
-        "USR-03"
+        "USR-03",
+        "USR-05"
       ],
       "key": "PRU-125",
       "phase": "13",
@@ -5378,7 +5853,9 @@
       ],
       "status": "planned",
       "github_number": 125,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/125"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/125",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 126,
@@ -5411,7 +5888,8 @@
         "QP-004",
         "QP-007",
         "QP-008",
-        "USR-03"
+        "USR-03",
+        "USR-05"
       ],
       "key": "PRU-126",
       "phase": "13",
@@ -5421,7 +5899,9 @@
       ],
       "status": "planned",
       "github_number": 126,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/126"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/126",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 127,
@@ -5455,7 +5935,8 @@
         "QP-002",
         "QP-006",
         "QP-028",
-        "USR-03"
+        "USR-03",
+        "USR-05"
       ],
       "key": "PRU-127",
       "phase": "13",
@@ -5465,7 +5946,9 @@
       ],
       "status": "planned",
       "github_number": 127,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/127"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/127",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 128,
@@ -5500,7 +5983,8 @@
         "QP-009",
         "QP-021",
         "QP-023",
-        "QP-024"
+        "QP-024",
+        "USR-05"
       ],
       "key": "PRU-128",
       "phase": "13",
@@ -5510,7 +5994,9 @@
       ],
       "status": "planned",
       "github_number": 128,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/128"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/128",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 129,
@@ -5520,7 +6006,8 @@
         "Formatos de casos, entradas com unidades, hipóteses, domínio, soluções esperadas, tolerâncias pré-registradas e origem independente",
         "Fixtures geométricos/topológicos das oito disciplinas e interfaces de execução para futuros motores hidráulicos, elétricos, solares e térmicos",
         "Qualificação de componentes abertos por função, commit, licença, distribuição, limites, manutenção e teste de contrato",
-        "Conservação e condições de contorno aplicáveis como obrigações de campanhas futuras, sem resultado numérico fabricado nesta etapa"
+        "Conservação e condições de contorno aplicáveis como obrigações de campanhas futuras, sem resultado numérico fabricado nesta etapa",
+        "Executar a infraestrutura própria de qualificação em Rust e registrar as fronteiras dos motores externos; ferramentas de referência podem conservar linguagem original, com independência demonstrada"
       ],
       "acceptance": [
         "Harness executa casos de domínio já implementado e registra os numéricos futuros como pendentes",
@@ -5544,7 +6031,11 @@
         "USR-02",
         "USR-03",
         "QP-028",
-        "QP-029"
+        "QP-029",
+        "USR-05",
+        "RS-006",
+        "RS-010",
+        "RS-011"
       ],
       "key": "PRU-129",
       "phase": "13",
@@ -5554,7 +6045,9 @@
       ],
       "status": "planned",
       "github_number": 129,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/129"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/129",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 130,
@@ -5574,19 +6067,23 @@
       "validation": [
         "Executar fixture de pequeno edifício com representação das oito frentes e estrutura, ainda sem dimensionamento futuro",
         "Interromper processo durante salvamento e confirmar restauração íntegra sem contaminar outro projeto aberto",
-        "Testar retry, conflito de revisão, undo e entrada hostil em propriedades de componentes"
+        "Testar retry, conflito de revisão, undo e entrada hostil em propriedades de componentes",
+        "Executar o mesmo contrato Rust por UI e servidor Rust com SDK qualificado, avaliando prioritariamente rmcp e incluindo dependências externas de BIM quando adotadas"
       ],
       "norms": [
         "Famílias normativas de instalações com edição fixada no registro; requisitos de dados e interoperabilidade aplicáveis."
       ],
       "reuse_candidates": [
-        "MCP TypeScript SDK",
+        "MCP Rust SDK (rmcp)",
         "IfcOpenShell"
       ],
       "source_ids": [
         "USR-03",
         "QP-001",
-        "QP-026"
+        "QP-026",
+        "USR-05",
+        "RS-001",
+        "RS-002"
       ],
       "key": "PRU-130",
       "phase": "13",
@@ -5596,7 +6093,9 @@
       ],
       "status": "planned",
       "github_number": 130,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/130"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/130",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 131,
@@ -5631,7 +6130,8 @@
         "QH-029",
         "QH-052",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-131",
       "phase": "14",
@@ -5641,7 +6141,9 @@
       ],
       "status": "planned",
       "github_number": 131,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/131"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/131",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 132,
@@ -5674,7 +6176,8 @@
         "QH-004",
         "QH-042",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-132",
       "phase": "14",
@@ -5684,7 +6187,9 @@
       ],
       "status": "planned",
       "github_number": 132,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/132"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/132",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 133,
@@ -5721,7 +6226,8 @@
         "QH-035",
         "QH-036",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-133",
       "phase": "14",
@@ -5731,7 +6237,9 @@
       ],
       "status": "planned",
       "github_number": 133,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/133"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/133",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 134,
@@ -5766,7 +6274,8 @@
         "QH-031",
         "QH-034",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-134",
       "phase": "14",
@@ -5776,7 +6285,9 @@
       ],
       "status": "planned",
       "github_number": 134,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/134"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/134",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 135,
@@ -5808,7 +6319,8 @@
         "QH-026",
         "QH-050",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-135",
       "phase": "14",
@@ -5818,7 +6330,9 @@
       ],
       "status": "planned",
       "github_number": 135,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/135"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/135",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 136,
@@ -5851,7 +6365,8 @@
         "QH-002",
         "QH-042",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-136",
       "phase": "14",
@@ -5861,7 +6376,9 @@
       ],
       "status": "planned",
       "github_number": 136,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/136"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/136",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 137,
@@ -5895,7 +6412,8 @@
         "QH-029",
         "QH-042",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-137",
       "phase": "14",
@@ -5905,7 +6423,9 @@
       ],
       "status": "planned",
       "github_number": 137,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/137"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/137",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 138,
@@ -5940,7 +6460,8 @@
         "QH-031",
         "QH-034",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-138",
       "phase": "14",
@@ -5950,7 +6471,9 @@
       ],
       "status": "planned",
       "github_number": 138,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/138"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/138",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 139,
@@ -5986,7 +6509,8 @@
         "QH-034",
         "QH-035",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-139",
       "phase": "14",
@@ -5996,7 +6520,9 @@
       ],
       "status": "planned",
       "github_number": 139,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/139"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/139",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 140,
@@ -6030,7 +6556,8 @@
         "QH-006",
         "QH-029",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-140",
       "phase": "14",
@@ -6040,7 +6567,9 @@
       ],
       "status": "planned",
       "github_number": 140,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/140"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/140",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 141,
@@ -6074,7 +6603,8 @@
         "QH-007",
         "QH-017",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-141",
       "phase": "14",
@@ -6084,7 +6614,9 @@
       ],
       "status": "planned",
       "github_number": 141,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/141"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/141",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 142,
@@ -6118,7 +6650,8 @@
         "QH-007",
         "QH-006",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-142",
       "phase": "14",
@@ -6128,7 +6661,9 @@
       ],
       "status": "planned",
       "github_number": 142,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/142"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/142",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 143,
@@ -6164,7 +6699,8 @@
         "QH-029",
         "QH-034",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-143",
       "phase": "14",
@@ -6174,7 +6710,9 @@
       ],
       "status": "planned",
       "github_number": 143,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/143"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/143",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 144,
@@ -6208,7 +6746,8 @@
         "QH-029",
         "QH-052",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-144",
       "phase": "14",
@@ -6218,7 +6757,9 @@
       ],
       "status": "planned",
       "github_number": 144,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/144"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/144",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 145,
@@ -6255,7 +6796,8 @@
         "QH-034",
         "QH-055",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-145",
       "phase": "14",
@@ -6265,7 +6807,9 @@
       ],
       "status": "planned",
       "github_number": 145,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/145"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/145",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 146,
@@ -6297,7 +6841,8 @@
         "QH-009",
         "QH-052",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-146",
       "phase": "15",
@@ -6307,7 +6852,9 @@
       ],
       "status": "planned",
       "github_number": 146,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/146"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/146",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 147,
@@ -6339,7 +6886,8 @@
         "QH-010",
         "QH-002",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-147",
       "phase": "15",
@@ -6349,7 +6897,9 @@
       ],
       "status": "planned",
       "github_number": 147,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/147"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/147",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 148,
@@ -6384,7 +6934,8 @@
         "QH-030",
         "QH-053",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-148",
       "phase": "15",
@@ -6394,7 +6945,9 @@
       ],
       "status": "planned",
       "github_number": 148,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/148"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/148",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 149,
@@ -6431,7 +6984,8 @@
         "QH-033",
         "QH-034",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-149",
       "phase": "15",
@@ -6441,7 +6995,9 @@
       ],
       "status": "planned",
       "github_number": 149,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/149"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/149",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 150,
@@ -6476,7 +7032,8 @@
         "QH-012",
         "QH-033",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-150",
       "phase": "15",
@@ -6486,7 +7043,9 @@
       ],
       "status": "planned",
       "github_number": 150,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/150"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/150",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 151,
@@ -6522,7 +7081,8 @@
         "QH-033",
         "QH-034",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-151",
       "phase": "15",
@@ -6532,7 +7092,9 @@
       ],
       "status": "planned",
       "github_number": 151,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/151"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/151",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 152,
@@ -6568,7 +7130,8 @@
         "QH-046",
         "QH-033",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-152",
       "phase": "15",
@@ -6578,7 +7141,9 @@
       ],
       "status": "planned",
       "github_number": 152,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/152"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/152",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 153,
@@ -6612,7 +7177,8 @@
         "QH-040",
         "QH-053",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-153",
       "phase": "15",
@@ -6622,7 +7188,9 @@
       ],
       "status": "planned",
       "github_number": 153,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/153"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/153",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 154,
@@ -6658,7 +7226,8 @@
         "QH-030",
         "QH-040",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-154",
       "phase": "15",
@@ -6668,7 +7237,9 @@
       ],
       "status": "planned",
       "github_number": 154,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/154"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/154",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 155,
@@ -6710,7 +7281,8 @@
         "QH-048",
         "QH-049",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-155",
       "phase": "15",
@@ -6720,7 +7292,9 @@
       ],
       "status": "planned",
       "github_number": 155,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/155"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/155",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 156,
@@ -6756,7 +7330,8 @@
         "QH-052",
         "QH-035",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-156",
       "phase": "16",
@@ -6766,7 +7341,9 @@
       ],
       "status": "planned",
       "github_number": 156,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/156"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/156",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 157,
@@ -6802,7 +7379,8 @@
         "QH-034",
         "QH-035",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-157",
       "phase": "16",
@@ -6812,7 +7390,9 @@
       ],
       "status": "planned",
       "github_number": 157,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/157"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/157",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 158,
@@ -6847,7 +7427,8 @@
         "QH-035",
         "QH-036",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-158",
       "phase": "16",
@@ -6857,7 +7438,9 @@
       ],
       "status": "planned",
       "github_number": 158,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/158"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/158",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 159,
@@ -6892,7 +7475,8 @@
         "QH-017",
         "QH-029",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-159",
       "phase": "16",
@@ -6902,7 +7486,9 @@
       ],
       "status": "planned",
       "github_number": 159,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/159"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/159",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 160,
@@ -6938,7 +7524,8 @@
         "QH-038",
         "QH-039",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-160",
       "phase": "16",
@@ -6948,7 +7535,9 @@
       ],
       "status": "planned",
       "github_number": 160,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/160"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/160",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 161,
@@ -6987,7 +7576,8 @@
         "QH-034",
         "QH-035",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-161",
       "phase": "16",
@@ -6997,7 +7587,9 @@
       ],
       "status": "planned",
       "github_number": 161,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/161"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/161",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 162,
@@ -7033,7 +7625,8 @@
         "QH-038",
         "QH-039",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-162",
       "phase": "17",
@@ -7043,7 +7636,9 @@
       ],
       "status": "planned",
       "github_number": 162,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/162"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/162",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 163,
@@ -7078,7 +7673,8 @@
         "QH-031",
         "QH-034",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-163",
       "phase": "17",
@@ -7088,7 +7684,9 @@
       ],
       "status": "planned",
       "github_number": 163,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/163"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/163",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 164,
@@ -7123,7 +7721,8 @@
         "QH-038",
         "QH-039",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-164",
       "phase": "17",
@@ -7133,7 +7732,9 @@
       ],
       "status": "planned",
       "github_number": 164,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/164"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/164",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 165,
@@ -7167,7 +7768,8 @@
         "QH-038",
         "QH-039",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-165",
       "phase": "17",
@@ -7177,7 +7779,9 @@
       ],
       "status": "planned",
       "github_number": 165,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/165"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/165",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 166,
@@ -7215,7 +7819,8 @@
         "QH-038",
         "QH-039",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-166",
       "phase": "17",
@@ -7225,7 +7830,9 @@
       ],
       "status": "planned",
       "github_number": 166,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/166"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/166",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 167,
@@ -7260,7 +7867,8 @@
         "QH-031",
         "QH-034",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-167",
       "phase": "17",
@@ -7270,7 +7878,9 @@
       ],
       "status": "planned",
       "github_number": 167,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/167"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/167",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 168,
@@ -7305,7 +7915,8 @@
         "QH-023",
         "QH-031",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-168",
       "phase": "17",
@@ -7315,7 +7926,9 @@
       ],
       "status": "planned",
       "github_number": 168,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/168"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/168",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 169,
@@ -7349,7 +7962,8 @@
         "QH-020",
         "QH-029",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-169",
       "phase": "17",
@@ -7359,7 +7973,9 @@
       ],
       "status": "planned",
       "github_number": 169,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/169"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/169",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 170,
@@ -7394,7 +8010,8 @@
         "QH-038",
         "QH-039",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-170",
       "phase": "17",
@@ -7404,7 +8021,9 @@
       ],
       "status": "planned",
       "github_number": 170,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/170"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/170",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 171,
@@ -7439,7 +8058,8 @@
         "QH-031",
         "QH-034",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-171",
       "phase": "17",
@@ -7449,7 +8069,9 @@
       ],
       "status": "planned",
       "github_number": 171,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/171"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/171",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 172,
@@ -7487,7 +8109,8 @@
         "QH-032",
         "QH-034",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-172",
       "phase": "17",
@@ -7497,7 +8120,9 @@
       ],
       "status": "planned",
       "github_number": 172,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/172"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/172",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 173,
@@ -7535,7 +8160,8 @@
         "QH-031",
         "QH-034",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-173",
       "phase": "17",
@@ -7545,7 +8171,9 @@
       ],
       "status": "planned",
       "github_number": 173,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/173"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/173",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 174,
@@ -7583,7 +8211,8 @@
         "QH-038",
         "QH-039",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-174",
       "phase": "17",
@@ -7593,7 +8222,9 @@
       ],
       "status": "planned",
       "github_number": 174,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/174"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/174",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 175,
@@ -7638,7 +8269,8 @@
         "QH-038",
         "QH-039",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-175",
       "phase": "17",
@@ -7648,7 +8280,9 @@
       ],
       "status": "planned",
       "github_number": 175,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/175"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/175",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 176,
@@ -7683,7 +8317,8 @@
         "QE-004",
         "QE-027",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-176",
       "phase": "18",
@@ -7693,7 +8328,9 @@
       ],
       "status": "planned",
       "github_number": 176,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/176"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/176",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 177,
@@ -7725,7 +8362,8 @@
         "QE-004",
         "QE-046",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-177",
       "phase": "18",
@@ -7735,7 +8373,9 @@
       ],
       "status": "planned",
       "github_number": 177,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/177"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/177",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 178,
@@ -7768,7 +8408,8 @@
         "QE-002",
         "QE-004",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-178",
       "phase": "18",
@@ -7778,7 +8419,9 @@
       ],
       "status": "planned",
       "github_number": 178,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/178"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/178",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 179,
@@ -7811,7 +8454,8 @@
         "QE-004",
         "QE-006",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-179",
       "phase": "18",
@@ -7821,7 +8465,9 @@
       ],
       "status": "planned",
       "github_number": 179,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/179"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/179",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 180,
@@ -7854,7 +8500,8 @@
         "QE-004",
         "QE-010",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-180",
       "phase": "18",
@@ -7864,7 +8511,9 @@
       ],
       "status": "planned",
       "github_number": 180,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/180"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/180",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 181,
@@ -7901,7 +8550,8 @@
         "QE-037",
         "QE-038",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-181",
       "phase": "18",
@@ -7911,7 +8561,9 @@
       ],
       "status": "planned",
       "github_number": 181,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/181"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/181",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 182,
@@ -7946,7 +8598,8 @@
         "QE-036",
         "QE-037",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-182",
       "phase": "18",
@@ -7956,7 +8609,9 @@
       ],
       "status": "planned",
       "github_number": 182,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/182"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/182",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 183,
@@ -7989,7 +8644,8 @@
         "QE-006",
         "QE-037",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-183",
       "phase": "18",
@@ -7999,7 +8655,9 @@
       ],
       "status": "planned",
       "github_number": 183,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/183"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/183",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 184,
@@ -8035,7 +8693,8 @@
         "QE-038",
         "QE-047",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-184",
       "phase": "18",
@@ -8045,7 +8704,9 @@
       ],
       "status": "planned",
       "github_number": 184,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/184"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/184",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 185,
@@ -8080,7 +8741,8 @@
         "QE-006",
         "QE-036",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-185",
       "phase": "18",
@@ -8090,7 +8752,9 @@
       ],
       "status": "planned",
       "github_number": 185,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/185"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/185",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 186,
@@ -8123,7 +8787,8 @@
         "QE-004",
         "QE-005",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-186",
       "phase": "18",
@@ -8133,7 +8798,9 @@
       ],
       "status": "planned",
       "github_number": 186,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/186"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/186",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 187,
@@ -8167,7 +8834,8 @@
         "QE-012",
         "QE-037",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-187",
       "phase": "18",
@@ -8177,7 +8845,9 @@
       ],
       "status": "planned",
       "github_number": 187,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/187"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/187",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 188,
@@ -8211,7 +8881,8 @@
         "QE-013",
         "QE-037",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-188",
       "phase": "18",
@@ -8221,7 +8892,9 @@
       ],
       "status": "planned",
       "github_number": 188,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/188"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/188",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 189,
@@ -8258,7 +8931,8 @@
         "QE-015",
         "QE-037",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-189",
       "phase": "18",
@@ -8268,7 +8942,9 @@
       ],
       "status": "planned",
       "github_number": 189,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/189"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/189",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 190,
@@ -8303,7 +8979,8 @@
         "QE-011",
         "QE-013",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-190",
       "phase": "18",
@@ -8313,7 +8990,9 @@
       ],
       "status": "planned",
       "github_number": 190,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/190"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/190",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 191,
@@ -8350,7 +9029,8 @@
         "QE-018",
         "QE-039",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-191",
       "phase": "19",
@@ -8360,7 +9040,9 @@
       ],
       "status": "planned",
       "github_number": 191,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/191"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/191",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 192,
@@ -8395,7 +9077,8 @@
         "QE-018",
         "QE-039",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-192",
       "phase": "19",
@@ -8405,7 +9088,9 @@
       ],
       "status": "planned",
       "github_number": 192,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/192"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/192",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 193,
@@ -8440,7 +9125,8 @@
         "QE-017",
         "QE-039",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-193",
       "phase": "19",
@@ -8450,7 +9136,9 @@
       ],
       "status": "planned",
       "github_number": 193,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/193"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/193",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 194,
@@ -8486,7 +9174,8 @@
         "QE-018",
         "QE-039",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-194",
       "phase": "19",
@@ -8496,7 +9185,9 @@
       ],
       "status": "planned",
       "github_number": 194,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/194"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/194",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 195,
@@ -8532,7 +9223,8 @@
         "QE-037",
         "QE-039",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-195",
       "phase": "19",
@@ -8542,7 +9234,9 @@
       ],
       "status": "planned",
       "github_number": 195,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/195"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/195",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 196,
@@ -8578,7 +9272,8 @@
         "QE-018",
         "QE-039",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-196",
       "phase": "19",
@@ -8588,7 +9283,9 @@
       ],
       "status": "planned",
       "github_number": 196,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/196"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/196",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 197,
@@ -8625,7 +9322,8 @@
         "QE-037",
         "QE-039",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-197",
       "phase": "19",
@@ -8635,7 +9333,9 @@
       ],
       "status": "planned",
       "github_number": 197,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/197"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/197",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 198,
@@ -8667,7 +9367,8 @@
         "QE-021",
         "QE-039",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-198",
       "phase": "19",
@@ -8677,7 +9378,9 @@
       ],
       "status": "planned",
       "github_number": 198,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/198"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/198",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 199,
@@ -8710,7 +9413,8 @@
         "QE-021",
         "QE-039",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-199",
       "phase": "19",
@@ -8720,7 +9424,9 @@
       ],
       "status": "planned",
       "github_number": 199,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/199"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/199",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 200,
@@ -8757,7 +9463,8 @@
         "QE-016",
         "QE-020",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-200",
       "phase": "19",
@@ -8767,7 +9474,9 @@
       ],
       "status": "planned",
       "github_number": 200,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/200"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/200",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 201,
@@ -8800,7 +9509,8 @@
         "QE-036",
         "QE-048",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-201",
       "phase": "20",
@@ -8810,7 +9520,9 @@
       ],
       "status": "planned",
       "github_number": 201,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/201"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/201",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 202,
@@ -8843,7 +9555,8 @@
         "QE-025",
         "QE-036",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-202",
       "phase": "20",
@@ -8853,7 +9566,9 @@
       ],
       "status": "planned",
       "github_number": 202,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/202"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/202",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 203,
@@ -8885,7 +9600,8 @@
         "QE-024",
         "QE-036",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-203",
       "phase": "20",
@@ -8895,7 +9611,9 @@
       ],
       "status": "planned",
       "github_number": 203,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/203"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/203",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 204,
@@ -8927,7 +9645,8 @@
         "QE-023",
         "QE-036",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-204",
       "phase": "20",
@@ -8937,7 +9656,9 @@
       ],
       "status": "planned",
       "github_number": 204,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/204"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/204",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 205,
@@ -8971,7 +9692,8 @@
         "QE-026",
         "QE-036",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-205",
       "phase": "20",
@@ -8981,7 +9703,9 @@
       ],
       "status": "planned",
       "github_number": 205,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/205"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/205",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 206,
@@ -9016,7 +9740,8 @@
         "QE-025",
         "QE-036",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-206",
       "phase": "20",
@@ -9026,7 +9751,9 @@
       ],
       "status": "planned",
       "github_number": 206,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/206"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/206",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 207,
@@ -9061,7 +9788,8 @@
         "QE-022",
         "QE-036",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-207",
       "phase": "20",
@@ -9071,7 +9799,9 @@
       ],
       "status": "planned",
       "github_number": 207,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/207"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/207",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 208,
@@ -9107,7 +9837,8 @@
         "QE-024",
         "QE-048",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-208",
       "phase": "20",
@@ -9117,7 +9848,9 @@
       ],
       "status": "planned",
       "github_number": 208,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/208"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/208",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 209,
@@ -9155,7 +9888,8 @@
         "QE-050",
         "QE-052",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-209",
       "phase": "21",
@@ -9165,7 +9899,9 @@
       ],
       "status": "planned",
       "github_number": 209,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/209"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/209",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 210,
@@ -9199,7 +9935,8 @@
         "QE-030",
         "QE-031",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-210",
       "phase": "21",
@@ -9209,7 +9946,9 @@
       ],
       "status": "planned",
       "github_number": 210,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/210"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/210",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 211,
@@ -9245,7 +9984,8 @@
         "QE-043",
         "QE-049",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-211",
       "phase": "21",
@@ -9255,7 +9995,9 @@
       ],
       "status": "planned",
       "github_number": 211,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/211"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/211",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 212,
@@ -9291,7 +10033,8 @@
         "QE-051",
         "QE-043",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-212",
       "phase": "21",
@@ -9301,7 +10044,9 @@
       ],
       "status": "planned",
       "github_number": 212,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/212"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/212",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 213,
@@ -9336,7 +10081,8 @@
         "QE-003",
         "QE-051",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-213",
       "phase": "21",
@@ -9346,7 +10092,9 @@
       ],
       "status": "planned",
       "github_number": 213,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/213"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/213",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 214,
@@ -9380,7 +10128,8 @@
         "QE-031",
         "QE-051",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-214",
       "phase": "21",
@@ -9390,7 +10139,9 @@
       ],
       "status": "planned",
       "github_number": 214,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/214"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/214",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 215,
@@ -9426,7 +10177,8 @@
         "QE-043",
         "QE-053",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-215",
       "phase": "21",
@@ -9436,7 +10188,9 @@
       ],
       "status": "planned",
       "github_number": 215,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/215"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/215",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 216,
@@ -9473,7 +10227,8 @@
         "QE-051",
         "QE-052",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-216",
       "phase": "21",
@@ -9483,7 +10238,9 @@
       ],
       "status": "planned",
       "github_number": 216,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/216"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/216",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 217,
@@ -9517,7 +10274,8 @@
         "QE-033",
         "QE-035",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-217",
       "phase": "22",
@@ -9527,7 +10285,9 @@
       ],
       "status": "planned",
       "github_number": 217,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/217"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/217",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 218,
@@ -9560,7 +10320,8 @@
         "QE-033",
         "QE-040",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-218",
       "phase": "22",
@@ -9570,7 +10331,9 @@
       ],
       "status": "planned",
       "github_number": 218,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/218"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/218",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 219,
@@ -9605,7 +10368,8 @@
         "QE-040",
         "QE-041",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-219",
       "phase": "22",
@@ -9615,7 +10379,9 @@
       ],
       "status": "planned",
       "github_number": 219,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/219"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/219",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 220,
@@ -9650,7 +10416,8 @@
         "QE-033",
         "QE-035",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-220",
       "phase": "22",
@@ -9660,7 +10427,9 @@
       ],
       "status": "planned",
       "github_number": 220,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/220"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/220",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 221,
@@ -9695,7 +10464,8 @@
         "QE-035",
         "QE-041",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-221",
       "phase": "22",
@@ -9705,7 +10475,9 @@
       ],
       "status": "planned",
       "github_number": 221,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/221"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/221",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 222,
@@ -9740,7 +10512,8 @@
         "QE-035",
         "QE-041",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-222",
       "phase": "22",
@@ -9750,7 +10523,9 @@
       ],
       "status": "planned",
       "github_number": 222,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/222"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/222",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 223,
@@ -9784,7 +10559,8 @@
         "QE-034",
         "QE-041",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-223",
       "phase": "22",
@@ -9794,7 +10570,9 @@
       ],
       "status": "planned",
       "github_number": 223,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/223"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/223",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 224,
@@ -9827,7 +10605,8 @@
         "QE-034",
         "QE-035",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-224",
       "phase": "22",
@@ -9837,7 +10616,9 @@
       ],
       "status": "planned",
       "github_number": 224,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/224"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/224",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 225,
@@ -9872,7 +10653,8 @@
         "QE-033",
         "QE-034",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-225",
       "phase": "22",
@@ -9882,7 +10664,9 @@
       ],
       "status": "planned",
       "github_number": 225,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/225"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/225",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 226,
@@ -9920,7 +10704,8 @@
         "QE-040",
         "QE-041",
         "USR-03",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-226",
       "phase": "22",
@@ -9930,7 +10715,9 @@
       ],
       "status": "planned",
       "github_number": 226,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/226"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/226",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 227,
@@ -9963,7 +10750,8 @@
         "USR-03",
         "QP-001",
         "QP-003",
-        "QP-016"
+        "QP-016",
+        "USR-05"
       ],
       "key": "PRU-227",
       "phase": "23",
@@ -9973,7 +10761,9 @@
       ],
       "status": "planned",
       "github_number": 227,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/227"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/227",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 228,
@@ -10006,7 +10796,8 @@
       "source_ids": [
         "QP-015",
         "QP-016",
-        "USR-03"
+        "USR-03",
+        "USR-05"
       ],
       "key": "PRU-228",
       "phase": "23",
@@ -10016,7 +10807,9 @@
       ],
       "status": "planned",
       "github_number": 228,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/228"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/228",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 229,
@@ -10051,7 +10844,8 @@
         "QP-011",
         "QP-012",
         "QP-013",
-        "QP-027"
+        "QP-027",
+        "USR-05"
       ],
       "key": "PRU-229",
       "phase": "23",
@@ -10061,7 +10855,9 @@
       ],
       "status": "planned",
       "github_number": 229,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/229"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/229",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 230,
@@ -10094,7 +10890,8 @@
       "source_ids": [
         "QP-014",
         "QP-019",
-        "USR-03"
+        "USR-03",
+        "USR-05"
       ],
       "key": "PRU-230",
       "phase": "23",
@@ -10104,7 +10901,9 @@
       ],
       "status": "planned",
       "github_number": 230,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/230"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/230",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 231,
@@ -10138,7 +10937,8 @@
         "QP-017",
         "QP-018",
         "QP-015",
-        "USR-03"
+        "USR-03",
+        "USR-05"
       ],
       "key": "PRU-231",
       "phase": "23",
@@ -10148,7 +10948,9 @@
       ],
       "status": "planned",
       "github_number": 231,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/231"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/231",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 232,
@@ -10181,7 +10983,8 @@
         "QP-007",
         "QP-019",
         "QP-020",
-        "QP-004"
+        "QP-004",
+        "USR-05"
       ],
       "key": "PRU-232",
       "phase": "23",
@@ -10191,7 +10994,9 @@
       ],
       "status": "planned",
       "github_number": 232,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/232"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/232",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 233,
@@ -10225,7 +11030,8 @@
         "QP-021",
         "QP-022",
         "QP-023",
-        "QP-024"
+        "QP-024",
+        "USR-05"
       ],
       "key": "PRU-233",
       "phase": "23",
@@ -10235,7 +11041,9 @@
       ],
       "status": "planned",
       "github_number": 233,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/233"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/233",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 234,
@@ -10268,7 +11076,8 @@
         "QP-019",
         "QP-022",
         "QP-024",
-        "USR-03"
+        "USR-03",
+        "USR-05"
       ],
       "key": "PRU-234",
       "phase": "23",
@@ -10278,7 +11087,9 @@
       ],
       "status": "planned",
       "github_number": 234,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/234"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/234",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 235,
@@ -10311,7 +11122,8 @@
         "QP-005",
         "QP-006",
         "QP-024",
-        "USR-02"
+        "USR-02",
+        "USR-05"
       ],
       "key": "PRU-235",
       "phase": "23",
@@ -10321,7 +11133,9 @@
       ],
       "status": "planned",
       "github_number": 235,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/235"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/235",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 236,
@@ -10336,7 +11150,8 @@
       "acceptance": [
         "Cada capacidade obrigatória tem caminho UI e MCP testado; diferenças entre ação gráfica e comando de domínio preservam o acesso funcional e ficam mapeadas explicitamente",
         "Agentes não contornam revisão, permissão ou estado obsoleto; edição autorizada e reversível não exige confirmações repetidas desnecessárias",
-        "Rotina visual e execução manual equivalentes produzem mesmo modelo/resultados dentro das tolerâncias fixadas"
+        "Rotina visual e execução manual equivalentes produzem mesmo modelo/resultados dentro das tolerâncias fixadas",
+        "Interface, servidor MCP e executor próprio de rotinas são Rust e compartilham contratos; rotinas externas isoladas usam API autorizada e não substituem módulos próprios por outra linguagem"
       ],
       "validation": [
         "Executar roteiro completo de cada disciplina por cliente MCP real, incluindo erro recuperável e cancelamento",
@@ -10347,7 +11162,7 @@
         "Famílias normativas de instalações com edição fixada no registro; requisitos de dados e interoperabilidade aplicáveis."
       ],
       "reuse_candidates": [
-        "MCP TypeScript SDK",
+        "MCP Rust SDK (rmcp)",
         "IfcMCP adaptado",
         "Dagre para apresentação"
       ],
@@ -10355,7 +11170,11 @@
         "USR-03",
         "USR-02",
         "QP-001",
-        "QP-024"
+        "QP-024",
+        "USR-05",
+        "RS-001",
+        "RS-002",
+        "RS-006"
       ],
       "key": "PRU-236",
       "phase": "23",
@@ -10365,7 +11184,9 @@
       ],
       "status": "planned",
       "github_number": 236,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/236"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/236",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 237,
@@ -10399,7 +11220,8 @@
         "QP-009",
         "QP-026",
         "QP-027",
-        "USR-03"
+        "USR-03",
+        "USR-05"
       ],
       "key": "PRU-237",
       "phase": "23",
@@ -10409,7 +11231,9 @@
       ],
       "status": "planned",
       "github_number": 237,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/237"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/237",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 238,
@@ -10442,7 +11266,8 @@
         "QP-002",
         "QP-003",
         "QP-024",
-        "USR-03"
+        "USR-03",
+        "USR-05"
       ],
       "key": "PRU-238",
       "phase": "23",
@@ -10452,7 +11277,9 @@
       ],
       "status": "planned",
       "github_number": 238,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/238"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/238",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 239,
@@ -10487,7 +11314,8 @@
       "source_ids": [
         "USR-03",
         "USR-02",
-        "N17"
+        "N17",
+        "USR-05"
       ],
       "key": "PRU-239",
       "phase": "24",
@@ -10497,7 +11325,9 @@
       ],
       "status": "planned",
       "github_number": 239,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/239"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/239",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 240,
@@ -10531,7 +11361,8 @@
       "source_ids": [
         "USR-03",
         "USR-02",
-        "N17"
+        "N17",
+        "USR-05"
       ],
       "key": "PRU-240",
       "phase": "24",
@@ -10541,7 +11372,9 @@
       ],
       "status": "planned",
       "github_number": 240,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/240"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/240",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 241,
@@ -10572,7 +11405,8 @@
       "source_ids": [
         "USR-03",
         "USR-02",
-        "N17"
+        "N17",
+        "USR-05"
       ],
       "key": "PRU-241",
       "phase": "24",
@@ -10582,7 +11416,9 @@
       ],
       "status": "planned",
       "github_number": 241,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/241"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/241",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 242,
@@ -10614,7 +11450,8 @@
       "source_ids": [
         "USR-03",
         "USR-02",
-        "N17"
+        "N17",
+        "USR-05"
       ],
       "key": "PRU-242",
       "phase": "24",
@@ -10624,7 +11461,9 @@
       ],
       "status": "planned",
       "github_number": 242,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/242"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/242",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 243,
@@ -10657,7 +11496,8 @@
       "source_ids": [
         "USR-03",
         "USR-02",
-        "N17"
+        "N17",
+        "USR-05"
       ],
       "key": "PRU-243",
       "phase": "24",
@@ -10667,7 +11507,9 @@
       ],
       "status": "planned",
       "github_number": 243,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/243"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/243",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 244,
@@ -10694,7 +11536,8 @@
       "source_ids": [
         "USR-03",
         "USR-02",
-        "N17"
+        "N17",
+        "USR-05"
       ],
       "key": "PRU-244",
       "phase": "24",
@@ -10704,7 +11547,9 @@
       ],
       "status": "planned",
       "github_number": 244,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/244"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/244",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 245,
@@ -10732,7 +11577,8 @@
       "source_ids": [
         "USR-03",
         "USR-02",
-        "N17"
+        "N17",
+        "USR-05"
       ],
       "key": "PRU-245",
       "phase": "24",
@@ -10742,7 +11588,9 @@
       ],
       "status": "planned",
       "github_number": 245,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/245"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/245",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 246,
@@ -10752,7 +11600,8 @@
         "Auditar parsers/modelos proprietários, catálogos, desenhos, arquivos de fabricantes e pacotes federados",
         "Exercitar cliente MCP real, transações, limites de projeto e conteúdo malicioso em modelos e documentos",
         "Reconciliar inventário de componentes, licenças, vulnerabilidades e artefatos efetivamente empacotados",
-        "Testar limites computacionais de roteamento, malhas, cálculos iterativos e importações"
+        "Testar limites computacionais de roteamento, malhas, cálculos iterativos e importações",
+        "Auditar crates, dependências transitivas, trechos unsafe e FFI, parsers e workers; conferir contratos de memória, ABI, erros, concorrência e inventário do artefato efetivo"
       ],
       "acceptance": [
         "Não há vulnerabilidade crítica explorável ou grave sem mitigação verificada no escopo entregue",
@@ -10762,14 +11611,18 @@
       "validation": [
         "Arquivos malformados, bombas de expansão, instruções hostis, caminhos arbitrários e exfiltração por conectores",
         "Repetição, edição concorrente, falha parcial, identidade de usuário e isolamento entre projetos",
-        "Atualização, assinatura, rollback e revisão independente da configuração real de distribuição"
+        "Atualização, assinatura, rollback e revisão independente da configuração real de distribuição",
+        "Inspecionar as fronteiras unsafe permitidas em crates próprios de integração e verificar que domínio, comandos e regras puros não contêm unsafe; testar falhas reais nas integrações aplicáveis"
       ],
       "norms": [],
       "reuse_candidates": [],
       "source_ids": [
         "USR-03",
         "USR-02",
-        "N17"
+        "N17",
+        "USR-05",
+        "RS-010",
+        "RS-011"
       ],
       "key": "PRU-246",
       "phase": "24",
@@ -10779,7 +11632,9 @@
       ],
       "status": "planned",
       "github_number": 246,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/246"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/246",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 247,
@@ -10789,7 +11644,8 @@
         "Confirmar normas, erratas, referências locais, concessionárias e catálogos na data de fechamento do candidato",
         "Conciliar licenças de bibliotecas, adaptadores, formatos proprietários, dados e materiais distribuídos",
         "Atualizar documentação comercial, suporte e limites comprovados por capacidade, sem declarações de conformidade ausentes",
-        "Se houver cobrança, validar licença, renovação, cancelamento, estorno, suspensão, reativação e recuperação de projetos"
+        "Se houver cobrança, validar licença, renovação, cancelamento, estorno, suspensão, reativação e recuperação de projetos",
+        "Reconciliar as licenças e a proveniência de crates Rust, bibliotecas nativas, WASM, runtimes, bindings gerados e patches de componentes externos presentes na distribuição"
       ],
       "acceptance": [
         "Toda regra obrigatória tem fonte aplicável, acesso autorizado, interpretação revisada e evidências",
@@ -10808,7 +11664,9 @@
         "USR-03",
         "USR-02",
         "N17",
-        "USR-04"
+        "USR-04",
+        "USR-05",
+        "RS-013"
       ],
       "key": "PRU-247",
       "phase": "24",
@@ -10818,7 +11676,9 @@
       ],
       "status": "planned",
       "github_number": 247,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/247"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/247",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 248,
@@ -10839,14 +11699,17 @@
       "validation": [
         "Máquinas Windows limpas, offline conforme recursos locais, atualização de versões anteriores e reversão",
         "Repetições com mediana/p95/picos e projeto acima do limite, incluindo MCP e exportações concorrentes",
-        "Exercício de retirada de versão defeituosa, restauração, recálculo e reemissão rastreáveis"
+        "Exercício de retirada de versão defeituosa, restauração, recálculo e reemissão rastreáveis",
+        "Instalar e executar o pacote Rust final em máquinas limpas, conferindo todas as bibliotecas nativas, WASM e runtimes externos inventariados e ausência de ferramentas de desenvolvimento manuais"
       ],
       "norms": [],
       "reuse_candidates": [],
       "source_ids": [
         "USR-03",
         "USR-02",
-        "N17"
+        "N17",
+        "USR-05",
+        "RS-009"
       ],
       "key": "PRU-248",
       "phase": "24",
@@ -10856,7 +11719,9 @@
       ],
       "status": "planned",
       "github_number": 248,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/248"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/248",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 249,
@@ -10871,19 +11736,27 @@
       "acceptance": [
         "Nenhuma capacidade obrigatória está incompleta, retirada, coberta por evidência de outro binário ou aprovação genérica",
         "Todos os impedimentos críticos/graves estão resolvidos e os aceites técnicos são reais, independentes e identificados",
-        "Qualquer alteração posterior invalida o candidato até análise de impacto e repetição dos ensaios afetados"
+        "Qualquer alteração posterior invalida o candidato até análise de impacto e repetição dos ensaios afetados",
+        "REQ-15 e TEC-RUST-01 comprovados no candidato efetivo: todo código próprio do produto em Rust, interface e MCP incluídos; dependências externas, limites de integração, toolchain, lockfile e inventário conferidos"
       ],
       "validation": [
         "Auditoria requisito > capacidade > regra > código > protocolo > resultado > revisor > documento > artefato",
         "Reexecução selecionada independentemente em máquinas limpas, com todos os domínios e fluxos UI/MCP",
-        "Conferência do pacote de emissão integrado e do registro de riscos/limites aceitos sem omitir pendências obrigatórias"
+        "Conferência do pacote de emissão integrado e do registro de riscos/limites aceitos sem omitir pendências obrigatórias",
+        "Auditar origem e linguagem dos módulos próprios e terceiros; reconciliar build Rust, versões/flags nativas, evidências de engenharia e hashes com o mesmo artefato aprovado"
       ],
       "norms": [],
       "reuse_candidates": [],
       "source_ids": [
         "USR-03",
         "USR-02",
-        "N17"
+        "N17",
+        "USR-05",
+        "RS-006",
+        "RS-007",
+        "RS-009",
+        "RS-010",
+        "RS-011"
       ],
       "key": "PRU-249",
       "phase": "24",
@@ -10893,7 +11766,9 @@
       ],
       "status": "planned",
       "github_number": 249,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/249"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/249",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     },
     {
       "sequence": 250,
@@ -10909,12 +11784,14 @@
         "Todas as issues anteriores estão concluídas por implementação integrada e validada, sem cancelamento ou mera declaração",
         "Não há pendência obrigatória, norma necessária sem acesso, evidência inválida ou capacidade obrigatória sem comprovação",
         "O artefato distribuído tem o mesmo SHA-256 do candidato aprovado na 249 e a instalação final é conferida",
-        "O README apresenta o Prumo por suas funções, com pesquisa técnica atribuída nos documentos próprios"
+        "O README apresenta o Prumo por suas funções, com pesquisa técnica atribuída nos documentos próprios",
+        "REQ-15 e TEC-RUST-01 comprovados no candidato efetivo: todo código próprio do produto em Rust, interface e MCP incluídos; dependências externas, limites de integração, toolchain, lockfile e inventário conferidos"
       ],
       "validation": [
         "Auditoria final de rastreabilidade de todas as famílias estruturais e das oito disciplinas de instalações",
         "Teste final de distribuição, reabertura, cálculo aplicável, intercâmbio e emissão em máquinas limpas",
-        "Registro de profissionais responsáveis, aceite, versão, data, limites e plano de manutenção/resposta a incidentes em português claro"
+        "Registro de profissionais responsáveis, aceite, versão, data, limites e plano de manutenção/resposta a incidentes em português claro",
+        "Auditar origem e linguagem dos módulos próprios e terceiros; reconciliar build Rust, versões/flags nativas, evidências de engenharia e hashes com o mesmo artefato aprovado"
       ],
       "norms": [],
       "reuse_candidates": [],
@@ -10922,7 +11799,13 @@
         "USR-03",
         "USR-02",
         "N17",
-        "USR-04"
+        "USR-04",
+        "USR-05",
+        "RS-006",
+        "RS-007",
+        "RS-009",
+        "RS-010",
+        "RS-011"
       ],
       "key": "PRU-250",
       "phase": "24",
@@ -10932,10 +11815,12 @@
       ],
       "status": "planned",
       "github_number": 250,
-      "github_url": "https://github.com/tjsasakifln/prumo/issues/250"
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/250",
+      "implementation_language": "Rust",
+      "technology_policy": "TEC-RUST-01"
     }
   ],
   "publication_status": "published_and_read_back",
-  "plan_revision": "2.0",
+  "plan_revision": "2.1",
   "release_issue": "PRU-250"
 }

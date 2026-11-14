@@ -9,7 +9,9 @@
     "gate": "Licença por submódulo; testar ida e volta e proveniência",
     "accessed_at": "2026-11-14",
     "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
-    "adoption_status": "candidato"
+    "adoption_status": "candidato",
+    "technology_policy": "TEC-RUST-01",
+    "integration_policy": "Código próprio de adaptação e orquestração em Rust; qualificar a biblioteca externa e a fronteira antes de adotar."
   },
   {
     "id": "REUSE-02",
@@ -21,7 +23,9 @@
     "gate": "Mudanças nos arquivos MPL e dependências; validar precisão e memória",
     "accessed_at": "2026-11-14",
     "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
-    "adoption_status": "candidato"
+    "adoption_status": "candidato",
+    "technology_policy": "TEC-RUST-01",
+    "integration_policy": "Código próprio de adaptação e orquestração em Rust; qualificar a biblioteca externa e a fronteira antes de adotar."
   },
   {
     "id": "REUSE-03",
@@ -33,7 +37,9 @@
     "gate": "Licença das dependências permanece separada; não substituir modelo de domínio",
     "accessed_at": "2026-11-14",
     "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
-    "adoption_status": "candidato"
+    "adoption_status": "candidato",
+    "technology_policy": "TEC-RUST-01",
+    "integration_policy": "Código próprio de adaptação e orquestração em Rust; qualificar a biblioteca externa e a fronteira antes de adotar. Não selecionar como linguagem de autoria da interface; uso externo delimitado deve preservar o estado e os comandos próprios em Rust."
   },
   {
     "id": "REUSE-04",
@@ -45,7 +51,9 @@
     "gate": "Precisão de coordenadas, desempenho e acessibilidade dependem da integração",
     "accessed_at": "2026-11-14",
     "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
-    "adoption_status": "candidato"
+    "adoption_status": "candidato",
+    "technology_policy": "TEC-RUST-01",
+    "integration_policy": "Código próprio de adaptação e orquestração em Rust; qualificar a biblioteca externa e a fronteira antes de adotar. Não selecionar como linguagem de autoria da interface; uso externo delimitado deve preservar o estado e os comandos próprios em Rust."
   },
   {
     "id": "REUSE-05",
@@ -53,11 +61,14 @@
     "repository": "https://github.com/modelcontextprotocol/typescript-sdk",
     "license": "Apache-2.0 para novas contribuições/relicenciadas e MIT para código preexistente não relicenciado",
     "license_source": "https://github.com/modelcontextprotocol/typescript-sdk/blob/main/LICENSE",
-    "potential_use": "Protocolos e transporte MCP",
+    "potential_use": "Cliente externo de interoperabilidade ou referência de teste; servidor próprio do Prumo em Rust, com rmcp como candidato prioritário.",
     "gate": "Fixar versão, verificar suporte 2026-07-28 e compatibilidade legada; preservar avisos",
     "accessed_at": "2026-11-14",
     "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
-    "adoption_status": "candidato"
+    "adoption_status": "candidato",
+    "technology_policy": "TEC-RUST-01",
+    "integration_policy": "Código próprio de adaptação e orquestração em Rust; qualificar a biblioteca externa e a fronteira antes de adotar.",
+    "integration_role": "external_interoperability_or_test_reference"
   },
   {
     "id": "REUSE-06",
@@ -69,7 +80,9 @@
     "gate": "Validar formulações e capacidade; não representa conformidade NBR",
     "accessed_at": "2026-11-14",
     "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
-    "adoption_status": "candidato"
+    "adoption_status": "candidato",
+    "technology_policy": "TEC-RUST-01",
+    "integration_policy": "Código próprio de adaptação e orquestração em Rust; qualificar a biblioteca externa e a fronteira antes de adotar."
   },
   {
     "id": "REUSE-07",
@@ -77,11 +90,13 @@
     "repository": "https://gitlab.com/libeigen/eigen",
     "license": "Principalmente MPL-2.0; verificar módulos",
     "license_source": "https://gitlab.com/libeigen/eigen/-/blob/master/COPYING.README?ref_type=heads",
-    "potential_use": "Álgebra linear nativa densa/esparsa",
+    "potential_use": "Álgebra linear C++ como componente externo qualificado, acessado por adaptador próprio Rust.",
     "gate": "Backend/pivotamento/reprodutibilidade; não é solver estrutural",
     "accessed_at": "2026-11-14",
     "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
-    "adoption_status": "candidato"
+    "adoption_status": "candidato",
+    "technology_policy": "TEC-RUST-01",
+    "integration_policy": "Código próprio de adaptação e orquestração em Rust; qualificar a biblioteca externa e a fronteira antes de adotar."
   },
   {
     "id": "REUSE-08",
@@ -93,7 +108,9 @@
     "gate": "Conferir regras da exceção e distribuição de bibliotecas; robustez geométrica",
     "accessed_at": "2026-11-14",
     "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
-    "adoption_status": "candidato"
+    "adoption_status": "candidato",
+    "technology_policy": "TEC-RUST-01",
+    "integration_policy": "Código próprio de adaptação e orquestração em Rust; qualificar a biblioteca externa e a fronteira antes de adotar."
   },
   {
     "id": "REUSE-09",
@@ -105,7 +122,9 @@
     "gate": "Decidir por pacote; não presumir LGPL para algoritmos GPL",
     "accessed_at": "2026-11-14",
     "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
-    "adoption_status": "candidato"
+    "adoption_status": "candidato",
+    "technology_policy": "TEC-RUST-01",
+    "integration_policy": "Código próprio de adaptação e orquestração em Rust; qualificar a biblioteca externa e a fronteira antes de adotar."
   },
   {
     "id": "REUSE-10",
@@ -117,7 +136,9 @@
     "gate": "Documentação exclui integração em produto fechado distribuído sem licença comercial",
     "accessed_at": "2026-11-14",
     "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
-    "adoption_status": "candidato"
+    "adoption_status": "candidato",
+    "technology_policy": "TEC-RUST-01",
+    "integration_policy": "Código próprio de adaptação e orquestração em Rust; qualificar a biblioteca externa e a fronteira antes de adotar."
   },
   {
     "id": "REUSE-11",
@@ -129,7 +150,9 @@
     "gate": "Confirmar licença em código e dependências; validar hipóteses e distribuição",
     "accessed_at": "2026-11-14",
     "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
-    "adoption_status": "candidato"
+    "adoption_status": "candidato",
+    "technology_policy": "TEC-RUST-01",
+    "integration_policy": "Código próprio de adaptação e orquestração em Rust; qualificar a biblioteca externa e a fronteira antes de adotar."
   },
   {
     "id": "REUSE-12",
@@ -141,7 +164,9 @@
     "gate": "Empacotamento e obrigações da distribuição; não fornece regra NBR pronta",
     "accessed_at": "2026-11-14",
     "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
-    "adoption_status": "candidato"
+    "adoption_status": "candidato",
+    "technology_policy": "TEC-RUST-01",
+    "integration_policy": "Código próprio de adaptação e orquestração em Rust; qualificar a biblioteca externa e a fronteira antes de adotar."
   },
   {
     "id": "REUSE-13",
@@ -153,7 +178,9 @@
     "gate": "Não classificar como BSD/MIT; revisar OpenSeesPy e licença comercial antes incorporar",
     "accessed_at": "2026-11-14",
     "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
-    "adoption_status": "candidato"
+    "adoption_status": "candidato",
+    "technology_policy": "TEC-RUST-01",
+    "integration_policy": "Código próprio de adaptação e orquestração em Rust; qualificar a biblioteca externa e a fronteira antes de adotar."
   },
   {
     "id": "REUSE-14",
@@ -165,7 +192,9 @@
     "gate": "Avaliar custo de dependências/build; candidato secundário",
     "accessed_at": "2026-11-14",
     "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
-    "adoption_status": "candidato"
+    "adoption_status": "candidato",
+    "technology_policy": "TEC-RUST-01",
+    "integration_policy": "Código próprio de adaptação e orquestração em Rust; qualificar a biblioteca externa e a fronteira antes de adotar."
   },
   {
     "id": "REUSE-15",
@@ -177,7 +206,9 @@
     "gate": "Distribuição compatível ou licença comercial; AGPL não é permissiva",
     "accessed_at": "2026-11-14",
     "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
-    "adoption_status": "candidato"
+    "adoption_status": "candidato",
+    "technology_policy": "TEC-RUST-01",
+    "integration_policy": "Código próprio de adaptação e orquestração em Rust; qualificar a biblioteca externa e a fronteira antes de adotar. Não selecionar como linguagem de autoria da interface; uso externo delimitado deve preservar o estado e os comandos próprios em Rust."
   },
   {
     "id": "REUSE-16",
@@ -192,7 +223,9 @@
     ],
     "accessed_at": "2026-11-14",
     "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
-    "adoption_status": "candidato"
+    "adoption_status": "candidato",
+    "technology_policy": "TEC-RUST-01",
+    "integration_policy": "Código próprio de adaptação e orquestração em Rust; qualificar a biblioteca externa e a fronteira antes de adotar."
   },
   {
     "id": "REUSE-17",
@@ -207,7 +240,9 @@
     ],
     "accessed_at": "2026-11-14",
     "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
-    "adoption_status": "candidato"
+    "adoption_status": "candidato",
+    "technology_policy": "TEC-RUST-01",
+    "integration_policy": "Código próprio de adaptação e orquestração em Rust; qualificar a biblioteca externa e a fronteira antes de adotar."
   },
   {
     "id": "REUSE-18",
@@ -222,7 +257,9 @@
     ],
     "accessed_at": "2026-11-14",
     "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
-    "adoption_status": "candidato"
+    "adoption_status": "candidato",
+    "technology_policy": "TEC-RUST-01",
+    "integration_policy": "Código próprio de adaptação e orquestração em Rust; qualificar a biblioteca externa e a fronteira antes de adotar."
   },
   {
     "id": "REUSE-19",
@@ -237,7 +274,9 @@
     ],
     "accessed_at": "2026-11-14",
     "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
-    "adoption_status": "candidato"
+    "adoption_status": "candidato",
+    "technology_policy": "TEC-RUST-01",
+    "integration_policy": "Código próprio de adaptação e orquestração em Rust; qualificar a biblioteca externa e a fronteira antes de adotar."
   },
   {
     "id": "REUSE-20",
@@ -253,7 +292,9 @@
     ],
     "accessed_at": "2026-11-14",
     "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
-    "adoption_status": "candidato"
+    "adoption_status": "candidato",
+    "technology_policy": "TEC-RUST-01",
+    "integration_policy": "Código próprio de adaptação e orquestração em Rust; qualificar a biblioteca externa e a fronteira antes de adotar."
   },
   {
     "id": "REUSE-21",
@@ -269,7 +310,9 @@
     ],
     "accessed_at": "2026-11-14",
     "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
-    "adoption_status": "candidato"
+    "adoption_status": "candidato",
+    "technology_policy": "TEC-RUST-01",
+    "integration_policy": "Código próprio de adaptação e orquestração em Rust; qualificar a biblioteca externa e a fronteira antes de adotar."
   },
   {
     "id": "REUSE-22",
@@ -284,7 +327,9 @@
     ],
     "accessed_at": "2026-11-14",
     "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
-    "adoption_status": "candidato"
+    "adoption_status": "candidato",
+    "technology_policy": "TEC-RUST-01",
+    "integration_policy": "Código próprio de adaptação e orquestração em Rust; qualificar a biblioteca externa e a fronteira antes de adotar."
   },
   {
     "id": "REUSE-23",
@@ -299,7 +344,9 @@
     ],
     "accessed_at": "2026-11-14",
     "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
-    "adoption_status": "candidato"
+    "adoption_status": "candidato",
+    "technology_policy": "TEC-RUST-01",
+    "integration_policy": "Código próprio de adaptação e orquestração em Rust; qualificar a biblioteca externa e a fronteira antes de adotar."
   },
   {
     "id": "REUSE-24",
@@ -314,7 +361,9 @@
     ],
     "accessed_at": "2026-11-14",
     "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
-    "adoption_status": "candidato"
+    "adoption_status": "candidato",
+    "technology_policy": "TEC-RUST-01",
+    "integration_policy": "Código próprio de adaptação e orquestração em Rust; qualificar a biblioteca externa e a fronteira antes de adotar."
   },
   {
     "id": "REUSE-25",
@@ -329,7 +378,9 @@
     ],
     "accessed_at": "2026-11-14",
     "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
-    "adoption_status": "candidato"
+    "adoption_status": "candidato",
+    "technology_policy": "TEC-RUST-01",
+    "integration_policy": "Código próprio de adaptação e orquestração em Rust; qualificar a biblioteca externa e a fronteira antes de adotar."
   },
   {
     "id": "REUSE-26",
@@ -344,7 +395,9 @@
     ],
     "accessed_at": "2026-11-14",
     "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
-    "adoption_status": "candidato"
+    "adoption_status": "candidato",
+    "technology_policy": "TEC-RUST-01",
+    "integration_policy": "Código próprio de adaptação e orquestração em Rust; qualificar a biblioteca externa e a fronteira antes de adotar."
   },
   {
     "id": "REUSE-27",
@@ -359,7 +412,9 @@
     ],
     "accessed_at": "2026-11-14",
     "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
-    "adoption_status": "candidato"
+    "adoption_status": "candidato",
+    "technology_policy": "TEC-RUST-01",
+    "integration_policy": "Código próprio de adaptação e orquestração em Rust; qualificar a biblioteca externa e a fronteira antes de adotar. Não selecionar como linguagem de autoria da interface; uso externo delimitado deve preservar o estado e os comandos próprios em Rust."
   },
   {
     "id": "REUSE-28",
@@ -374,6 +429,79 @@
     ],
     "accessed_at": "2026-11-14",
     "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
-    "adoption_status": "candidato"
+    "adoption_status": "candidato",
+    "technology_policy": "TEC-RUST-01",
+    "integration_policy": "Código próprio de adaptação e orquestração em Rust; qualificar a biblioteca externa e a fronteira antes de adotar. Não selecionar como linguagem de autoria da interface; uso externo delimitado deve preservar o estado e os comandos próprios em Rust."
+  },
+  {
+    "id": "REUSE-29",
+    "name": "MCP Rust SDK (rmcp)",
+    "repository": "https://github.com/modelcontextprotocol/rust-sdk",
+    "license": "Transição Apache-2.0/MIT por contribuição; conferir o recorte adotado.",
+    "license_source": "https://github.com/modelcontextprotocol/rust-sdk/blob/main/LICENSE",
+    "potential_use": "Servidor MCP Rust e contratos de transporte",
+    "gate": "Fixar versão/commit, features e revisão de protocolo; testar clientes reais, autorização, stdout e equivalência com comandos da interface.",
+    "accessed_at": "2026-11-14",
+    "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
+    "adoption_status": "candidato",
+    "technology_policy": "TEC-RUST-01",
+    "source_ids": [
+      "RS-001",
+      "RS-002",
+      "RS-013"
+    ],
+    "integration_policy": "Autoria própria em Rust; seleção do componente e dependências sujeita à qualificação."
+  },
+  {
+    "id": "REUSE-30",
+    "name": "egui/eframe",
+    "repository": "https://github.com/emilk/egui",
+    "license": "MIT OR Apache-2.0 declaradas; fontes e recursos podem ter licenças próprias.",
+    "license_source": "https://github.com/emilk/egui#credits",
+    "potential_use": "Interface de autoria Rust com destinos nativos e web",
+    "gate": "Testar edição CAD/BIM, acessibilidade, texto, impressão, múltiplas vistas, escala e recuperação gráfica.",
+    "accessed_at": "2026-11-14",
+    "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
+    "adoption_status": "candidato",
+    "technology_policy": "TEC-RUST-01",
+    "source_ids": [
+      "RS-003",
+      "RS-012"
+    ],
+    "integration_policy": "Autoria própria em Rust; seleção do componente e dependências sujeita à qualificação."
+  },
+  {
+    "id": "REUSE-31",
+    "name": "Dioxus",
+    "repository": "https://github.com/DioxusLabs/dioxus",
+    "license": "MIT OR Apache-2.0 declaradas; conferir crates e dependências.",
+    "license_source": "https://github.com/DioxusLabs/dioxus#license",
+    "potential_use": "Alternativa de interface com autoria Rust",
+    "gate": "Identificar backends experimentais; medir acessibilidade, integração 2D/3D, WebView, operação local e empacotamento.",
+    "accessed_at": "2026-11-14",
+    "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
+    "adoption_status": "candidato",
+    "technology_policy": "TEC-RUST-01",
+    "source_ids": [
+      "RS-004"
+    ],
+    "integration_policy": "Autoria própria em Rust; seleção do componente e dependências sujeita à qualificação."
+  },
+  {
+    "id": "REUSE-32",
+    "name": "wgpu",
+    "repository": "https://github.com/gfx-rs/wgpu",
+    "license": "Arquivos MIT e Apache-2.0 no repositório; conferir crates e dependências.",
+    "license_source": "https://github.com/gfx-rs/wgpu",
+    "potential_use": "Gráficos Rust para backend qualificado de visualização",
+    "gate": "Não é motor BIM completo. Testar backends/targets, precisão, grandes coordenadas, seleção, limites e recuperação.",
+    "accessed_at": "2026-11-14",
+    "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
+    "adoption_status": "candidato",
+    "technology_policy": "TEC-RUST-01",
+    "source_ids": [
+      "RS-005"
+    ],
+    "integration_policy": "Autoria própria em Rust; seleção do componente e dependências sujeita à qualificação."
   }
 ]

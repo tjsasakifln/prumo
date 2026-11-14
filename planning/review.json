@@ -1,47 +1,49 @@
 {
-  "schema_version": "2.0",
+  "schema_version": "2.1",
   "date": "2026-11-14",
   "scope": "planning_only_not_engineering_validation",
-  "approved_backlog_before_publication_sha256": "b23f41c208d9e12194d357ea5444f0cbda538f76fd552fedbfca8216997ccccc",
-  "publication_change": "Após revisão, somente números, URLs e estado de publicação do backlog; conteúdo funcional congelado.",
+  "approved_backlog_before_publication_sha256": "da21aed1be1f4a6c3dd1689ee952092ce099653290f233b8a0718557f42fb9cb",
+  "publication_change": "Após revisão do conteúdo técnico, somente publication_status foi alterado no backlog; títulos, corpos, escopo e critérios publicados permanecem no snapshot aprovado.",
+  "published_backlog_sha256": "400dbf2461fd04f4ed04c3ed44a46e6a4270b8a86a89365ef626b5deba33bbe2",
   "reviews": [
     {
-      "domain": "Arquitetura, sequência, MCP, UX, apresentação e scripts",
-      "reviewer": "qibuilder_plataforma",
+      "domain": "Arquitetura Rust, interface, MCP, Cargo, reuso, FFI e limites de validação",
+      "reviewer": "rust_architecture",
       "reviewer_type": "independent_agent",
       "status": "approved",
       "unresolved_critical_or_major": 0,
-      "reviewed_backlog_sha256": "b23f41c208d9e12194d357ea5444f0cbda538f76fd552fedbfca8216997ccccc"
+      "reviewed_backlog_sha256": "da21aed1be1f4a6c3dd1689ee952092ce099653290f233b8a0718557f42fb9cb",
+      "evidence": "reviews/2.1-architecture.json"
     },
     {
-      "domain": "Normas e confiabilidade; revisão cruzada de elétrica, SPDA, fotovoltaica, comunicação e climatização",
-      "reviewer": "qibuilder_hidrossanitario",
+      "domain": "Escopo, sequência, 250 issues, requisitos, apresentação, preservação de gates e revisão cruzada dos scripts",
+      "reviewer": "rust_scope_audit",
       "reviewer_type": "independent_agent",
       "status": "approved",
       "unresolved_critical_or_major": 0,
-      "reviewed_backlog_sha256": "b23f41c208d9e12194d357ea5444f0cbda538f76fd552fedbfca8216997ccccc"
-    },
-    {
-      "domain": "Cobertura e dependências; revisão cruzada de hidráulica, gás, incêndio, bases e lançamento",
-      "reviewer": "qibuilder_eletrico",
-      "reviewer_type": "independent_agent",
-      "status": "approved",
-      "unresolved_critical_or_major": 0,
-      "reviewed_backlog_sha256": "b23f41c208d9e12194d357ea5444f0cbda538f76fd552fedbfca8216997ccccc"
+      "reviewed_backlog_sha256": "da21aed1be1f4a6c3dd1689ee952092ce099653290f233b8a0718557f42fb9cb",
+      "evidence": "reviews/2.1-scope.json"
     }
   ],
   "checks": {
     "issues_planned": 250,
     "issues_read_back_exactly": 250,
+    "issues_remaining_open": 250,
     "publication_status": "published_and_read_back",
     "capability_families": 72,
-    "permanent_requirements": 14,
-    "source_ids_including_owner": 208,
-    "invalid_plan_mutations_detected": 12,
-    "positive_validator_cases_passed": 1,
-    "functional_content_unchanged_after_publication": true
+    "permanent_requirements": 15,
+    "source_ids_including_owner": 222,
+    "reuse_candidates_documented": 32,
+    "technology_policy": "TEC-RUST-01",
+    "first_party_language": "Rust",
+    "issues_with_specific_rust_changes": 32,
+    "invalid_plan_mutations_detected": 20,
+    "functional_content_unchanged_after_publication": true,
+    "rust_builds_executed": false,
+    "full_plan_validation_passed": true,
+    "render_check_passed": true
   },
   "human_engineering_approval_performed": false,
-  "previous_review": "reviews/1.0.json",
-  "published_backlog_sha256": "f849078b06fd7649da283d96de4a8ba0ed7d244bd2a27c07499003b153bcabdc"
+  "previous_review": "reviews/2.0.json",
+  "validator_evidence": "reviews/2.1-validator.json"
 }

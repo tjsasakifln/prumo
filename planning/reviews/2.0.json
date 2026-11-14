@@ -1,0 +1,47 @@
+{
+  "schema_version": "2.0",
+  "date": "2026-11-14",
+  "scope": "planning_only_not_engineering_validation",
+  "approved_backlog_before_publication_sha256": "b23f41c208d9e12194d357ea5444f0cbda538f76fd552fedbfca8216997ccccc",
+  "publication_change": "Após revisão, somente números, URLs e estado de publicação do backlog; conteúdo funcional congelado.",
+  "reviews": [
+    {
+      "domain": "Arquitetura, sequência, MCP, UX, apresentação e scripts",
+      "reviewer": "qibuilder_plataforma",
+      "reviewer_type": "independent_agent",
+      "status": "approved",
+      "unresolved_critical_or_major": 0,
+      "reviewed_backlog_sha256": "b23f41c208d9e12194d357ea5444f0cbda538f76fd552fedbfca8216997ccccc"
+    },
+    {
+      "domain": "Normas e confiabilidade; revisão cruzada de elétrica, SPDA, fotovoltaica, comunicação e climatização",
+      "reviewer": "qibuilder_hidrossanitario",
+      "reviewer_type": "independent_agent",
+      "status": "approved",
+      "unresolved_critical_or_major": 0,
+      "reviewed_backlog_sha256": "b23f41c208d9e12194d357ea5444f0cbda538f76fd552fedbfca8216997ccccc"
+    },
+    {
+      "domain": "Cobertura e dependências; revisão cruzada de hidráulica, gás, incêndio, bases e lançamento",
+      "reviewer": "qibuilder_eletrico",
+      "reviewer_type": "independent_agent",
+      "status": "approved",
+      "unresolved_critical_or_major": 0,
+      "reviewed_backlog_sha256": "b23f41c208d9e12194d357ea5444f0cbda538f76fd552fedbfca8216997ccccc"
+    }
+  ],
+  "checks": {
+    "issues_planned": 250,
+    "issues_read_back_exactly": 250,
+    "publication_status": "published_and_read_back",
+    "capability_families": 72,
+    "permanent_requirements": 14,
+    "source_ids_including_owner": 208,
+    "invalid_plan_mutations_detected": 12,
+    "positive_validator_cases_passed": 1,
+    "functional_content_unchanged_after_publication": true
+  },
+  "human_engineering_approval_performed": false,
+  "previous_review": "reviews/1.0.json",
+  "published_backlog_sha256": "f849078b06fd7649da283d96de4a8ba0ed7d244bd2a27c07499003b153bcabdc"
+}

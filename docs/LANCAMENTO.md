@@ -56,3 +56,9 @@ Qualquer alteração posterior exige análise de impacto. Evidências invalidada
 O marco 120 conclui a qualificação do incremento estrutural e prepara as instalações, sem publicar a versão comercial. A liberação na 250 exige reconciliação de todas as 249 entregas anteriores e das duas matrizes de escopo. Nenhuma capacidade de instalações permanece pendente por ter sido descrita como evolução futura na versão anterior do plano.
 
 As evidências estruturais anteriores são reaproveitáveis apenas quando a análise de impacto provar que continuam válidas no candidato final. Alterações em modelo, unidades, catálogos, regras, adaptadores, documentos ou dependências exigem os ensaios afetados. A versão comercial deve apresentar capacidades e limites por disciplina, com documentação coerente e nenhuma modelagem divulgada como cálculo que não existe.
+
+## 9. Conformidade da implementação com Rust
+
+O candidato das issues 249 e 250 deve comprovar REQ-15 e TEC-RUST-01: código próprio em Rust, inclusive interface, cálculos próprios e MCP; workspace Cargo, toolchain e dependências fixadas; inventário de bibliotecas nativas, WASM, runtimes, bindings e patches externos; revisão das fronteiras unsafe/FFI aplicáveis.
+
+Conferir origem, linguagem, versões, flags e hashes no mesmo artefato qualificado. A instalação limpa inclui todas as dependências distribuídas e dispensa toolchain ou runtimes instalados manualmente pelo cliente. Essa conferência complementa as condições anteriores e não substitui validação de engenharia. Detalhamento em [RUST.md](RUST.md).

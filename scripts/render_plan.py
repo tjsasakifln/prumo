@@ -6,12 +6,70 @@ import json
 
 ROOT = Path(__file__).resolve().parents[1]
 REPO_URL = 'https://github.com/tjsasakifln/prumo'
+TECHNOLOGY_POLICY_ID = 'TEC-RUST-01'
+TECHNOLOGY_REQUIREMENT_ID = 'REQ-15'
+
+
+def read_json(relative, expected_type=dict):
+    """Lê dados do plano com diagnóstico de arquivo e formato, sem traceback."""
+    path = ROOT / relative
+    try:
+        data = json.loads(path.read_text(encoding='utf-8'))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        raise ValueError(f'Não foi possível ler {relative}: {error}') from error
+    if not isinstance(data, expected_type):
+        kind = 'um objeto JSON' if expected_type is dict else 'uma lista JSON'
+        raise ValueError(f'{relative} deve conter {kind}.')
+    return data
+
+
+def text_list(values, context, allow_empty=True):
+    if (not isinstance(values, list) or (not allow_empty and not values)
+            or any(not isinstance(value, str) or not value.strip() for value in values)):
+        raise ValueError(f'{context} deve ser uma lista de textos não vazios.')
+    return values
+
+
+def technology_policy():
+    """Confere a decisão de planejamento; não examina código do produto."""
+    policy = read_json('planning/technology.json')
+    expected = {
+        'policy_id': TECHNOLOGY_POLICY_ID,
+        'requirement_id': TECHNOLOGY_REQUIREMENT_ID,
+        'status': 'accepted_by_owner',
+        'first_party_language': 'Rust',
+        'ui_authored_in_rust': True,
+        'cargo_workspace_required': True,
+        'rust_toolchain_pinned_required': True,
+        'release_issue': 'PRU-250',
+        'planning_tools_may_use_other_languages': True,
+    }
+    for field, value in expected.items():
+        if type(policy.get(field)) is not type(value) or policy[field] != value:
+            raise ValueError(f'planning/technology.json: {field} deve ser {json.dumps(value, ensure_ascii=False)}.')
+    external = policy.get('external_components')
+    if not isinstance(external, dict):
+        raise ValueError('planning/technology.json: external_components deve ser um objeto JSON.')
+    for field, value in {'allowed': True, 'new_non_rust_business_logic_allowed': False}.items():
+        if external.get(field) is not value:
+            raise ValueError(f'planning/technology.json: external_components.{field} deve ser {json.dumps(value)}.')
+    source_ids = text_list(policy.get('source_ids'), 'planning/technology.json: source_ids', allow_empty=False)
+    if len(set(source_ids)) != len(source_ids):
+        raise ValueError('planning/technology.json: source_ids contém fontes duplicadas.')
+    if 'USR-05' not in source_ids or not any(source_id.startswith('RS-') for source_id in source_ids):
+        raise ValueError('planning/technology.json: source_ids deve incluir USR-05 e fontes técnicas RS-.')
+    return policy
 
 
 def source_index():
-    requirements = json.loads((ROOT / 'planning/requirements.json').read_text(encoding='utf-8'))
+    requirements = read_json('planning/requirements.json')
     result = {}
-    for source in requirements['sources']:
+    owner_sources = requirements.get('sources')
+    if not isinstance(owner_sources, list):
+        raise ValueError('planning/requirements.json: sources deve ser uma lista.')
+    for source in owner_sources:
+        if not isinstance(source, dict) or not isinstance(source.get('id'), str) or not source['id'].strip():
+            raise ValueError('planning/requirements.json: cada fonte deve ter id textual não vazio.')
         if source['id'] in result:
             raise ValueError('Fonte do proprietário duplicada: ' + source['id'])
         title = source.get('title') or source.get('description')
@@ -22,18 +80,31 @@ def source_index():
             'url': source.get('url', REPO_URL + '/blob/main/PRD.md'),
         }
     for path in sorted((ROOT / 'docs').glob('fontes-*.json')):
-        for source in json.loads(path.read_text(encoding='utf-8')):
+        for source in read_json(str(path.relative_to(ROOT)), list):
+            if not isinstance(source, dict) or not isinstance(source.get('id'), str) or not source['id'].strip():
+                raise ValueError(f'{path.name}: cada fonte deve ter id textual não vazio.')
             if source['id'] in result:
                 raise ValueError('Fonte duplicada: ' + source['id'])
             result[source['id']] = source
+    for source_id, source in result.items():
+        if any(not isinstance(source.get(field), str) or not source[field].strip() for field in ('title', 'url')):
+            raise ValueError(f'Fonte {source_id} sem título ou URL textual válido.')
     return result
 
 
 def render_issue(issue, sources, total):
+    if not isinstance(issue, dict):
+        raise ValueError('planning/backlog.json: cada issue deve ser um objeto JSON.')
+    key = issue.get('key', 'Issue')
+    for field in ('key', 'title', 'goal', 'phase', 'phase_name'):
+        if not isinstance(issue.get(field), str) or not issue[field].strip():
+            raise ValueError(f'{key}: {field} deve ser um texto não vazio.')
+    if type(issue.get('sequence')) is not int:
+        raise ValueError(f'{key}: sequence deve ser um inteiro.')
+    if issue.get('implementation_language') != 'Rust' or issue.get('technology_policy') != TECHNOLOGY_POLICY_ID:
+        raise ValueError(f"{issue.get('key', 'Issue')}: implementação própria deve ser Rust e technology_policy deve ser {TECHNOLOGY_POLICY_ID}.")
     for field in ('scope', 'acceptance', 'validation', 'norms', 'reuse_candidates', 'source_ids'):
-        values = issue.get(field)
-        if not isinstance(values, list) or any(not isinstance(value, str) or not value.strip() for value in values):
-            raise ValueError(f"{issue['key']}: {field} deve ser uma lista de textos não vazios.")
+        text_list(issue.get(field), f"{issue['key']}: {field}")
     n = issue['sequence']
     lines = [f"# {issue['key']}: {issue['title']}", '', '## Objetivo', '', issue['goal'], '',
              '## Ordem de implementação', '',
@@ -56,6 +127,8 @@ def render_issue(issue, sources, total):
               '- [ ] Conferir as obrigações dos arquivos e dependências efetivamente incorporados. Candidato listado não significa homologação; nomes sem ficha documental permanecem com pesquisa pendente.',
               f'- [ ] Seguir [REUSO.md]({REPO_URL}/blob/main/docs/REUSO.md), mantendo uma referência independente do motor utilizado.', '',
               '## Contratos transversais', '',
+              f'- [ ] {TECHNOLOGY_REQUIREMENT_ID} e {TECHNOLOGY_POLICY_ID}: implementar em Rust todo código próprio do produto, incluindo interface, BIM, regras de engenharia, motores, CLI e MCP. Usar workspace Cargo e toolchain Rust fixada, conforme [RUST.md]({REPO_URL}/blob/main/docs/RUST.md).',
+              f'- [ ] Componentes externos em outras linguagens exigem integração e qualificação conforme [RUST.md]({REPO_URL}/blob/main/docs/RUST.md) e a política de reuso. A integração não autoriza nova lógica própria de produto em outra linguagem. Ferramentas de manutenção do planejamento podem usar outras linguagens.',
               '- [ ] Interface e MCP usam os mesmos comandos e validações; novas funções relevantes ampliam ambos, inclusive após a etapa 99.',
               '- [ ] Unidades, identidades, autoria, revisão e estados de resultado permanecem rastreáveis. Mudança relevante invalida evidências dependentes.',
               '- [ ] Código integrado, revisão independente e evidências reproduzíveis constam da entrega. Nenhuma pendência obrigatória é retirada para encerrar a issue.', '']
@@ -73,14 +146,25 @@ def render_issue(issue, sources, total):
 
 
 def rendered_outputs():
-    data = json.loads((ROOT / 'planning/backlog.json').read_text(encoding='utf-8'))
+    data = read_json('planning/backlog.json')
+    for field in ('issues', 'phases'):
+        values = data.get(field)
+        if not isinstance(values, list) or any(not isinstance(value, dict) for value in values):
+            raise ValueError(f'planning/backlog.json: {field} deve ser uma lista de objetos JSON.')
+    if type(data.get('issue_count')) is not int:
+        raise ValueError('planning/backlog.json: issue_count deve ser um inteiro.')
+    policy = technology_policy()
     sources = source_index()
+    missing_sources = set(policy['source_ids']) - set(sources)
+    if missing_sources:
+        raise ValueError('planning/technology.json: fontes inexistentes: ' + ', '.join(sorted(missing_sources)) + '.')
     outputs = {}
     for issue in data['issues']:
         outputs[f"planning/issues/{issue['sequence']:03}.md"] = render_issue(issue, sources, data['issue_count'])
     lines = ['# Prumo: sequência de implementação', '',
              f"**{data['issue_count']} issues, implementadas em ordem numérica.** Estado inicial: planejamento. A conclusão da última issue exige estruturas e instalações completas, evidências aceitas e distribuição conferida.", '',
              'A fila ampliada preserva a correspondência entre número GitHub e sequência PRU. A etapa 120 é um marco estrutural; a liberação comercial pertence à etapa 250. Novas PRs não alteram os identificadores abaixo.', '',
+             f'**Decisão de linguagem: Rust.** O requisito {TECHNOLOGY_REQUIREMENT_ID} e a política {TECHNOLOGY_POLICY_ID} abrangem as 250 entregas. Todo código próprio do produto, incluindo interface, BIM, regras de engenharia, motores, CLI e MCP, será escrito em Rust, com workspace Cargo e toolchain fixada. Integrações de componentes externos e ferramentas do planejamento seguem [RUST.md](docs/RUST.md) e [technology.json](planning/technology.json). Esta decisão registra uma exigência de implementação, sem declarar código já concluído.', '',
              '## Fases', '', '| Issues | Fase |', '|---|---|']
     for phase in data['phases']:
         lines.append(f"| #{phase['first']} a #{phase['last']} | {phase['name']} |")
@@ -105,14 +189,17 @@ def main():
     parser.add_argument('--check', action='store_true')
     args = parser.parse_args()
     differences = []
-    for relative, content in rendered_outputs().items():
-        path = ROOT / relative
-        if args.check:
-            if not path.exists() or path.read_text(encoding='utf-8') != content:
-                differences.append(relative)
-        else:
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(content, encoding='utf-8')
+    try:
+        for relative, content in rendered_outputs().items():
+            path = ROOT / relative
+            if args.check:
+                if not path.exists() or path.read_text(encoding='utf-8') != content:
+                    differences.append(relative)
+            else:
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(content, encoding='utf-8')
+    except (KeyError, TypeError, ValueError, OSError, UnicodeError) as error:
+        raise SystemExit('ERRO: dados do planejamento não renderizáveis: ' + str(error)) from None
     if differences:
         raise SystemExit('Arquivos fora de sincronia: ' + ', '.join(differences))
     print('Roadmap e especificações de issues ' + ('conferidos.' if args.check else 'gerados.'))
