@@ -107,3 +107,13 @@ Esta revisão cobre a infraestrutura efetivamente implementada: modelar, convert
 Material e procedência informados pelo usuário continuam declarações. A política normativa da PRU-002 e as restrições dos componentes experimentais da PRU-003 permanecem aplicáveis. A emissão de engenharia não foi habilitada por formulário, argumento MCP ou edição do estado de resultado.
 
 A revisão local está concluída para a versão descrita. Antes de fechar a issue, a publicação deve ligar o commit e os artefatos corretos à execução final, à inspeção nativa e à matriz CI aprovada. Mudanças posteriores em regras, tipos, dependências ou comportamento precisam ser reconferidas no alcance afetado. A integração da PRU-004 é o pré-requisito para iniciar a PRU-005.
+
+## 6. Revisão da correção do ambiente CI
+
+A primeira execução Linux da PR 256 interrompeu a linkagem de executáveis de teste com `SIGBUS`, antes das asserções. O log não comprova a causa da falha remota. A ocorrência local de falta de espaço não foi tratada como diagnóstico confirmado do runner.
+
+A correção do workflow limita a compilação a dois jobs, desativa o incremental, inaugura um namespace de cache que não restaura o cache anterior e executa `cargo clean --workspace --locked` antes da compilação. A opção de limpeza foi conferida na toolchain 1.99.1 e na [documentação do Cargo](https://doc.rust-lang.org/cargo/commands/cargo-clean.html): seu escopo são os artefatos dos membros do workspace, preservando dependências externas. O novo namespace também evita depender da substituição de um cache existente, operação que a [documentação do GitHub](https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching) não permite.
+
+O comando administrativo usa `subprocess.run` com argumentos separados e `check=True`, propagando uma falha do Cargo ao código de saída do Python também no Windows. Isso corrige a possibilidade, identificada na revisão inicial do passo, de um comando posterior de telemetria ocultar o erro. Não há shell montado por interpolação ou rotina própria de remoção de diretórios.
+
+Essa alteração administrativa preserva o produto, os testes, as tolerâncias e a matriz Windows/Linux. A revisão da correção é favorável; o êxito só é estabelecido pela nova execução integral dos checks no commit corrigido. O parecer sobre os demais arquivos permanece inalterado.

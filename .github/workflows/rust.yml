@@ -7,6 +7,8 @@ permissions:
   contents: read
 env:
   PYTHONUTF8: "1"
+  CARGO_BUILD_JOBS: "2"
+  CARGO_INCREMENTAL: "0"
 jobs:
   verify:
     name: Rust (${{ matrix.os }})
@@ -39,10 +41,12 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             target
-          key: rust-${{ runner.os }}-1.99.1-${{ hashFiles('Cargo.lock') }}
+          key: rust-ci2-${{ runner.os }}-1.99.1-${{ hashFiles('Cargo.lock') }}
           restore-keys: |
-            rust-${{ runner.os }}-1.99.1-${{ hashFiles('Cargo.lock') }}-
-            rust-${{ runner.os }}-1.99.1-
+            rust-ci2-${{ runner.os }}-1.99.1-
+      - name: Remover artefatos próprios de versões anteriores
+        run: |
+          python -c "import shutil, subprocess; print({'free_bytes_before': shutil.disk_usage('.').free}, flush=True); subprocess.run(['cargo', 'clean', '--workspace', '--locked'], check=True); print({'free_bytes_after': shutil.disk_usage('.').free})"
       - name: Compilar executáveis e dependências fixadas
         run: cargo build --workspace --locked
       - name: Clippy
