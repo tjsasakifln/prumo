@@ -53,6 +53,7 @@ impl Desktop {
         self.qualification = None;
         self.view.components = Default::default();
         self.view.registry = Default::default();
+        self.view.model = Default::default();
         let selected_path = path.to_string_lossy().into_owned();
         match ProjectService::open(path, AccessMode::ReadWrite, "interface-local") {
             Ok(service) => {
@@ -111,6 +112,7 @@ impl Desktop {
                 }
             }
             UiAction::RefreshRegistry => self.refresh_registry(),
+            UiAction::RefreshModel => self.refresh_model(),
             UiAction::AssessCapability(id) => {
                 if let Some(service) = &self.service {
                     match service.final_result_gate(&id) {
@@ -131,6 +133,7 @@ impl Desktop {
                             }
                             self.view.project_name = project.name.clone();
                             self.project = Some(project);
+                            self.view.model.trace.snapshot = None;
                             self.view.report("Projeto reaberto do disco.", false);
                             self.refresh_registry();
                         }
@@ -158,6 +161,8 @@ impl Desktop {
                                 false,
                             );
                             self.project = Some(project);
+                            self.view.model.trace.snapshot = None;
+                            self.view.model.error = None;
                             self.refresh_registry();
                         }
                         Err(error) => self.view.report(error.to_string(), true),
@@ -186,6 +191,31 @@ impl Desktop {
                     self.view.registry.candidate = Some(preview.candidate);
                 }
                 (Err(error), _) | (_, Err(error)) => self.view.report(error.to_string(), true),
+            }
+        }
+    }
+
+    fn refresh_model(&mut self) {
+        if let Some(service) = &self.service {
+            match service.model_snapshot() {
+                Ok(snapshot) => {
+                    if self
+                        .project
+                        .as_ref()
+                        .map(|project| (project.id, project.revision))
+                        != Some((snapshot.project_id, snapshot.source_revision))
+                    {
+                        self.view.model.trace.snapshot = None;
+                        self.view.report("O projeto mudou em outra instância. Reabra para consultar o snapshot atual.", true);
+                        return;
+                    }
+                    self.view.model.trace.snapshot = Some(snapshot);
+                    self.view.report(
+                        "Snapshot e dependências conferidos na revisão exibida.",
+                        false,
+                    );
+                }
+                Err(error) => self.view.report(error.to_string(), true),
             }
         }
     }

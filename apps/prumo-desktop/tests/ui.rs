@@ -24,8 +24,8 @@ fn real_ui_creates_edits_reopens_and_rejects_zero_length() {
     let mut reopened = Desktop::new(path);
     assert_eq!(reopened.project.as_ref().unwrap().id, before.id);
     assert_eq!(
-        reopened.project.as_ref().unwrap().objects[0].analytical_id,
-        before.objects[0].analytical_id
+        reopened.project.as_ref().unwrap().model.links,
+        before.model.links
     );
     reopened.view.end = reopened.view.start;
     {

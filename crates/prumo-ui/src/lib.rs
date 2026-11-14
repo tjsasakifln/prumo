@@ -7,12 +7,16 @@ mod registry;
 pub use registry::RegistryView;
 mod components;
 pub use components::ComponentView;
+mod model;
+mod numeric;
+pub use model::{ModelTab, SemanticView};
 
 #[derive(Debug)]
 pub enum UiAction {
     Open(String),
     Refresh,
     RefreshRegistry,
+    RefreshModel,
     AssessCapability(String),
     RunQualification,
     CancelQualification,
@@ -26,6 +30,7 @@ impl UiAction {
 }
 
 pub struct ProjectView {
+    pub model: SemanticView,
     pub components: ComponentView,
     pub registry: RegistryView,
     pub path: String,
@@ -44,6 +49,7 @@ pub struct ProjectView {
 impl Default for ProjectView {
     fn default() -> Self {
         Self {
+            model: SemanticView::default(),
             components: ComponentView::default(),
             registry: RegistryView::default(),
             path: "meu-projeto.prumo".into(),
@@ -126,15 +132,18 @@ impl ProjectView {
                     self.model_view(&mut columns[1], project);
                 });
                 ui.separator();
+                ui.add_enabled_ui(selected, |ui| self.model.show(ui, project, &mut actions));
+                ui.separator();
                 ui.heading("Objetos do projeto");
-                ui.label("Cada peça possui uma identidade física e uma identidade analítica. Nenhuma peça está dimensionada.");
+                ui.label("Identidades físicas e analíticas são distintas e ligadas explicitamente. Nenhuma peça está dimensionada.");
                 egui::Grid::new("objects").striped(true).min_col_width(130.0).show(ui, |ui| {
                     ui.strong("Peça"); ui.strong("Comprimento"); ui.strong("Estado"); ui.end_row();
                     for object in &project.objects {
-                        let length = object.start_m.iter().zip(object.end_m.iter()).map(|(a,b)| (b-a).powi(2)).sum::<f64>().sqrt();
-                        ui.label(&object.name).on_hover_text(format!("Físico: {}\nAnalítico: {}", object.id, object.analytical_id));
+                        let length = object.length_m();
+                        let analytical: Vec<_> = project.model.links.iter().filter(|link|link.physical_id==object.id).map(|link|link.analytical_id.to_string()).collect();
+                        ui.label(&object.name).on_hover_text(format!("Físico: {}\nAnalíticos: {}", object.id, if analytical.is_empty(){"Sem vínculo".into()}else{analytical.join(", ")}));
                         ui.label(format!("{length:.3} m"));
-                        ui.label("Modelado, não calculado"); ui.end_row();
+                        ui.label(if object.role == prumo_domain::model::PhysicalRole::VisualOnly {"Somente visual"} else {"Modelado, não calculado"}); ui.end_row();
                     }
                 });
                 if project.objects.is_empty() { ui.label("Adicione a primeira peça pelas coordenadas acima."); }
@@ -208,9 +217,24 @@ impl ProjectView {
                 .labelled_by(label.id);
         });
         ui.label(format!("Coordenadas em {}", unit_label(project.units)));
+        numeric::begin(ui);
+        numeric::context(ui, format!("{}:quick-member", project.id));
         coordinates(ui, "Início", &mut self.start);
         coordinates(ui, "Fim", &mut self.end);
-        if ui.button("Adicionar peça e salvar").clicked() {
+        let invalid = numeric::errors(ui);
+        if !invalid.is_empty() {
+            ui.colored_label(
+                Color32::LIGHT_RED,
+                format!("Corrija os campos numéricos: {}.", invalid.join(", ")),
+            );
+        }
+        if ui
+            .add_enabled(
+                invalid.is_empty(),
+                egui::Button::new("Adicionar peça e salvar"),
+            )
+            .clicked()
+        {
             actions.push(UiAction::command(Command::AddMember {
                 expected_revision: project.revision,
                 name: self.member_name.clone(),
@@ -242,7 +266,12 @@ impl ProjectView {
         let points: Vec<_> = project
             .objects
             .iter()
-            .flat_map(|o| [project_point(o.start_m), project_point(o.end_m)])
+            .flat_map(|o| {
+                [
+                    project_point(o.start_m.as_array()),
+                    project_point(o.end_m.as_array()),
+                ]
+            })
             .collect();
         let mut lo = [f64::INFINITY; 2];
         let mut hi = [f64::NEG_INFINITY; 2];
@@ -305,12 +334,9 @@ fn units_selector(ui: &mut egui::Ui, unit: &mut LengthUnit) {
 }
 
 fn coordinates(ui: &mut egui::Ui, label: &str, point: &mut [f64; 3]) {
-    ui.horizontal(|ui| {
-        ui.label(label);
-        for (axis, value) in ["X", "Y", "Z"].into_iter().zip(point) {
-            let axis_label = ui.label(format!("{label} {axis}"));
-            ui.add(egui::DragValue::new(value).speed(0.1))
-                .labelled_by(axis_label.id);
+    ui.columns(3, |columns| {
+        for (index, (axis, value)) in ["X", "Y", "Z"].into_iter().zip(point).enumerate() {
+            numeric::field(&mut columns[index], &format!("{label} {axis}"), value);
         }
     });
 }

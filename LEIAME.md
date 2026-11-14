@@ -13,7 +13,7 @@ cargo build --workspace --locked
 cargo run -p prumo-desktop --locked
 ```
 
-A tela permite criar ou abrir um arquivo `.prumo`, escolher a unidade e adicionar peças com identidade física e analítica. Cada alteração é salva localmente. Consulte [instalação, servidor MCP e verificações](docs/DESENVOLVIMENTO.md).
+A tela permite criar ou abrir um arquivo `.prumo`, escolher unidades, modelar peças, nós e barras analíticas, materiais, ações, redes e conexões explícitas. UUIDs, GUIDs IFC, origem e histórico de cópia, fusão e divisão permanecem relacionados. As medidas geométricas preservam sua base e ficam desatualizadas quando suas dependências mudam. Cada alteração é salva localmente. Consulte [instalação, servidor MCP e verificações](docs/DESENVOLVIMENTO.md).
 
 ## Implementação em Rust
 

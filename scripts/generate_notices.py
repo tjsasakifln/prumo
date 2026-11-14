@@ -20,7 +20,7 @@ SOURCE_COMMENT_NOTICES = {
     "approx", "geo", "heapless", "itertools", "lazy_static", "matrixmultiply",
     "minimal-lexical", "num-complex", "num-integer", "num-rational",
     "proc-macro-crate", "proc-macro-error", "rand", "rand_pcg", "rawpointer",
-    "robust", "spin", "stable_deref_trait", "wasmparser", "wide",
+    "robust", "serde_json", "spin", "stable_deref_trait", "wasmparser", "wide",
 }
 
 

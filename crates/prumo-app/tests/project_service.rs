@@ -29,10 +29,10 @@ fn persisted_model_reopens_with_the_same_identity_geometry_revision_and_actor() 
         .unwrap();
     assert_eq!(model.revision, 2);
     assert_eq!(model.id, initial.id);
-    assert_eq!(model.objects[0].start_m, [0.0, 0.0, 3.0]);
-    assert_eq!(model.objects[0].end_m, [5.0, 0.0, 3.0]);
+    assert_eq!(model.objects[0].start_m.as_array(), [0.0, 0.0, 3.0]);
+    assert_eq!(model.objects[0].end_m.as_array(), [5.0, 0.0, 3.0]);
     assert_eq!(model.objects[0].length_m(), 5.0);
-    assert_ne!(model.objects[0].id, model.objects[0].analytical_id);
+    assert_ne!(model.objects[0].id, model.model.links[0].analytical_id);
     assert_eq!(model.objects[0].state, ModelState::Modelled);
     drop(ui);
 
@@ -257,7 +257,7 @@ fn extension_contracts_roundtrip_without_implying_a_calculation_or_automatic_con
             object_id,
             discipline: Discipline::WaterSanitation,
             kind: PortKind::Hydraulic,
-            position_m: [x, 0.0, 0.0],
+            position_m: [x, 0.0, 0.0].try_into().unwrap(),
             extensions: BTreeMap::new(),
         })
         .collect();
@@ -265,6 +265,7 @@ fn extension_contracts_roundtrip_without_implying_a_calculation_or_automatic_con
         id: Uuid::new_v4(),
         name: "Rede de ensaio sem cálculo".into(),
         discipline: Discipline::WaterSanitation,
+        kind: prumo_domain::model::NetworkKind::Network,
         environment_id: None,
         port_ids: fixture.ports.iter().map(|port| port.id).collect(),
         extensions: BTreeMap::new(),
@@ -273,6 +274,15 @@ fn extension_contracts_roundtrip_without_implying_a_calculation_or_automatic_con
         "fixture.future_catalog".into(),
         json!({"schema":7,"unknown":{"values":[1,"x",true]}}),
     );
+    let ids: Vec<_> = fixture
+        .ports
+        .iter()
+        .map(|port| port.id)
+        .chain(fixture.networks.iter().map(|network| network.id))
+        .collect();
+    for id in ids {
+        prumo_domain::model::record_identity(&mut fixture, id, "fixture", 2, true).unwrap();
+    }
     fixture.validate().unwrap();
     assert!(fixture.connections.is_empty());
     fixture.connections.push(Connection {
@@ -282,6 +292,8 @@ fn extension_contracts_roundtrip_without_implying_a_calculation_or_automatic_con
         to_port: fixture.ports[1].id,
         extensions: BTreeMap::new(),
     });
+    let connection_id = fixture.connections[0].id;
+    prumo_domain::model::record_identity(&mut fixture, connection_id, "fixture", 2, false).unwrap();
     fixture.validate().unwrap();
     fs::write(app.project_path(), serde_json::to_vec(&fixture).unwrap()).unwrap();
     let saved = app.rename_project(2, "Extensões preservadas").unwrap();
@@ -308,13 +320,15 @@ fn invalid_typed_references_fail_closed() {
         object_id: project.objects[0].id,
         discipline: Discipline::Structure,
         kind: PortKind::Hydraulic,
-        position_m: [0.0; 3],
+        position_m: [0.0; 3].try_into().unwrap(),
         extensions: BTreeMap::new(),
     });
+    let port_id = project.ports[0].id;
+    prumo_domain::model::record_identity(&mut project, port_id, "fixture", 2, true).unwrap();
     assert!(project.validate().is_err());
     project.ports[0].kind = PortKind::Structural;
     project.validate().unwrap();
-    project.objects[0].analytical_id = project.objects[0].id;
+    project.model.analytical_members[0].id = project.objects[0].id;
     assert!(project.validate().is_err());
 }
 

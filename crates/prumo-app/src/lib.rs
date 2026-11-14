@@ -3,7 +3,10 @@
 //! Project-scoped command service shared by desktop, CLI, and MCP.
 
 pub use prumo_domain::Command;
+use prumo_domain::canonical::{ModelSnapshot, source_index_unchecked};
 use prumo_domain::components::{ComponentDescriptor, ExperimentBasis, QualificationReport};
+use prumo_domain::dependencies::{DependencyGraph, SourceKind};
+use prumo_domain::model::{ModelEdit, PhysicalRole, PointInput, SemanticModel};
 use prumo_domain::{
     ChangeRecord, Discipline, DomainError, Environment, LengthUnit, ModelState,
     PROJECT_SCHEMA_VERSION, PhysicalObject, Project, validate_name,
@@ -40,6 +43,34 @@ pub struct ProjectService {
 }
 
 impl ProjectService {
+    pub fn model_snapshot(&self) -> Result<ModelSnapshot, AppError> {
+        prumo_domain::canonical::model_snapshot(&self.read()?).map_err(invalid_input)
+    }
+
+    pub fn dependency_report(&self) -> Result<DependencyGraph, AppError> {
+        Ok(self.read()?.dependencies)
+    }
+
+    pub fn edit_model(&self, expected_revision: u64, edit: ModelEdit) -> Result<Project, AppError> {
+        self.require_write()?;
+        let tag = serde_json::to_value(&edit)?
+            .get("edit")
+            .and_then(serde_json::Value::as_str)
+            .ok_or_else(|| AppError::InvalidInput("Edição sem operação declarada.".into()))?
+            .to_owned();
+        self.mutate(expected_revision, &format!("model.{tag}"), |project| {
+            prumo_domain::model::apply_model_edit(project, edit, &self.actor)
+                .map_err(invalid_input)?;
+            Ok(())
+        })
+    }
+
+    pub fn inspect_model(&self, expected_revision: u64) -> Result<Project, AppError> {
+        self.mutate(expected_revision, "inspect_model", |project| {
+            prumo_domain::dependencies::inspect_model(project).map_err(invalid_input)
+        })
+    }
+
     /// Read-only inventory. This does not change capability release states.
     pub fn component_inventory(&self) -> Vec<ComponentDescriptor> {
         prumo_components::inventory()
@@ -158,6 +189,11 @@ impl ProjectService {
                 &to_package_hash,
                 confirm,
             ),
+            Command::EditModel {
+                expected_revision,
+                edit,
+            } => self.edit_model(expected_revision, edit),
+            Command::InspectModel { expected_revision } => self.inspect_model(expected_revision),
         }
     }
 
@@ -182,6 +218,8 @@ impl ProjectService {
             connections: Vec::new(),
             history: vec![self.change(1, "create")?],
             normative: NormativeState::default(),
+            model: SemanticModel::default(),
+            dependencies: DependencyGraph::default(),
             extensions: BTreeMap::new(),
         };
         self.save_locked(&project)?;
@@ -209,15 +247,42 @@ impl ProjectService {
         self.mutate(expected_revision, "add_member", |project| {
             let object = PhysicalObject {
                 id: Uuid::new_v4(),
-                analytical_id: Uuid::new_v4(),
                 name,
                 discipline: Discipline::Structure,
-                start_m: project.units.to_metres(start).map_err(invalid_input)?,
-                end_m: project.units.to_metres(end).map_err(invalid_input)?,
+                start_m: PointInput {
+                    values: start,
+                    unit: project.units,
+                }
+                .to_si()
+                .map_err(invalid_input)?,
+                end_m: PointInput {
+                    values: end,
+                    unit: project.units,
+                }
+                .to_si()
+                .map_err(invalid_input)?,
                 state: ModelState::Modelled,
+                role: PhysicalRole::AnalyticalSource,
+                material_id: None,
+                environment_id: None,
                 extensions: BTreeMap::new(),
             };
+            if object.length_m() <= prumo_domain::MIN_MEMBER_LENGTH_M {
+                return Err(invalid_input(DomainError::DegenerateMember));
+            }
+            let physical_id = object.id;
             project.objects.push(object);
+            prumo_domain::model::initialize_legacy_member(
+                project,
+                physical_id,
+                None,
+                &self.actor,
+                project
+                    .revision
+                    .checked_add(1)
+                    .ok_or_else(|| AppError::InvalidInput("Limite de revisões atingido.".into()))?,
+            )
+            .map_err(invalid_input)?;
             Ok(())
         })
     }
@@ -245,11 +310,23 @@ impl ProjectService {
         let name = name.into();
         validate_name(&name).map_err(invalid_input)?;
         self.mutate(expected_revision, "add_environment", |project| {
+            let id = Uuid::new_v4();
             project.environments.push(Environment {
-                id: Uuid::new_v4(),
+                id,
                 name,
                 extensions: BTreeMap::new(),
             });
+            prumo_domain::model::record_identity(
+                project,
+                id,
+                &self.actor,
+                project
+                    .revision
+                    .checked_add(1)
+                    .ok_or_else(|| AppError::InvalidInput("Limite de revisões atingido.".into()))?,
+                true,
+            )
+            .map_err(invalid_input)?;
             Ok(())
         })
     }
@@ -427,27 +504,39 @@ impl ProjectService {
     ) -> Result<Project, AppError> {
         self.require_write()?;
         let _lock = self.lock()?;
-        let mut project = self.read_snapshot()?;
+        let (mut project, legacy_bytes) = self.read_snapshot_with_origin()?;
         if project.revision != expected_revision {
             return Err(AppError::Conflict {
                 expected: expected_revision,
                 actual: project.revision,
             });
         }
-        mutation(&mut project)?;
-        if matches!(operation, "add_member" | "add_environment")
-            && project.normative.active.is_some()
-        {
-            project.normative.recalculation_required = true;
-        }
-        project.revision = project
+        let before = source_index_unchecked(&project).map_err(invalid_input)?;
+        let next_revision = project
             .revision
             .checked_add(1)
             .ok_or_else(|| AppError::InvalidInput("Limite de revisões atingido.".into()))?;
+        mutation(&mut project)?;
+        let after = source_index_unchecked(&project).map_err(invalid_input)?;
+        project
+            .dependencies
+            .invalidate_changes(&before, &after, next_revision, &self.actor, operation)
+            .map_err(invalid_input)?;
+        if project.normative.active.is_some()
+            && before.keys().chain(after.keys()).any(|key| {
+                key.kind != SourceKind::ProjectMetadata && before.get(key) != after.get(key)
+            })
+        {
+            project.normative.recalculation_required = true;
+        }
+        project.revision = next_revision;
         project
             .history
             .push(self.change(project.revision, operation)?);
         project.validate().map_err(invalid_input)?;
+        if let Some(bytes) = legacy_bytes {
+            self.preserve_legacy(&bytes)?;
+        }
         self.save_locked(&project)?;
         Ok(project)
     }
@@ -490,6 +579,10 @@ impl ProjectService {
     }
 
     fn read_snapshot(&self) -> Result<Project, AppError> {
+        self.read_snapshot_with_origin().map(|(project, _)| project)
+    }
+
+    fn read_snapshot_with_origin(&self) -> Result<(Project, Option<Vec<u8>>), AppError> {
         reject_non_regular(&self.path)?;
         let file = match File::open(&self.path) {
             Ok(file) => file,
@@ -514,15 +607,56 @@ impl ProjectService {
         if let Some(version) = value
             .get("schema_version")
             .and_then(serde_json::Value::as_u64)
+            && version != 1
             && version != u64::from(PROJECT_SCHEMA_VERSION)
         {
             return Err(AppError::UnsupportedSchema { found: version });
         }
-        let project: Project = serde_json::from_value(value)?;
-        project
-            .validate()
+        let legacy = value
+            .get("schema_version")
+            .and_then(serde_json::Value::as_u64)
+            == Some(1);
+        let project = prumo_domain::model::decode_project(value)
             .map_err(|error| AppError::InvalidProject(error.to_string()))?;
-        Ok(project)
+        Ok((project, legacy.then_some(bytes)))
+    }
+
+    fn preserve_legacy(&self, bytes: &[u8]) -> Result<(), AppError> {
+        let destination = self.path.with_file_name(format!(
+            "prumo-v1-{}.backup",
+            prumo_domain::canonical::hash_bytes(bytes)
+        ));
+        reject_non_regular(&destination)?;
+        let parent = destination
+            .parent()
+            .ok_or_else(|| AppError::InvalidInput("Pasta do projeto ausente.".into()))?;
+        let mut temporary = tempfile::NamedTempFile::new_in(parent)?;
+        temporary.write_all(bytes)?;
+        temporary.as_file().sync_all()?;
+        match temporary.persist_noclobber(&destination) {
+            Ok(_) => {}
+            Err(error) if error.error.kind() == std::io::ErrorKind::AlreadyExists => {
+                reject_non_regular(&destination)?;
+                let file = File::open(&destination)?;
+                if file.metadata()?.len() != bytes.len() as u64 {
+                    return Err(AppError::InvalidProject(
+                        "O backup de migração existente diverge do original.".into(),
+                    ));
+                }
+                let mut existing = Vec::new();
+                file.take(bytes.len() as u64 + 1)
+                    .read_to_end(&mut existing)?;
+                if existing != bytes {
+                    return Err(AppError::InvalidProject(
+                        "O backup de migração existente diverge do original.".into(),
+                    ));
+                }
+            }
+            Err(error) => return Err(error.error.into()),
+        }
+        #[cfg(unix)]
+        File::open(parent)?.sync_all()?;
+        Ok(())
     }
 
     fn save_locked(&self, project: &Project) -> Result<(), AppError> {
