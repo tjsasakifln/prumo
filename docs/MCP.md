@@ -137,3 +137,13 @@ A issue #1 deve demonstrar criação de projeto BIM real, objeto tipado mínimo,
 Novas famílias de engenharia acrescentam ferramentas ou comandos ao contrato comum, com casos de equivalência. Gate de lançamento: versões e clientes declarados testados; zero mutação fora do escopo; nenhuma emissão obsoleta; recuperação de retries; isolamento de projetos; diagnósticos úteis; documentação de instalação que corresponda ao pacote distribuído.
 
 Fontes e data de consulta: [fontes-arquitetura.json](fontes-arquitetura.json). Diretrizes de interação: [UX.md](UX.md).
+
+## Ampliação para todas as instalações
+
+O contrato de comandos cobre redes e ambientes além da estrutura. Consultar, lançar, conectar, desconectar, recalcular, explicar falhas, detalhar, extrair quantidades e preparar entregas são operações do mesmo serviço da interface. Ferramentas podem ser agrupadas por domínio para descoberta, preservando esquema, escopo e permissões comuns.
+
+Operações em lote retornam uma prévia das conexões, escolhas de catálogo, conflitos, alterações de cálculo e documentos invalidados. A aprovação reutilizável respeita o escopo autorizado. Comandos carregam revisão esperada e chave de idempotência; repetição não duplica tubulações, fios, equipamentos ou documentos. A seleção de peça nunca aceita texto de catálogo como autorização para agir fora do projeto.
+
+Os testes incluem um cliente real por família de operações, troca UI/MCP no mesmo projeto, falhas no meio de alterações, mudanças concorrentes e resultados que terminam depois de nova revisão. A issue 112 cobre o incremento estrutural; a completude ampliada é conferida nas etapas 227 a 250. Nenhuma operação relevante criada após a 112 fica dispensada de interface e MCP equivalentes.
+
+O agente pode propor otimização de rotas, diâmetros, seções e equipamentos. Os resultados vêm dos motores determinísticos e de regras qualificadas, com restrições e objetivos explícitos. Uma explicação generativa não pode substituir diagnóstico, resultado numérico ou revisão técnica.

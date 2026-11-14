@@ -1,0 +1,80 @@
+{
+  "nature": "Testes do verificador em cópias temporárias; não qualificam software de engenharia nem confirmam publicação remota.",
+  "cases": [
+    {
+      "name": "issue_count_reduced",
+      "rejected": true,
+      "matched_diagnostic": "250 issues únicas"
+    },
+    {
+      "name": "mep_capability_missing",
+      "rejected": true,
+      "matched_diagnostic": "MEP-01"
+    },
+    {
+      "name": "mep_capability_optional",
+      "rejected": true,
+      "matched_diagnostic": "MEP-01 perdeu condição de lançamento"
+    },
+    {
+      "name": "req13_missing",
+      "rejected": true,
+      "matched_diagnostic": "REQ-01 a REQ-14"
+    },
+    {
+      "name": "req14_missing",
+      "rejected": true,
+      "matched_diagnostic": "REQ-01 a REQ-14"
+    },
+    {
+      "name": "release_reset_120",
+      "rejected": true,
+      "matched_diagnostic": "PRU-250"
+    },
+    {
+      "name": "reference_name_readme",
+      "rejected": true,
+      "matched_diagnostic": "Nome de software de referência"
+    },
+    {
+      "name": "reference_alias_readme",
+      "rejected": true,
+      "matched_diagnostic": "Nome de software de referência"
+    },
+    {
+      "name": "reference_encoded_link",
+      "rejected": true,
+      "matched_diagnostic": "Nome de software de referência"
+    },
+    {
+      "name": "norms_as_string",
+      "rejected": true,
+      "matched_diagnostic": "norms fora do formato de lista"
+    },
+    {
+      "name": "blank_acceptance",
+      "rejected": true,
+      "matched_diagnostic": "incompleta em acceptance"
+    },
+    {
+      "name": "manifest_stale_hash",
+      "rejected": true,
+      "matched_diagnostic": "Texto publicado fora de sincronia: 121",
+      "fixture": "synthetic manifest in temporary directory only"
+    }
+  ],
+  "baseline": {
+    "status": "ok",
+    "scope": "planning_integrity_only",
+    "issues": 250,
+    "capabilities": 72,
+    "requirements": 14,
+    "sources": 208
+  },
+  "owner_title_only_positive": "passed",
+  "negative_cases": 12,
+  "scripts_sha256": {
+    "render_plan.py": "0beefe8080ecede28e3561074b8a4e13907a8cd02184d4c3e53be659d383421f",
+    "validate_plan.py": "6b83e3a43bdd5e025373398731b404c77ab8b67ea1bd762e5cc56fee0d490cb7"
+  }
+}

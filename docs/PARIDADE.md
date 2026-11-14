@@ -2,7 +2,7 @@
 
 **Referência da pesquisa:** documentação pública consultada em 14/11/2026. **Estado do Prumo:** planejamento. Nenhuma capacidade deste documento deve ser anunciada como implementada ou validada enquanto não houver as evidências correspondentes.
 
-O objetivo é reunir a cobertura funcional dos sistemas de referência em um produto BIM nativo, acessível pela interface e por MCP, com operação intuitiva e cálculo rastreável. A comparação considera funcionalidades documentadas do Eberick, do CYPECAD e do TQS, identificando os módulos e aplicativos associados quando necessários para completar o fluxo.
+O objetivo é reunir a cobertura funcional dos sistemas de referência em um produto BIM nativo, acessível pela interface e por MCP, com operação intuitiva e cálculo rastreável. A comparação considera funcionalidades documentadas do Eberick, do CYPECAD, do TQS e do QiBuilder/Builder, identificando os módulos e aplicativos associados quando necessários para completar o fluxo.
 
 ## 1. Como interpretar a comparação
 
@@ -128,3 +128,9 @@ O mapa [coverage.json](../planning/coverage.json) relaciona cada família às is
 [CY-05]: https://info.cype.com/br/produto/cype-3d-geometria/
 [EB-05]: https://www.altoqi.com.br/recursos/exportacao-do-modelo-3d-em-realidade-aumentada
 [EB-06]: https://www.altoqi.com.br/recursos/exportacao-para-o-sap-2000
+
+## Ampliação para instalações na revisão 2.0
+
+A [matriz de instalações](INSTALACOES.md) acrescenta 36 famílias obrigatórias, MEP-01 a MEP-36, às 36 famílias estruturais acima. Cobre oito disciplinas, recursos avançados, catálogos, montagem, cálculos, documentos, coordenação e integração. O [registro rastreável](../planning/coverage.json) vincula todas as 72 famílias à liberação final PRU-250.
+
+O recorte inclui as capacidades documentadas até 14/11/2026. Documentos antigos e novos são reconciliados por função, sem excluir recursos recentes nem inferir cálculos a partir de modelagem. Produtos externos de gestão não são atribuídos automaticamente ao produto de instalações. A pesquisa mantém nomes e fontes para permitir conferência; README e LEIAME apresentam o Prumo por suas próprias capacidades.

@@ -17,7 +17,8 @@ Casos executados, resultado, evidência reproduzível, limitações e revisão i
 ## Coerência do produto
 
 - [ ] Interface e MCP usam o mesmo contrato.
-- [ ] Alterações relevantes invalidam resultados dependentes.
+- [ ] Alterações relevantes invalidam resultados dependentes, inclusive entre estruturas e instalações.
 - [ ] Capacidades e documentos atualizados.
 - [ ] Nenhuma pendência foi retirada apenas para concluir.
 - [ ] Artefato verificado corresponde ao commit examinado.
+- [ ] O escopo e a evidência distinguem modelagem, cálculo, verificação e emissão por disciplina.

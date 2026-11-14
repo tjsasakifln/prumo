@@ -6,7 +6,7 @@ body:
     id: problema
     attributes:
       label: Problema observado
-      description: Inclua versão, capacidade, resultado esperado e resultado obtido.
+      description: Inclua versão, disciplina, capacidade, resultado esperado e resultado obtido.
     validations:
       required: true
   - type: textarea
@@ -20,6 +20,6 @@ body:
     id: evidencia
     attributes:
       label: Evidências e impacto
-      description: Para cálculo, informe unidade, método, snapshot e referência independente. Indique entregas potencialmente afetadas.
+      description: Para cálculo, informe unidade, método, snapshot e referência independente. Indique entregas e outras disciplinas potencialmente afetadas.
     validations:
       required: true

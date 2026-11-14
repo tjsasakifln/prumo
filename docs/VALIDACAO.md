@@ -148,7 +148,7 @@ Cada caso negativo deve demonstrar o diagnóstico e a interrupção adequada, se
 2. Todo pacote normativo aplicável foi conferido no catálogo, interpretado com acesso licenciado, revisado e congelado; todas as pendências P de escopo obrigatório foram resolvidas.
 3. Nenhum defeito aberto que possa permitir falsa aprovação, perda de dados, mistura de revisões ou resultado não rastreável. Toda falha detectada na bateria obrigatória bloqueia o lançamento.
 4. Casos integrados obrigatórios, testes de regressão, testes de dados inválidos e testes de concorrência de agentes passaram nas plataformas prometidas.
-5. Dossiê técnico independente aprovado, com resultados e limitações coerentes com a documentação e a oferta comercial. O nome das três referências não será usado como certificado de equivalência.
+5. Dossiê técnico independente aprovado, com resultados e limitações coerentes com a documentação e a oferta comercial. Os nomes das fontes pesquisadas não serão usados como certificado de equivalência.
 6. Emissão de projeto exige autor/revisor e confirmação sobre o modelo calculado; todos os arquivos entregues carregam identificação de versão e validade do resultado.
 7. Processo de relato de defeitos, triagem de erro estrutural, correção, comunicação de versões afetadas, rastreio de projetos impactados, reversão e recomputação está ensaiado.
 8. Mudança de versão de norma, catálogo ou solver reabre a bateria impactada. Atualização de segurança que muda resultado precisa de análise técnica e registro.
@@ -165,3 +165,29 @@ Todas as referências abaixo foram consultadas em 14/11/2026. Sua inclusão orie
 - **N20**. [Stability, PyNite 3.2.0 documentation](https://pynite.readthedocs.io/en/stable/stability.html). PyNite maintainers. Documenta instabilidade e P-Delta; declara que o efeito de segunda ordem não é considerado nas placas.
 - **N21**. [Pushover Analysis, PyNite 3.2.0 documentation](https://pynite.readthedocs.io/en/latest/pushover.html). PyNite maintainers. Documenta pushover público com primeira ordem; integração P-Delta pendente e limitações do comportamento de placas e quads.
 - **N22**. [VerificationAndValidation, OpenSeesWiki](https://opensees.berkeley.edu/wiki/index.php/VerificationAndValidation). OpenSees, UC Berkeley. Descreve verificação por casos conhecidos e diferenças entre correção do código e adequação do modelo físico; exemplos não significam garantia universal.
+
+## Campanhas de instalações e validação integrada
+
+A ampliação preserva os ensaios estruturais. A qualificação final cobre também cada capacidade de instalações, com referências, fontes normativas e limites por domínio. A licença da biblioteca e o histórico de seus testes são insumos; o adaptador e as regras do Prumo precisam de verificação própria.
+
+| Domínio | Provas mínimas a especificar e executar |
+|---|---|
+| Água e redes pressurizadas | Continuidade, energia, perdas distribuídas/localizadas, bombas, pressões extremas, válvulas, ramificações e redes fechadas; referência independente e casos não convergentes |
+| Esgoto, chuva e tratamento | Declividades, unidades de contribuição, capacidades, ventilação, cotas, área e intensidade de chuva, balanço de reservação e dimensionamento de unidades com hipóteses explícitas |
+| Gás | Pressões absolutas/manométricas, condições de referência, densidade, simultaneidade, regimes baixa/média pressão, reguladores e limites do método; nenhum reaproveitamento de água sem adequação |
+| Incêndio | Cenários simultâneos, alcance, pressão/vazão nos pontos críticos, reserva, curva de bomba, área de operação de sprinklers, equilíbrio em malhas e perfil regulamentar local |
+| Elétrica | Demanda, fases, neutro/PE, fatores de correção, seções, queda de tensão, sobrecarga/curto, DR/DPS, ocupação, equipamentos e barramento, com casos imediatamente antes/depois dos limites |
+| Fotovoltaica | Séries/arranjos, extremos térmicos e elétricos, inversor, CC/CA, cabos/proteções, energia e hipóteses econômicas; incerteza dos dados de geração separada de resistência elétrica |
+| SPDA | Componentes de risco, medidas, geometria dos três métodos, descidas/componentes naturais, aterramento e equipotencialização, com contraexemplos desprotegidos |
+| Cabeamento | Continuidade lógica, comprimento, categoria/tipo, ocupação, segregação, racks/portas, numeração e mapa físico/lógico coerente |
+| Climatização | Cargas sensíveis/latentes, propriedades psicrométricas, condições de contorno, perda de carga, vazão, comprimento equivalente, condensado e domínio de equipamentos |
+
+Os casos conservam topologia e parâmetros além da geometria. Pressão, vazão, energia, corrente, potência, temperatura e umidade têm métricas e tolerâncias próprias. Tolerâncias de mecânica estrutural não são aplicadas automaticamente aos demais domínios. O protocolo de cada caso deve definir unidades, arredondamento e decisão antes de observar a saída.
+
+EPANET e ferramentas que o usam não são referências mutuamente independentes quando compartilham o mesmo núcleo. O mesmo vale para qualquer solver e seu adaptador. A origem das referências e a preparação das entradas devem permitir identificar erros comuns.
+
+As issues 239 a 243 executam campanhas por domínio; 244 realiza pilotos autorizados; 245 avalia usabilidade; 246 verifica segurança; 247 resolve normas/licenças/oferta; 248 verifica distribuição e desempenho; 249 consolida o candidato e os aceites profissionais; 250 libera o mesmo artefato aprovado.
+
+Os pilotos incluem no mínimo doze projetos reais autorizados, três com integração efetiva de estrutura e instalações e cada uma das oito disciplinas de instalações em pelo menos dois projetos. Casos sintéticos adicionais cobrem hipóteses e fronteiras ausentes nos pilotos. Dados identificáveis e arquivos de terceiros exigem autorização compatível.
+
+O aceite técnico é realizado por profissionais habilitados nas respectivas atribuições. A revisão estrutural isolada não qualifica elétrica, gás ou qualquer outra disciplina. O dossiê final liga cada capacidade a seus revisores, evidências, normas e limites. Planejamento revisado por agentes não equivale a esse aceite profissional.

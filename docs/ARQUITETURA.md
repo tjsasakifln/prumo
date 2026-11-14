@@ -103,8 +103,24 @@ DWG deve possuir decisão própria de SDK, licença e compatibilidade. Não conv
 
 ## 8. Entrega incremental e critérios arquiteturais
 
-Desde a issue #1: projeto mínimo real, persistência, comando pela interface e pelo MCP, falha diagnosticada e teste de equivalência. Conforme novas famílias estruturais forem implementadas, seus comandos, desenhos, relatórios e verificações evoluem juntos. Não concentrar toda a integração em uma etapa final.
+Desde a issue #1: projeto mínimo real, persistência, comando pela interface e pelo MCP, falha diagnosticada e teste de equivalência. Conforme novas famílias estruturais e de instalações forem implementadas, seus comandos, desenhos, relatórios e verificações evoluem juntos. Não concentrar toda a integração em uma etapa final.
 
 Critérios transversais: reabrir sem perda; rejeitar unidades inválidas; impedir mutação concorrente silenciosa; repetir comando sem duplicação; bloquear emissão obsoleta; recuperar queda do worker; demonstrar equivalência UI/MCP; explicar perdas do intercâmbio; preservar procedência e licenças de código reutilizado.
 
 Fontes adicionais e data de consulta: [fontes-arquitetura.json](fontes-arquitetura.json). Metas de facilidade de uso: [UX.md](UX.md).
+
+## 9. Domínio compartilhado de instalações
+
+A revisão 2.0 inclui ambientes e sistemas prediais desde os contratos iniciais. Cada elemento pode ter portas tipadas, orientação, dimensão, cota, conectividade, papel no sistema e limites de operação. Rede hidráulica, circuito elétrico, conexão lógica, distribuição de ar e ligação resistente têm tipos e regras próprios. Proximidade geométrica não cria conexão entre sistemas. Uma mesma peça pode ter representações distintas e relações explícitas com equipamentos, ambientes e estrutura.
+
+A topologia de cálculo é derivada do modelo físico com proveniência: nós e ramais hidráulicos, fases e circuitos, séries fotovoltaicas, enlaces de comunicação, zonas de proteção e ambientes térmicos. Catálogos versionados preservam portas, símbolos, propriedades de cálculo, itens associados, unidades comerciais e avisos de procedência. Kits e blocos mantêm identidades próprias, composição e regra de atualização sem duplicar quantitativos.
+
+Os motores são especializados por domínio: estruturas; redes pressurizadas; redes gravitárias; gases; elétrica; fotovoltaica; proteção contra descargas; comunicação; térmica e circulação de ar. A aprovação de um motor em um domínio não se estende aos demais. Todos recebem entradas imutáveis, perfis normativos e hipóteses; retornam unidades, convergência, diagnóstico, limites e hashes.
+
+O sistema de unidades inclui vazão, volume, pressão absoluta e manométrica, potência ativa/reativa/aparente, corrente, tensão CA/CC, frequência, irradiância, energia, temperatura, umidade, capacidade térmica e propriedades de fluido. Conversões entre condições de referência do gás e entre grandezas elétricas exigem contexto explícito.
+
+O grafo de dependências atravessa disciplinas: potência de bomba afeta circuito; reservatório afeta massa e apoios; passagem afeta estrutura; carga térmica afeta equipamentos; sombreamento e montagem afetam geração e cargas; posição de armadura usada como componente natural afeta o SPDA. O sistema apresenta impacto e exige a revisão correspondente antes de emissão.
+
+As etapas 121 a 130 consolidam o domínio de instalações. Documentos técnicos nativos acompanham cada módulo; a coordenação e emissão multiformato são ampliadas em 227 a 238. As campanhas finais 239 a 250 exercitam todas as disciplinas no mesmo candidato. IFC preserva sistemas, distribuição e propriedades segundo os perfis declarados; o pacote nativo mantém dados analíticos não representáveis. Referências proprietárias usam adaptadores licenciados e matrizes de versão, sem promessa de autoria completa do formato.
+
+Fontes de escopo e limites: [INSTALACOES.md](INSTALACOES.md).

@@ -37,7 +37,7 @@ Pan, zoom, rotação, seleção múltipla, cancelamento e edição numérica nã
 
 Incluir validação com participantes que representem operação por uma mão e por teclado, mediante consentimento. Simular apenas internamente não basta para afirmar acessibilidade comprovada.
 
-## 4. Ensaio de aprendizagem para lançamento
+## 4. Ensaio intermediário de aprendizagem estrutural, issue 117
 
 Protocolo deve ser aprovado e fixado antes da execução. Mudanças em metas ou critérios depois de observar o resultado exigem novo protocolo identificado, sem reaproveitar seletivamente resultados favoráveis.
 
@@ -89,3 +89,15 @@ Tempos de cálculo são medidos separadamente e informados por tipo de análise.
 Cada issue que altera interação inclui tarefa de uso, diagnóstico de falha e verificação por interface e MCP quando aplicável. A issue de validação final executa o protocolo completo. Um problema crítico de usabilidade que induza uma decisão técnica incorreta bloqueia a conclusão da capacidade afetada até correção e novo ensaio.
 
 As metas deste documento serão vinculadas a evidências reais antes de qualquer afirmação de aprendizagem ou facilidade de uso no lançamento.
+
+## Estudo final do produto com instalações
+
+A campanha estrutural da issue 117 permanece como avaliação intermediária. O aceite final da issue 245 abrange o produto ampliado e o candidato real de distribuição. São pelo menos 44 profissionais sem experiência anterior no Prumo, competentes na disciplina avaliada, com no mínimo quatro participantes em cada uma das onze famílias: casa de concreto, galpão de aço, cobertura de madeira, hidrossanitária, gás, incêndio, elétrica, fotovoltaica, SPDA, cabeamento e climatização.
+
+Cada participante executa uma tarefa inicial delimitada, com dados suficientes, entradas e entregas previamente definidas. O protocolo identifica o que pode ser consultado, a orientação inicial, o limite de ajuda e os critérios de sucesso; nenhuma avaliação exige projetar um empreendimento complexo inteiro em 45 minutos. A tarefa inclui criar ou receber referências, montar elementos e conexões, executar o cálculo aplicável, entender um diagnóstico e gerar a saída técnica prevista. Funções exclusivamente de modelagem são avaliadas como tal.
+
+Metas pré-registradas: mediana de até 45 minutos em cada família; pelo menos 90% das subtarefas essenciais concluídas; pelo menos 90% dos participantes concluindo o fluxo essencial, considerando desistências no denominador; nenhuma família com menos de 75% de conclusão; média SUS de pelo menos 80; zero erro crítico observado. Publicar resultados gerais e por família, com dispersão, ajuda recebida e limitações da amostra. Não compensar uma disciplina impraticável por tarefas fáceis de outra.
+
+São críticos, entre outros: interpretar uma tubulação desconectada como conectada; aceitar equipamento apenas desenhado como dimensionado; confundir pressão absoluta com manométrica, W com VA ou CC com CA; usar resultado obsoleto; alterar reserva de incêndio sem perceber impacto; perder informação de circuito; emitir revisão incoerente. Cada falha crítica exige correção e nova avaliação dos cenários atingidos.
+
+Operação por uma mão, teclado, entrada numérica com unidades, foco visível, leitura de diagnóstico e desfazer são verificadas em tarefas estruturais e de instalações. Diagramas e representações espaciais devem permitir identificar relação física, lógica e analítica sem depender apenas de cor. Um fluxo assistido por agente deve permitir inspecionar as mudanças e continuar manualmente no mesmo estado.

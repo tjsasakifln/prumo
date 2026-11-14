@@ -1,0 +1,552 @@
+[
+  {
+    "id": "QH-001",
+    "publisher": "AltoQi",
+    "title": "Recursos do AltoQi Builder",
+    "url": "https://www.altoqi.com.br/produtos/builder/recursos",
+    "summary": "Catálogo de disciplinas e recursos de instalações prediais.",
+    "accessed": "2026-11-14",
+    "type": "official_feature_catalog",
+    "qualification": "Inventário comercial complementado pelos artigos de uso; não reproduzir textos, código ou identidade visual."
+  },
+  {
+    "id": "QH-002",
+    "publisher": "AltoQi Suporte",
+    "title": "Base de conhecimento AltoQi Builder",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/altoqi-builder",
+    "summary": "Índice oficial de operações hidráulicas, sanitárias, gás, incêndio, modelagem e documentação.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_index",
+    "qualification": "Índice para localizar operações, não prova de correção do cálculo. Referências granulares registradas abaixo."
+  },
+  {
+    "id": "QH-003",
+    "publisher": "AltoQi Suporte",
+    "title": "Diferenças entre aplicações Essential, Professional, Premium, Enterprise e Infinity",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/13634833896727",
+    "summary": "Distingue capacidades de entrada gráfica, disciplinas e restrição do barramento blindado.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "A introdução diz mesmos recursos, mas a tabela ressalva disciplinas e barramento; considerar união das capacidades, não somente uma edição."
+  },
+  {
+    "id": "QH-004",
+    "publisher": "AltoQi Suporte",
+    "title": "Critérios de dimensionamento dos tubos de água quente e fria",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/115009880348",
+    "summary": "Métodos de demanda por pesos/vazão e Hunter; diâmetros, velocidades e mínimos das peças.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Bibliografias e tabelas devem ter origem/licença identificadas; não converter método empírico em regra universal de uso."
+  },
+  {
+    "id": "QH-005",
+    "publisher": "AltoQi Suporte",
+    "title": "Dimensionamento da bomba hidráulica de recalque",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360000988634",
+    "summary": "Curvas da bomba e sistema, vazão de projeto, tempo de operação e rendimento.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Evidência de funcionalidade documentada, sem validação independente do Prumo; confirmar edição normativa e limites antes de implementar."
+  },
+  {
+    "id": "QH-006",
+    "publisher": "AltoQi Suporte",
+    "title": "Dimensionamento do boiler para acumulação de água quente",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360001907214",
+    "summary": "Reservação térmica e potência derivadas de consumo, temperaturas e recuperação.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Evidência de funcionalidade documentada, sem validação independente do Prumo; confirmar edição normativa e limites antes de implementar."
+  },
+  {
+    "id": "QH-007",
+    "publisher": "AltoQi Suporte",
+    "title": "Dimensionamento da placa solar para aquecimento da água",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360000374853",
+    "summary": "Coletores solares térmicos, demanda de calor, radiação regional e área necessária.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "O artigo cita NBR15569/2021; validar edição no cadastro normativo. Não alterar clima para forçar quantidade desejada."
+  },
+  {
+    "id": "QH-008",
+    "publisher": "AltoQi Suporte",
+    "title": "Dimensionamento da bomba e filtro de piscina",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/6423086509463",
+    "summary": "Bomba e filtro conforme volume, tempo de recirculação, vazão e altura manométrica.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Capacidade hidráulica não comprova todos os requisitos de segurança sanitária ou antiaprisionamento da piscina."
+  },
+  {
+    "id": "QH-009",
+    "publisher": "AltoQi Suporte",
+    "title": "Dimensionamento dos tubos de esgoto",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360015939413",
+    "summary": "Ramais, tubos de queda e coletores por contribuição dos aparelhos e critérios da NBR8160.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "O artigo informa que o programa não identifica automaticamente banheiro para a regra residencial; o Prumo pode implementar classificação explícita auditável."
+  },
+  {
+    "id": "QH-010",
+    "publisher": "AltoQi Suporte",
+    "title": "Dimensionamento dos tubos da rede de ventilação",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360040589873",
+    "summary": "Dimensionamento dos componentes de ventilação sanitária.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Artigo limita uma classificação a grupos com bacia; não generalizar tabela fora de seu domínio."
+  },
+  {
+    "id": "QH-011",
+    "publisher": "AltoQi Suporte",
+    "title": "Dimensionamento dos condutos pluviais",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360003704793",
+    "summary": "Vazões por área e chuva, capacidade das seções, declividade e rugosidade.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "O método descrito deve ser confrontado com a base normativa aplicável a condutores horizontais e verticais; paridade não implica copiar hipótese inadequada."
+  },
+  {
+    "id": "QH-012",
+    "publisher": "AltoQi Suporte",
+    "title": "Dimensionamento de calhas pluviais",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360040820014",
+    "summary": "Calhas retangulares e semicirculares, Manning-Strickler e mudanças de direção.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Evidência de funcionalidade documentada, sem validação independente do Prumo; confirmar edição normativa e limites antes de implementar."
+  },
+  {
+    "id": "QH-013",
+    "publisher": "AltoQi Suporte",
+    "title": "Dimensionamento do tanque séptico",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360012344913",
+    "summary": "Tanques cilíndricos/prismáticos, câmaras, contribuição de esgoto e lodo; artigo atualizado cita NBR17076:2024.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Não usar automaticamente artigos anteriores baseados em NBR7229/13969 como norma vigente."
+  },
+  {
+    "id": "QH-014",
+    "publisher": "AltoQi Suporte",
+    "title": "Dimensionamento da central de gás GLP e recipientes",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/115001668654",
+    "summary": "Quantidade de recipientes, vaporização e temperatura; baterias e central GLP.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Dimensionamento de central restringe-se a GLP, não a abastecimento GN canalizado; condições de instalação têm requisitos adicionais."
+  },
+  {
+    "id": "QH-015",
+    "publisher": "AltoQi Suporte",
+    "title": "Fator de simultaneidade",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/115009405747",
+    "summary": "Demanda simultânea de gás configurável e particularidades após reguladores.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Artigo cita NBR15526/2012; edição e erratas atuais precisam ser confirmadas no catálogo autorizado."
+  },
+  {
+    "id": "QH-016",
+    "publisher": "AltoQi Suporte",
+    "title": "Pressão disponível no projeto de gás",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360004991393",
+    "summary": "Perdas, comprimentos equivalentes, pressões e efeito de elevação para GN/GLP.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Equações e limiares dependem do gás, pressão e edição normativa; não reutilizar motor de água como gás sem formulação qualificada."
+  },
+  {
+    "id": "QH-017",
+    "publisher": "AltoQi",
+    "title": "Software para projetos de gás em BIM",
+    "url": "https://www.altoqi.com.br/produtos/builder/software-para-projetos-de-gas-em-bim",
+    "summary": "GN, GLP e rede intercambiável; baixa/média pressão, reguladores, simultaneidade e central.",
+    "accessed": "2026-11-14",
+    "type": "official_product_documentation",
+    "qualification": "Escopo comercial com detalhamento complementado por artigos de cálculo."
+  },
+  {
+    "id": "QH-018",
+    "publisher": "AltoQi Suporte",
+    "title": "Dimensionamento dos tubos da rede de hidrantes",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360003863954",
+    "summary": "Critérios de pressão/vazão, diâmetros e uso simultâneo de hidrantes.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Evidência de funcionalidade documentada, sem validação independente do Prumo; confirmar edição normativa e limites antes de implementar."
+  },
+  {
+    "id": "QH-019",
+    "publisher": "AltoQi Suporte",
+    "title": "Lançamento, critérios e configurações de sprinklers",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360000579194",
+    "summary": "Risco, densidade, área de operação, propriedades e fator K dos chuveiros.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Evidência de funcionalidade documentada, sem validação independente do Prumo; confirmar edição normativa e limites antes de implementar."
+  },
+  {
+    "id": "QH-020",
+    "publisher": "AltoQi Suporte",
+    "title": "Configurações avançadas de lançamento de sprinklers",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360022392913",
+    "summary": "Pendente/upright, malhas/grelhas, VGA e integração com hidrantes.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Evidência de funcionalidade documentada, sem validação independente do Prumo; confirmar edição normativa e limites antes de implementar."
+  },
+  {
+    "id": "QH-021",
+    "publisher": "AltoQi Suporte",
+    "title": "Dimensionamento hidráulico da rede de sprinklers",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/115001260894",
+    "summary": "Cálculo hidráulico, método das tabelas e processamento de redes em anel.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Tabelas têm restrições de aplicação; processamento preliminar sem pressões não equivale a verificação hidráulica concluída."
+  },
+  {
+    "id": "QH-022",
+    "publisher": "AltoQi Suporte",
+    "title": "Lançamento de hidrantes em rede de sprinklers",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/115001078213",
+    "summary": "Associação dos hidrantes à área de operação e cálculo conjunto de demanda.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Não fixar demanda única universal por hidrante; verificar edição normativa, classe de risco e condições da rede."
+  },
+  {
+    "id": "QH-023",
+    "publisher": "AltoQi Suporte",
+    "title": "Bomba de incêndio: lançamento, definição e análise inicial",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360000790214",
+    "summary": "Modelagem, seleção e interpretação da bomba de incêndio e ligações hidráulicas.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Evidência de funcionalidade documentada, sem validação independente do Prumo; confirmar edição normativa e limites antes de implementar."
+  },
+  {
+    "id": "QH-024",
+    "publisher": "AltoQi Suporte",
+    "title": "Bomba jockey: lançamento e funcionamento",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/115002401273",
+    "summary": "Associação da bomba jockey ao sistema de incêndio.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Não computar jockey como suprimento obrigatório de combate; qualificar estados e curva de funcionamento."
+  },
+  {
+    "id": "QH-025",
+    "publisher": "AltoQi",
+    "title": "Lançamento de extintores, sinalização e detecção de incêndio",
+    "url": "https://www.altoqi.com.br/recursos/lancamento-de-extintores-sinalizacao-e-deteccao-de-incendio",
+    "summary": "Modelagem e quantificação de extintores, detecção, alarme, sinalização e iluminação de emergência.",
+    "accessed": "2026-11-14",
+    "type": "official_feature_documentation",
+    "qualification": "A fonte atribui posição e critérios ao projetista; não comprova cálculo automático completo de PPCI."
+  },
+  {
+    "id": "QH-026",
+    "publisher": "AltoQi Suporte",
+    "title": "Planilhas de pressões como memorial de cálculo",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/115004219793",
+    "summary": "Relatórios de pressões hidráulico, gás e incêndio e vinculação a peças analisadas.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Evidência de funcionalidade documentada, sem validação independente do Prumo; confirmar edição normativa e limites antes de implementar."
+  },
+  {
+    "id": "QH-027",
+    "publisher": "AltoQi Suporte",
+    "title": "Esquemas isométricos e verticais",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360013453154",
+    "summary": "Diagramas simplificados de trajetos e colunas por disciplina.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "A fonte exclui ventilação sanitária do esquema vertical automático; Prumo deve explicitar quais redes sua saída representa."
+  },
+  {
+    "id": "QH-028",
+    "publisher": "AltoQi Suporte",
+    "title": "Atualização 2026-08 do AltoQi Builder",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/novo-conhe%C3%A7a-a-atualiza%C3%A7%C3%A3o-2026-08-do-altoqi-builder",
+    "summary": "Atualizações de conexões ranhuradas, peças e recursos recentes.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Distinguir funcionalidades de assinatura e versão; novo catálogo não permite copiar a biblioteca proprietária."
+  },
+  {
+    "id": "QH-029",
+    "publisher": "AltoQi",
+    "title": "Cadastro de peças",
+    "url": "https://www.altoqi.com.br/recursos/cadastro-de-pecas",
+    "summary": "Catálogo multidisciplinar com dados técnicos, geometria e aplicação dos componentes.",
+    "accessed": "2026-11-14",
+    "type": "official_feature_documentation",
+    "qualification": "Usar biblioteca própria/aberta/licenciada; acesso ao catálogo comercial não autoriza sua redistribuição."
+  },
+  {
+    "id": "QH-030",
+    "publisher": "AltoQi Suporte",
+    "title": "Aplicação no cadastro de peças",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360011032213",
+    "summary": "Aplicações sanitárias incluem caixas, tanque séptico, filtro, sumidouro e valas.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Presença da aplicação não demonstra algoritmo de dimensionamento para toda tipologia."
+  },
+  {
+    "id": "QH-031",
+    "publisher": "USEPA",
+    "title": "USEPA EPANET 2.2",
+    "url": "https://github.com/USEPA/EPANET2.2",
+    "summary": "Motor de redes de água; repositório oficial declara licença MIT.",
+    "accessed": "2026-11-14",
+    "type": "official_open_source_repository",
+    "qualification": "Candidato, não validado. Conferir artefato/commit: página institucional EPA descreve domínio público, enquanto repositório declara MIT."
+  },
+  {
+    "id": "QH-032",
+    "publisher": "USEPA / Sandia",
+    "title": "WNTR license",
+    "url": "https://github.com/USEPA/WNTR/blob/main/LICENSE.md",
+    "summary": "Revised BSD; dependências e EPANET com licenças próprias.",
+    "accessed": "2026-11-14",
+    "type": "official_license",
+    "qualification": "Candidato, não validado. EpanetSimulator compartilha EPANET e não constitui oráculo independente dele."
+  },
+  {
+    "id": "QH-033",
+    "publisher": "USEPA",
+    "title": "Stormwater Management Model",
+    "url": "https://github.com/USEPA/Stormwater-Management-Model",
+    "summary": "Motor hidrológico/hidráulico SWMM em C; domínio público declarado.",
+    "accessed": "2026-11-14",
+    "type": "official_open_source_repository",
+    "qualification": "Candidato para comparação específica de escoamento; não substitui regras prediais NBR8160/10844 e direitos das dependências."
+  },
+  {
+    "id": "QH-034",
+    "publisher": "Caleb Bell e colaboradores",
+    "title": "fluids",
+    "url": "https://github.com/CalebBell/fluids",
+    "summary": "Biblioteca de mecânica dos fluidos com atrito, acessórios, bombas e escoamento compressível; MIT.",
+    "accessed": "2026-11-14",
+    "type": "official_open_source_repository",
+    "qualification": "Candidato para funções específicas. Conferir hipóteses/correlações, unidades, precisão e dependências por commit."
+  },
+  {
+    "id": "QH-035",
+    "publisher": "Fraunhofer IEE / Universidade de Kassel",
+    "title": "pandapipes",
+    "url": "https://github.com/e2nIEE/pandapipes",
+    "summary": "Análise de redes de água, gás e calor.",
+    "accessed": "2026-11-14",
+    "type": "official_open_source_repository",
+    "qualification": "Candidato para motor ou referência; capacidade genérica de escoamento não implementa automaticamente normas prediais brasileiras."
+  },
+  {
+    "id": "QH-036",
+    "publisher": "pandapipes",
+    "title": "pandapipes license",
+    "url": "https://pandapipes.readthedocs.io/en/latest/about/license.html",
+    "summary": "Projeto distribuído sob BSD de três cláusulas.",
+    "accessed": "2026-11-14",
+    "type": "official_license",
+    "qualification": "Fixar commit e inspecionar dependências e artefato antes de adotar."
+  },
+  {
+    "id": "QH-037",
+    "publisher": "AltoQi",
+    "title": "Dimensionamento segundo parâmetros normativos",
+    "url": "https://www.altoqi.com.br/recursos/dimensionamento-segundo-os-parametros-normativos",
+    "summary": "Catálogo associa disciplinas a NBR5626, 8160, 15526, 13714, 10897 e outras.",
+    "accessed": "2026-11-14",
+    "type": "official_feature_documentation",
+    "qualification": "Associação comercial não comprova edição vigente; a menção a NBR7198 demanda verificação de substituição pela NBR5626."
+  },
+  {
+    "id": "QH-038",
+    "publisher": "CBMSC",
+    "title": "Instruções Normativas de Segurança Contra Incêndio",
+    "url": "https://cbm.sc.gov.br/index.php/sci/instrucoes-normativas",
+    "summary": "Portal oficial de normas catarinenses, incluindo sistemas hidráulicos, preventivos e gás.",
+    "accessed": "2026-11-14",
+    "type": "official_regulatory_portal",
+    "qualification": "Registrar versão, vigência, transição e aplicabilidade de cada documento; não estender regra estadual ao país."
+  },
+  {
+    "id": "QH-039",
+    "publisher": "CBMRS",
+    "title": "Resoluções Técnicas de Segurança Contra Incêndio",
+    "url": "https://www.bombeiros.rs.gov.br/resolucoes-tecnicas",
+    "summary": "Portal oficial gaúcho de resoluções, versões corrigidas e complementos.",
+    "accessed": "2026-11-14",
+    "type": "official_regulatory_portal",
+    "qualification": "Conferir documento vigente e notas; resultado de busca com minuta não equivale a texto aprovado."
+  },
+  {
+    "id": "QH-040",
+    "publisher": "Prefeitura de Florianópolis",
+    "title": "Exemplos de projeto hidrossanitário e atualização NBR17076",
+    "url": "https://devportal.pmf.sc.gov.br/entidades/smdu/index.php?cms=exemplos+de+phs&menu=9&submenuid=dyn-2893",
+    "summary": "Órgão municipal informa retirada de exemplos para atualização diante da NBR17076/2024.",
+    "accessed": "2026-11-14",
+    "type": "official_regulatory_guidance",
+    "qualification": "Evidência de exigência local; metadados e texto integral da norma devem ser obtidos da ABNT/autorizados."
+  },
+  {
+    "id": "QH-041",
+    "publisher": "AltoQi Suporte",
+    "title": "Válvula redutora de pressão hidráulica",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/19847502448663",
+    "summary": "VRP nativa a partir de 2024-05; ajuste e resultados de pressão.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Atalho antigo como tomada com pressão imposta ignora montante; não reutilizar como verificação integral da rede."
+  },
+  {
+    "id": "QH-042",
+    "publisher": "AltoQi Suporte",
+    "title": "Consumo diário e reserva de água da edificação",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360007312313",
+    "summary": "Consumos por ocupação e população configuráveis usados em reservação.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Valores bibliográficos pré-definidos são hipóteses editáveis com origem, não automaticamente prescrições normativas."
+  },
+  {
+    "id": "QH-043",
+    "publisher": "AltoQi Suporte",
+    "title": "Distribuidores PEX nos módulos Hidráulico e Gás",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/8351522934167",
+    "summary": "Distribuidores, portas e redes PEX desde 2022-11.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Fonte informa limitações de filtros de diâmetro/saídas/ângulo/fluxo; Prumo deve verificar compatibilidade explicitamente."
+  },
+  {
+    "id": "QH-044",
+    "publisher": "AltoQi Suporte",
+    "title": "Reservatório de água da chuva: Rippl",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360001587094",
+    "summary": "Método Rippl para dimensionamento de reservação pluvial.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Registrar série, passo temporal, perdas e aplicabilidade; compatibilidade com edição atual da NBR15527 precisa ser revisada."
+  },
+  {
+    "id": "QH-045",
+    "publisher": "AltoQi Suporte",
+    "title": "Reservatório de água da chuva: Azevedo Neto",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360003347154",
+    "summary": "Método Azevedo Neto para reservação pluvial.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Método empírico e seus limites devem ser declarados; não é prescrição universal vigente."
+  },
+  {
+    "id": "QH-046",
+    "publisher": "AltoQi Suporte",
+    "title": "Reservatório de água da chuva: simulação",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360003322193",
+    "summary": "Método da simulação para reservação pluvial.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Registrar condição inicial, série de chuva, demanda, extravasamento e déficit."
+  },
+  {
+    "id": "QH-047",
+    "publisher": "AltoQi Suporte",
+    "title": "Bombas submersíveis no projeto sanitário",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/17113650734871",
+    "summary": "Dimensionamento de bombas para esgoto/pluvial conforme vazão e sistema.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Evidência de funcionalidade documentada, sem validação independente do Prumo; confirmar edição normativa e limites antes de implementar."
+  },
+  {
+    "id": "QH-048",
+    "publisher": "AltoQi Suporte",
+    "title": "Dimensionamento do filtro anaeróbio",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360041401014",
+    "summary": "Unidade de tratamento com parâmetros próprios para dimensionamento.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Confrontar artigos legados com a NBR17076 e restrições locais."
+  },
+  {
+    "id": "QH-049",
+    "publisher": "AltoQi Suporte",
+    "title": "Dimensionamento do sumidouro",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/115002003333",
+    "summary": "Infiltração por contribuição e percolação; unidades circulares e retangulares.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Fonte ainda menciona NBR13969; registrar conflito de edição e resolver pela norma vigente, sem copiar hipótese antiga."
+  },
+  {
+    "id": "QH-050",
+    "publisher": "AltoQi Suporte",
+    "title": "Simulador de pressões",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/115000951334",
+    "summary": "Simulação interativa de diâmetros, peças e pressões para cenários hidráulicos.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Evidência de funcionalidade documentada, sem validação independente do Prumo; confirmar edição normativa e limites antes de implementar."
+  },
+  {
+    "id": "QH-051",
+    "publisher": "AltoQi Suporte",
+    "title": "Cadastro de hidrantes e mangotinhos",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/115003163933",
+    "summary": "Peças com mangueiras configuráveis por comprimento e quantidade de lances.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Alcance, acesso e perda hidráulica dependem do arranjo e critérios aprovados, não só da representação."
+  },
+  {
+    "id": "QH-052",
+    "publisher": "AltoQi Suporte",
+    "title": "Problemas de fluxo",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360000023314",
+    "summary": "Diagnósticos de desconexão e entrada/saída de redes hidráulicas, sanitárias, gás e incêndio.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Evidência de funcionalidade documentada, sem validação independente do Prumo; confirmar edição normativa e limites antes de implementar."
+  },
+  {
+    "id": "QH-053",
+    "publisher": "AltoQi",
+    "title": "Dimensionamento e detalhamento das unidades de tratamento",
+    "url": "https://www.altoqi.com.br/recursos/dimensionamento-e-detalhamento-das-unidades-de-tratamento",
+    "summary": "Lançamento, cálculo e detalhamento de fossa, filtro e sumidouro.",
+    "accessed": "2026-11-14",
+    "type": "official_feature_documentation",
+    "qualification": "Usar como inventário funcional; texto normativo atual e competência profissional sustentam a regra implementada."
+  },
+  {
+    "id": "QH-054",
+    "publisher": "AltoQi Suporte",
+    "title": "Dimensões e configurações de múltiplos sumidouros",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/13074139437207",
+    "summary": "Múltiplas unidades circulares ou retangulares e condições de percolação.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Não presumir que simples divisão de vazão satisfaça alternância, afastamentos ou condições de solo."
+  },
+  {
+    "id": "QH-055",
+    "publisher": "USEPA",
+    "title": "EPANET: visão institucional",
+    "url": "https://www.epa.gov/water-research/epanet",
+    "summary": "EPA apresenta capacidades e distribuição do EPANET.",
+    "accessed": "2026-11-14",
+    "type": "official_software_documentation",
+    "qualification": "A afirmação domínio público desta página não substitui LICENSE.txt do repositório/artefato selecionado."
+  }
+]

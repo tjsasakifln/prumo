@@ -9,10 +9,18 @@ REPO_URL = 'https://github.com/tjsasakifln/prumo'
 
 
 def source_index():
-    result = {
-        'USR-01': {'title': 'Objetivo e requisitos do Prumo definidos pelo proprietário', 'url': REPO_URL + '/blob/main/PRD.md'},
-        'USR-02': {'title': 'Diretriz do proprietário: incorporar código aberto pertinente e validado', 'url': REPO_URL + '/blob/main/docs/REUSO.md'},
-    }
+    requirements = json.loads((ROOT / 'planning/requirements.json').read_text(encoding='utf-8'))
+    result = {}
+    for source in requirements['sources']:
+        if source['id'] in result:
+            raise ValueError('Fonte do proprietário duplicada: ' + source['id'])
+        title = source.get('title') or source.get('description')
+        if not isinstance(title, str) or not title.strip():
+            raise ValueError('Fonte do proprietário sem título ou descrição: ' + source['id'])
+        result[source['id']] = {
+            'title': title,
+            'url': source.get('url', REPO_URL + '/blob/main/PRD.md'),
+        }
     for path in sorted((ROOT / 'docs').glob('fontes-*.json')):
         for source in json.loads(path.read_text(encoding='utf-8')):
             if source['id'] in result:
@@ -21,11 +29,15 @@ def source_index():
     return result
 
 
-def render_issue(issue, sources):
+def render_issue(issue, sources, total):
+    for field in ('scope', 'acceptance', 'validation', 'norms', 'reuse_candidates', 'source_ids'):
+        values = issue.get(field)
+        if not isinstance(values, list) or any(not isinstance(value, str) or not value.strip() for value in values):
+            raise ValueError(f"{issue['key']}: {field} deve ser uma lista de textos não vazios.")
     n = issue['sequence']
     lines = [f"# {issue['key']}: {issue['title']}", '', '## Objetivo', '', issue['goal'], '',
              '## Ordem de implementação', '',
-             f"**Etapa {n}/120. Fase {issue['phase']}: {issue['phase_name']}.**", '']
+             f"**Etapa {n}/{total}. Fase {issue['phase']}: {issue['phase_name']}.**", '']
     if n == 1:
         lines.append('Primeira issue da sequência. Consultar o planejamento e confirmar a base atual do repositório antes de iniciar.')
     else:
@@ -65,10 +77,10 @@ def rendered_outputs():
     sources = source_index()
     outputs = {}
     for issue in data['issues']:
-        outputs[f"planning/issues/{issue['sequence']:03}.md"] = render_issue(issue, sources)
+        outputs[f"planning/issues/{issue['sequence']:03}.md"] = render_issue(issue, sources, data['issue_count'])
     lines = ['# Prumo: sequência de implementação', '',
-             '**120 issues, implementadas em ordem numérica.** Estado inicial: planejamento. A conclusão da última issue exige produto completo, evidências aceitas e distribuição conferida.', '',
-             'A fila foi criada antes de qualquer PR para preservar a correspondência entre número GitHub e sequência PRU. Novas PRs não alteram os identificadores abaixo.', '',
+             f"**{data['issue_count']} issues, implementadas em ordem numérica.** Estado inicial: planejamento. A conclusão da última issue exige estruturas e instalações completas, evidências aceitas e distribuição conferida.", '',
+             'A fila ampliada preserva a correspondência entre número GitHub e sequência PRU. A etapa 120 é um marco estrutural; a liberação comercial pertence à etapa 250. Novas PRs não alteram os identificadores abaixo.', '',
              '## Fases', '', '| Issues | Fase |', '|---|---|']
     for phase in data['phases']:
         lines.append(f"| #{phase['first']} a #{phase['last']} | {phase['name']} |")
@@ -103,7 +115,7 @@ def main():
             path.write_text(content, encoding='utf-8')
     if differences:
         raise SystemExit('Arquivos fora de sincronia: ' + ', '.join(differences))
-    print('Roadmap e 120 especificações de issues ' + ('conferidos.' if args.check else 'gerados.'))
+    print('Roadmap e especificações de issues ' + ('conferidos.' if args.check else 'gerados.'))
 
 
 if __name__ == '__main__':

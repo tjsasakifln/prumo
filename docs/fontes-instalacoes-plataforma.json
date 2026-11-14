@@ -1,0 +1,312 @@
+[
+  {
+    "id": "QP-001",
+    "publisher": "AltoQi",
+    "title": "AltoQi Builder: disciplinas e fluxo de produto",
+    "url": "https://www.altoqi.com.br/produtos/builder",
+    "summary": "Oito frentes comerciais: elétrica, fotovoltaica, SPDA, cabeamento, hidrossanitária, incêndio, gás e climatização; modelagem, cálculo, coordenação e documentos.",
+    "accessed": "2026-11-14",
+    "type": "official_product_documentation",
+    "qualification": "Fonte oficial de capacidade documentada; não prova validação independente nem disponibilidade em todas as licenças."
+  },
+  {
+    "id": "QP-002",
+    "publisher": "AltoQi",
+    "title": "Recursos do AltoQi Builder",
+    "url": "https://www.altoqi.com.br/produtos/builder/recursos",
+    "summary": "Catálogo por disciplinas e recursos BIM compartilhados, incluindo lançamento, edição, desenhos, listas e configurações.",
+    "accessed": "2026-11-14",
+    "type": "official_feature_catalog",
+    "qualification": "Fonte oficial de capacidade documentada; não prova validação independente nem disponibilidade em todas as licenças."
+  },
+  {
+    "id": "QP-003",
+    "publisher": "AltoQi",
+    "title": "Atualização 2026-08 do Builder",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/novo-conhe%C3%A7a-a-atualiza%C3%A7%C3%A3o-2026-08-do-altoqi-builder",
+    "summary": "Inclui RVT/RTE, carga térmica por ambiente, plantas de passagens, sugestões hidráulicas, revisão SPDA e edição 3D.",
+    "accessed": "2026-11-14",
+    "type": "official_release_notes",
+    "qualification": "Recursos podem ser exclusivos de assinatura. Serve para escopo; regras normativas exigem fonte normativa independente."
+  },
+  {
+    "id": "QP-004",
+    "publisher": "AltoQi",
+    "title": "Atualização 2026-02 do Builder",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/novo-conhe%C3%A7a-a-atualiza%C3%A7%C3%A3o-2025-11-do-altoqi-builder-0",
+    "summary": "Documenta listas por rede/sub-rede, personalização de símbolos, entradas 3D com diâmetro, cópias com circuitos, kits e representação de condutos.",
+    "accessed": "2026-11-14",
+    "type": "official_release_notes",
+    "qualification": "Fonte oficial de capacidade documentada; não prova validação independente nem disponibilidade em todas as licenças."
+  },
+  {
+    "id": "QP-005",
+    "publisher": "AltoQi",
+    "title": "Como cadastrar uma nova peça",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/115007726088",
+    "summary": "Cadastro autoral com materiais, itens associados e parâmetros de cálculo, inclusive por cópia de peça existente.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Fonte oficial de capacidade documentada; não prova validação independente nem disponibilidade em todas as licenças."
+  },
+  {
+    "id": "QP-006",
+    "publisher": "AltoQi",
+    "title": "Ligações volumétricas em símbolos e peças",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/1500011423681",
+    "summary": "Múltiplas portas espaciais num símbolo representam as conexões físicas distintas de um equipamento.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Fonte oficial de capacidade documentada; não prova validação independente nem disponibilidade em todas as licenças."
+  },
+  {
+    "id": "QP-007",
+    "publisher": "AltoQi",
+    "title": "Como lançar e criar Kits",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/lan%C3%A7amento-de-kits-no-altoqi-builder",
+    "summary": "Biblioteca reutilizável entre projetos, importação/exportação e composição unitária de materiais; as disciplinas de instalações estão cobertas a partir de 2026-02.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Fonte oficial de capacidade documentada; não prova validação independente nem disponibilidade em todas as licenças."
+  },
+  {
+    "id": "QP-008",
+    "publisher": "AltoQi",
+    "title": "Como lançar e criar Blocos",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/como-lan%C3%A7ar-e-criar-blocos-no-altoqi-builder",
+    "summary": "Instâncias associadas no mesmo projeto replicam edição; diferem de kits, cuja biblioteca não altera instâncias já inseridas.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Não é necessário copiar limitações de desfazer ou restrições de processamento; preservar capacidades e demonstrar consistência."
+  },
+  {
+    "id": "QP-009",
+    "publisher": "AltoQi",
+    "title": "Ambiente 3D: personalização e ferramentas",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/115004725274",
+    "summary": "Navegação, ocultar/exibir, vistas, iluminação, medição, corte e atalhos; apresenta lançamento, manipulação e dimensionamento no ambiente tridimensional.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Fonte oficial de capacidade documentada; não prova validação independente nem disponibilidade em todas as licenças."
+  },
+  {
+    "id": "QP-010",
+    "publisher": "AltoQi",
+    "title": "Comandos de manipulação em desenhos",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/comandos-de-manipula%C3%A7%C3%A3o",
+    "summary": "Mover, espelhar, girar, arrastar, copiar, matrizes, escalas, agrupamento e ordem gráfica; entradas por pontos ou coordenadas.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Fonte oficial de capacidade documentada; não prova validação independente nem disponibilidade em todas as licenças."
+  },
+  {
+    "id": "QP-011",
+    "publisher": "AltoQi",
+    "title": "Criar edificação a partir de modelo 3D",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360015831293",
+    "summary": "Extrai pavimentos e referências planificadas de arquitetura IFC, mantendo origem e escala e permitindo ajuste de níveis.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Fonte oficial de capacidade documentada; não prova validação independente nem disponibilidade em todas as licenças."
+  },
+  {
+    "id": "QP-012",
+    "publisher": "AltoQi",
+    "title": "Planificação IFC por plano de corte",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360008150473",
+    "summary": "Produz plantas de referência por pavimento e faixas de corte; filtra objetos e liga as plantas ao modelo de origem.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Fonte oficial de capacidade documentada; não prova validação independente nem disponibilidade em todas as licenças."
+  },
+  {
+    "id": "QP-013",
+    "publisher": "AltoQi",
+    "title": "Importar RVT e RTE no Builder",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/como-importar-ar",
+    "summary": "Vincula projetos/modelos RVT/RTE como geometria externa e permite obter simbologias 3D dessa geometria.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "A fonte não declara autoria nativa completa de RVT/RTE; conversor do Prumo exige licença e versões qualificadas."
+  },
+  {
+    "id": "QP-014",
+    "publisher": "AltoQi",
+    "title": "Exportação IFC no Builder",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/115004074714",
+    "summary": "Exporta IFC2x3/IFC4, propriedades e quantitativos; permite selecionar redes, sub-redes, pavimentos e elementos.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Q3D é proprietário; IFC cobre troca aberta. Não pressupor que cópia do formato proprietário seja necessária ou autorizada."
+  },
+  {
+    "id": "QP-015",
+    "publisher": "AltoQi",
+    "title": "Verificação automática de colisões",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360022921893",
+    "summary": "Regras entre conjuntos nativos/externos, filtros por pavimento, exclusões e notas de colisão com estado e prioridade.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Fonte oficial de capacidade documentada; não prova validação independente nem disponibilidade em todas as licenças."
+  },
+  {
+    "id": "QP-016",
+    "publisher": "AltoQi",
+    "title": "Como fazer a planta de passagem",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/como-fazer-a-planta-de-passagem-no-altoqi-builder.-",
+    "summary": "Objetos para passagens em lajes e vigas, vistas e exportação IFC.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Recurso documentado para assinatura Infinity 2026-08; passagem de coordenação não equivale à aprovação resistente."
+  },
+  {
+    "id": "QP-017",
+    "publisher": "AltoQi",
+    "title": "Sincronizador com Visus Collab",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360055671714",
+    "summary": "Criação/vinculação de projeto por referência remota, atualização de arquivos e sincronização de notas BCF.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "É integração do Builder com serviço externo; orçamento, planejamento e gestão integrais do serviço são outro produto."
+  },
+  {
+    "id": "QP-018",
+    "publisher": "AltoQi",
+    "title": "Mesclando projetos",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/115002188874",
+    "summary": "Mescla por disciplinas, pavimentos e setores, com operações distintas para adicionar e substituir.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "O Prumo deve preservar revisão/backup e explicitar conflito; não copiar a irreversibilidade documentada do comando."
+  },
+  {
+    "id": "QP-019",
+    "publisher": "AltoQi",
+    "title": "Geração do quantitativo",
+    "url": "https://www.altoqi.com.br/recursos/geracao-do-quantitativo",
+    "summary": "Quantifica componentes por circuito, quadro, pavimento ou projeto e exporta DOCX, HTML, XLSX e dados IFC para orçamento.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "O título SEO menciona outro produto, mas o corpo identifica o recurso do Builder. Lista de quantidades não é orçamento completo."
+  },
+  {
+    "id": "QP-020",
+    "publisher": "AltoQi",
+    "title": "Configuração da lista de materiais XLSX",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360009338373",
+    "summary": "Personalização da apresentação das planilhas exportadas, para entregar quantitativos ou integrar orçamentação.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Fonte oficial de capacidade documentada; não prova validação independente nem disponibilidade em todas as licenças."
+  },
+  {
+    "id": "QP-021",
+    "publisher": "AltoQi",
+    "title": "Gerar legenda de símbolos",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/115002460393",
+    "summary": "Legendas de projeto/pavimento no documento ou croqui, com propriedades de apresentação configuráveis.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Fonte oficial de capacidade documentada; não prova validação independente nem disponibilidade em todas as licenças."
+  },
+  {
+    "id": "QP-022",
+    "publisher": "AltoQi",
+    "title": "Criação de revisões",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/115004565393",
+    "summary": "Registra revisão, mantém arquivo anterior e relaciona propriedades de prancha, carimbo e estado de trabalho.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Fonte oficial de capacidade documentada; não prova validação independente nem disponibilidade em todas as licenças."
+  },
+  {
+    "id": "QP-023",
+    "publisher": "AltoQi",
+    "title": "Inserção da tabela de revisão",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360014854574",
+    "summary": "Tabela de revisão configurável e integração com informações de desenhos; recurso complementar à nuvem de revisão.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Fonte oficial de capacidade documentada; não prova validação independente nem disponibilidade em todas as licenças."
+  },
+  {
+    "id": "QP-024",
+    "publisher": "AltoQi",
+    "title": "Base de conhecimento Builder",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/altoqi-builder",
+    "summary": "Índice dos procedimentos de CAD, pavimentos, redes, catálogos, simbologias, detalhes, pranchas, impressão e exportação.",
+    "accessed": "2026-11-14",
+    "type": "official_documentation_index",
+    "qualification": "Fonte oficial de capacidade documentada; não prova validação independente nem disponibilidade em todas as licenças."
+  },
+  {
+    "id": "QP-025",
+    "publisher": "AltoQi",
+    "title": "Aplicações Essential até Infinity",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/13634833896727",
+    "summary": "Distingue limites de área e pavimentos e menciona disponibilidade do barramento blindado nos planos superiores.",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "qualification": "Não reproduzir limites comerciais arbitrários no Prumo; inventário deve incluir recursos do conjunto de maior cobertura, inclusive assinatura."
+  },
+  {
+    "id": "QP-026",
+    "publisher": "AltoQi",
+    "title": "Relato de bugs e correções 2026-09",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360002961233",
+    "summary": "Documenta riscos observados de corrupção cruzada, múltiplas sessões e salvamento/abertura de desenhos, além de menção a Nodes beta.",
+    "accessed": "2026-11-14",
+    "type": "official_support_notice",
+    "qualification": "Referência de cenários de robustez. A menção a Nodes beta não prova cobertura completa de automação no Builder."
+  },
+  {
+    "id": "QP-027",
+    "publisher": "AltoQi",
+    "title": "Atualização 2025-11 do Builder",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/novo-conhe%C3%A7a-a-atualiza%C3%A7%C3%A3o-2025-11-do-altoqi-builder",
+    "summary": "Exportação seletiva IFC e simplificação de DWG/DXF grandes como referência para reduzir o custo gráfico.",
+    "accessed": "2026-11-14",
+    "type": "official_release_notes",
+    "qualification": "Fonte oficial de capacidade documentada; não prova validação independente nem disponibilidade em todas as licenças."
+  },
+  {
+    "id": "QP-028",
+    "publisher": "Mantenedores do projeto",
+    "title": "petgraph",
+    "url": "https://github.com/petgraph/petgraph",
+    "summary": "Biblioteca Rust para estruturas e algoritmos de grafos; repositório declara alternativas Apache-2.0/MIT.",
+    "accessed": "2026-11-14",
+    "type": "official_repository",
+    "qualification": "Candidato pesquisado, não validado; fixar commit, confirmar licença/dependências e testar multigrafos, estabilidade de IDs e escalabilidade."
+  },
+  {
+    "id": "QP-029",
+    "publisher": "Mantenedores do projeto",
+    "title": "NetworkX",
+    "url": "https://github.com/networkx/networkx",
+    "summary": "Biblioteca Python para análise de grafos, candidata à verificação independente de topologia.",
+    "accessed": "2026-11-14",
+    "type": "official_repository",
+    "qualification": "Nenhum algoritmo hidráulico ou dimensionamento normativo é inferido; confirmar licença, versão e dependências antes de uso."
+  },
+  {
+    "id": "QP-030",
+    "publisher": "Mantenedores do projeto",
+    "title": "D3",
+    "url": "https://github.com/d3/d3",
+    "summary": "Componentes para visualização SVG/canvas/HTML; licença ISC indicada no repositório.",
+    "accessed": "2026-11-14",
+    "type": "official_repository",
+    "qualification": "Candidato para apresentação de diagramas/resultados, sem regra de engenharia; qualificar módulos e acessibilidade."
+  },
+  {
+    "id": "QP-031",
+    "publisher": "Mantenedores do projeto",
+    "title": "Dagre",
+    "url": "https://github.com/dagrejs/dagre",
+    "summary": "Layout de grafos direcionados em JavaScript; licença MIT indicada no repositório.",
+    "accessed": "2026-11-14",
+    "type": "official_repository",
+    "qualification": "Candidato para posicionar diagramas; o layout não pode alterar conectividade, cálculo ou identidade."
+  }
+]

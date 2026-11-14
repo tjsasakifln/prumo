@@ -1,40 +1,47 @@
-# Revisão do planejamento
+# Revisão do planejamento do Prumo
 
-**Objeto examinado:** documentação e sequência de 120 issues do Prumo, em 14/11/2026. **Natureza da revisão:** pesquisa e revisão independente por agentes especializados, seguidas de conferência do coordenador e validação automática de integridade. Não houve validação de software estrutural nem assinatura ou aceite técnico de profissional habilitado nesta sessão.
+**Versão 2.0, em 14/11/2026.** Objeto: ampliação do planejamento para estruturas e oito disciplinas de instalações, com 250 issues, 72 famílias obrigatórias e 14 requisitos permanentes. A revisão foi executada por agentes especializados, seguida da conferência do coordenador. Não houve implementação ou validação de cálculos nem aceite técnico profissional nesta sessão.
 
-## Frentes de revisão
+## Frentes examinadas
 
-1. Cobertura funcional dos manuais e catálogos oficiais Eberick, CYPECAD/CYPE 3D e TQS, com distinção de módulos e versões.
-2. Normas, verificação numérica, independência de referências e critérios de confiabilidade.
-3. Arquitetura BIM, MCP, segurança, reutilização de componentes e experiência de uso.
+| Frente | Verificações realizadas |
+|---|---|
+| Cobertura das instalações | Catálogos e manuais oficiais, recursos avançados, edições e atualizações; água, esgoto, chuva, gás, incêndio, elétrica, fotovoltaica, SPDA, comunicação e climatização |
+| Normas e confiabilidade | Classes de evidência, transições, domínio dos métodos, independência de referências, atribuições profissionais e condições de qualificação |
+| Arquitetura e sequência | Modelo comum, portas e redes, catálogos, contratos UI/MCP, dependências, integração, emissão e liberação final |
+| Apresentação e controles | README/LEIAME com identidade própria, geração dos textos, integridade da fila, cobertura e registro de publicação |
 
-As revisões buscaram omissões capazes de produzir um programa aparentemente completo que ainda não pudesse atender ao objetivo. As recomendações foram incorporadas antes do registro definitivo da fila.
+As frentes fizeram revisão cruzada de conteúdo preparado por outro agente. Os pareceres não identificaram problema crítico ou grave remanescente no recorte examinado após as correções. As decisões e seus limites estão registrados em [review.json](../planning/review.json).
 
 ## Correções incorporadas
 
-| Achado | Tratamento no plano |
+| Achado | Tratamento |
 |---|---|
-| Manuais funcionais citam normas antigas | Cadastro separa metadados atuais, edição em uso, texto licenciado e regra implementada |
-| Pilares-parede não equivalem ao sistema completo de paredes moldadas no local | NBR 16055, modelagem, detalhamento e campanhas incluídos em 49, 53, 60 e 113 |
-| Tirantes não podem trabalhar artificialmente à compressão | Tipos unilaterais, ativação/desativação e inversão de carregamento em 22, 26 e 77 |
-| Verificação isolada não exige edifício fictício | Entradas de esforços externos e limites da conclusão em 42, 62, 65 e 72 |
-| Pré-moldados exigem fases e tipologias próprias | Transporte, içamento, insertos, painéis, pi/TT e telhas explicitados em 57 e 58 |
-| Perfis de alma aligeirada precisam de método específico | Geometria, modos locais e base complementar em 71 e 72 |
-| IFC não conserva todo o cálculo | Pacote nativo, modelo físico/analítico e relatório de perdas em 4, 5 e 104 |
-| Modelagem inicial exigia solver ainda futuro | Aceite inicial restrito a representação e contratos; integração numérica obrigatória em 22, 25, 40 e 112 |
-| Grelhas eram dimensionadas antes de ter gerador | Base numérica antecipada à 22; 95 aprofunda comparação e escolha de idealização |
-| Geradores sísmico/térmico antecedem verificações resistentes por material | Estados intermediários e bloqueio de emissão explicitados em 35, 38 e 39 |
-| Reservatórios precedem o módulo geotécnico | Pressões e vínculos prescritos na fase estrutural, com qualificação integrada posterior em 70 e 114 |
-| Campanhas de módulo antecedem a emissão multiformato | Relatórios técnicos nativos nas campanhas iniciais; entrega final nas issues 101 a 106 |
-| MCP completo antecedia documentos futuros | Paridade das capacidades disponíveis na 99, extensão obrigatória em cada nova função e conferência completa na 112 |
-| Segurança e licença poderiam começar depois da primeira integração | Triagem, versões, stdio local e limites mínimos de acesso exigidos já na issue 1 |
-| Código aberto poderia ser confundido com componente homologado | Quinze fichas documentais, pendências explícitas e qualificação por método, versão e distribuição |
-| Exportações móveis e analíticas poderiam ser apenas nomes | Reabertura, escala, orientação e comparação do destino exigidas em 104 e 108 |
-| Usabilidade só media subtarefas | Acrescentada taxa de participantes que concluem o fluxo essencial, além de tempo, SUS e erros críticos |
-| Incidente numérico poderia afetar entregas já emitidas | Rastreio de versões/regras/projetos e comunicação aos responsáveis na issue 119 |
+| O lançamento antigo antecederia instalações | Etapa 120 transformada em marco estrutural; liberação completa transferida para 250 |
+| Base poderia admitir apenas vigas e pilares | Contratos iniciais ampliados para disciplinas, ambientes, portas, redes e unidades específicas, sem exigir motores futuros |
+| Fotovoltaica e recursos recentes poderiam ser omitidos | Disciplina própria, baterias, inversores, CC/CA, geração e cálculo térmico incluídos explicitamente |
+| Diferenças entre documentos antigos e novos | Registro por capacidade e edição, com investigação obrigatória dos conflitos antes do aceite |
+| Subestação e preventivos poderiam receber aprovação por simples representação | Modelagem, cálculo, verificação e emissão separados no domínio e nas evidências |
+| Normas antigas de água quente e tratamento poderiam ser combinadas | Registro explícito de transições e confirmação do texto aplicável antes de implementar |
+| Série normativa de climatização poderia receber ano indiscriminado | Situação conferida por parte; suspensão histórica documentada e vigência atual pendente de verificação |
+| SPDA pediria telecom ainda futura na 207 | Portas/redes genéricas disponíveis nessa etapa; integração completa de sinais exigida após os módulos de telecom |
+| Climatização exigiria coordenação global antes da 227 | Testes locais e interfaces nas 225/226; transferência e coordenação geral nas 227/228/238 |
+| Marcos 111 a 118 ainda citavam binário final | Evidências delimitadas ao incremento estrutural e reconferidas no candidato ampliado |
+| Usabilidade e pilotos só cobririam estruturas | Campanhas finais com todas as oito disciplinas e onze famílias de tarefas, conforme UX e VALIDACAO |
+| Biblioteca existente poderia parecer componente homologado | Treze candidatos adicionais em triagem, com licença, domínio e testes próprios antes da adoção |
+| Lista normativa em texto poderia ser renderizada letra a letra | Integração normaliza listas; verificador rejeita tipos incorretos |
+| Nome de referência poderia reaparecer na apresentação | Verificação de README e LEIAME, incluindo alias, separadores e URLs codificadas |
 
-## Conferência de integridade
+## Verificação de integridade
 
-O verificador `scripts/validate_plan.py` confere 120 identificadores contíguos, predecessores, fases, referências, capacidades, requisitos e textos gerados. Depois da criação das issues, o registro `planning/github-issues.json` conserva números, URLs, títulos e hashes dos corpos. A conferência de publicação compara os textos recuperados do GitHub aos arquivos locais.
+O comando `python3 scripts/validate_plan.py` verifica a sequência, predecessores, fases, identidades, fontes, requisitos, capacidades obrigatórias, textos gerados, links locais e manifesto de publicação. A etapa de preparação usa `--allow-unpublished` apenas enquanto os novos registros ainda não foram publicados; a entrega final exige a verificação completa.
 
-Essas verificações demonstram consistência e publicação do plano. Não demonstram correção de fórmulas, segurança de estruturas ou qualidade de um produto que ainda será implementado. Os testes numéricos e revisões profissionais necessários estão definidos nas próprias issues e em [VALIDACAO.md](VALIDACAO.md).
+Foram executadas doze mutações negativas em cópias temporárias, cobrindo redução da fila, ausência/opcionalidade de capacidade, perda dos requisitos novos, lançamento incorreto, marcas na apresentação, tipo inválido, aceite vazio e hash divergente. Todas foram rejeitadas pelos diagnósticos esperados. Um caso positivo de fonte com título sem descrição também passou. [Registro dos ensaios](../planning/reviews/2.0-validator.json).
+
+O manifesto sintético usado para testar o verificador ficou restrito à cópia temporária. A confirmação da publicação real usa leitura independente das issues do GitHub, com comparação de número, título e corpo completo. O [registro publicado](../planning/github-issues.json) conserva os hashes e a situação efetivamente conferida.
+
+## Histórico e limite desta revisão
+
+A versão 1.0 continha 120 entregas estruturais. Seu registro permanece em [revisão 1.0](../planning/reviews/1.0.json) e no histórico Git. A versão 2.0 preserva os requisitos estruturais e amplia o lançamento, sem marcar capacidades como implementadas por constarem no plano.
+
+A consistência documental não prova a correção dos cálculos. As campanhas numéricas, os ensaios de integração, os estudos com usuários e os aceites por profissionais habilitados continuam como condições de conclusão das issues e da liberação comercial.
