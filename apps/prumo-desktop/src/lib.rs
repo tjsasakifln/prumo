@@ -1,13 +1,36 @@
 #![forbid(unsafe_code)]
 use prumo_app::{AccessMode, ProjectService};
 use prumo_domain::Project;
+use prumo_domain::components::QualificationReport;
 use prumo_ui::{ProjectView, UiAction};
 use std::path::PathBuf;
+use std::sync::{
+    Arc,
+    atomic::{AtomicBool, Ordering},
+    mpsc,
+};
+use std::thread::{self, JoinHandle};
+
+struct QualificationJob {
+    cancel: Arc<AtomicBool>,
+    receiver: mpsc::Receiver<Result<QualificationReport, prumo_app::AppError>>,
+    thread: Option<JoinHandle<()>>,
+}
+
+impl Drop for QualificationJob {
+    fn drop(&mut self) {
+        self.cancel.store(true, Ordering::Release);
+        if let Some(thread) = self.thread.take() {
+            let _ = thread.join();
+        }
+    }
+}
 
 pub struct Desktop {
     pub view: ProjectView,
     pub project: Option<Project>,
     service: Option<ProjectService>,
+    qualification: Option<QualificationJob>,
 }
 
 impl Desktop {
@@ -20,12 +43,15 @@ impl Desktop {
             view,
             project: None,
             service: None,
+            qualification: None,
         };
         app.select(path, false);
         app
     }
 
     fn select(&mut self, path: PathBuf, report_missing: bool) {
+        self.qualification = None;
+        self.view.components = Default::default();
         self.view.registry = Default::default();
         let selected_path = path.to_string_lossy().into_owned();
         match ProjectService::open(path, AccessMode::ReadWrite, "interface-local") {
@@ -47,6 +73,11 @@ impl Desktop {
                     }
                 }
                 self.service = Some(service);
+                self.view.components.inventory = self
+                    .service
+                    .as_ref()
+                    .map(ProjectService::component_inventory)
+                    .unwrap_or_default();
                 self.view.selected_path = selected_path;
                 if self.project.is_some() {
                     self.refresh_registry();
@@ -61,6 +92,11 @@ impl Desktop {
     }
 
     pub fn render(&mut self, ui: &mut eframe::egui::Ui) {
+        self.poll_qualification();
+        if self.qualification.is_some() {
+            ui.ctx()
+                .request_repaint_after(std::time::Duration::from_millis(50));
+        }
         for action in self.view.show(ui, self.project.as_ref()) {
             self.dispatch(action);
         }
@@ -68,6 +104,12 @@ impl Desktop {
 
     pub fn dispatch(&mut self, action: UiAction) {
         match action {
+            UiAction::RunQualification => self.start_qualification(),
+            UiAction::CancelQualification => {
+                if let Some(job) = &self.qualification {
+                    job.cancel.store(true, Ordering::Release);
+                }
+            }
             UiAction::RefreshRegistry => self.refresh_registry(),
             UiAction::AssessCapability(id) => {
                 if let Some(service) = &self.service {
@@ -82,6 +124,11 @@ impl Desktop {
                 if let Some(service) = &self.service {
                     match service.read() {
                         Ok(project) => {
+                            if self.project.as_ref().is_some_and(|previous| {
+                                previous.id != project.id || previous.revision != project.revision
+                            }) {
+                                self.clear_qualification();
+                            }
                             self.view.project_name = project.name.clone();
                             self.project = Some(project);
                             self.view.report("Projeto reaberto do disco.", false);
@@ -105,6 +152,7 @@ impl Desktop {
                 if let Some(service) = &self.service {
                     match service.execute(*command) {
                         Ok(project) => {
+                            self.clear_qualification();
                             self.view.report(
                                 format!("Alteração salva. Revisão {}.", project.revision),
                                 false,
@@ -138,6 +186,89 @@ impl Desktop {
                     self.view.registry.candidate = Some(preview.candidate);
                 }
                 (Err(error), _) | (_, Err(error)) => self.view.report(error.to_string(), true),
+            }
+        }
+    }
+
+    fn start_qualification(&mut self) {
+        if self.qualification.is_some() {
+            return;
+        }
+        if self.view.path != self.view.selected_path {
+            self.view.report(
+                "Abra o arquivo selecionado antes de iniciar a consulta.",
+                true,
+            );
+            return;
+        }
+        let Some(service) = self.service.clone() else {
+            return;
+        };
+        let cancel = Arc::new(AtomicBool::new(false));
+        let worker_cancel = cancel.clone();
+        let (sender, receiver) = mpsc::channel();
+        let thread = thread::spawn(move || {
+            let result = service.qualify_components_with_cancel(&worker_cancel);
+            let _ = sender.send(result);
+        });
+        self.view.components.report = None;
+        self.view.components.running = true;
+        self.qualification = Some(QualificationJob {
+            cancel,
+            receiver,
+            thread: Some(thread),
+        });
+    }
+
+    fn clear_qualification(&mut self) {
+        self.qualification = None;
+        self.view.components.running = false;
+        self.view.components.report = None;
+    }
+
+    pub fn poll_qualification(&mut self) {
+        let result = self
+            .qualification
+            .as_ref()
+            .and_then(|job| match job.receiver.try_recv() {
+                Ok(result) => Some(result),
+                Err(mpsc::TryRecvError::Empty) => None,
+                Err(mpsc::TryRecvError::Disconnected) => {
+                    Some(Err(prumo_app::AppError::InvalidInput(
+                        "O processo de qualificação foi encerrado sem resposta.".into(),
+                    )))
+                }
+            });
+        if let Some(result) = result {
+            self.qualification = None;
+            self.view.components.running = false;
+            match result {
+                Ok(report) => {
+                    if report
+                        .basis
+                        .as_ref()
+                        .map(|basis| (basis.project_id, basis.revision))
+                        != self
+                            .project
+                            .as_ref()
+                            .map(|project| (project.id, project.revision))
+                    {
+                        self.view.components.report = None;
+                        self.view.report("A revisão do projeto mudou durante os ensaios. Atualize o projeto e consulte novamente.",true);
+                        return;
+                    }
+                    let passed = report.passed();
+                    self.view.components.report = Some(report);
+                    self.view.report(
+                        if passed {
+                            "Ensaios concluídos. Nenhum estado de engenharia foi alterado."
+                        } else {
+                            "A qualificação encontrou divergências. Confira os detalhes."
+                        },
+                        !passed,
+                    );
+                }
+                Err(error) => self.view.report(error.to_string(), true),
             }
         }
     }

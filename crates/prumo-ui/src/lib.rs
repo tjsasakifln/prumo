@@ -5,6 +5,8 @@ use egui::{Color32, RichText, Stroke, Vec2};
 use prumo_domain::{Command, LengthUnit, Project};
 mod registry;
 pub use registry::RegistryView;
+mod components;
+pub use components::ComponentView;
 
 #[derive(Debug)]
 pub enum UiAction {
@@ -12,6 +14,8 @@ pub enum UiAction {
     Refresh,
     RefreshRegistry,
     AssessCapability(String),
+    RunQualification,
+    CancelQualification,
     Command(Box<Command>),
 }
 
@@ -22,6 +26,7 @@ impl UiAction {
 }
 
 pub struct ProjectView {
+    pub components: ComponentView,
     pub registry: RegistryView,
     pub path: String,
     pub project_name: String,
@@ -39,6 +44,7 @@ pub struct ProjectView {
 impl Default for ProjectView {
     fn default() -> Self {
         Self {
+            components: ComponentView::default(),
             registry: RegistryView::default(),
             path: "meu-projeto.prumo".into(),
             project_name: "Meu primeiro projeto".into(),
@@ -109,6 +115,8 @@ impl ProjectView {
 
         egui::ScrollArea::vertical().show(ui, |ui| {
             if let Some(project) = project {
+                ui.add_enabled_ui(selected, |ui| self.components.show(ui,&mut actions));
+                ui.separator();
                 ui.add_enabled_ui(selected, |ui| self.registry.show(ui, project, &mut actions));
                 ui.separator();
                 ui.add_enabled_ui(selected, |ui| self.project_controls(ui, project, &mut actions));

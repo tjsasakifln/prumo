@@ -8,6 +8,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use thiserror::Error;
 use uuid::Uuid;
 
+pub mod components;
 pub mod registry;
 
 pub const PROJECT_SCHEMA_VERSION: u32 = 1;

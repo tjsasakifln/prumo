@@ -23,6 +23,14 @@ Em **Cadastrar ou atualizar referência normativa**, selecione uma referência o
 
 Selecionar uma capacidade apresenta os motivos que impedem um resultado final. O catálogo distribuído contém metadados públicos, sem textos normativos licenciados ou aprovações profissionais. Nenhuma de suas capacidades de engenharia está liberada. Informar uma edição, um responsável funcional ou uma fonte pública não supre a consulta autorizada, a interpretação e a qualificação exigidas.
 
+## Verificação dos componentes
+
+Após compilar o workspace, abra **Verificação de componentes** e escolha **Executar ensaios de componentes**. O processo separado executa os casos de referência de BIM, geometria, sistema linear, seção, desenho SVG e fronteira WASM. É possível cancelar a execução. A tela apresenta versão, licença, domínio, tolerância, resultado, tempo e identidade do executável.
+
+O relatório registra a identidade, a revisão e o hash do projeto como contexto. Os casos são fixtures independentes, não cálculos do modelo aberto. Alterar ou reabrir outra revisão limpa a evidência da tela. Nenhuma operação muda o projeto, libera uma capacidade normativa ou permite executar código arbitrário. Os três executáveis devem permanecer juntos na instalação.
+
+As mesmas operações estão disponíveis em MCP por `prumo.components.list` e `prumo.components.qualify`, inclusive no modo de leitura. A ficha [PRU-003](componentes/PRU-003.md) descreve as alternativas, licenças e decisões. A [matriz de evidências](evidencias/PRU-003.md) registra os contratos e medições.
+
 ## Servidor MCP local
 
 ```sh
@@ -44,6 +52,8 @@ cargo build --workspace --locked
 cargo clippy --workspace --all-targets --locked -- -D warnings
 cargo test --workspace --locked
 cargo check -p prumo-ui --target wasm32-unknown-unknown --locked
+python3 scripts/build_wasm_probe.py --check
+python3 scripts/package_dev.py
 ```
 
 Os testes de interface usam os widgets e a árvore de acessibilidade reais. Os testes de MCP iniciam um processo separado e utilizam o cliente do SDK oficial. O reaproveitamento WASM compila a camada de interface e domínio; um aplicativo web com acesso ao armazenamento não é distribuído nesta etapa.
@@ -57,3 +67,7 @@ Os testes de interface usam os widgets e a árvore de acessibilidade reais. Os t
 | wasm32-unknown-unknown | Rust 1.99.1 | Componente UI reutilizável, experimental | Sem aplicativo web distribuído |
 
 Features, dependências exatas e resolução transitiva são registradas em Cargo.toml e Cargo.lock. A primeira etapa distribui executáveis de desenvolvimento; instaladores e atualização pertencem às entregas posteriores.
+
+O pacote contém `prumo-desktop`, `prumo-mcp` e `prumo-component-worker`, avisos de terceiros e manifesto de integridade. O empacotamento extrai em uma pasta temporária, inicia os três executáveis e executa a bateria de componentes a partir dessa instalação.
+
+A medição da PRU-003 pode ser reproduzida com `python3 scripts/measure_components.py`. Ela exige que `target/qualification-clean-release` ainda não exista, compila todo o workspace em perfil release e gera cinco amostras, hashes, tamanho do pacote e a duração do build. O cache de downloads pode existir; os artefatos de compilação começam em diretório vazio. A otimização release não altera o estágio de desenvolvimento do produto.

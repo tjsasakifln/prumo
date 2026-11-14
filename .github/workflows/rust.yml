@@ -1,6 +1,7 @@
 name: Rust
 on:
   push:
+    branches: [main]
   pull_request:
 permissions:
   contents: read
@@ -38,7 +39,7 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             target
-          key: rust-${{ runner.os }}-1.99.1-${{ hashFiles('Cargo.lock') }}-${{ github.sha }}
+          key: rust-${{ runner.os }}-1.99.1-${{ hashFiles('Cargo.lock') }}
           restore-keys: |
             rust-${{ runner.os }}-1.99.1-${{ hashFiles('Cargo.lock') }}-
             rust-${{ runner.os }}-1.99.1-
@@ -50,6 +51,8 @@ jobs:
         run: cargo test --workspace --locked
       - name: Interface reutilizável em WASM
         run: cargo check -p prumo-ui --target wasm32-unknown-unknown --locked
+      - name: Módulo WASM derivado do Rust fixado
+        run: python scripts/build_wasm_probe.py --check
       - name: Dependências efetivas
         run: cargo tree --locked
       - name: Conferir inventário e avisos de terceiros

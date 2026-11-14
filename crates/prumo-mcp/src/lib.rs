@@ -1,7 +1,14 @@
 //! Local MCP adapter. All model operations go through `ProjectService`.
 #![forbid(unsafe_code)]
 
-use std::{borrow::Cow, path::PathBuf, sync::Arc};
+use std::{
+    borrow::Cow,
+    path::PathBuf,
+    sync::{
+        Arc,
+        atomic::{AtomicBool, Ordering},
+    },
+};
 
 use prumo_app::{AccessMode, AppError, Command, ProjectService};
 use prumo_domain::registry::NormReferenceInput;
@@ -115,6 +122,8 @@ enum Operation {
     RegisterNorm(Box<RegisterNorm>),
     PinNorms(PinNorms),
     MigrateNorms(MigrateNorms),
+    Components,
+    QualifyComponents,
 }
 
 fn decode<T: DeserializeOwned>(arguments: Value) -> Result<T, ErrorData> {
@@ -162,6 +171,14 @@ impl Operation {
             }
             "prumo.norms.pin" => decode(args).map(Self::PinNorms),
             "prumo.norms.migrate" => decode(args).map(Self::MigrateNorms),
+            "prumo.components.list" => {
+                decode::<Empty>(args)?;
+                Ok(Self::Components)
+            }
+            "prumo.components.qualify" => {
+                decode::<Empty>(args)?;
+                Ok(Self::QualifyComponents)
+            }
             _ => Err(ErrorData::invalid_params(
                 "Ferramenta inexistente.",
                 Some(json!({"code":"unknown_tool"})),
@@ -169,7 +186,7 @@ impl Operation {
         }
     }
 
-    fn run(self, service: &ProjectService) -> Result<Value, AppError> {
+    fn run(self, service: &ProjectService, cancel: &AtomicBool) -> Result<Value, AppError> {
         let project = match self {
             Self::Read => service.read(),
             Self::Create(params) => service.create(params.name, params.units),
@@ -203,6 +220,12 @@ impl Operation {
                 return service
                     .final_result_gate(&params.capability_id)
                     .map(|gate| json!({"gate":gate}));
+            }
+            Self::Components => return Ok(json!({"components":service.component_inventory()})),
+            Self::QualifyComponents => {
+                return service
+                    .qualify_components_with_cancel(cancel)
+                    .map(|report| json!({"qualification":report,"calculation_available":false}));
             }
             Self::RegisterNorm(params) => service.execute(Command::RegisterNormReference {
                 expected_revision: params.expected_revision,
@@ -272,6 +295,8 @@ pub fn tool_catalog(writable: bool) -> Vec<Tool> {
         definition("prumo.registry.audit","Audita vínculos com as 72 famílias, issues, fontes e normas, separando erros de cobertura e pendências técnicas.",json!({}),&[],true),
         definition("prumo.norms.package","Consulta o pacote candidato, revisão atual, hash ativo e impacto previsto da migração. Preserva o projeto; confira o impacto antes de confirmar.",json!({}),&[],true),
         definition("prumo.results.gate","Explica por que uma capacidade pode ou não emitir resultado final no pacote fixado do projeto. Não calcula nem concede aprovação.",json!({"capability_id":text}),&["capability_id"],true),
+        definition("prumo.components.list","Consulta componentes, versões, procedência, licenças e limites dos adaptadores instalados.",json!({}),&[],true),
+        definition("prumo.components.qualify","Executa a bateria fixa de qualificação em processo isolado, com prazo e recursos limitados. Retorna medidas e artefato de ensaio; não altera o projeto nem libera cálculo.",json!({}),&[],true),
     ]);
     if writable {
         tools.push(definition(
@@ -358,18 +383,27 @@ impl ServerHandler for PrumoMcp {
     async fn call_tool(
         &self,
         request: CallToolRequestParams,
-        _context: RequestContext<RoleServer>,
+        context: RequestContext<RoleServer>,
     ) -> Result<CallToolResponse, ErrorData> {
         let operation = Operation::parse(request)?;
         let Ok(permit) = self.available.clone().try_acquire_owned() else {
             return Ok(CallToolResult::structured_error(json!({"code":"busy","message":"Projeto ocupado. Aguarde a operação em andamento."})).into());
         };
         let service = self.service.clone();
-        let result = tokio::task::spawn_blocking(move || {
+        let cancelled = Arc::new(AtomicBool::new(context.ct.is_cancelled()));
+        let _cancel_on_drop = CancelOnDrop(cancelled.clone());
+        let worker_cancelled = cancelled.clone();
+        let mut work = tokio::task::spawn_blocking(move || {
             let _permit = permit;
-            operation.run(&service)
-        })
-        .await
+            operation.run(&service, &worker_cancelled)
+        });
+        let result = tokio::select! {
+            result = &mut work => result,
+            _ = context.ct.cancelled() => {
+                cancelled.store(true, Ordering::Release);
+                work.await
+            }
+        }
         .map_err(|_| ErrorData::internal_error("Falha ao executar o comando local.", None))?;
         let response = match result {
             Ok(value) => CallToolResult::structured(value),
@@ -378,5 +412,15 @@ impl ServerHandler for PrumoMcp {
             ),
         };
         Ok(response.into())
+    }
+}
+
+/// Dropping a cancelled/disconnected request also stops its isolated experiment.
+/// Ordinary model transactions do not consume this flag and remain atomic.
+struct CancelOnDrop(Arc<AtomicBool>);
+
+impl Drop for CancelOnDrop {
+    fn drop(&mut self) {
+        self.0.store(true, Ordering::Release);
     }
 }

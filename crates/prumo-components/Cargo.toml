@@ -1,0 +1,26 @@
+[package]
+name = "prumo-components"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+[dependencies]
+prumo-domain.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+thiserror.workspace = true
+uuid.workspace = true
+nalgebra.workspace = true
+geo.workspace = true
+ruststep.workspace = true
+svg.workspace = true
+wasmi.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true
+quick-xml.workspace = true
+
+[lints]
+workspace = true
