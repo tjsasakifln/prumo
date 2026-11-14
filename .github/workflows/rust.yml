@@ -1,0 +1,54 @@
+name: Rust
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+env:
+  PYTHONUTF8: "1"
+jobs:
+  verify:
+    name: Rust (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Bibliotecas nativas Linux
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libxkbcommon-dev libwayland-dev libx11-dev libxi-dev libxrandr-dev libxcursor-dev libgl1-mesa-dev
+          dpkg-query -W libxkbcommon-dev libwayland-dev libx11-dev libxi-dev libxrandr-dev libxcursor-dev libgl1-mesa-dev
+      - name: Compilador e ambiente efetivos
+        run: |
+          rustup show
+          rustc --version --verbose
+          cargo --version
+          rustup component add rustfmt clippy
+      - name: Formatação
+        run: cargo fmt --all -- --check
+      - name: Compilar executáveis e dependências fixadas
+        run: cargo build --workspace --locked
+      - name: Clippy
+        run: cargo clippy --workspace --all-targets --locked -- -D warnings
+      - name: Testes de domínio, interface e cliente MCP real
+        run: cargo test --workspace --locked
+      - name: Interface reutilizável em WASM
+        run: cargo check -p prumo-ui --target wasm32-unknown-unknown --locked
+      - name: Dependências efetivas
+        run: cargo tree --locked
+      - name: Conferir inventário e avisos de terceiros
+        if: runner.os == 'Linux'
+        run: python scripts/generate_notices.py --check
+      - name: Pacote de desenvolvimento e instalação limpa
+        run: python scripts/package_dev.py
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: prumo-${{ matrix.os }}
+          path: dist/*.zip
+          if-no-files-found: error

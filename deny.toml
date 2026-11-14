@@ -1,0 +1,48 @@
+# The shipped desktop targets and the reusable UI compile target.
+[graph]
+targets = [
+    "x86_64-unknown-linux-gnu",
+    "x86_64-pc-windows-msvc",
+    "wasm32-unknown-unknown",
+]
+all-features = false
+
+[advisories]
+# These are informational merger/deprecation notices, not vulnerability waivers.
+# See docs/componentes/PRU-001.md. Reassess the AccessKit chain in PRU-003.
+ignore = [
+    { id = "RUSTSEC-2026-0370", reason = "zvariant5 is used by AccessKit Linux; upstream merged it into zbus6. Scoped maintenance transition; reassess PRU-003." },
+    { id = "RUSTSEC-2026-0371", reason = "zbus_names4 is used by AccessKit Linux; upstream merged it into zbus6. Scoped maintenance transition; reassess PRU-003." },
+    { id = "RUSTSEC-2026-0372", reason = "zvariant_derive5 is used by AccessKit Linux; upstream merged it into zbus6. Scoped maintenance transition; reassess PRU-003." },
+]
+
+[licenses]
+allow = [
+    "MIT",
+    "Apache-2.0",
+    "Apache-2.0 WITH LLVM-exception",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "ISC",
+    "Zlib",
+    "Unicode-3.0",
+]
+confidence-threshold = 0.8
+exceptions = [
+    { crate = "epaint_default_fonts@0.37.0", allow = ["MIT", "Apache-2.0", "OFL-1.1", "Ubuntu-font-1.0"] },
+]
+
+[licenses.private]
+# Prumo's unpublished code has not adopted an open source product license.
+# This exemption does not cover external packages.
+ignore = true
+
+[bans]
+multiple-versions = "warn"
+wildcards = "deny"
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
+allow-git = []

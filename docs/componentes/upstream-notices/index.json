@@ -1,0 +1,51 @@
+[
+  {
+    "repo": "AccessKit/accesskit",
+    "sha": "f3026222559c7f5f46d8f25cb7404de68eb149f0",
+    "path": "LICENSE-APACHE",
+    "url": "https://raw.githubusercontent.com/AccessKit/accesskit/f3026222559c7f5f46d8f25cb7404de68eb149f0/LICENSE-APACHE",
+    "local": "docs/componentes/upstream-notices/AccessKit-accesskit/f3026222559c7f5f46d8f25cb7404de68eb149f0/LICENSE-APACHE"
+  },
+  {
+    "repo": "AccessKit/accesskit",
+    "sha": "f3026222559c7f5f46d8f25cb7404de68eb149f0",
+    "path": "LICENSE-MIT",
+    "url": "https://raw.githubusercontent.com/AccessKit/accesskit/f3026222559c7f5f46d8f25cb7404de68eb149f0/LICENSE-MIT",
+    "local": "docs/componentes/upstream-notices/AccessKit-accesskit/f3026222559c7f5f46d8f25cb7404de68eb149f0/LICENSE-MIT"
+  },
+  {
+    "repo": "AccessKit/accesskit",
+    "sha": "f3026222559c7f5f46d8f25cb7404de68eb149f0",
+    "path": "LICENSE.chromium",
+    "url": "https://raw.githubusercontent.com/AccessKit/accesskit/f3026222559c7f5f46d8f25cb7404de68eb149f0/LICENSE.chromium",
+    "local": "docs/componentes/upstream-notices/AccessKit-accesskit/f3026222559c7f5f46d8f25cb7404de68eb149f0/LICENSE.chromium"
+  },
+  {
+    "repo": "emilk/egui",
+    "sha": "3c6eb8261c3293ad9c7ea1ed58487e038860ebef",
+    "path": "LICENSE-APACHE",
+    "url": "https://raw.githubusercontent.com/emilk/egui/3c6eb8261c3293ad9c7ea1ed58487e038860ebef/LICENSE-APACHE",
+    "local": "docs/componentes/upstream-notices/emilk-egui/3c6eb8261c3293ad9c7ea1ed58487e038860ebef/LICENSE-APACHE"
+  },
+  {
+    "repo": "emilk/egui",
+    "sha": "3c6eb8261c3293ad9c7ea1ed58487e038860ebef",
+    "path": "LICENSE-MIT",
+    "url": "https://raw.githubusercontent.com/emilk/egui/3c6eb8261c3293ad9c7ea1ed58487e038860ebef/LICENSE-MIT",
+    "local": "docs/componentes/upstream-notices/emilk-egui/3c6eb8261c3293ad9c7ea1ed58487e038860ebef/LICENSE-MIT"
+  },
+  {
+    "repo": "aclysma/profiling",
+    "sha": "8271551172eb6fa4cba47369aedd93790c623df9",
+    "path": "LICENSE-APACHE",
+    "url": "https://raw.githubusercontent.com/aclysma/profiling/8271551172eb6fa4cba47369aedd93790c623df9/LICENSE-APACHE",
+    "local": "docs/componentes/upstream-notices/aclysma-profiling/8271551172eb6fa4cba47369aedd93790c623df9/LICENSE-APACHE"
+  },
+  {
+    "repo": "aclysma/profiling",
+    "sha": "8271551172eb6fa4cba47369aedd93790c623df9",
+    "path": "LICENSE-MIT",
+    "url": "https://raw.githubusercontent.com/aclysma/profiling/8271551172eb6fa4cba47369aedd93790c623df9/LICENSE-MIT",
+    "local": "docs/componentes/upstream-notices/aclysma-profiling/8271551172eb6fa4cba47369aedd93790c623df9/LICENSE-MIT"
+  }
+]
