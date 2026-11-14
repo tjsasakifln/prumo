@@ -32,6 +32,16 @@ jobs:
           rustup component add rustfmt clippy
       - name: Formatação
         run: cargo fmt --all -- --check
+      - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: rust-${{ runner.os }}-1.99.1-${{ hashFiles('Cargo.lock') }}-${{ github.sha }}
+          restore-keys: |
+            rust-${{ runner.os }}-1.99.1-${{ hashFiles('Cargo.lock') }}-
+            rust-${{ runner.os }}-1.99.1-
       - name: Compilar executáveis e dependências fixadas
         run: cargo build --workspace --locked
       - name: Clippy

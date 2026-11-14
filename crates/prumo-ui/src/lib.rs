@@ -3,15 +3,26 @@
 
 use egui::{Color32, RichText, Stroke, Vec2};
 use prumo_domain::{Command, LengthUnit, Project};
+mod registry;
+pub use registry::RegistryView;
 
 #[derive(Debug)]
 pub enum UiAction {
     Open(String),
     Refresh,
-    Command(Command),
+    RefreshRegistry,
+    AssessCapability(String),
+    Command(Box<Command>),
+}
+
+impl UiAction {
+    pub fn command(command: Command) -> Self {
+        Self::Command(Box::new(command))
+    }
 }
 
 pub struct ProjectView {
+    pub registry: RegistryView,
     pub path: String,
     pub project_name: String,
     pub member_name: String,
@@ -28,6 +39,7 @@ pub struct ProjectView {
 impl Default for ProjectView {
     fn default() -> Self {
         Self {
+            registry: RegistryView::default(),
             path: "meu-projeto.prumo".into(),
             project_name: "Meu primeiro projeto".into(),
             member_name: "Viga 01".into(),
@@ -97,6 +109,8 @@ impl ProjectView {
 
         egui::ScrollArea::vertical().show(ui, |ui| {
             if let Some(project) = project {
+                ui.add_enabled_ui(selected, |ui| self.registry.show(ui, project, &mut actions));
+                ui.separator();
                 ui.add_enabled_ui(selected, |ui| self.project_controls(ui, project, &mut actions));
                 ui.separator();
                 ui.columns(2, |columns| {
@@ -130,7 +144,7 @@ impl ProjectView {
                 ui.add(egui::TextEdit::singleline(&mut self.project_name).desired_width(380.0)).labelled_by(label.id);
                 units_selector(ui, &mut self.units);
                 if ui.button("Criar projeto").clicked() {
-                    actions.push(UiAction::Command(Command::Create { name: self.project_name.clone(), units: self.units }));
+                    actions.push(UiAction::command(Command::Create { name: self.project_name.clone(), units: self.units }));
                 }
             }
         });
@@ -154,7 +168,7 @@ impl ProjectView {
                 ui.text_edit_singleline(&mut self.project_name)
                     .labelled_by(label.id);
                 if ui.button("Renomear projeto").clicked() {
-                    actions.push(UiAction::Command(Command::RenameProject {
+                    actions.push(UiAction::command(Command::RenameProject {
                         expected_revision: project.revision,
                         name: self.project_name.clone(),
                     }));
@@ -165,7 +179,7 @@ impl ProjectView {
                 ui.text_edit_singleline(&mut self.environment_name)
                     .labelled_by(label.id);
                 if ui.button("Adicionar ambiente").clicked() {
-                    actions.push(UiAction::Command(Command::AddEnvironment {
+                    actions.push(UiAction::command(Command::AddEnvironment {
                         expected_revision: project.revision,
                         name: self.environment_name.clone(),
                     }));
@@ -189,7 +203,7 @@ impl ProjectView {
         coordinates(ui, "Início", &mut self.start);
         coordinates(ui, "Fim", &mut self.end);
         if ui.button("Adicionar peça e salvar").clicked() {
-            actions.push(UiAction::Command(Command::AddMember {
+            actions.push(UiAction::command(Command::AddMember {
                 expected_revision: project.revision,
                 name: self.member_name.clone(),
                 start: self.start,

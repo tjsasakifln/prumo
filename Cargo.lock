@@ -2429,6 +2429,7 @@ name = "prumo-app"
 version = "0.1.0"
 dependencies = [
  "prumo-domain",
+ "prumo-registry",
  "serde",
  "serde_json",
  "tempfile",
@@ -2454,6 +2455,7 @@ version = "0.1.0"
 dependencies = [
  "serde",
  "serde_json",
+ "sha2",
  "thiserror 2.0.21",
  "uuid",
 ]
@@ -2484,6 +2486,14 @@ dependencies = [
  "serde_json",
  "tempfile",
  "tokio",
+]
+
+[[package]]
+name = "prumo-registry"
+version = "0.1.0"
+dependencies = [
+ "prumo-domain",
+ "serde_json",
 ]
 
 [[package]]

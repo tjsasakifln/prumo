@@ -1,0 +1,994 @@
+{
+  "schema_version": 1,
+  "baseline_date": "2026-11-14",
+  "origin": [
+    "planning/coverage.json",
+    "planning/backlog.json",
+    "docs/PARIDADE.md",
+    "docs/NORMAS.md",
+    "docs/NORMAS-INSTALACOES.md",
+    "docs/INSTALACOES.md",
+    "docs/fontes-manuais.json",
+    "docs/fontes-normas.json",
+    "docs/fontes-instalacoes-hidrossanitario.json",
+    "docs/fontes-instalacoes-eletrico.json",
+    "docs/fontes-instalacoes-plataforma.json"
+  ],
+  "normative_text_consulted": false,
+  "human_technical_approval": false,
+  "coverage_policy": "Preservadas as 72 famílias. Cada capacidade representa uma operação esperada do Prumo, relacionada a documentação de produto/módulo. Fontes não demonstram por si validação ou paridade já obtida.",
+  "public_source_rechecks": [
+    {
+      "source_id": "TQ-06",
+      "url": "https://www.tqs.com.br/%C3%82/systems/tqs-preo/366i9tyvyu",
+      "checked_on": "2026-11-14",
+      "result": "Página oficial acessível, apesar do segmento codificado /%C3%82/. Campo de versão V26; descrição combina VPRO desde V22 e menção histórica à NBR 6118:2014. Nenhum texto normativo consultado."
+    }
+  ],
+  "pending_policy": "Edition null, resolution null, public_metadata_only, method pending e qualification null mantêm a pendência visível. Papéis de equipe não equivalem a assinatura profissional.",
+  "operation_policy": {
+    "PAR-01": [
+      "model",
+      "verify"
+    ],
+    "PAR-02": [
+      "model",
+      "verify"
+    ],
+    "PAR-03": [
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "PAR-04": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "PAR-05": [
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "PAR-06": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "PAR-07": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "PAR-08": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "PAR-09": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "PAR-10": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "PAR-11": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "PAR-12": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "PAR-13": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "PAR-14": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "PAR-15": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "PAR-16": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "PAR-17": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "PAR-18": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "PAR-19": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "PAR-20": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "PAR-21": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "PAR-22": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "PAR-23": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "PAR-24": [
+      "model",
+      "verify",
+      "emit"
+    ],
+    "PAR-25": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "PAR-26": [
+      "model",
+      "verify",
+      "emit"
+    ],
+    "PAR-27": [
+      "model",
+      "verify",
+      "emit"
+    ],
+    "PAR-28": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "PAR-29": [
+      "model",
+      "verify",
+      "emit"
+    ],
+    "PAR-30": [
+      "model",
+      "verify"
+    ],
+    "PAR-31": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "PAR-32": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "PAR-33": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "PAR-34": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "PAR-35": [
+      "model",
+      "verify",
+      "emit"
+    ],
+    "PAR-36": [
+      "model",
+      "verify",
+      "emit"
+    ],
+    "MEP-01": [
+      "model",
+      "verify"
+    ],
+    "MEP-02": [
+      "model",
+      "verify",
+      "emit"
+    ],
+    "MEP-03": [
+      "model",
+      "verify",
+      "emit"
+    ],
+    "MEP-04": [
+      "model",
+      "verify"
+    ],
+    "MEP-05": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "MEP-06": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "MEP-07": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "MEP-08": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "MEP-09": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "MEP-10": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "MEP-11": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "MEP-12": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "MEP-13": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "MEP-14": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "MEP-15": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "MEP-16": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "MEP-17": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "MEP-18": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "MEP-19": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "MEP-20": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "MEP-21": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "MEP-22": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "MEP-23": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "MEP-24": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "MEP-25": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "MEP-26": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "MEP-27": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "MEP-28": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "MEP-29": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "MEP-30": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "MEP-31": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "MEP-32": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "MEP-33": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "MEP-34": [
+      "model",
+      "verify",
+      "emit"
+    ],
+    "MEP-35": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ],
+    "MEP-36": [
+      "model",
+      "calculate",
+      "verify",
+      "emit"
+    ]
+  },
+  "scope_references": {
+    "NBR 6118": [
+      "nbr-6118"
+    ],
+    "NBR 8800": [
+      "nbr-8800"
+    ],
+    "NBR 7190": [
+      "nbr-7190-1",
+      "nbr-7190-2",
+      "nbr-7190-3",
+      "nbr-7190-4",
+      "nbr-7190-5",
+      "nbr-7190-6",
+      "nbr-7190-7"
+    ],
+    "NBR 8681": [
+      "nbr-8681"
+    ],
+    "NBR 6120": [
+      "nbr-6120"
+    ],
+    "NBR 6122": [
+      "nbr-6122"
+    ],
+    "NBR 9062": [
+      "nbr-9062"
+    ],
+    "NBR 6123": [
+      "nbr-6123"
+    ],
+    "NBR 15421": [
+      "nbr-15421"
+    ],
+    "NBR 15575": [
+      "nbr-15575-1",
+      "nbr-15575-2",
+      "nbr-15575-3",
+      "nbr-15575-4",
+      "nbr-15575-5",
+      "nbr-15575-6"
+    ],
+    "NBR 14432": [
+      "nbr-14432"
+    ],
+    "NBR 15200": [
+      "nbr-15200"
+    ],
+    "NBR 14323": [
+      "nbr-14323"
+    ],
+    "NBR 12655": [
+      "nbr-12655"
+    ],
+    "NBR 7480": [
+      "nbr-7480"
+    ],
+    "NBR 14931": [
+      "nbr-14931"
+    ],
+    "NBR 16055": [
+      "nbr-16055"
+    ],
+    "NBR 7482": [
+      "nbr-7482"
+    ],
+    "NBR 7483": [
+      "nbr-7483"
+    ],
+    "NBR 14859": [
+      "nbr-14859"
+    ],
+    "NBR 14861": [
+      "nbr-14861"
+    ],
+    "NBR 6484": [
+      "nbr-6484"
+    ],
+    "NBR 8036": [
+      "nbr-8036"
+    ],
+    "NBR 11682": [
+      "nbr-11682"
+    ],
+    "NBR 5629": [
+      "nbr-5629"
+    ],
+    "NBR 16239": [
+      "nbr-16239"
+    ],
+    "NBR 14762": [
+      "nbr-14762"
+    ],
+    "Base complementar para vigas casteladas a qualificar": [
+      "scope-69afe8e46333"
+    ],
+    "Base complementar de ancoragens a qualificar": [
+      "scope-dacb8d329356"
+    ],
+    "NBR 6355": [
+      "nbr-6355"
+    ],
+    "NBR 7190 partes 1 a 7": [
+      "nbr-7190-1",
+      "nbr-7190-2",
+      "nbr-7190-3",
+      "nbr-7190-4",
+      "nbr-7190-5",
+      "nbr-7190-6",
+      "nbr-7190-7"
+    ],
+    "NBR 7190 e partes aplicáveis": [
+      "nbr-7190-1",
+      "nbr-7190-2",
+      "nbr-7190-3",
+      "nbr-7190-4",
+      "nbr-7190-5",
+      "nbr-7190-6",
+      "nbr-7190-7"
+    ],
+    "Base complementar de incêndio em madeira a qualificar": [
+      "scope-690c10be30f4"
+    ],
+    "Referências específicas de produtos engenheirados a qualificar": [
+      "scope-c0806b51f653"
+    ],
+    "NBR 16868 partes aplicáveis": [
+      "nbr-16868"
+    ],
+    "NBR 6136": [
+      "nbr-6136"
+    ],
+    "NBR 15270": [
+      "nbr-15270"
+    ],
+    "NBR 16868": [
+      "nbr-16868"
+    ],
+    "Base normativa de alumínio a selecionar e licenciar": [
+      "scope-49e2427f11e3"
+    ],
+    "Recomendações técnicas aplicáveis de ATP": [
+      "scope-68da6dc7fc9b"
+    ],
+    "Normas de representação e execução aplicáveis": [
+      "scope-ab8f7aaded4a"
+    ],
+    "Requisitos de responsabilidade e emissão aplicáveis": [
+      "scope-fd25a226211c"
+    ],
+    "Base de alumínio qualificada": [
+      "scope-1b903a46afa4"
+    ],
+    "Famílias normativas de instalações com edição fixada no registro; requisitos de dados e interoperabilidade aplicáveis.": [
+      "scope-f1716c2a7f03"
+    ],
+    "NBR 5626": [
+      "nbr-5626"
+    ],
+    "IFC e regras de catálogo qualificadas": [
+      "scope-7ea09e3cda7e"
+    ],
+    "Métodos bibliográficos reconhecidos e licenciados": [
+      "scope-80fc1ac26cd7"
+    ],
+    "Formulações hidráulicas qualificadas": [
+      "scope-8dea869dc9c1"
+    ],
+    "Dados de fabricantes com uso autorizado": [
+      "scope-c88149b054f9"
+    ],
+    "Critérios de reserva aplicáveis ao projeto": [
+      "scope-51f19368211f"
+    ],
+    "Regras da concessionária selecionada": [
+      "scope-7863ba36e55a"
+    ],
+    "Dados técnicos do fabricante": [
+      "scope-17352055c820"
+    ],
+    "Curvas e limites do fabricante": [
+      "scope-b7c8f79b5862"
+    ],
+    "Normas térmicas pertinentes por método": [
+      "scope-5f0348998774"
+    ],
+    "Normas de aparelhos e instalações a gás aplicáveis": [
+      "scope-d8723b124a2f"
+    ],
+    "NBR 15569": [
+      "nbr-15569"
+    ],
+    "Edição vigente a confirmar no cadastro normativo": [
+      "scope-b91fa3b34a18"
+    ],
+    "NBR 15526 quando aplicável": [
+      "nbr-15526"
+    ],
+    "Normas de produto pertinentes": [
+      "scope-08cb7d17ff02"
+    ],
+    "Regras de compatibilização e catálogo": [
+      "scope-46aa308be9c7"
+    ],
+    "NBR 10339": [
+      "nbr-10339"
+    ],
+    "Regras sanitárias aplicáveis": [
+      "scope-d547921d653e"
+    ],
+    "NBR 8160": [
+      "nbr-8160"
+    ],
+    "Regras locais de lançamento de efluentes": [
+      "scope-54d375259eff"
+    ],
+    "NBR 10844 quando aplicável": [
+      "nbr-10844"
+    ],
+    "Normas de bombeamento pertinentes": [
+      "scope-f0b5c2271a43"
+    ],
+    "NBR 10844": [
+      "nbr-10844"
+    ],
+    "Critérios locais de drenagem": [
+      "scope-c2559219ae67"
+    ],
+    "Regras locais de drenagem": [
+      "scope-34e529af61ff"
+    ],
+    "NBR 15527": [
+      "nbr-15527"
+    ],
+    "NBR 16783": [
+      "nbr-16783"
+    ],
+    "NBR 5626 quando aplicável": [
+      "nbr-5626"
+    ],
+    "NBR 17076": [
+      "nbr-17076"
+    ],
+    "Exigências ambientais e municipais aplicáveis": [
+      "scope-3b1a58896f70"
+    ],
+    "Regras ambientais e municipais aplicáveis": [
+      "scope-84374ed3820b"
+    ],
+    "NBR 15526": [
+      "nbr-15526"
+    ],
+    "NBR 13523 quando aplicável": [
+      "nbr-13523"
+    ],
+    "Regras da concessionária e autoridade local": [
+      "scope-2bc8fd241104"
+    ],
+    "Dados técnicos do gás e fabricante": [
+      "scope-89f5121a0a9e"
+    ],
+    "Regras da concessionária aplicáveis": [
+      "scope-e0057b808b61"
+    ],
+    "Normas de produto e regras da concessionária": [
+      "scope-43bb40ec70d2"
+    ],
+    "NBR 13523": [
+      "nbr-13523"
+    ],
+    "Instruções locais de incêndio": [
+      "scope-5a5e1861f51c"
+    ],
+    "Regras locais aplicáveis": [
+      "scope-7a1b9ce65ddc"
+    ],
+    "NBR 13714": [
+      "nbr-13714"
+    ],
+    "NBR 10897": [
+      "nbr-10897"
+    ],
+    "Instruções de Corpos de Bombeiros e demais regras aplicáveis": [
+      "scope-1d24473aa61f"
+    ],
+    "Regras locais do sistema de hidrantes": [
+      "scope-28387c5d6956"
+    ],
+    "Regras locais de simultaneidade": [
+      "scope-ba51e0f0fdfd"
+    ],
+    "Critérios locais de alcance e cobertura": [
+      "scope-9a79362db810"
+    ],
+    "NBR 5626 nos pontos aplicáveis": [
+      "nbr-5626"
+    ],
+    "Regras locais": [
+      "scope-3d891202acf3"
+    ],
+    "Regras locais e do fabricante": [
+      "scope-97adf345c3c0"
+    ],
+    "Regras locais e fabricante": [
+      "scope-067db0932387"
+    ],
+    "Dados e limitações do fabricante": [
+      "scope-09f5d966daa2"
+    ],
+    "Regras locais e dados de fabricante": [
+      "scope-9a4fc0f34583"
+    ],
+    "NBR 12693": [
+      "nbr-12693"
+    ],
+    "NBR 17240": [
+      "nbr-17240"
+    ],
+    "NBR 10898": [
+      "nbr-10898"
+    ],
+    "NBR 16820 e correlatas": [
+      "nbr-16820"
+    ],
+    "Regras locais de prevenção": [
+      "scope-b4128730fdb4"
+    ],
+    "NBR 5410": [
+      "nbr-5410"
+    ],
+    "NBR 16690": [
+      "nbr-16690"
+    ],
+    "IFC": [
+      "scope-7e743842e5f0"
+    ],
+    "Requisitos de montagem do fabricante": [
+      "scope-634739b8a05e"
+    ],
+    "Padrões vigentes de concessionárias": [
+      "scope-a0e38934af80"
+    ],
+    "Padrões de concessionárias": [
+      "scope-690477cc39bb"
+    ],
+    "Dados de cabos do fabricante": [
+      "scope-9d98ad2d9c9d"
+    ],
+    "IEC60909 quando aplicável e qualificada": [
+      "iec-60909"
+    ],
+    "Dados de dispositivos do fabricante": [
+      "scope-b52af6df97a6"
+    ],
+    "NBR 5419": [
+      "nbr-5419-1",
+      "nbr-5419-2",
+      "nbr-5419-3",
+      "nbr-5419-4"
+    ],
+    "Normas de produto pertinentes e dados do fabricante": [
+      "scope-baecd76aa52c"
+    ],
+    "Requisitos de instalação e fabricante": [
+      "scope-765239214471"
+    ],
+    "Normas de barramentos e fabricante aplicáveis": [
+      "scope-e0e3d20a7209"
+    ],
+    "Normas de geradores e transferência pertinentes": [
+      "scope-1cf41560a839"
+    ],
+    "Dados de fabricante": [
+      "scope-db0a5ebf976a"
+    ],
+    "NBR 17019 quando aplicável": [
+      "nbr-17019"
+    ],
+    "NBR 14039 apenas para interfaces/escopo declarado": [
+      "nbr-14039"
+    ],
+    "Normas de representação pertinentes": [
+      "scope-22f701fd84cc"
+    ],
+    "NBR 16612": [
+      "nbr-16612"
+    ],
+    "NBR 5410 nas interfaces aplicáveis": [
+      "nbr-5410"
+    ],
+    "Normas de conexão e concessionária aplicáveis": [
+      "scope-d44302aaf9ba"
+    ],
+    "Normas de armazenamento aplicáveis": [
+      "scope-e4fab2690333"
+    ],
+    "Requisitos vigentes de conexão aplicáveis": [
+      "scope-ac13317f7d8b"
+    ],
+    "Métodos de desempenho fotovoltaico qualificados": [
+      "scope-8b908691643d"
+    ],
+    "Dados ambientais licenciados": [
+      "scope-2bb3c467cc78"
+    ],
+    "Regras vigentes de faturamento/compensação aplicáveis": [
+      "scope-d96b0c34d135"
+    ],
+    "Método econômico declarado": [
+      "scope-9dec55839529"
+    ],
+    "Padrões de conexão aplicáveis": [
+      "scope-250f3b80a164"
+    ],
+    "NBR 5419 partes 1–4, edição vigente e perfis legados qualificados": [
+      "nbr-5419-1",
+      "nbr-5419-2",
+      "nbr-5419-3",
+      "nbr-5419-4"
+    ],
+    "NBR 5419 partes 1 e 3": [
+      "nbr-5419-1",
+      "nbr-5419-3"
+    ],
+    "NBR 5419 parte3": [
+      "nbr-5419-3"
+    ],
+    "Dados de componentes do fabricante": [
+      "scope-4df0e1f814d6"
+    ],
+    "NBR 6118 na interface estrutural": [
+      "nbr-6118"
+    ],
+    "Dados de materiais": [
+      "scope-390fbcb5035c"
+    ],
+    "NBR 5419 partes 3 e 4": [
+      "nbr-5419-3",
+      "nbr-5419-4"
+    ],
+    "NBR 5419 partes 1–4": [
+      "nbr-5419-1",
+      "nbr-5419-2",
+      "nbr-5419-3",
+      "nbr-5419-4"
+    ],
+    "Normas de representação aplicáveis": [
+      "scope-74f9d133e897"
+    ],
+    "NBR 14565": [
+      "nbr-14565"
+    ],
+    "NBR 16415": [
+      "nbr-16415"
+    ],
+    "Padrões de operadora e telecom aplicáveis": [
+      "scope-a78698dc63a7"
+    ],
+    "Padrões de telecom aplicáveis": [
+      "scope-879e7b4da5d0"
+    ],
+    "NBR 5410 nas interfaces": [
+      "nbr-5410"
+    ],
+    "Dados de cabos": [
+      "scope-6f0e7afe6d17"
+    ],
+    "Padrões TIA/ISO pertinentes com edição qualificada": [
+      "scope-7b335c8ce9f4"
+    ],
+    "Padrões de operadora": [
+      "scope-bb6a721e6628"
+    ],
+    "Dados dos equipamentos e racks": [
+      "scope-e20b8b25f39c"
+    ],
+    "Dados de equipamento": [
+      "scope-89c3848fb724"
+    ],
+    "Normas de documentação pertinentes": [
+      "scope-d3e52ba6faa0"
+    ],
+    "Perfis de telecom/operadora qualificados": [
+      "scope-88f98d0e3d16"
+    ],
+    "NBR 16655-3": [
+      "nbr-16655-3"
+    ],
+    "NBR 16401 quando aplicável": [
+      "nbr-16401"
+    ],
+    "Método psicrométrico qualificado": [
+      "scope-88531c1195cf"
+    ],
+    "NBR 16655": [
+      "nbr-16655"
+    ],
+    "Dados e limites do fabricante": [
+      "scope-518e2a106576"
+    ],
+    "Normas pertinentes de refrigeração": [
+      "scope-f54e25197fe0"
+    ],
+    "Perfis de fabricante qualificados": [
+      "scope-32fd707aa2d4"
+    ],
+    "Método de dutos qualificado": [
+      "scope-ee2d3dde8d38"
+    ],
+    "Método hidráulico qualificado": [
+      "scope-273f2a5f1f06"
+    ],
+    "Dados do fabricante": [
+      "scope-893ee1f60675"
+    ],
+    "NBR 8160 nas interfaces pertinentes": [
+      "nbr-8160"
+    ],
+    "Normas de interfaces e métodos qualificados": [
+      "scope-30e3a74f61ff"
+    ],
+    "Regulamentos locais de segurança contra incêndio": [
+      "scope-f5dd830f21fd"
+    ],
+    "Normas aplicáveis a barramentos e equipamentos": [
+      "scope-52594d705d7e"
+    ],
+    "Padrões das concessionárias declaradas": [
+      "scope-e2a9992bd0fe"
+    ],
+    "Série NBR 5419": [
+      "nbr-5419-1",
+      "nbr-5419-2",
+      "nbr-5419-3",
+      "nbr-5419-4"
+    ],
+    "Regras de conexão e equipamentos aplicáveis": [
+      "scope-6d2133be2d68"
+    ],
+    "NBR 14565 e correlatas": [
+      "nbr-14565"
+    ],
+    "Série NBR 16401": [
+      "nbr-16401"
+    ],
+    "Série NBR 16655": [
+      "nbr-16655"
+    ],
+    "Normas e dados de fabricantes aplicáveis": [
+      "scope-0f2e910400b2"
+    ]
+  }
+}

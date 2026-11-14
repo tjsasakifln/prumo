@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "scope": "Full Cargo.lock metadata; notices cover normal/build graph of distributed native targets, not only directly declared crates.",
-  "lock_sha256": "dc4ab3842e3651d78cf2ff6f3bf8393a9bbd207921d441163dea980e16a38fdd",
+  "lock_sha256": "67a712357b956076d3ed92bc9f401bf05249172318ff2b17348bd16e01c82da7",
   "native_targets": [
     "x86_64-unknown-linux-gnu",
     "x86_64-pc-windows-msvc"

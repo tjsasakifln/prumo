@@ -7,6 +7,11 @@ use prumo_domain::{
     ChangeRecord, Discipline, DomainError, Environment, LengthUnit, ModelState,
     PROJECT_SCHEMA_VERSION, PhysicalObject, Project, validate_name,
 };
+use prumo_registry::{
+    CoverageAudit, FinalResultContext, GateReport, NormReferenceInput, NormativePackage,
+    NormativePackagePreview, NormativeState, RegistryCatalog, RegistryError, audit_coverage,
+    bundled_catalog, compare_packages, evaluate_final_result, reason, register_reference,
+};
 use std::collections::BTreeMap;
 use std::fs::{self, File, OpenOptions};
 use std::io::{Read, Write};
@@ -96,6 +101,25 @@ impl ProjectService {
                 expected_revision,
                 name,
             } => self.add_environment(expected_revision, name),
+            Command::RegisterNormReference {
+                expected_revision,
+                reference,
+            } => self.register_norm_reference(expected_revision, reference),
+            Command::PinNormativePackage {
+                expected_revision,
+                package_hash,
+            } => self.pin_normative_package(expected_revision, &package_hash),
+            Command::MigrateNormativePackage {
+                expected_revision,
+                from_package_hash,
+                to_package_hash,
+                confirm,
+            } => self.migrate_normative_package(
+                expected_revision,
+                &from_package_hash,
+                &to_package_hash,
+                confirm,
+            ),
         }
     }
 
@@ -119,6 +143,7 @@ impl ProjectService {
             ports: Vec::new(),
             connections: Vec::new(),
             history: vec![self.change(1, "create")?],
+            normative: NormativeState::default(),
             extensions: BTreeMap::new(),
         };
         self.save_locked(&project)?;
@@ -191,6 +216,171 @@ impl ProjectService {
         })
     }
 
+    pub fn registry_catalog(&self) -> Result<RegistryCatalog, AppError> {
+        match self.read() {
+            Ok(project) => catalog_for(&project),
+            Err(AppError::NotFound) => Ok(bundled_catalog()?),
+            Err(error) => Err(error),
+        }
+    }
+
+    pub fn coverage_audit(&self) -> Result<CoverageAudit, AppError> {
+        Ok(audit_coverage(&self.registry_catalog()?))
+    }
+
+    pub fn available_normative_package(&self) -> Result<NormativePackage, AppError> {
+        Ok(NormativePackage::from_catalog(&self.registry_catalog()?)?)
+    }
+
+    /// One read supplies the revision, active hash, candidate and impact together.
+    pub fn normative_package_preview(&self) -> Result<NormativePackagePreview, AppError> {
+        let project = match self.read() {
+            Ok(project) => Some(project),
+            Err(AppError::NotFound) => None,
+            Err(error) => return Err(error),
+        };
+        let catalog = match &project {
+            Some(project) => catalog_for(project)?,
+            None => bundled_catalog()?,
+        };
+        let candidate = NormativePackage::from_catalog(&catalog)?;
+        let active = project
+            .as_ref()
+            .and_then(|project| project.normative.active.as_ref());
+        let impact = match (project.as_ref(), active) {
+            (Some(project), Some(active)) if active.hash != candidate.hash => {
+                let revision = project
+                    .revision
+                    .checked_add(1)
+                    .ok_or_else(|| AppError::InvalidInput("Limite de revisões atingido.".into()))?;
+                Some(compare_packages(active, &candidate, revision)?)
+            }
+            _ => None,
+        };
+        Ok(NormativePackagePreview {
+            project_revision: project.as_ref().map(|project| project.revision),
+            active_hash: active.map(|active| active.hash.clone()),
+            candidate,
+            impact,
+        })
+    }
+
+    pub fn register_norm_reference(
+        &self,
+        expected_revision: u64,
+        reference: NormReferenceInput,
+    ) -> Result<Project, AppError> {
+        self.require_write()?;
+        self.mutate(expected_revision, "register_norm_reference", |project| {
+            let catalog = catalog_for(project)?;
+            let next_revision = project
+                .revision
+                .checked_add(1)
+                .ok_or_else(|| AppError::InvalidInput("Limite de revisões atingido.".into()))?;
+            let version = format!("project:{}:revision:{next_revision}", project.id);
+            let (updated, change) =
+                register_reference(&catalog, reference, version, next_revision)?;
+            project.normative.catalog = Some(updated);
+            project.normative.registry_changes.push(change);
+            if project.normative.active.is_some() {
+                project.normative.recalculation_required = true;
+            }
+            Ok(())
+        })
+    }
+
+    pub fn pin_normative_package(
+        &self,
+        expected_revision: u64,
+        package_hash: &str,
+    ) -> Result<Project, AppError> {
+        self.require_write()?;
+        self.mutate(expected_revision, "pin_normative_package", |project| {
+            if project.normative.active.is_some() {
+                return Err(AppError::PackageAlreadyPinned);
+            }
+            let candidate = NormativePackage::from_catalog(&catalog_for(project)?)?;
+            if candidate.hash != package_hash {
+                return Err(AppError::PackageConflict);
+            }
+            project.normative.catalog = Some(candidate.catalog.clone());
+            project.normative.active = Some(candidate);
+            project.normative.recalculation_required = true;
+            Ok(())
+        })
+    }
+
+    pub fn migrate_normative_package(
+        &self,
+        expected_revision: u64,
+        from_package_hash: &str,
+        to_package_hash: &str,
+        confirm: bool,
+    ) -> Result<Project, AppError> {
+        self.require_write()?;
+        if !confirm {
+            return Err(AppError::ConfirmationRequired);
+        }
+        self.mutate(expected_revision, "migrate_normative_package", |project| {
+            let original = project
+                .normative
+                .active
+                .as_ref()
+                .ok_or(AppError::PackageNotPinned)?;
+            let candidate = NormativePackage::from_catalog(&catalog_for(project)?)?;
+            if original.hash != from_package_hash
+                || candidate.hash != to_package_hash
+                || original.hash == candidate.hash
+            {
+                return Err(AppError::PackageConflict);
+            }
+            let next_revision = project
+                .revision
+                .checked_add(1)
+                .ok_or_else(|| AppError::InvalidInput("Limite de revisões atingido.".into()))?;
+            let impact = compare_packages(original, &candidate, next_revision)?;
+            project.normative.previous.push(original.clone());
+            project.normative.migrations.push(impact);
+            project.normative.active = Some(candidate);
+            project.normative.recalculation_required = true;
+            Ok(())
+        })
+    }
+
+    pub fn final_result_gate(&self, capability_id: &str) -> Result<GateReport, AppError> {
+        let project = self.read()?;
+        let active = project.normative.active.as_ref();
+        let capability = active.and_then(|package| {
+            package
+                .catalog
+                .capabilities
+                .iter()
+                .find(|capability| capability.id == capability_id)
+        });
+        let context = FinalResultContext {
+            project_revision: project.revision,
+            method: capability
+                .map(|capability| capability.method.clone())
+                .unwrap_or_default(),
+            material: capability
+                .map(|capability| capability.material.clone())
+                .unwrap_or_default(),
+            recalculation_required: project.normative.recalculation_required,
+            // Only a future qualified calculation pipeline may populate these fields.
+            result_revision: None,
+            result_package_hash: None,
+            calculation_evidence: None,
+        };
+        let mut gate = evaluate_final_result(active, capability_id, &context);
+        if let Some(active) = active
+            && NormativePackage::from_catalog(&catalog_for(&project)?)?.hash != active.hash
+        {
+            gate.reasons.push(reason("pending_normative_migration", "Há uma versão candidata do registro; a migração ainda precisa de escolha explícita."));
+            gate.allowed = false;
+        }
+        Ok(gate)
+    }
+
     fn mutate(
         &self,
         expected_revision: u64,
@@ -207,6 +397,11 @@ impl ProjectService {
             });
         }
         mutation(&mut project)?;
+        if matches!(operation, "add_member" | "add_environment")
+            && project.normative.active.is_some()
+        {
+            project.normative.recalculation_required = true;
+        }
         project.revision = project
             .revision
             .checked_add(1)
@@ -332,8 +527,25 @@ fn invalid_input(error: DomainError) -> AppError {
     AppError::InvalidInput(error.to_string())
 }
 
+fn catalog_for(project: &Project) -> Result<RegistryCatalog, AppError> {
+    match &project.normative.catalog {
+        Some(catalog) => Ok(catalog.clone()),
+        None => Ok(bundled_catalog()?),
+    }
+}
+
 #[derive(Debug, Error)]
 pub enum AppError {
+    #[error("O pacote normativo mudou. Atualize a consulta e confira a versão antes de confirmar.")]
+    PackageConflict,
+    #[error("O projeto já possui um pacote fixado. Use a migração explícita para alterá-lo.")]
+    PackageAlreadyPinned,
+    #[error("O projeto ainda não possui um pacote normativo fixado.")]
+    PackageNotPinned,
+    #[error("Confirme explicitamente a migração e a necessidade de recálculo.")]
+    ConfirmationRequired,
+    #[error("{0}")]
+    Registry(#[from] RegistryError),
     #[error("A sessão permite apenas consultar o projeto.")]
     PermissionDenied,
     #[error("Já existe um projeto no arquivo selecionado. Abra-o ou selecione outro arquivo.")]
@@ -357,6 +569,11 @@ pub enum AppError {
 impl AppError {
     pub const fn code(&self) -> &'static str {
         match self {
+            Self::PackageConflict => "package_conflict",
+            Self::PackageAlreadyPinned => "package_already_pinned",
+            Self::PackageNotPinned => "package_not_pinned",
+            Self::ConfirmationRequired => "confirmation_required",
+            Self::Registry(_) => "invalid_normative_registry",
             Self::PermissionDenied => "permission_denied",
             Self::AlreadyExists => "project_exists",
             Self::NotFound => "project_not_found",
