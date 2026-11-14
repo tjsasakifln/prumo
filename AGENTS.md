@@ -2,23 +2,23 @@
 
 ## Missão e estado
 
-Este repositório começa como planejamento. Não existe motor de cálculo validado por ter sido documentado aqui. O objetivo é implementar o produto completo definido em PRD.md, na sequência original de 120 issues.
+Este repositório começa como planejamento. Não existe motor de cálculo validado por ter sido documentado aqui. O produto abrange estruturas e instalações hidrossanitárias, elétricas, fotovoltaicas, SPDA, cabeamento, gás, incêndio e climatização. O objetivo é implementar o produto completo definido em PRD.md, na sequência ampliada de 250 issues.
 
 Leia README.md, PRD.md, ROADMAP.md, a issue escolhida e os documentos pertinentes antes de alterar o código. Verifique também instruções do proprietário presentes na sessão e em diretórios mais específicos. Não invente uma autorização, norma, resultado ou aprovação ausente.
 
 ## Seleção da próxima issue
 
 1. Consulte as issues e a branch principal atuais. Não use apenas uma cópia antiga da fila.
-2. Selecione a menor issue ainda não concluída da sequência PRU-001 a PRU-120.
+2. Selecione a menor issue ainda não concluída da sequência PRU-001 a PRU-250.
 3. Confirme que todas as anteriores foram implementadas, integradas e verificadas. Fechamento como duplicada, cancelada ou não planejada não conta.
 4. Leia os critérios completos, incluindo testes de erro, referências normativas, reuso e contratos transversais.
 5. Mantenha a issue aberta se qualquer critério obrigatório estiver pendente. Nunca crie um resultado de teste ou assinatura para passar o bloqueio.
 
-A numeração GitHub inicial corresponde à sequência. PRs e issues de manutenção criadas depois não alteram os identificadores PRU. Correções de uma entrega permanecem vinculadas a ela e devem ser resolvidas antes de avançar. Uma eventual subdivisão deve preservar a dependência e o aceite integral da issue original.
+A sequência ampliada mantém a correspondência entre número GitHub e identificador PRU. A antiga issue 120 passou a ser um marco de desenvolvimento estrutural; o lançamento completo pertence à 250. PRs e issues de manutenção criadas depois não alteram os identificadores PRU. Correções de uma entrega permanecem vinculadas a ela e devem ser resolvidas antes de avançar. Uma eventual subdivisão deve preservar a dependência e o aceite integral da issue original.
 
 ## Reuso obrigatório quando pertinente
 
-Antes de implementar um módulo, examine docs/REUSO.md e candidatos-reuso.json. Procure componentes abertos adequados nas fontes oficiais. Compare adoção, adaptação e implementação própria pelo custo total.
+Antes de implementar um módulo, examine docs/REUSO.md e docs/candidatos-reuso.json. Procure componentes abertos adequados nas fontes oficiais. Compare adoção, adaptação e implementação própria pelo custo total.
 
 Registre origem, licença por módulo, dependências, commit/versão, manutenção, segurança, ensaios próprios e motivo da decisão. Preserve avisos. Candidato listado não significa componente aprovado. Bibliotecas científicas não herdam automaticamente conformidade com normas brasileiras.
 
@@ -48,7 +48,7 @@ Mantenha os casos de referência independentes da implementação. Fixe tolerân
 
 Etapas de modelagem anteriores ao solver podem testar topologia e contratos usando fixtures explicitamente identificadas. Nunca mostrar a fixture como cálculo disponível. A integração numérica é obrigatória nas issues correspondentes e nas campanhas finais.
 
-Cada nova função relevante deve incluir operação equivalente por MCP. Depois da issue 99, documentos, intercâmbio e emissão continuam a ampliar o contrato; a completude de todos os fluxos é conferida na 112.
+Cada nova função relevante deve incluir operação equivalente por MCP. Depois da issue 99, documentos, intercâmbio e emissão continuam a ampliar o contrato; a 112 confere os fluxos estruturais então existentes. As instalações ampliam continuamente o mesmo contrato; a integração completa é conferida nas issues 227 a 250.
 
 ## Critério de conclusão de uma issue
 
@@ -63,10 +63,22 @@ Cada nova função relevante deve incluir operação equivalente por MCP. Depois
 
 ## Lançamento
 
-Nenhum agente pode retirar requisito, diminuir cobertura, alargar tolerância ou dispensar revisão apenas para concluir a issue 120. Uma necessidade de mudar materialmente o objetivo deve ser apresentada ao proprietário com impactos claros.
+Nenhum agente pode retirar requisito, diminuir cobertura, alargar tolerância ou dispensar revisão apenas para concluir a issue 250. Uma necessidade de mudar materialmente o objetivo deve ser apresentada ao proprietário com impactos claros.
 
 Antes do lançamento, reconfirme normas, componentes e vulnerabilidades. Projetos antigos preservam seu pacote normativo. A versão comercial deve ser exatamente o artefato aprovado, com suporte, atualização, direitos de distribuição e tratamento de incidentes numéricos.
 
 ## Comunicação
 
 Escreva em português claro. Separe fatos, hipóteses, dados pendentes e funcionalidades planejadas. Evite travessões e jargão desnecessário. Informe o resultado, a evidência e os impedimentos reais, sem chamar planejamento de implementação ou testes automatizados de certificação profissional.
+
+## Ampliação para instalações
+
+Desde as primeiras issues, os contratos devem admitir ambientes, redes, portas e conexões tipadas. A etapa inicial valida esses contratos sem apresentar motores futuros como disponíveis. Os cálculos de redes entram nas suas issues de implementação. Um cruzamento visual não cria ligação hidráulica, elétrica, lógica ou resistente.
+
+Cada função distingue modelar, calcular, verificar e emitir. Dados de catálogo, concessionária e regulamentação local têm origem, versão e domínio. Mudanças de equipamento, circuito, ramal, vazão, pressão, carga, proteção, ambiente ou regra invalidam as dependências corretas, inclusive entre disciplinas.
+
+Não ampliar uma biblioteca de água para gás compressível, nem um solver elétrico para dimensionamento normativo, sem qualificação específica. Limites documentais dos sistemas pesquisados ficam na matriz; pendências de fonte não autorizam omissão de capacidade obrigatória. A emissão integrada será qualificada após os módulos de instalações.
+
+## Identidade da apresentação
+
+README.md e LEIAME.md apresentam o Prumo por suas próprias funções. Não incluir nomes, slogans, comparações ou links identificadores de softwares de referência nesses dois documentos. Manter atribuição e fontes técnicas nos documentos de pesquisa e de cobertura. O verificador do planejamento confere essa restrição.

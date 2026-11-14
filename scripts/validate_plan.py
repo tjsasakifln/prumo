@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Confere integridade do planejamento. Não verifica cálculos estruturais."""
+"""Confere integridade do plano de estruturas e instalações, sem validar cálculos."""
 from pathlib import Path
 import argparse
 import hashlib
@@ -19,8 +19,10 @@ def validate(allow_unpublished=False):
     issues = data['issues']
     source_ids = set(source_index())
     keys = {issue['key'] for issue in issues}
-    if len(issues) != 120 or data['issue_count'] != 120 or len(keys) != 120:
-        errors.append('A fila inicial precisa conter 120 issues únicas.')
+    if len(issues) != 250 or data['issue_count'] != 250 or len(keys) != 250:
+        errors.append('A fila inicial precisa conter 250 issues únicas.')
+    if data.get('release_issue') != 'PRU-250':
+        errors.append('A liberação comercial deve pertencer à PRU-250.')
     for n, issue in enumerate(issues, 1):
         key = f'PRU-{n:03}'
         if issue['sequence'] != n or issue['key'] != key:
@@ -32,8 +34,13 @@ def validate(allow_unpublished=False):
             if not issue.get(field):
                 errors.append(f'{key} sem {field}.')
         for field in ('scope', 'acceptance', 'validation'):
-            if len(issue.get(field, [])) < 3:
+            values = issue.get(field)
+            if not isinstance(values, list) or len(values) < 3 or any(not isinstance(value, str) or not value.strip() for value in values):
                 errors.append(f'{key} incompleta em {field}.')
+        for field in ('norms', 'reuse_candidates'):
+            values = issue.get(field)
+            if not isinstance(values, list) or any(not isinstance(value, str) or not value.strip() for value in values):
+                errors.append(f'{key} com {field} fora do formato de lista de textos.')
         if not issue['source_ids'] or set(issue['source_ids']) - source_ids:
             errors.append(f'{key} com fonte ausente ou inválida: {set(issue["source_ids"]) - source_ids}.')
         if len(issue['title']) > 230:
@@ -47,16 +54,16 @@ def validate(allow_unpublished=False):
         for issue in issues[phase['first']-1:phase['last']]:
             if issue['phase'] != phase['id'] or issue['phase_name'] != phase['name']:
                 errors.append(f'Fase inconsistente: {issue["key"]}.')
-    if phase_numbers != list(range(1, 121)):
+    if phase_numbers != list(range(1, 251)):
         errors.append('Fases não cobrem exatamente a fila.')
     coverage = json.loads((ROOT / 'planning/coverage.json').read_text(encoding='utf-8'))
     capabilities = coverage['capabilities']
-    if len(capabilities) < 36:
-        errors.append('Cobertura inferior ao inventário inicial de 36 famílias.')
+    if len(capabilities) < 72:
+        errors.append('Cobertura inferior ao inventário ampliado de 72 famílias.')
     capability_ids = [c['capability_id'] for c in capabilities]
     if len(set(capability_ids)) != len(capability_ids):
         errors.append('Capacidade duplicada.')
-    required_capability_ids = {f'PAR-{n:02}' for n in range(1, 37)}
+    required_capability_ids = {f'PAR-{n:02}' for n in range(1, 37)} | {f'MEP-{n:02}' for n in range(1, 37)}
     missing_capability_ids = required_capability_ids - set(capability_ids)
     if missing_capability_ids:
         errors.append('Capacidades obrigatórias ausentes: ' + ', '.join(sorted(missing_capability_ids)) + '.')
@@ -65,32 +72,40 @@ def validate(allow_unpublished=False):
         for field in ('implementation_issues', 'qualification_issues'):
             if not cap[field] or set(cap[field]) - keys:
                 errors.append(f'{cid} com mapa inválido em {field}.')
-        if cap['release_gate'] != 'PRU-120' or cap['required'] is not True:
+        if cap['release_gate'] != 'PRU-250' or cap['required'] is not True:
             errors.append(f'{cid} perdeu condição de lançamento.')
         if not cap['source_ids'] or set(cap['source_ids']) - source_ids:
             errors.append(f'{cid} usa fonte ausente ou inexistente.')
     requirements = json.loads((ROOT / 'planning/requirements.json').read_text(encoding='utf-8'))
-    if len(requirements['requirements']) != 12:
+    if len(requirements['requirements']) != 14:
         errors.append('Requisitos permanentes incompletos.')
     requirement_ids = [req['id'] for req in requirements['requirements']]
     if len(set(requirement_ids)) != len(requirement_ids):
         errors.append('Requisito permanente duplicado.')
-    required_requirement_ids = {f'REQ-{n:02}' for n in range(1, 13)}
+    required_requirement_ids = {f'REQ-{n:02}' for n in range(1, 15)}
     if set(requirement_ids) != required_requirement_ids:
-        errors.append('Os requisitos permanentes devem preservar REQ-01 a REQ-12.')
+        errors.append('Os requisitos permanentes devem preservar REQ-01 a REQ-14.')
     for req in requirements['requirements']:
         if not req['issues'] or set(req['issues']) - keys:
             errors.append(f'{req["id"]} sem cobertura válida.')
         if req.get('required') is not True:
             errors.append(f'{req["id"]} perdeu condição obrigatória.')
-    expected_outputs = rendered_outputs()
+    for filename in ('README.md', 'LEIAME.md'):
+        presentation = (ROOT / filename).read_text(encoding='utf-8')
+        if re.search(r'\b(?:altoqi|qi[\s_-]*builder|builder|eberick|cype(?:cad|[\s_-]*3d)?|tqs)\b', unquote(presentation), re.IGNORECASE):
+            errors.append('Nome de software de referência na apresentação: ' + filename)
+    try:
+        expected_outputs = rendered_outputs()
+    except (KeyError, TypeError, ValueError) as error:
+        errors.append('Dados não renderizáveis: ' + str(error))
+        expected_outputs = {}
     for relative, expected in expected_outputs.items():
         path = ROOT / relative
         if not path.exists() or path.read_text(encoding='utf-8') != expected:
             errors.append('Renderização desatualizada: ' + relative)
     local_issues = sorted((ROOT / 'planning/issues').glob('*.md'))
-    if len(local_issues) != 120:
-        errors.append('Quantidade de textos de issues diferente de 120.')
+    if len(local_issues) != 250:
+        errors.append('Quantidade de textos de issues diferente de 250.')
     for path in sorted(ROOT.rglob('*.md')):
         if '.git' in path.parts:
             continue
@@ -112,11 +127,18 @@ def validate(allow_unpublished=False):
         else:
             manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
             records = manifest['issues']
-            if len(records) != 120:
+            if len(records) != 250:
                 errors.append('Registro de publicação incompleto.')
+            if manifest.get('verified_count') != len(issues):
+                errors.append('Contagem de publicação conferida divergente.')
             for n, record in enumerate(records, 1):
+                if n > len(issues):
+                    errors.append(f'Registro publicado sem issue no plano: {n}.')
+                    continue
                 if record['number'] != n or record['key'] != f'PRU-{n:03}':
                     errors.append(f'Identidade publicada incorreta: {n}.')
+                if record.get('api_readback_verified') is not True or record.get('url') != f'https://github.com/tjsasakifln/prumo/issues/{n}':
+                    errors.append(f'Publicação sem conferência ou URL válida: {n}.')
                 content = expected_outputs.get(f'planning/issues/{n:03}.md', '')
                 digest = hashlib.sha256(content.encode()).hexdigest()
                 if record['body_sha256'] != digest:

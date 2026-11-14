@@ -31,6 +31,8 @@ Fórmulas e regras normativas exigem fonte, edição, item, domínio, interpreta
 
 Ligar na issue as PRs, commits, evidências, limitações e decisões de reuso. Atualizar documentação, exemplos, estado da capacidade e matriz de rastreabilidade. O registro de estado do plano e os textos devem permanecer sincronizados.
 
-Uma mudança material no planejamento exige revisar o impacto nas dependências e na issue 120. As especificações locais são geradas por `scripts/render_plan.py`; atualize `planning/backlog.json`, regenere e publique o texto correspondente no GitHub. O manifesto de publicação deve registrar o hash do corpo efetivamente lido do GitHub, sem inventar conferência.
+Uma mudança material no planejamento exige revisar o impacto nas dependências e na issue 250. As especificações locais são geradas por `scripts/render_plan.py`; atualize `planning/backlog.json`, regenere e publique o texto correspondente no GitHub. O manifesto de publicação deve registrar o hash do corpo efetivamente lido do GitHub, sem inventar conferência.
 
 Integre a alteração conforme as verificações exigidas na branch principal. Feche a issue somente após todos os aceites. Se algo obrigatório continuar pendente, mantenha a issue aberta e explique o impedimento real.
+
+A revisão ampliada preserva as 119 primeiras entregas estruturais, adapta a 120 e acrescenta instalações até a 250. Os marcos de qualificação estrutural não liberam funções futuras de instalações; a evidência final deve cobrir todas as disciplinas no mesmo candidato de distribuição.

@@ -1,0 +1,488 @@
+[
+  {
+    "id": "QE-001",
+    "title": "Disciplinas do AltoQi Builder",
+    "url": "https://www.altoqi.com.br/produtos/builder",
+    "summary": "Declara oito disciplinas, incluindo fotovoltaica separadamente de elétrica. A função de referência será detalhada por recurso, sem depender da divisão comercial de licenças.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-002",
+    "title": "Catálogo de recursos do Builder",
+    "url": "https://www.altoqi.com.br/produtos/builder/recursos",
+    "summary": "Índice oficial inclui automações de modelagem elétrica, cabeamento, SPDA, fotovoltaico e climatização; contém referências de recursos especializados e transversais.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-003",
+    "title": "Processamento elétrico e cabeamento",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/115004244754",
+    "summary": "Documenta verificação de traçado, esquemas compatíveis, hierarquia de quadros, cálculo de correntes/FCA, fiação automática, balanceamento e dimensionamento. Processar só um pavimento é insuficiente para casos dependentes de outros níveis.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-004",
+    "title": "Índice da disciplina elétrica",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/el%C3%A9trico",
+    "summary": "Índice técnico cobre lançamento, esquemas, comandos, quadros, alimentação, fiação, fatores de demanda, proteções, gerador, nobreak, subestação, carregadores e relatórios. Itens de modelagem não implicam dimensionamento integral de equipamentos.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-005",
+    "title": "Critérios de correção da capacidade dos cabos",
+    "url": "https://www.altoqi.com.br/recursos/novos-criterios-para-calculo-do-fca",
+    "summary": "Documenta fatores de instalação/agrupamento e relatórios relacionados. A terminologia comercial mistura fatores: Prumo deve separar corretamente FCA, FCT e demais coeficientes segundo texto normativo licenciado.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-006",
+    "title": "Configuração do dimensionamento de condutores",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360007888394",
+    "summary": "Abrange corrente admissível, queda de tensão, sobrecarga e curto; seções de fase, neutro, retorno e mínimos; parâmetros configuráveis e circuitos reserva. Alterações exigem reprocessar.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-007",
+    "title": "Cálculo da queda de tensão",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/115002780273",
+    "summary": "Explica resultados por trecho, parcial e acumulado, diferenças de esquemas e cabos paralelos. A formulação deve ser implementada a partir das fontes normativas e hipóteses verificadas, sem copiar automaticamente simplificações do manual.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-008",
+    "title": "Proteção contra curto-circuito",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/115003895994",
+    "summary": "Documenta escolha automática de disjuntores e avaliação da corrente presumida no ponto de instalação, conforme NBR 5410 citada pelo fornecedor.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-009",
+    "title": "IDR por grupo de circuitos",
+    "url": "https://www.altoqi.com.br/recursos/calculo-de-idr-diferente-por-grupo-de-circuitos-associados",
+    "summary": "Recurso dedicado ao dimensionamento de IDR por grupos associados, separado da proteção individual dos circuitos.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-010",
+    "title": "Entrada de serviço e concessionárias",
+    "url": "https://www.altoqi.com.br/recursos/concessionarias-de-energia",
+    "summary": "Documenta entrada individual/coletiva, demanda, quadros de medição e modelos de distribuidoras. Esses padrões precisam ser versionados e verificados contra publicações oficiais da distribuidora antes de uso.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-011",
+    "title": "Barramento blindado",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/21850443135127",
+    "summary": "Documenta percursos horizontais/verticais, conexões, derivações plug-in, caixas, corrente demandada, curto e queda de tensão, memorial e representação em unifilar/prumada. Disponibilidade comercial Enterprise/Infinity não reduz o escopo solicitado.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-012",
+    "title": "Demanda do barramento por trecho",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/c%C3%A1lculo-da-corrente-demandada-o-barramento-blindado",
+    "summary": "Diferencia instalação individual e coletiva; considera quadros a jusante de cada trecho. Método e perfil de demanda precisam ser rastreados e confrontados com base autorizada.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-013",
+    "title": "Gerador e quadro de transferência automática",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/como-realizar-o-lan%C3%A7amento-de-geradores-no-altoqi-builder",
+    "summary": "Gerador/QTA desde atualização 2025-05 por assinatura. Dimensiona potência por instalada/demandada com fator; possui dispositivos internos e diagrama. Em 2026-08 admite entrada de outro pavimento. Referência permite um QTA por gerador e vários dispositivos por QTA.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-014",
+    "title": "Modelagem de subestações",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/19383297082391",
+    "summary": "Artigo de 20/01/2026 declara subestação aérea/abrigada com peças genéricas; explicitamente não dimensiona seus elementos. Esta distinção deve permanecer no Prumo: representar não significa verificar eletricamente.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-015",
+    "title": "Carregadores para veículos elétricos",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/19277157857559",
+    "summary": "Documenta lançamento e circuitos de carregadores bifásicos/trifásicos, em parede/totem, com definição de condutos, esquemas e processamento.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-016",
+    "title": "Fotovoltaico on-grid e off-grid",
+    "url": "https://www.altoqi.com.br/recursos/fotovoltaico",
+    "summary": "Declara projetos conectados ou isolados, circuitos CC integrados à CA, documentação e estimativa de retorno. Não demonstra sozinho autonomia energética detalhada ou homologação de conexão.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-017",
+    "title": "Séries e arranjos fotovoltaicos",
+    "url": "https://www.altoqi.com.br/recursos/dimensionamento-definicao-de-circuitos-series-e-arranjos",
+    "summary": "Documenta agrupamento dos módulos, proteção, numeração, inclinação e perfis residencial/comercial/usina, considerando NBR16612 e16690.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-018",
+    "title": "Inversores fotovoltaicos",
+    "url": "https://www.altoqi.com.br/recursos/dimensionamento-inversor",
+    "summary": "Verifica potência, tensões, correntes, faixa de operação, MPPT e arranjos. Catálogo inclui inversores mono/trifásicos, microinversores, baterias, controladores e caixas de junção.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-019",
+    "title": "Dimensionamento CC e CA",
+    "url": "https://www.altoqi.com.br/recursos/dimensionamento-de-circuitos-cc-ca",
+    "summary": "Integra circuitos módulos/inversor e inversor/quadro, seção, proteções, queda e diagramas. Cita NBR16690 e16612.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-020",
+    "title": "Perfil de usina solar",
+    "url": "https://www.altoqi.com.br/recursos/configuracao-para-projeto-de-usina-solar",
+    "summary": "Declara modo dedicado de parâmetros de projeto e norma para usinas, além do residencial/comercial. Isso não demonstra estudos completos de conexão à rede nem projeto integral de alta tensão.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-021",
+    "title": "Retorno fotovoltaico",
+    "url": "https://www.altoqi.com.br/recursos/retorno-de-investimento",
+    "summary": "Estimativa simplificada de retorno baseada em potência, geração, tarifa e custos, com relatório personalizável. A viabilidade futura exige hipóteses explícitas e tarifas vigentes, não garantia de economia.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-022",
+    "title": "Atualização SPDA NBR5419:2026",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/o-que-mudou-no-builder-com-a-nbr-54192026-para-projetos-de-spda",
+    "summary": "Atualização2026-08 documenta Ng por município, mudanças nos componentes de risco, parâmetros novos e frequência de danos; preservação/migração de projetos anteriores exige reanálise. Norma atual também confirmada no catálogo ABNT.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-023",
+    "title": "Métodos gráficos de SPDA",
+    "url": "https://www.altoqi.com.br/recursos/dimensionamento-e-verificacao-grafica-pelos-metodos-normativos-da-nbr-5419",
+    "summary": "Documenta ângulo de proteção, malhas e método eletrogeométrico com cobertura gráfica, descidas, cordoalhas e proteção lateral. As referências a edições antigas são superadas para novos projetos pelo cadastro normativo atual.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-024",
+    "title": "SPDA estrutural",
+    "url": "https://www.altoqi.com.br/recursos/spda-estrutural",
+    "summary": "Documenta uso de elementos estruturais, avaliação independente, malhas/descidas automáticas, BEP e verificações de continuidade/configuração. Geometria de armadura não comprova continuidade elétrica executada.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-025",
+    "title": "Captação natural por telhados",
+    "url": "https://www.altoqi.com.br/recursos/captores-naturais---telhado",
+    "summary": "Documenta material, espessura, área exposta e perfuração para telhado metálico usado como captor natural. Exige condições físicas e norma aplicável.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-026",
+    "title": "Memorial de SPDA",
+    "url": "https://www.altoqi.com.br/recursos/geracao-automatica-do-memorial-de-calculo",
+    "summary": "Declara memorial em planta e documento, contemplando critérios, dimensões, descidas, anéis e verificações de proteção.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-027",
+    "title": "Normas por disciplina",
+    "url": "https://www.altoqi.com.br/recursos/dimensionamento-segundo-os-parametros-normativos-8b1b6",
+    "summary": "Relaciona NBR5410,5419,16612,16690,14565 e referência TIA-EIA568-B. É inventário funcional, não fonte suficiente para vigência ou texto de normas.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-028",
+    "title": "Associação e dimensionamento de racks",
+    "url": "https://www.altoqi.com.br/recursos/definicao-dos-equipamentos-no-quadro-racks",
+    "summary": "Pontos associados a portas/equipamentos, capacidade e expansão, comprimentos, mapa de cabos, desenho frontal, esquema lógico e prumada.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-029",
+    "title": "Compatibilidade óptica/metálica",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360013805554",
+    "summary": "Dimensiona pares e verifica compatibilidade entre o meio físico do cabo e do conector. Não equivale a certificar desempenho medido de rede construída.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-030",
+    "title": "Indicação de fiação de cabeamento",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360000065333",
+    "summary": "Distingue cabeamento primário/secundário/interligação e telefonia, identificação de cabos no percurso, filtragem de redes e atualização após processamento.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-031",
+    "title": "Mapa de cabos",
+    "url": "https://www.altoqi.com.br/recursos/geracao-automatica-do-mapa-de-cabos-do-projeto",
+    "summary": "Mapa por quadro/rack com identificação, trajetos e comprimentos, prumadas, esquema lógico e relatório. Oferece DOCX, HTML e XLSX.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-032",
+    "title": "Climatização: escopo anterior de modelagem",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360057399134",
+    "summary": "Artigo de04/07/2025 limita disciplina a modelagem/detalhamento Split eVRF. Deve ser lido com atualização2026-08 que acrescenta carga térmica; não excluir capacidade recente por essa fonte anterior.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-033",
+    "title": "Carga térmica por ambiente",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/c%C3%A1lculo-da-carga-t%C3%A9rmica-por-ambientes-no-altoqi-builder",
+    "summary": "Recurso2026-08 calcula cargas sensível, latente e total por ambiente segundo NBR16655-3. Considera envoltória, pessoas, iluminação, aparelhos, aberturas e fontes personalizadas. Não seleciona nem atesta adequação dos equipamentos automaticamente.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-034",
+    "title": "Dutos, tubulação e linhas frigogênicas",
+    "url": "https://altoqi.com.br/recursos/lancamento-da-tubulacao-dutos-e-linhas-frigogenicas",
+    "summary": "Página anuncia dutos circulares/retangulares por igual perda, vazão, água gelada/condensado, perdas e comprimentos equivalentes. Há conflito com fontes que limitam o cálculo HVAC; manter requisito no Prumo, qualificando como alegação funcional a confirmar, sem excluir nem alegar comprovação prática.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "official_claim_conflicting_requires_confirmation"
+  },
+  {
+    "id": "QE-035",
+    "title": "Disciplina climatização",
+    "url": "https://www.altoqi.com.br/produtos/builder/software-para-projetos-de-climatizacao",
+    "summary": "Catálogos editáveis Split/VRF, equipamentos/acessórios, desenhos em planta/corte/isométrico/3D, quantitativos, IFC eBCF. A nota antiga só modelagem não reflete integralmente a atualização2026-08.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-036",
+    "title": "Catálogo oficial ABNT",
+    "url": "https://abntcatalogo.com.br/",
+    "summary": "Consultado em 14/11/2026: NBR 5410:2004 Versão Corrigida:2008; partes 1 a 4 da NBR 5419:2026 Versão Corrigida:2026; NBR 17019:2022; NBR 14039:2021; NBR 9077:2025. Metadados confirmados no catálogo, sem aquisição nem redistribuição do texto.",
+    "accessed": "2026-11-14",
+    "type": "normative_catalog",
+    "qualification": "metadata_verified_text_not_acquired"
+  },
+  {
+    "id": "QE-037",
+    "title": "pandapower",
+    "url": "https://github.com/e2nIEE/pandapower",
+    "summary": "Candidato para cálculo de redes elétricas e referência independente. A adequação à baixa tensão predial e NBR5410 deve ser testada, não presumida.",
+    "accessed": "2026-11-14",
+    "type": "open_source_primary",
+    "qualification": "candidate_not_validated"
+  },
+  {
+    "id": "QE-038",
+    "title": "Licença pandapower",
+    "url": "https://github.com/e2nIEE/pandapower/blob/develop/LICENSE",
+    "summary": "BSD3-Clause no arquivo consultado. Fixar commit, preservar avisos e conferir dependências antes da incorporação.",
+    "accessed": "2026-11-14",
+    "type": "open_source_license",
+    "qualification": "candidate_not_validated"
+  },
+  {
+    "id": "QE-039",
+    "title": "pvlib-python",
+    "url": "https://github.com/pvlib/pvlib-python",
+    "summary": "BSD3-Clause, funções para desempenho fotovoltaico. Útil para geração, posição solar e inversores; não substitui projeto de proteção NBR16690 ou regras comerciais de compensação.",
+    "accessed": "2026-11-14",
+    "type": "open_source_primary",
+    "qualification": "candidate_not_validated"
+  },
+  {
+    "id": "QE-040",
+    "title": "PsychroLib",
+    "url": "https://github.com/psychrometrics/psychrolib",
+    "summary": "MIT; propriedades psicrométricas em várias linguagens. Candidato para calor latente/umidade, exigindo conferência de unidades, domínio e adaptação normativa.",
+    "accessed": "2026-11-14",
+    "type": "open_source_primary",
+    "qualification": "candidate_not_validated"
+  },
+  {
+    "id": "QE-041",
+    "title": "CoolProp",
+    "url": "https://github.com/CoolProp/CoolProp",
+    "summary": "MIT no núcleo consultado; propriedades termofísicas. Avaliar fluidos, faixas e dependências. Não é um dimensionador de VRF nem comprovação da seleção de um fabricante.",
+    "accessed": "2026-11-14",
+    "type": "open_source_primary",
+    "qualification": "candidate_not_validated"
+  },
+  {
+    "id": "QE-042",
+    "title": "Documentação fotovoltaica",
+    "url": "https://www.altoqi.com.br/recursos/documentacao-do-projeto",
+    "summary": "Documentação técnica do projeto fotovoltaico vinculada a elementos, diagramas e dimensionamento. Conferir formatos e dados de saída na implementação.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-043",
+    "title": "Telefonia fixa",
+    "url": "https://www.altoqi.com.br/recursos/projeto-de-telefonia-fixa",
+    "summary": "Rede independente da estruturada, ramais/extensões, condutos e esquema vertical conforme padrões de operadora/Telebras citados. Fonte histórica da regra deve ser versionada e pertinência atual verificada.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-044",
+    "title": "Diagramas elétricos",
+    "url": "https://www.altoqi.com.br/recursos/geracao-de-diagramas-e-quadros",
+    "summary": "Unifilar editável, multifilar, quadros de cargas/demanda, proteções, balanceamento, FCA e gerador, atualizados a partir do modelo.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-045",
+    "title": "Desconexão do DPS",
+    "url": "https://www.altoqi.com.br/recursos/disjuntor-de-desconexao-do-dps",
+    "summary": "Recurso específico de dispositivo de desconexão do DPS, a incluir em seleção, verificação, esquema e quantitativo.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-046",
+    "title": "Distribuição de tomadas",
+    "url": "https://www.altoqi.com.br/recursos/distribuicao-automatica-das-tomadas",
+    "summary": "Recurso de distribuição automática e quantidade mínima de tomadas, sujeito a geometria, uso e requisitos de projeto.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-047",
+    "title": "Curto-circuito pandapower",
+    "url": "https://pandapower.readthedocs.io/en/latest/shortcircuit.html",
+    "summary": "Documentação oficial apresenta cálculo de curto conforme DIN/IECEN60909. Validar hipóteses, tipos de falta e mapeamento do Prumo.",
+    "accessed": "2026-11-14",
+    "type": "open_source_primary",
+    "qualification": "candidate_not_validated"
+  },
+  {
+    "id": "QE-048",
+    "title": "Avaliação SPDA por zonas",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/115002814534",
+    "summary": "Documenta zona única/multizona, características e medidas de proteção por zona, com agregação de riscos. A regra pertence à edição2015 citada; perfil2026 deve ser confirmado no texto vigente.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-049",
+    "title": "Distribuição de tomadas de comunicação",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360001573694",
+    "summary": "Documenta distribuição por perímetro/área para redes cabeamento, telefônica, TV Cabo e lógica, com portas e local de trabalho.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-050",
+    "title": "Tipos e subtipos de pontos",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360040814334",
+    "summary": "Tipos de elétrica, cabeamento, telefonia, lógica e TV Cabo relacionam peças e esquemas de ligação. Regras de conexão são parte do cadastro, além da geometria.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-051",
+    "title": "Categorias de cabeamento",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360000108214",
+    "summary": "Troca de categoria exige revisar cabo, conectores, patch cords, painéis e equipamentos do canal; mudar só o cabo não qualifica toda a rede.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-052",
+    "title": "Cursos oficiais de cabeamento",
+    "url": "https://altoqi.com.br/cursos/builder",
+    "summary": "Catálogo de cursos confirma projetos de telefonia fixa, interfone e TV, além de cabeamento estruturado. É evidência do escopo de redes, não do desempenho de transmissão calculado.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-053",
+    "title": "Organização das indicações de fiação",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/115004358613",
+    "summary": "Otimização de indicações, linhas de chamada e legendas evitam sobreposição; modificações de apresentação são preservadas em operações de cópia e espelhamento.",
+    "accessed": "2026-11-14",
+    "type": "manual_official",
+    "qualification": "documentary_scope_only"
+  },
+  {
+    "id": "QE-054",
+    "title": "Comunicado de suspensão de NBR16401-3:2024",
+    "url": "https://abrava.com.br/abnt-cb055-informa-a-suspensao-da-abnt-nbr-16401-32024-confira-o-comunicado/",
+    "summary": "Índice oficial do CB055/ABRAVA data em28/05/2025 o comunicado de suspensão da Parte3:2024. A situação atual deve ser verificada por parte no catálogo ABNT antes de codificar. Não pressupor vigência2024 uniforme para a série.",
+    "accessed": "2026-11-14",
+    "type": "normative_body_notice",
+    "qualification": "historical_notice_confirmed_current_status_requires_catalog_check"
+  }
+]

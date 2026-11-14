@@ -1,9 +1,9 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "2.0",
   "baseline_date": "2026-11-14",
   "status": "planned",
-  "scope_notice": "Mapa de planejamento das famílias pesquisadas. PRU-002 deve decompor a cobertura por produto, módulo, versão e domínio. A ligação a uma issue não demonstra implementação nem percentual de paridade.",
-  "traceability_policy": "As listas apontam entregas diretamente relevantes; dependências sequenciais transitivas estão no backlog. Uma issue pode implementar e qualificar aspectos distintos da mesma família. Toda família obrigatória permanece sujeita à liberação PRU-120.",
+  "scope_notice": "Mapa do produto ampliado. As 36 famílias estruturais e 36 de instalações são obrigatórias. Cada família deve ser decomposta e comprovada por função, módulo, edição e domínio. Associação a issue não demonstra implementação.",
+  "traceability_policy": "Implementações e qualificações referenciam entregas específicas; dependências transitivas constam do backlog. O lançamento completo pertence à PRU-250. Marcos anteriores não substituem a qualificação das instalações.",
   "capabilities": [
     {
       "capability_id": "PAR-01",
@@ -32,9 +32,10 @@
         "PRU-111",
         "PRU-112",
         "PRU-115",
-        "PRU-117"
+        "PRU-117",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "Inclui fluxos positivos de promoção de referências CAD/IFC; referências não se tornam resultados calculados."
     },
@@ -60,9 +61,10 @@
         "PRU-008",
         "PRU-112",
         "PRU-113",
-        "PRU-114"
+        "PRU-114",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "Modelo físico, analítico e documental mantêm relações explícitas; objeto apenas geométrico permanece identificado."
     },
@@ -96,9 +98,10 @@
         "PRU-090",
         "PRU-112",
         "PRU-113",
-        "PRU-114"
+        "PRU-114",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "Os métodos têm domínios próprios. Cobertura da família não autoriza tratar como validado um método ainda experimental."
     },
@@ -126,9 +129,10 @@
         "PRU-090",
         "PRU-112",
         "PRU-113",
-        "PRU-114"
+        "PRU-114",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "Ações e combinações são verificadas por pacote normativo e situação; esforços concomitantes não podem ser substituídos por máximos independentes."
     },
@@ -162,9 +166,10 @@
         "PRU-080",
         "PRU-090",
         "PRU-113",
-        "PRU-114"
+        "PRU-114",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "Análise global não substitui verificação local nem permite estabilização numérica oculta."
     },
@@ -195,9 +200,10 @@
         "PRU-060",
         "PRU-112",
         "PRU-113",
-        "PRU-115"
+        "PRU-115",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "Norma, edição, métodos, faixas de parâmetros e detalhamento precisam de evidências específicas."
     },
@@ -234,9 +240,10 @@
         "PRU-112",
         "PRU-113",
         "PRU-114",
-        "PRU-115"
+        "PRU-115",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "A mesma representação visual não torna equivalentes lajes maciças, nervuradas, industrializadas, mistas e pisos de madeira."
     },
@@ -269,9 +276,10 @@
         "PRU-090",
         "PRU-112",
         "PRU-113",
-        "PRU-114"
+        "PRU-114",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "Abrange geometria especial, transferências e regiões descontínuas; cada idealização exige validação."
     },
@@ -296,9 +304,10 @@
         "PRU-060",
         "PRU-112",
         "PRU-113",
-        "PRU-115"
+        "PRU-115",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "Conferir caminho de cargas, apoios, dimensões e armadura nas tipologias declaradas."
     },
@@ -326,9 +335,10 @@
         "PRU-070",
         "PRU-112",
         "PRU-114",
-        "PRU-115"
+        "PRU-115",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "Verificações geotécnicas e estruturais têm estados separados; uma aprovação não substitui a outra."
     },
@@ -353,9 +363,10 @@
         "PRU-070",
         "PRU-112",
         "PRU-114",
-        "PRU-115"
+        "PRU-115",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "Dados de investigação, correlações, rigidez e convergência devem permanecer rastreáveis."
     },
@@ -383,9 +394,10 @@
         "PRU-112",
         "PRU-113",
         "PRU-114",
-        "PRU-115"
+        "PRU-115",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "Água, solo, flutuação, alternância de uso, fissuração e estabilidade não são dispensados por uma análise ELU favorável."
     },
@@ -410,9 +422,10 @@
         "PRU-060",
         "PRU-112",
         "PRU-113",
-        "PRU-115"
+        "PRU-115",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "Inclui perdas e todas as fases, armaduras ativa/passiva e efeitos primários/secundários sem dupla contagem."
     },
@@ -445,9 +458,10 @@
         "PRU-060",
         "PRU-112",
         "PRU-113",
-        "PRU-115"
+        "PRU-115",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "Inclui pi/TT/telhas e painéis/insertos. O manual PREO distingue elementos apenas documentados de elementos dimensionados; Prumo deve publicar essa distinção."
     },
@@ -475,9 +489,10 @@
         "PRU-080",
         "PRU-112",
         "PRU-114",
-        "PRU-115"
+        "PRU-115",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "Normas de perfis laminados/soldados, tubulares e formados a frio possuem domínios separados."
     },
@@ -505,9 +520,10 @@
         "PRU-080",
         "PRU-112",
         "PRU-114",
-        "PRU-115"
+        "PRU-115",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "Compatibilidade entre materiais e fases deve ser demonstrada, inclusive conectores e serviço."
     },
@@ -533,9 +549,10 @@
         "PRU-080",
         "PRU-112",
         "PRU-114",
-        "PRU-115"
+        "PRU-115",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "Aprovar a barra não aprova a ligação; rigidez da ligação precisa corresponder ao modelo global."
     },
@@ -563,9 +580,10 @@
         "PRU-090",
         "PRU-112",
         "PRU-114",
-        "PRU-115"
+        "PRU-115",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "Madeira serrada, laminada colada e outros produtos não compartilham automaticamente todos os métodos e dados."
     },
@@ -589,9 +607,10 @@
         "PRU-008",
         "PRU-112",
         "PRU-114",
-        "PRU-115"
+        "PRU-115",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "NBR 8800 não é a base normativa de alumínio; a referência específica será escolhida, licenciada e qualificada."
     },
@@ -612,9 +631,10 @@
       "qualification_issues": [
         "PRU-008",
         "PRU-112",
-        "PRU-114"
+        "PRU-114",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "Análise de esforços e deformações não equivale a dimensionamento ou aprovação normativa de material genérico."
     },
@@ -638,9 +658,10 @@
       "qualification_issues": [
         "PRU-112",
         "PRU-114",
-        "PRU-115"
+        "PRU-115",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "Concreto e cerâmica, modulação, graute, interfaces e detalhes requerem ensaios e regras próprios."
     },
@@ -671,9 +692,10 @@
         "PRU-112",
         "PRU-113",
         "PRU-114",
-        "PRU-115"
+        "PRU-115",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "Métodos estático, dinâmico e sísmico precisam de critérios explícitos de aplicabilidade, massa, amortecimento e combinação."
     },
@@ -700,9 +722,10 @@
         "PRU-112",
         "PRU-113",
         "PRU-114",
-        "PRU-115"
+        "PRU-115",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "O gerador de ações excepcionais não qualifica a resistência a quente dos materiais."
     },
@@ -737,9 +760,10 @@
         "PRU-113",
         "PRU-114",
         "PRU-115",
-        "PRU-117"
+        "PRU-117",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "Edição livre de desenhos permanece distinguida de alteração estrutural; mudanças resistentes exigem reverificação."
     },
@@ -766,9 +790,10 @@
         "PRU-112",
         "PRU-113",
         "PRU-114",
-        "PRU-115"
+        "PRU-115",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "Quantitativos, memória e resultados precisam refletir o mesmo snapshot e preservar unidades e fontes."
     },
@@ -791,9 +816,10 @@
       "qualification_issues": [
         "PRU-112",
         "PRU-115",
-        "PRU-116"
+        "PRU-116",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "Perfis IFC e perdas são explícitos; dados não representáveis permanecem no formato nativo."
     },
@@ -821,9 +847,10 @@
       "qualification_issues": [
         "PRU-112",
         "PRU-115",
-        "PRU-116"
+        "PRU-116",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "BCF e IDS não validam o cálculo estrutural. Alterações geométricas oriundas da coordenação invalidam resultados dependentes."
     },
@@ -848,9 +875,10 @@
         "PRU-112",
         "PRU-115",
         "PRU-116",
-        "PRU-117"
+        "PRU-117",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "MCP é funcional desde PRU-001. A equivalência dos fluxos e a autoria visual de rotinas são concluídas em PRU-099 e PRU-108."
     },
@@ -875,9 +903,10 @@
         "PRU-112",
         "PRU-115",
         "PRU-116",
-        "PRU-118"
+        "PRU-118",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "Destinos, versões e licenças são definidos no inventário. Não há promessa de acesso a APIs privadas ou leitura integral de formatos fechados."
     },
@@ -909,9 +938,10 @@
         "PRU-112",
         "PRU-115",
         "PRU-117",
-        "PRU-119"
+        "PRU-119",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "Requisito próprio do produto, explicitado pelo usuário. As metas de facilidade de uso precisam de medição com novos usuários."
     },
@@ -941,9 +971,10 @@
         "PRU-060",
         "PRU-112",
         "PRU-113",
-        "PRU-115"
+        "PRU-115",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "Sistema NBR 16055 é explicitamente distinto da verificação genérica de núcleo ou pilar-parede."
     },
@@ -972,9 +1003,10 @@
         "PRU-080",
         "PRU-090",
         "PRU-112",
-        "PRU-114"
+        "PRU-114",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "PRU-022 define os tipos; a solução ativa é implementada em PRU-026. Inversão de vento, folga e reengate devem ser ensaiados."
     },
@@ -1002,9 +1034,10 @@
         "PRU-112",
         "PRU-113",
         "PRU-114",
-        "PRU-117"
+        "PRU-117",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "Esforços externos preservam origem, unidades e concomitância; o relatório não aprova superestrutura não analisada."
     },
@@ -1026,9 +1059,10 @@
       "qualification_issues": [
         "PRU-080",
         "PRU-112",
-        "PRU-114"
+        "PRU-114",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "A disponibilidade geométrica não prova todos os modos de verificação. Métodos complementares devem ser identificados sem atribuição indevida à NBR 8800."
     },
@@ -1045,9 +1079,10 @@
       "qualification_issues": [
         "PRU-112",
         "PRU-115",
-        "PRU-117"
+        "PRU-117",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "Representação móvel/RA é um produto de apresentação com escala e orientação conferidas; não substitui modelo analítico ou documento de cálculo."
     },
@@ -1065,11 +1100,1005 @@
         "PRU-112",
         "PRU-113",
         "PRU-114",
-        "PRU-118"
+        "PRU-118",
+        "PRU-249"
       ],
-      "release_gate": "PRU-120",
+      "release_gate": "PRU-250",
       "evidence_status": "not_implemented",
       "notes": "O inventário fixa destinos e versões por especificação pública ou licença. Importação no destino precisa conferir eixos, vínculos, ações e perdas; resultados de motores distintos não são presumidos iguais."
+    },
+    {
+      "capability_id": "MEP-01",
+      "title": "Modelo físico, redes, portas e ambientes",
+      "required": true,
+      "source_ids": [
+        "QP-001",
+        "QP-006",
+        "QP-024",
+        "USR-03",
+        "QP-011",
+        "QP-025",
+        "QP-003",
+        "QP-009",
+        "QP-010",
+        "QP-028",
+        "QP-029"
+      ],
+      "implementation_issues": [
+        "PRU-121",
+        "PRU-123",
+        "PRU-124",
+        "PRU-125"
+      ],
+      "qualification_issues": [
+        "PRU-130",
+        "PRU-238",
+        "PRU-249"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-02",
+      "title": "Catálogos técnicos, kits e blocos dinâmicos",
+      "required": true,
+      "source_ids": [
+        "QP-004",
+        "QP-005",
+        "QP-006",
+        "USR-02",
+        "QP-007",
+        "QP-008",
+        "USR-03",
+        "QP-024"
+      ],
+      "implementation_issues": [
+        "PRU-122",
+        "PRU-126",
+        "PRU-235"
+      ],
+      "qualification_issues": [
+        "PRU-238",
+        "PRU-249"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-03",
+      "title": "Referências CAD/BIM, RVT/RTE e planificação",
+      "required": true,
+      "source_ids": [
+        "QP-011",
+        "QP-012",
+        "QP-013",
+        "QP-027"
+      ],
+      "implementation_issues": [
+        "PRU-229"
+      ],
+      "qualification_issues": [
+        "PRU-238",
+        "PRU-249"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-04",
+      "title": "Traçado assistido, encaixes e vistas técnicas",
+      "required": true,
+      "source_ids": [
+        "QP-002",
+        "QP-006",
+        "QP-028",
+        "USR-03",
+        "QP-009",
+        "QP-021",
+        "QP-023",
+        "QP-024"
+      ],
+      "implementation_issues": [
+        "PRU-127",
+        "PRU-128"
+      ],
+      "qualification_issues": [
+        "PRU-130",
+        "PRU-238",
+        "PRU-245"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-05",
+      "title": "Água fria, demanda, perdas e pressões",
+      "required": true,
+      "source_ids": [
+        "QH-002",
+        "QH-029",
+        "QH-052",
+        "USR-03",
+        "USR-02",
+        "QH-004",
+        "QH-042",
+        "QH-031",
+        "QH-034",
+        "QH-035",
+        "QH-036",
+        "QH-026",
+        "QH-050"
+      ],
+      "implementation_issues": [
+        "PRU-131",
+        "PRU-132",
+        "PRU-133",
+        "PRU-134",
+        "PRU-135"
+      ],
+      "qualification_issues": [
+        "PRU-145",
+        "PRU-239"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-06",
+      "title": "Reservação, medição, recalque e controle de pressão",
+      "required": true,
+      "source_ids": [
+        "QH-002",
+        "QH-042",
+        "USR-03",
+        "USR-02",
+        "QH-029",
+        "QH-005",
+        "QH-031",
+        "QH-034",
+        "QH-041",
+        "QH-035"
+      ],
+      "implementation_issues": [
+        "PRU-136",
+        "PRU-137",
+        "PRU-138",
+        "PRU-139"
+      ],
+      "qualification_issues": [
+        "PRU-145",
+        "PRU-239"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-07",
+      "title": "Água quente, aquecimento e solar térmico",
+      "required": true,
+      "source_ids": [
+        "QH-004",
+        "QH-006",
+        "QH-029",
+        "USR-03",
+        "USR-02",
+        "QH-007",
+        "QH-017"
+      ],
+      "implementation_issues": [
+        "PRU-140",
+        "PRU-141",
+        "PRU-142"
+      ],
+      "qualification_issues": [
+        "PRU-145",
+        "PRU-239"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-08",
+      "title": "PEX e montagem automática de ambientes",
+      "required": true,
+      "source_ids": [
+        "QH-043",
+        "QH-029",
+        "QH-034",
+        "USR-03",
+        "USR-02",
+        "QH-002",
+        "QH-052"
+      ],
+      "implementation_issues": [
+        "PRU-143",
+        "PRU-144"
+      ],
+      "qualification_issues": [
+        "PRU-145",
+        "PRU-239"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-09",
+      "title": "Piscinas e recirculação",
+      "required": true,
+      "source_ids": [
+        "QH-008",
+        "QH-031",
+        "QH-034",
+        "QH-055",
+        "USR-03",
+        "USR-02"
+      ],
+      "implementation_issues": [
+        "PRU-145"
+      ],
+      "qualification_issues": [
+        "PRU-239"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-10",
+      "title": "Esgoto, ventilação, declividades e caixas",
+      "required": true,
+      "source_ids": [
+        "QH-009",
+        "QH-052",
+        "USR-03",
+        "USR-02",
+        "QH-010",
+        "QH-002",
+        "QH-030",
+        "QH-053"
+      ],
+      "implementation_issues": [
+        "PRU-146",
+        "PRU-147",
+        "PRU-148"
+      ],
+      "qualification_issues": [
+        "PRU-155",
+        "PRU-239"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-11",
+      "title": "Elevatórias sanitárias e pluviais",
+      "required": true,
+      "source_ids": [
+        "QH-047",
+        "QH-005",
+        "QH-033",
+        "QH-034",
+        "USR-03",
+        "USR-02"
+      ],
+      "implementation_issues": [
+        "PRU-149"
+      ],
+      "qualification_issues": [
+        "PRU-155",
+        "PRU-239"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-12",
+      "title": "Chuva, captação, condutos e aproveitamento",
+      "required": true,
+      "source_ids": [
+        "QH-011",
+        "QH-012",
+        "QH-033",
+        "USR-03",
+        "USR-02",
+        "QH-034",
+        "QH-044",
+        "QH-045",
+        "QH-046"
+      ],
+      "implementation_issues": [
+        "PRU-150",
+        "PRU-151",
+        "PRU-152"
+      ],
+      "qualification_issues": [
+        "PRU-155",
+        "PRU-239"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-13",
+      "title": "Tratamento local e disposição no solo",
+      "required": true,
+      "source_ids": [
+        "QH-013",
+        "QH-040",
+        "QH-053",
+        "USR-03",
+        "USR-02",
+        "QH-048",
+        "QH-049",
+        "QH-054",
+        "QH-030"
+      ],
+      "implementation_issues": [
+        "PRU-153",
+        "PRU-154"
+      ],
+      "qualification_issues": [
+        "PRU-155",
+        "PRU-239"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-14",
+      "title": "Gás, demanda, simultaneidade e pressão",
+      "required": true,
+      "source_ids": [
+        "QH-017",
+        "QH-043",
+        "QH-052",
+        "QH-035",
+        "USR-03",
+        "USR-02",
+        "QH-015",
+        "QH-016",
+        "QH-034",
+        "QH-036"
+      ],
+      "implementation_issues": [
+        "PRU-156",
+        "PRU-157",
+        "PRU-158"
+      ],
+      "qualification_issues": [
+        "PRU-161",
+        "PRU-240"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-15",
+      "title": "Regulação, medição e centrais de gás",
+      "required": true,
+      "source_ids": [
+        "QH-002",
+        "QH-016",
+        "QH-017",
+        "QH-029",
+        "USR-03",
+        "USR-02",
+        "QH-014",
+        "QH-038",
+        "QH-039"
+      ],
+      "implementation_issues": [
+        "PRU-159",
+        "PRU-160"
+      ],
+      "qualification_issues": [
+        "PRU-161",
+        "PRU-240"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-16",
+      "title": "Hidrantes, mangotinhos, cobertura e RTI",
+      "required": true,
+      "source_ids": [
+        "QH-018",
+        "QH-019",
+        "QH-038",
+        "QH-039",
+        "USR-03",
+        "USR-02",
+        "QH-051",
+        "QH-031",
+        "QH-034",
+        "QH-026",
+        "QH-022"
+      ],
+      "implementation_issues": [
+        "PRU-162",
+        "PRU-163",
+        "PRU-164",
+        "PRU-165",
+        "PRU-166"
+      ],
+      "qualification_issues": [
+        "PRU-175",
+        "PRU-240"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-17",
+      "title": "Bombas de incêndio e jockey",
+      "required": true,
+      "source_ids": [
+        "QH-023",
+        "QH-031",
+        "QH-034",
+        "USR-03",
+        "USR-02",
+        "QH-024"
+      ],
+      "implementation_issues": [
+        "PRU-167",
+        "PRU-168"
+      ],
+      "qualification_issues": [
+        "PRU-175",
+        "PRU-240"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-18",
+      "title": "Sprinklers, risco e áreas de operação",
+      "required": true,
+      "source_ids": [
+        "QH-019",
+        "QH-020",
+        "QH-029",
+        "USR-03",
+        "USR-02",
+        "QH-021",
+        "QH-038",
+        "QH-039",
+        "QH-031",
+        "QH-034"
+      ],
+      "implementation_issues": [
+        "PRU-169",
+        "PRU-170",
+        "PRU-171"
+      ],
+      "qualification_issues": [
+        "PRU-175",
+        "PRU-240"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-19",
+      "title": "Redes fechadas e sistemas conjuntos de incêndio",
+      "required": true,
+      "source_ids": [
+        "QH-020",
+        "QH-021",
+        "QH-031",
+        "QH-032",
+        "QH-034",
+        "USR-03",
+        "USR-02",
+        "QH-022",
+        "QH-018",
+        "QH-019"
+      ],
+      "implementation_issues": [
+        "PRU-172",
+        "PRU-173"
+      ],
+      "qualification_issues": [
+        "PRU-175",
+        "PRU-240"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-20",
+      "title": "Extintores, detecção, alarme e emergência",
+      "required": true,
+      "source_ids": [
+        "QH-025",
+        "QH-038",
+        "QH-039",
+        "USR-03",
+        "USR-02"
+      ],
+      "implementation_issues": [
+        "PRU-174"
+      ],
+      "qualification_issues": [
+        "PRU-175",
+        "PRU-240"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-21",
+      "title": "Modelagem elétrica, fiação e encaminhamento",
+      "required": true,
+      "source_ids": [
+        "QE-003",
+        "QE-004",
+        "QE-027",
+        "USR-03",
+        "USR-02",
+        "QE-046",
+        "QE-002",
+        "QE-006",
+        "QE-005"
+      ],
+      "implementation_issues": [
+        "PRU-176",
+        "PRU-177",
+        "PRU-178",
+        "PRU-179",
+        "PRU-186"
+      ],
+      "qualification_issues": [
+        "PRU-190",
+        "PRU-241"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-22",
+      "title": "Quadros, demanda, condutores e proteções",
+      "required": true,
+      "source_ids": [
+        "QE-004",
+        "QE-010",
+        "USR-03",
+        "USR-02",
+        "QE-003",
+        "QE-012",
+        "QE-037",
+        "QE-038",
+        "QE-005",
+        "QE-006",
+        "QE-036",
+        "QE-007",
+        "QE-008",
+        "QE-047",
+        "QE-009",
+        "QE-045"
+      ],
+      "implementation_issues": [
+        "PRU-180",
+        "PRU-181",
+        "PRU-182",
+        "PRU-183",
+        "PRU-184",
+        "PRU-185"
+      ],
+      "qualification_issues": [
+        "PRU-190",
+        "PRU-241"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-23",
+      "title": "Barramento, geração e equipamentos elétricos",
+      "required": true,
+      "source_ids": [
+        "QE-011",
+        "QE-012",
+        "QE-037",
+        "USR-03",
+        "USR-02",
+        "QE-013",
+        "QE-004",
+        "QE-014",
+        "QE-015"
+      ],
+      "implementation_issues": [
+        "PRU-187",
+        "PRU-188",
+        "PRU-189"
+      ],
+      "qualification_issues": [
+        "PRU-190",
+        "PRU-241"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-24",
+      "title": "Fotovoltaico: arranjos, inversores e CC/CA",
+      "required": true,
+      "source_ids": [
+        "QE-016",
+        "QE-017",
+        "QE-018",
+        "QE-039",
+        "USR-03",
+        "USR-02",
+        "QE-019",
+        "QE-010",
+        "QE-037"
+      ],
+      "implementation_issues": [
+        "PRU-191",
+        "PRU-192",
+        "PRU-193",
+        "PRU-194",
+        "PRU-195"
+      ],
+      "qualification_issues": [
+        "PRU-200",
+        "PRU-242"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-25",
+      "title": "Baterias, usinas, geração e análise econômica",
+      "required": true,
+      "source_ids": [
+        "QE-016",
+        "QE-018",
+        "QE-039",
+        "USR-03",
+        "USR-02",
+        "QE-020",
+        "QE-017",
+        "QE-037",
+        "QE-021"
+      ],
+      "implementation_issues": [
+        "PRU-196",
+        "PRU-197",
+        "PRU-198",
+        "PRU-199"
+      ],
+      "qualification_issues": [
+        "PRU-200",
+        "PRU-242"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-26",
+      "title": "SPDA: avaliação de risco",
+      "required": true,
+      "source_ids": [
+        "QE-022",
+        "QE-023",
+        "QE-036",
+        "QE-048",
+        "USR-03",
+        "USR-02"
+      ],
+      "implementation_issues": [
+        "PRU-201"
+      ],
+      "qualification_issues": [
+        "PRU-208",
+        "PRU-242"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-27",
+      "title": "SPDA: captação, descidas e aterramento",
+      "required": true,
+      "source_ids": [
+        "QE-023",
+        "QE-025",
+        "QE-036",
+        "USR-03",
+        "USR-02",
+        "QE-024",
+        "QE-026",
+        "QE-022"
+      ],
+      "implementation_issues": [
+        "PRU-202",
+        "PRU-203",
+        "PRU-204",
+        "PRU-205",
+        "PRU-206",
+        "PRU-207"
+      ],
+      "qualification_issues": [
+        "PRU-208",
+        "PRU-242"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-28",
+      "title": "Dados, telefonia, TV, interfone e cabeamento",
+      "required": true,
+      "source_ids": [
+        "QE-027",
+        "QE-029",
+        "QE-043",
+        "QE-049",
+        "QE-050",
+        "QE-052",
+        "USR-03",
+        "USR-02",
+        "QE-030",
+        "QE-031",
+        "QE-003",
+        "QE-028",
+        "QE-051"
+      ],
+      "implementation_issues": [
+        "PRU-209",
+        "PRU-210",
+        "PRU-211",
+        "PRU-212"
+      ],
+      "qualification_issues": [
+        "PRU-216",
+        "PRU-243"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-29",
+      "title": "Racks, portas e mapas de cabos",
+      "required": true,
+      "source_ids": [
+        "QE-028",
+        "QE-003",
+        "QE-051",
+        "USR-03",
+        "USR-02",
+        "QE-031",
+        "QE-030",
+        "QE-043",
+        "QE-053"
+      ],
+      "implementation_issues": [
+        "PRU-213",
+        "PRU-214",
+        "PRU-215"
+      ],
+      "qualification_issues": [
+        "PRU-216",
+        "PRU-243"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-30",
+      "title": "Ambientes, carga térmica e psicrometria",
+      "required": true,
+      "source_ids": [
+        "QE-033",
+        "QE-035",
+        "USR-03",
+        "USR-02",
+        "QE-040",
+        "QE-041"
+      ],
+      "implementation_issues": [
+        "PRU-217",
+        "PRU-218",
+        "PRU-219"
+      ],
+      "qualification_issues": [
+        "PRU-226",
+        "PRU-243"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-31",
+      "title": "Equipamentos e linhas frigorígenas",
+      "required": true,
+      "source_ids": [
+        "QE-032",
+        "QE-033",
+        "QE-035",
+        "USR-03",
+        "USR-02",
+        "QE-034",
+        "QE-041"
+      ],
+      "implementation_issues": [
+        "PRU-220",
+        "PRU-221"
+      ],
+      "qualification_issues": [
+        "PRU-226",
+        "PRU-243"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-32",
+      "title": "Dutos, água gelada e condensado",
+      "required": true,
+      "source_ids": [
+        "QE-034",
+        "QE-035",
+        "QE-041",
+        "USR-03",
+        "USR-02",
+        "QE-033"
+      ],
+      "implementation_issues": [
+        "PRU-222",
+        "PRU-223",
+        "PRU-224",
+        "PRU-225"
+      ],
+      "qualification_issues": [
+        "PRU-226",
+        "PRU-243"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-33",
+      "title": "Integração de cargas, passagens e coordenação",
+      "required": true,
+      "source_ids": [
+        "USR-03",
+        "QP-001",
+        "QP-003",
+        "QP-016",
+        "QP-015"
+      ],
+      "implementation_issues": [
+        "PRU-227",
+        "PRU-228"
+      ],
+      "qualification_issues": [
+        "PRU-238",
+        "PRU-244",
+        "PRU-249"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-34",
+      "title": "IFC, revisões, BCF, IDS e mesclagem",
+      "required": true,
+      "source_ids": [
+        "QP-014",
+        "QP-019",
+        "USR-03",
+        "QP-017",
+        "QP-018",
+        "QP-015"
+      ],
+      "implementation_issues": [
+        "PRU-230",
+        "PRU-231"
+      ],
+      "qualification_issues": [
+        "PRU-238",
+        "PRU-249"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-35",
+      "title": "Quantitativos, pranchas, memoriais e acervo",
+      "required": true,
+      "source_ids": [
+        "QP-007",
+        "QP-019",
+        "QP-020",
+        "QP-004",
+        "QP-021",
+        "QP-022",
+        "QP-023",
+        "QP-024",
+        "USR-03",
+        "QP-005",
+        "QP-006",
+        "USR-02"
+      ],
+      "implementation_issues": [
+        "PRU-232",
+        "PRU-233",
+        "PRU-234",
+        "PRU-235"
+      ],
+      "qualification_issues": [
+        "PRU-238",
+        "PRU-249"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
+    },
+    {
+      "capability_id": "MEP-36",
+      "title": "Interface/MCP, robustez e operação integrada",
+      "required": true,
+      "source_ids": [
+        "USR-03",
+        "USR-02",
+        "QP-001",
+        "QP-024",
+        "QP-009",
+        "QP-026",
+        "QP-027"
+      ],
+      "implementation_issues": [
+        "PRU-236",
+        "PRU-237"
+      ],
+      "qualification_issues": [
+        "PRU-238",
+        "PRU-245",
+        "PRU-246",
+        "PRU-248",
+        "PRU-249"
+      ],
+      "release_gate": "PRU-250",
+      "evidence_status": "not_implemented",
+      "notes": "Distinguir representação, cálculo, verificação e emissão. As fontes documentais delimitam o escopo; as evidências de engenharia serão produzidas durante a implementação."
     }
   ]
 }

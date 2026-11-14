@@ -81,7 +81,7 @@ Catálogos e modelos pré-configurados possuem domínio documentado. A interface
 
 ### Fronteira entre agentes e cálculo
 
-Agentes criam propostas estruturadas e podem executar as mesmas ações disponíveis à interface com autorização e registro. Todos os resultados estruturais vêm de módulos determinísticos versionados. Uma resposta de linguagem natural, palpite ou texto recuperado não pode entrar como resistência ou critério sem origem verificável.
+Agentes criam propostas estruturadas e podem executar as mesmas ações disponíveis à interface com autorização e registro. Todos os resultados de estruturas e instalações vêm de módulos determinísticos versionados. Uma resposta de linguagem natural, palpite ou texto recuperado não pode entrar como resistência ou critério sem origem verificável.
 
 Toda alteração material invalida os resultados dependentes e marca pranchas/memoriais anteriores. O pacote de cálculo registra hash do modelo físico, modelo analítico, ações, combinações, materiais, pacotes normativos, solver, parâmetros, malha, versão do aplicativo e dependências relevantes. A emissão final associa revisor habilitado e versão técnica exata; o simples nome de um agente não atende esse papel.
 
@@ -118,3 +118,9 @@ Todos os links foram consultados em 14/11/2026. Títulos e notícias comprovam a
 - **N14**. [Palestras e Lives](https://site.abece.com.br/palestras-lives/). ABECE. Acervo institucional identifica apresentações sobre a NBR 6120:2019; edição e erratas devem ser conferidas na ABNT.
 - **N15**. [FAQ do ABNT Catálogo](https://abntcatalogo.com.br/faq.aspx). ABNT. Informa aquisição de normas e disponibilização eletrônica em visualizador próprio. Pesquisa pública não equivale a acesso licenciado ao texto.
 - **N23**. [Norma NBR 16055: 2022](https://docs.tqs.com.br/Docs/Details?id=1971660650&language=pt-BR). TQS. Documentação do fabricante declara adaptação do módulo de paredes de concreto à NBR 16055:2022; situação atual e texto aplicável devem ser conferidos na ABNT.
+
+## Instalações prediais na revisão 2.0
+
+O [cadastro complementar de normas de instalações](NORMAS-INSTALACOES.md) integra este registro e mantém as mesmas classes de evidência, controle de edição, interpretação e acesso. Inclui água, esgoto, chuva, tratamento, gás, incêndio, elétrica, geração fotovoltaica, SPDA, comunicação e climatização, além de regulamentação local e padrões de concessionárias.
+
+O motor e os perfis normativos devem distinguir domínios. Representação de equipamento não comprova dimensionamento; aceite estrutural não substitui atribuição e revisão das demais disciplinas. A issue 247 reconfirma versões e direitos, e a 250 depende de todas as pendências obrigatórias resolvidas.

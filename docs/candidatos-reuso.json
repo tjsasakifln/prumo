@@ -178,5 +178,202 @@
     "accessed_at": "2026-11-14",
     "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
     "adoption_status": "candidato"
+  },
+  {
+    "id": "REUSE-16",
+    "name": "EPANET",
+    "repository": "https://github.com/USEPA/EPANET2.2",
+    "license": "MIT no repositório consultado; conferir diferença de apresentação com página institucional",
+    "license_source": "https://github.com/USEPA/EPANET2.2",
+    "potential_use": "Redes de água, bombas, válvulas e equilíbrio hidráulico",
+    "gate": "Qualificar regimes, adaptação predial, unidades e convergência; não aplicar automaticamente a gás",
+    "source_ids": [
+      "QH-031"
+    ],
+    "accessed_at": "2026-11-14",
+    "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
+    "adoption_status": "candidato"
+  },
+  {
+    "id": "REUSE-17",
+    "name": "WNTR",
+    "repository": "https://github.com/USEPA/WNTR",
+    "license": "Revised BSD, dependências separadas",
+    "license_source": "https://github.com/USEPA/WNTR/blob/main/LICENSE.md",
+    "potential_use": "Preparação de casos, cenários e análise de redes de água",
+    "gate": "EpanetSimulator compartilha EPANET; não é referência independente do mesmo núcleo produtivo",
+    "source_ids": [
+      "QH-032"
+    ],
+    "accessed_at": "2026-11-14",
+    "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
+    "adoption_status": "candidato"
+  },
+  {
+    "id": "REUSE-18",
+    "name": "SWMM",
+    "repository": "https://github.com/USEPA/Stormwater-Management-Model",
+    "license": "Domínio público declarado no repositório; dependências próprias",
+    "license_source": "https://github.com/USEPA/Stormwater-Management-Model",
+    "potential_use": "Hidrologia e escoamento, comparação delimitada de pluvial",
+    "gate": "Não substitui por si só as regras prediais de esgoto, ventilação ou captação",
+    "source_ids": [
+      "QH-033"
+    ],
+    "accessed_at": "2026-11-14",
+    "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
+    "adoption_status": "candidato"
+  },
+  {
+    "id": "REUSE-19",
+    "name": "fluids",
+    "repository": "https://github.com/CalebBell/fluids",
+    "license": "MIT declarada",
+    "license_source": "https://github.com/CalebBell/fluids",
+    "potential_use": "Atrito, perdas localizadas, bombas e correlações de fluidos",
+    "gate": "Verificar correlação, condições de referência, fluido, regime e domínio por função",
+    "source_ids": [
+      "QH-034"
+    ],
+    "accessed_at": "2026-11-14",
+    "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
+    "adoption_status": "candidato"
+  },
+  {
+    "id": "REUSE-20",
+    "name": "pandapipes",
+    "repository": "https://github.com/e2nIEE/pandapipes",
+    "license": "BSD-3-Clause declarada",
+    "license_source": "https://pandapipes.readthedocs.io/en/latest/about/license.html",
+    "potential_use": "Redes de água, gás e calor",
+    "gate": "Qualificar cada fluido e regime; nenhuma conformidade NBR 15526 automática",
+    "source_ids": [
+      "QH-035",
+      "QH-036"
+    ],
+    "accessed_at": "2026-11-14",
+    "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
+    "adoption_status": "candidato"
+  },
+  {
+    "id": "REUSE-21",
+    "name": "pandapower",
+    "repository": "https://github.com/e2nIEE/pandapower",
+    "license": "BSD-3-Clause declarada",
+    "license_source": "https://github.com/e2nIEE/pandapower/blob/develop/LICENSE",
+    "potential_use": "Redes elétricas e comparação de métodos de curto",
+    "gate": "Adaptar e provar o domínio predial, fatores, proteções e regras brasileiras",
+    "source_ids": [
+      "QE-037",
+      "QE-038"
+    ],
+    "accessed_at": "2026-11-14",
+    "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
+    "adoption_status": "candidato"
+  },
+  {
+    "id": "REUSE-22",
+    "name": "pvlib-python",
+    "repository": "https://github.com/pvlib/pvlib-python",
+    "license": "BSD-3-Clause declarada",
+    "license_source": "https://github.com/pvlib/pvlib-python",
+    "potential_use": "Posição solar, geração fotovoltaica e parâmetros de equipamentos",
+    "gate": "Não substitui proteção elétrica, conexão à concessionária nem regra econômica local",
+    "source_ids": [
+      "QE-039"
+    ],
+    "accessed_at": "2026-11-14",
+    "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
+    "adoption_status": "candidato"
+  },
+  {
+    "id": "REUSE-23",
+    "name": "PsychroLib",
+    "repository": "https://github.com/psychrometrics/psychrolib",
+    "license": "MIT declarada",
+    "license_source": "https://github.com/psychrometrics/psychrolib",
+    "potential_use": "Propriedades psicrométricas e parcelas pertinentes de climatização",
+    "gate": "Conferir unidades, pressão, temperatura, umidade e hipóteses do método normativo",
+    "source_ids": [
+      "QE-040"
+    ],
+    "accessed_at": "2026-11-14",
+    "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
+    "adoption_status": "candidato"
+  },
+  {
+    "id": "REUSE-24",
+    "name": "CoolProp",
+    "repository": "https://github.com/CoolProp/CoolProp",
+    "license": "MIT no núcleo consultado; dependências separadas",
+    "license_source": "https://github.com/CoolProp/CoolProp",
+    "potential_use": "Propriedades termofísicas de fluidos",
+    "gate": "Não é dimensionador de VRF nem certificação de equipamento; qualificar fluido e faixa",
+    "source_ids": [
+      "QE-041"
+    ],
+    "accessed_at": "2026-11-14",
+    "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
+    "adoption_status": "candidato"
+  },
+  {
+    "id": "REUSE-25",
+    "name": "petgraph",
+    "repository": "https://github.com/petgraph/petgraph",
+    "license": "Apache-2.0/MIT indicadas",
+    "license_source": "https://github.com/petgraph/petgraph",
+    "potential_use": "Grafos de redes e caminhos no domínio Rust",
+    "gate": "Testar multigrafos, portas, identidade, caminhos e escala; não contém regras de engenharia",
+    "source_ids": [
+      "QP-028"
+    ],
+    "accessed_at": "2026-11-14",
+    "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
+    "adoption_status": "candidato"
+  },
+  {
+    "id": "REUSE-26",
+    "name": "NetworkX",
+    "repository": "https://github.com/networkx/networkx",
+    "license": "Arquivo de licença e commit a conferir na qualificação",
+    "license_source": "https://github.com/networkx/networkx",
+    "potential_use": "Referência de topologia e algoritmos de grafo",
+    "gate": "Independência exige implementação e preparação distintas; não é solver hidráulico/elétrico",
+    "source_ids": [
+      "QP-029"
+    ],
+    "accessed_at": "2026-11-14",
+    "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
+    "adoption_status": "candidato"
+  },
+  {
+    "id": "REUSE-27",
+    "name": "D3",
+    "repository": "https://github.com/d3/d3",
+    "license": "ISC indicada",
+    "license_source": "https://github.com/d3/d3",
+    "potential_use": "Diagramas e apresentação de resultados",
+    "gate": "Manter valores, conexões e identidades; verificar acessibilidade e atualização",
+    "source_ids": [
+      "QP-030"
+    ],
+    "accessed_at": "2026-11-14",
+    "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
+    "adoption_status": "candidato"
+  },
+  {
+    "id": "REUSE-28",
+    "name": "Dagre",
+    "repository": "https://github.com/dagrejs/dagre",
+    "license": "MIT indicada",
+    "license_source": "https://github.com/dagrejs/dagre",
+    "potential_use": "Disposição automática de diagramas",
+    "gate": "Algoritmo de layout não pode mudar rede, ligação ou cálculo",
+    "source_ids": [
+      "QP-031"
+    ],
+    "accessed_at": "2026-11-14",
+    "validation_status": "triagem_documental; validação técnica e licença por commit ainda não executadas",
+    "adoption_status": "candidato"
   }
 ]

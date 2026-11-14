@@ -8,7 +8,7 @@ Toda issue deve começar procurando componente já existente para a função. O 
 
 O padrão preferido é dependência fixada com adaptador pequeno e testes de contrato. Fork é indicado para correções necessárias, com histórico e plano de atualização. Extração de trechos preserva autoria, licença e proveniência. Cada release inclui inventário e avisos correspondentes. Não transformar licença copyleft em permissiva movendo o componente para outro processo.
 
-## Matriz de 15 candidatos
+## Matriz inicial de 15 candidatos
 
 | Candidato oficial | Licença observada | Uso possível no Prumo | Decisão proposta e prova exigida |
 | --- | --- | --- | --- |
@@ -49,3 +49,9 @@ O padrão preferido é dependência fixada com adaptador pequeno e testes de con
 O backlog também menciona opções ainda sem ficha documental completa neste catálogo: Tauri, React, SuiteSparse, SQLite, sectionproperties, ezdxf, PDF.js, OpenCV, CALFEM, ARPACK, SLEPc, LibreDWG e Tauri updater. Seu estado é **pesquisa e qualificação pendentes**, conforme [registro de pendências](../planning/reuse-pending.json). Nenhum desses nomes autoriza incorporação antes de examinar fontes oficiais, licença do recorte, versão, dependências e testes. Submódulos do IfcOpenShell também exigem conferência específica por commit.
 
 As fontes primárias e referências de pesquisa estão em [candidatos-reuso.json](candidatos-reuso.json). São fontes de triagem; a issue de adoção deve registrar commit imutável e guardar apenas os materiais cuja redistribuição seja permitida.
+
+## Ampliação para instalações
+
+A revisão 2.0 acrescenta 13 candidatos pesquisados para redes de água/gás, hidrologia, elétrica, geração fotovoltaica, propriedades térmicas, grafos e diagramas. A [análise complementar](REUSO-INSTALACOES.md) detalha o uso proposto e os limites; o [catálogo estruturado](candidatos-reuso.json) passa a conter 28 candidatos. Todos permanecem sujeitos à qualificação por módulo, licença e commit.
+
+As fontes primárias adicionais constam dos catálogos de instalações. Uma ferramenta genérica de cálculo não transfere automaticamente conformidade às normas brasileiras. O núcleo comum de UI/MCP, a rastreabilidade e a independência das referências continuam obrigatórios em cada nova issue.
