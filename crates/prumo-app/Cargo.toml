@@ -9,6 +9,7 @@ publish = false
 prumo-domain = { path = "../prumo-domain" }
 prumo-registry = { path = "../prumo-registry" }
 prumo-components.workspace = true
+prumo-storage.workspace = true
 sha2.workspace = true
 serde.workspace = true
 serde_json.workspace = true

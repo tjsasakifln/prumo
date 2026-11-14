@@ -3,7 +3,7 @@
 use std::path::PathBuf;
 
 use prumo_app::AccessMode;
-use prumo_mcp::{MAX_REQUEST_BYTES, PrumoMcp};
+use prumo_mcp::{MAX_REQUEST_BYTES, PrumoMcp, guarded_input};
 use rmcp::{RoleServer, ServiceExt, transport::async_rw::AsyncRwTransport};
 
 const USAGE: &str = "Prumo MCP local\nUso: prumo-mcp --project <arquivo.prumo> [--allow-write]\nO padrão permite somente leitura. --allow-write autoriza criar e editar somente o projeto selecionado.\nProtocolo: MCP 2026-07-28, descoberta server/discover e stdio.\n";
@@ -49,9 +49,11 @@ async fn run() -> Result<(), Box<dyn std::error::Error>> {
         return Ok(());
     };
     let server = PrumoMcp::open(path, access, "mcp-local")?;
-    let transport =
-        AsyncRwTransport::<RoleServer, _, _>::new(tokio::io::stdin(), tokio::io::stdout())
-            .with_max_line_length(MAX_REQUEST_BYTES);
+    let transport = AsyncRwTransport::<RoleServer, _, _>::new(
+        guarded_input(tokio::io::stdin()),
+        tokio::io::stdout(),
+    )
+    .with_max_line_length(MAX_REQUEST_BYTES);
     server.serve(transport).await?.waiting().await?;
     Ok(())
 }

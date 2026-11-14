@@ -62,6 +62,8 @@ jobs:
       - name: Conferir inventário e avisos de terceiros
         if: runner.os == 'Linux'
         run: python scripts/generate_notices.py --check
+      - name: Restaurar executáveis com o grafo de distribuição
+        run: cargo build --workspace --locked
       - name: Pacote de desenvolvimento e instalação limpa
         run: python scripts/package_dev.py
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

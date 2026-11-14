@@ -7,6 +7,60 @@ use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
 use uuid::Uuid;
 
+const RESERVED_JSON_KEY_PREFIX: &str = "$serde_json::private::";
+
+#[derive(Debug, thiserror::Error)]
+pub enum JsonRepresentationError {
+    #[error("A chave JSON usa um namespace interno reservado; o conteúdo não foi convertido.")]
+    ReservedNamespace,
+    #[error("JSON inválido: {0}")]
+    InvalidJson(#[from] serde_json::Error),
+}
+
+/// Reject literal keys reserved for serde_json's internal number transport.
+///
+/// Call this on external JSON bytes before deserializing generic `Value`s.
+/// `arbitrary_precision` preserves unknown numeric payloads, but otherwise an
+/// object using its private marker can be mistaken for a number. This linear
+/// guard only identifies quoted keys; serde_json still validates the full JSON.
+/// Strings used as values and opaque binary extension bytes are not restricted.
+pub fn validate_json_representation(bytes: &[u8]) -> Result<(), JsonRepresentationError> {
+    let mut cursor = 0;
+    while cursor < bytes.len() {
+        if bytes[cursor] != b'"' {
+            cursor += 1;
+            continue;
+        }
+        let start = cursor;
+        cursor += 1;
+        while cursor < bytes.len() && bytes[cursor] != b'"' {
+            if bytes[cursor] == b'\\' {
+                cursor += 1;
+            }
+            cursor += 1;
+        }
+        if cursor >= bytes.len() {
+            return Err(JsonRepresentationError::InvalidJson(
+                <serde_json::Error as serde::de::Error>::custom(
+                    "Texto JSON interrompido dentro de uma string.",
+                ),
+            ));
+        }
+        let end = cursor + 1;
+        cursor = end;
+        while cursor < bytes.len() && bytes[cursor].is_ascii_whitespace() {
+            cursor += 1;
+        }
+        if bytes.get(cursor) == Some(&b':') {
+            let key: String = serde_json::from_slice(&bytes[start..end])?;
+            if key.starts_with(RESERVED_JSON_KEY_PREFIX) {
+                return Err(JsonRepresentationError::ReservedNamespace);
+            }
+        }
+    }
+    Ok(())
+}
+
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct ModelSnapshot {
@@ -37,6 +91,11 @@ fn write_value(value: &Value, output: &mut String) -> Result<(), DomainError> {
             output.push('{');
             let ordered: BTreeMap<_, _> = object.iter().collect();
             for (index, (key, value)) in ordered.into_iter().enumerate() {
+                if key.starts_with(RESERVED_JSON_KEY_PREFIX) {
+                    return Err(DomainError::InvalidSnapshot(
+                        "A chave JSON usa um namespace interno reservado.".into(),
+                    ));
+                }
                 if index != 0 {
                     output.push(',');
                 }
@@ -56,10 +115,26 @@ fn write_value(value: &Value, output: &mut String) -> Result<(), DomainError> {
             }
             output.push(']');
         }
-        Value::Number(number) if number.as_f64() == Some(0.0) => output.push('0'),
+        Value::Number(number) if number_is_zero(number) => output.push('0'),
         other => output.push_str(&serde_json::to_string(other).map_err(serialization)?),
     }
     Ok(())
+}
+
+fn number_is_zero(number: &serde_json::Number) -> bool {
+    // Inspect the decimal mantissa. Converting an arbitrary number to f64 can
+    // underflow a nonzero value such as 1e-9999 and silently change its digest.
+    let text = number.to_string();
+    let mantissa = text.split(['e', 'E']).next().unwrap_or_default();
+    let mut has_digit = false;
+    for byte in mantissa.bytes() {
+        match byte {
+            b'0' => has_digit = true,
+            b'-' | b'.' => {}
+            _ => return false,
+        }
+    }
+    has_digit
 }
 
 pub(crate) fn digest(value: &impl Serialize) -> Result<String, DomainError> {
@@ -248,4 +323,65 @@ pub fn source_index_unchecked(
         )?;
     }
     Ok(index)
+}
+
+#[cfg(test)]
+mod representation_tests {
+    use super::{JsonRepresentationError, canonical_json, validate_json_representation};
+    use serde_json::{Value, json};
+
+    #[test]
+    fn unknown_numbers_keep_precision_and_nonzero_underflow_in_canonical_form() {
+        let input = r#"[0,0.0,-0.0,0e-9999,-0.000e+9999,1e-9999,-1e-9999,18446744073709551617,0.12345678901234567890123456789]"#;
+        validate_json_representation(input.as_bytes()).unwrap();
+        let values: Value = serde_json::from_str(input).unwrap();
+        assert_eq!(values[5].as_f64(), Some(0.0));
+        assert_eq!(
+            canonical_json(&values).unwrap(),
+            "[0,0,0,0,0,1e-9999,-1e-9999,18446744073709551617,0.12345678901234567890123456789]"
+        );
+        assert_ne!(canonical_json(&values[5]).unwrap(), "0");
+    }
+
+    #[test]
+    fn textual_private_markers_are_rejected_even_when_escaped_or_nested() {
+        for text in [
+            r#"{"$serde_json::private::Number":"1"}"#,
+            r#"{"future":[{"\u0024serde_json::private::Number":"1"}]}"#,
+            r#"{"future":{"$serde_json::private::\u004eumber":"1"}}"#,
+            r#"{"future":{"ordinary":1,"$serde_json::private::Number":"1"}}"#,
+        ] {
+            assert!(
+                matches!(
+                    validate_json_representation(text.as_bytes()),
+                    Err(JsonRepresentationError::ReservedNamespace)
+                ),
+                "{text}"
+            );
+        }
+        // This is the upstream ambiguity the boundary guard prevents.
+        let transformed: Value =
+            serde_json::from_str(r#"{"$serde_json::private::Number":"1"}"#).unwrap();
+        assert_eq!(transformed, json!(1));
+    }
+
+    #[test]
+    fn ordinary_text_and_quote_escapes_are_preserved_without_false_marker_matches() {
+        let input = r#"{"plain":"$serde_json::private::Number","quoted":"\"$serde_json::private::Number\": \"1\"","slash":"\\","unicode":"ação 😀","n":1e-9999}"#;
+        validate_json_representation(input.as_bytes()).unwrap();
+        let value: Value = serde_json::from_str(input).unwrap();
+        assert_eq!(value["plain"], "$serde_json::private::Number");
+        assert_eq!(value["n"].to_string(), "1e-9999");
+        assert!(matches!(
+            validate_json_representation(br#"{"open":"unfinished\"#),
+            Err(JsonRepresentationError::InvalidJson(_))
+        ));
+    }
+
+    #[test]
+    fn programmatically_constructed_reserved_keys_cannot_enter_snapshots() {
+        let value = json!({"future":{"$serde_json::private::Number":"1"}});
+        assert!(value["future"].is_object());
+        assert!(canonical_json(&value).is_err());
+    }
 }

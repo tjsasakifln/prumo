@@ -15,13 +15,16 @@ prumo-app = { path = "crates/prumo-app" }
 prumo-ui = { path = "crates/prumo-ui" }
 prumo-mcp = { path = "crates/prumo-mcp" }
 serde = { version = "=1.0.229", features = ["derive"] }
-serde_json = { version = "=1.0.154", features = ["float_roundtrip"] }
+serde_json = { version = "=1.0.154", features = ["float_roundtrip", "arbitrary_precision"] }
 uuid = { version = "=1.29.2", features = ["v4", "serde", "js"] }
 thiserror = "=2.0.21"
 tempfile = "=3.27.0"
 sha2 = "=0.11.1"
 prumo-registry = { path = "crates/prumo-registry" }
 prumo-components = { path = "crates/prumo-components" }
+prumo-storage = { path = "crates/prumo-storage" }
+rusqlite = { version = "=0.42.0", default-features = false, features = ["bundled", "backup", "limits", "hooks"] }
+zip = { version = "=9.5.1", default-features = false, features = ["deflate-flate2-zlib-rs"] }
 nalgebra = { version = "=0.35.0", default-features = false, features = ["std"] }
 geo = { version = "=0.33.1", default-features = false }
 ruststep = { version = "=0.4.0", default-features = false }

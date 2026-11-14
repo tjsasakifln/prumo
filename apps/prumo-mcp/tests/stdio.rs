@@ -23,6 +23,8 @@ const BINARY: &str = env!("CARGO_BIN_EXE_prumo-mcp");
 
 #[path = "stdio/model.rs"]
 mod model_tests;
+#[path = "stdio/storage.rs"]
+mod storage_tests;
 
 #[derive(Clone)]
 struct SdkClient;
@@ -49,16 +51,29 @@ async fn sdk(path: &Path, writable: bool) -> RunningService<RoleClient, SdkClien
 }
 
 async fn call(client: &RunningService<RoleClient, SdkClient>, name: &str, args: Value) -> Value {
+    call_with_budget(client, name, args, LIMIT).await
+}
+
+async fn call_with_budget(
+    client: &RunningService<RoleClient, SdkClient>,
+    name: &str,
+    args: Value,
+    budget: Duration,
+) -> Value {
+    let started = std::time::Instant::now();
     let result = timeout(
-        LIMIT,
+        budget,
         client.call_tool(
             CallToolRequestParams::new(name.to_owned())
                 .with_arguments(args.as_object().expect("argument object").clone()),
         ),
     )
     .await
-    .expect("request timeout")
-    .expect("tool response");
+    .unwrap_or_else(|error| panic!("{name} exceeded {budget:?}: {error}"))
+    .unwrap_or_else(|error| panic!("{name} failed: {error}"));
+    if started.elapsed() > Duration::from_secs(2) {
+        eprintln!("{name}: {:?}", started.elapsed());
+    }
     assert_eq!(result.is_error, Some(false), "{result:?}");
     result.structured_content.expect("structured content")
 }
@@ -71,7 +86,7 @@ async fn sdk_creates_modifies_and_reopens_real_project() {
     let info = client.peer_info().unwrap();
     assert_eq!(info.protocol_version, ProtocolVersion::V_2026_07_28);
     let tools = client.list_tools(None).await.unwrap();
-    assert_eq!(tools.tools.len(), 18);
+    assert_eq!(tools.tools.len(), 22);
     assert!(
         tools
             .tools
@@ -179,7 +194,7 @@ async fn readonly_is_enforced_for_unadvertised_mutations_and_creation() {
     let path = directory.path().join("protected.prumo");
     let client = sdk(&path, false).await;
     let tools = client.list_tools(None).await.unwrap();
-    assert_eq!(tools.tools.len(), 9);
+    assert_eq!(tools.tools.len(), 10);
     assert_eq!(tools.tools[0].name, "prumo.project.read");
     let denied = client
         .call_tool(
@@ -382,7 +397,7 @@ async fn unknown_version_and_missing_request_metadata_are_rejected() {
     let missing = client.receive().await;
     assert_eq!(missing["error"]["code"], -32602);
     let recovered = client.request("tools/list", json!({})).await;
-    assert_eq!(recovered["result"]["tools"].as_array().unwrap().len(), 9);
+    assert_eq!(recovered["result"]["tools"].as_array().unwrap().len(), 10);
     client.stop().await;
 }
 
@@ -396,6 +411,77 @@ async fn oversized_message_cannot_mutate_project_and_transport_recovers() {
     let recovered = client.request("tools/list", json!({})).await;
     assert!(recovered["result"]["tools"].is_array());
     assert!(!path.exists());
+    client.stop().await;
+}
+
+#[tokio::test]
+async fn reserved_json_number_objects_are_rejected_before_sdk_conversion_and_next_line_survives() {
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path().join("representation.prumo");
+    let host = ProjectService::open(&path, AccessMode::ReadWrite, "fixture").unwrap();
+    let before = host
+        .create("Representação preservada", LengthUnit::Metre)
+        .unwrap();
+    let bytes = std::fs::read(&path).unwrap();
+    let mut client = WireClient::new(&path, true);
+    client.request("server/discover", json!({})).await;
+
+    for key in [
+        "$serde_json::private::Number",
+        r"\u0024serde_json::private::Number",
+        r"$serde_json::private::\u004eumber",
+    ] {
+        // Raw bytes are essential: constructing a serde_json::Value first could
+        // already coerce the hostile object into a numeric token in the client.
+        let mut line = format!(r#"{{"jsonrpc":"2.0","id":100,"method":"tools/call","params":{{"_meta":{{"io.modelcontextprotocol/protocolVersion":"2026-07-28","io.modelcontextprotocol/clientInfo":{{"name":"independent-wire","version":"1"}},"io.modelcontextprotocol/clientCapabilities":{{}}}},"name":"prumo.model.add_member","arguments":{{"expected_revision":1,"name":"Objeto não numérico","start":[0,0,0],"end":[{{"{key}":"4"}},0,0]}}}}}}"#).into_bytes();
+        line.push(b'\n');
+        let middle = line.len() / 2;
+        let input = client.input.as_mut().unwrap();
+        input.write_all(&line[..middle]).await.unwrap();
+        input.flush().await.unwrap();
+        input.write_all(&line[middle..]).await.unwrap();
+        input.flush().await.unwrap();
+        let rejected = client.receive().await;
+        assert_eq!(rejected["jsonrpc"], "2.0");
+        assert_eq!(rejected["error"]["code"], -32600);
+        assert!(rejected["id"].is_null());
+        assert_eq!(std::fs::read(&path).unwrap(), bytes);
+        assert_eq!(host.read().unwrap(), before);
+        let resumed = client.request("tools/list", json!({})).await;
+        assert_eq!(resumed["result"]["tools"].as_array().unwrap().len(), 22);
+    }
+
+    for malformed in [
+        br#"{"jsonrpc":"2.0","method":"tools/call","params":{"name":"unterminated"#.as_slice(),
+        br#"{"bad\uZZZZ":0}"#.as_slice(),
+    ] {
+        let input = client.input.as_mut().unwrap();
+        input.write_all(malformed).await.unwrap();
+        input.write_all(b"\n").await.unwrap();
+        input.flush().await.unwrap();
+        // rmcp 3.10 ignores JSON syntax errors and resumes with the next line.
+        // The representation guard must not turn them into Invalid Request.
+        let resumed = client.request("tools/list", json!({})).await;
+        assert_eq!(resumed["result"]["tools"].as_array().unwrap().len(), 22);
+        assert_eq!(std::fs::read(&path).unwrap(), bytes);
+    }
+
+    let marker_as_text = r#"{"$serde_json::private::Number":"4"}"#;
+    let renamed = client
+        .request(
+            "tools/call",
+            json!({
+                "name":"prumo.project.rename",
+                "arguments":{"expected_revision":1,"name":marker_as_text}
+            }),
+        )
+        .await;
+    assert_eq!(renamed["result"]["isError"], false);
+    assert_eq!(
+        renamed["result"]["structuredContent"]["project"]["name"],
+        marker_as_text
+    );
+    assert!(host.read().unwrap().objects.is_empty());
     client.stop().await;
 }
 
@@ -468,6 +554,11 @@ fn reference_fixture() -> Value {
 
 #[tokio::test]
 async fn normative_change_preserves_active_snapshot_until_explicit_migration() {
+    // The validated four-revision service probe measured migrate at 10.867 s
+    // in debug and produced a 12,660,812-byte package. This functional test's
+    // persistence budget allows protocol/serialization and CI scheduling;
+    // it is neither a production timeout nor a performance qualification.
+    const PERSISTENCE_BUDGET: Duration = Duration::from_secs(30);
     let directory = tempfile::tempdir().unwrap();
     let path = directory.path().join("migration.prumo");
     let client = sdk(&path, true).await;
@@ -485,18 +576,20 @@ async fn normative_change_preserves_active_snapshot_until_explicit_migration() {
     assert!(candidate["active_hash"].is_null());
     assert!(candidate["impact"].is_null());
     let old_hash = candidate["package"]["hash"].clone();
-    let pinned = call(
+    let pinned = call_with_budget(
         &client,
         "prumo.norms.pin",
         json!({"expected_revision":created["project"]["revision"],"package_hash":old_hash}),
+        PERSISTENCE_BUDGET,
     )
     .await;
     assert_eq!(pinned["project"]["normative"]["active"]["hash"], old_hash);
     let before_active = pinned["project"]["normative"]["active"].clone();
-    let updated = call(
+    let updated = call_with_budget(
         &client,
         "prumo.norms.register",
         json!({"expected_revision":pinned["project"]["revision"],"reference":reference_fixture()}),
+        PERSISTENCE_BUDGET,
     )
     .await;
     assert_eq!(updated["project"]["normative"]["active"], before_active);
@@ -529,7 +622,8 @@ async fn normative_change_preserves_active_snapshot_until_explicit_migration() {
         after_preview, updated,
         "preview must not mutate the project"
     );
-    let denied = client.call_tool(CallToolRequestParams::new("prumo.norms.migrate").with_arguments(json!({"expected_revision":revision,"from_package_hash":old_hash,"to_package_hash":new_hash,"confirm":false}).as_object().unwrap().clone())).await.unwrap();
+    let denied = timeout(LIMIT, client.call_tool(CallToolRequestParams::new("prumo.norms.migrate").with_arguments(json!({"expected_revision":revision,"from_package_hash":old_hash,"to_package_hash":new_hash,"confirm":false}).as_object().unwrap().clone())))
+        .await.expect("unconfirmed normative migration exceeded the ordinary 10 s budget").unwrap();
     assert_eq!(denied.is_error, Some(true));
     let after_refusal = call(&client, "prumo.project.read", json!({})).await;
     assert_eq!(after_refusal, updated);
@@ -551,7 +645,12 @@ async fn normative_change_preserves_active_snapshot_until_explicit_migration() {
     let client = sdk(&path, true).await;
     let after_restart = call(&client, "prumo.project.read", json!({})).await;
     assert_eq!(after_restart, updated);
-    let migrated = call(&client,"prumo.norms.migrate",json!({"expected_revision":revision,"from_package_hash":old_hash,"to_package_hash":new_hash,"confirm":true})).await;
+    let migrated = call_with_budget(&client,"prumo.norms.migrate",json!({"expected_revision":revision,"from_package_hash":old_hash,"to_package_hash":new_hash,"confirm":true}),PERSISTENCE_BUDGET).await;
+    eprintln!(
+        "normative fixture: revision {}, {} package bytes",
+        migrated["project"]["revision"],
+        std::fs::metadata(&path).unwrap().len()
+    );
     let state = &migrated["project"]["normative"];
     assert_eq!(state["migrations"][0], candidate["impact"]);
     assert_eq!(state["active"]["hash"], new_hash);

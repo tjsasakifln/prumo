@@ -88,6 +88,15 @@ def generate():
                         if re.search(r"copyright|SPDX-License-Identifier|licensed under|Boost Software License|permission to use, copy", block, re.I):
                             line = contents.count("\n", 0, match.start()) + 1
                             add(block, f"crate:{key[0]}@{key[1]}/{path.relative_to(base).as_posix()}:{line} (legal comment)")
+            if package["name"] == "libsqlite3-sys":
+                # The binding is MIT, but the bundled SQLite core has its own
+                # public-domain dedication. Preserve that exact source header.
+                path = base / "sqlite3" / "sqlite3.h"
+                contents = path.read_text(encoding="utf-8")
+                header = re.match(r"/\*[\s\S]*?\*/", contents)
+                if not header or "author disclaims copyright" not in header.group().lower():
+                    raise RuntimeError(f"Missing SQLite public-domain dedication for {key}")
+                add(header.group(), f"crate:{key[0]}@{key[1]}/sqlite3/sqlite3.h (public-domain dedication)")
             if package["name"] in ["gl_generator", "khronos_api"]:
                 # These .crate archives carry license headers instead of root license files.
                 apache = next(source for source in index if source["repo"] == "emilk/egui" and source["path"] == "LICENSE-APACHE")
@@ -142,7 +151,7 @@ def generate():
             name = record["name"] + " " + record["version"]
             lines.append(f"| [{name}](https://crates.io/crates/{record['name']}/{record['version']}) | {record['license_expression']} | {refs} |")
     lines += ["", "## Preserved license texts", "",
-              "Font notices include the OFL, Ubuntu Font Licence, Bitstream Vera clauses, and copyright/permission notices bundled with the actual font files. SDK notices retain both Apache and MIT transition terms. Khronos registry and ANGLE notices are included with generated graphics bindings."]
+              "Font notices include the OFL, Ubuntu Font Licence, Bitstream Vera clauses, and copyright/permission notices bundled with the actual font files. SDK notices retain both Apache and MIT transition terms. Khronos registry and ANGLE notices are included with generated graphics bindings. The bundled SQLite core retains its public-domain dedication separately from the MIT license of its Rust binding."]
     for digest, record in sorted(texts.items()):
         lines += ["", "### License " + digest[:12], "", "Sources:", ""]
         lines.extend("- " + origin for origin in sorted(record["origins"]))

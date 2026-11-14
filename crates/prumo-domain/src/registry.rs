@@ -548,6 +548,16 @@ pub fn compare_packages(
 ) -> Result<MigrationImpact, RegistryError> {
     from.validate()?;
     to.validate()?;
+    Ok(compare_package_content(from, to, revision))
+}
+
+// Callers in this module validate both immutable packages in the same call.
+// No validation result is cached between operations or mutable catalog edits.
+fn compare_package_content(
+    from: &NormativePackage,
+    to: &NormativePackage,
+    revision: u64,
+) -> MigrationImpact {
     let mut changed_norms = BTreeSet::new();
     for norm in from.catalog.norms.iter().chain(&to.catalog.norms) {
         let left = from.catalog.norms.iter().find(|item| item.id == norm.id);
@@ -588,14 +598,14 @@ pub fn compare_packages(
             affected.insert(capability.id.clone());
         }
     }
-    Ok(MigrationImpact {
+    MigrationImpact {
         revision,
         from_hash: from.hash.clone(),
         to_hash: to.hash.clone(),
         changed_norm_ids: changed_norms.into_iter().collect(),
         affected_capability_ids: affected.into_iter().collect(),
         recalculation_required: true,
-    })
+    }
 }
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
@@ -637,11 +647,10 @@ impl NormativeState {
         {
             return Err(RegistryError::InvalidHistory);
         }
-        if let Some(active) = &self.active {
-            active.validate()?;
+        for package in self.active.iter().chain(&self.previous) {
+            package.validate()?;
         }
         for (index, old) in self.previous.iter().enumerate() {
-            old.validate()?;
             let next = self
                 .previous
                 .get(index + 1)
@@ -652,7 +661,7 @@ impl NormativeState {
                 || migration.revision > project_revision
                 || migration.from_hash == migration.to_hash
                 || (index > 0 && migration.revision <= self.migrations[index - 1].revision)
-                || compare_packages(old, next, migration.revision)? != *migration
+                || compare_package_content(old, next, migration.revision) != *migration
             {
                 return Err(RegistryError::InvalidHistory);
             }

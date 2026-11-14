@@ -13,7 +13,21 @@ cargo build --workspace --locked
 cargo run -p prumo-desktop --locked
 ```
 
-O `rust-toolchain.toml` instala a versão exata 1.99.1. Não há configuração manual obrigatória. A tela permite escolher o arquivo, criar projeto e unidade, adicionar uma peça, renomear, cadastrar ambiente e reabrir. Cada comando grava sua revisão. Coordenadas de entrada respeitam a unidade escolhida e o modelo conserva metros internamente.
+O `rust-toolchain.toml` instala a versão exata 1.99.1. Não há configuração manual obrigatória. A tela permite escolher o arquivo, criar projeto e unidade, adicionar uma peça, renomear, cadastrar ambiente e reabrir. Cada comando grava sua revisão no banco transacional de trabalho e publica o pacote `.prumo`, com autosave e cópia anterior quando aplicáveis. Coordenadas de entrada respeitam a unidade escolhida e o modelo conserva metros internamente.
+
+## Arquivo, backup e recuperação
+
+Abra **Arquivo e recuperação** para consultar formato, integridade, revisão e cópias disponíveis. **Inspecionar arquivo** atualiza o diagnóstico sem modificar o conteúdo. O painel continua disponível quando o projeto não pode ser aberto. **Identidades do pacote** mostra versões, hashes e conteúdos verificados; os detalhes ficam recolhidos durante a edição normal.
+
+Arquivos JSON legados podem ser abertos sem conversão automática na leitura. Para convertê-los antes de editar, confira o diagnóstico, marque **Confirmo migrar o arquivo e manter a cópia original** e escolha **Migrar arquivo Prumo**. A primeira alteração válida também faz essa migração e conserva os bytes originais. O modelo mantém identidades, propriedades e extensões desconhecidas aceitas pelo domínio. A conversão do schema de modelo 1 para 2 preserva os identificadores e cria os nós e vínculos antes representados por um único identificador analítico.
+
+**Criar backup verificado** conserva uma cópia da revisão publicada. O arquivo `.prumo` é o pacote portátil; o banco e as fontes locais de recuperação ficam na pasta de trabalho administrada pelo serviço, junto ao projeto. Preserve essa pasta ao transferir também o histórico de recuperação local. Ela não precisa ser editada nem aberta manualmente.
+
+Se o principal estiver corrompido, ausente ou houver uma revisão pendente, confira **Cópias disponíveis**. Escolha pelo nome, revisão e identidade, verifique o projeto e o hash do candidato e marque **Confirmo restaurar este candidato e preservar o arquivo atual**. **Recuperar candidato selecionado** usa o mesmo serviço das demais operações e reabre o modelo restaurado. O conteúdo substituído é preservado; uma cópia incompatível ou um diagnóstico desatualizado é recusado.
+
+Alterar o caminho digitado, trocar o candidato ou inspecionar novamente descarta a confirmação anterior. Se a inspeção detectar que o arquivo mudou desde a abertura, o editor é retirado até **Reabrir / atualizar** carregar o conteúdo atual. As edições feitas pela interface também levam ao serviço a identidade e o hash do arquivo exibido; uma substituição externa é recusada mesmo antes de inspecionar e mesmo que conserve o número da revisão. As ações de armazenamento conferem seu próprio hash de diagnóstico. Uma versão futura no principal, nas cópias ou no banco de trabalho bloqueia escrita e informa a incompatibilidade. O aplicativo não oferece criar um projeto sobre esse conteúdo. Selecionar outro arquivo continua disponível.
+
+O funcionamento do projeto é local e não exige conexão. As garantias de pacote, transação e interrupção constam da [matriz PRU-005](evidencias/PRU-005.md); os ensaios de uso da interface e MCP estão em [PRU-005-ui-mcp.md](evidencias/PRU-005-ui-mcp.md).
 
 ## Modelo físico, analítico e instalações
 
@@ -26,8 +40,6 @@ Em **Redes e portas**, crie a rede ou circuito, as portas e suas atribuições. 
 Em **Medidas e dependências**, **Atualizar medidas do modelo** salva comprimentos e contagens reais da geometria, com revisão e identidade da base. Modificar uma dependência marca as medidas afetadas como obsoletas e preserva valor anterior, snapshot e causa. Essas medidas não são resultados de dimensionamento. Renomear o projeto ou alterar a unidade de apresentação preserva seus valores físicos.
 
 As ferramentas MCP equivalentes são `prumo.model.edit`, `prumo.model.inspect`, `prumo.model.snapshot` e `prumo.results.trace`. As duas primeiras exigem escrita e revisão atual. As consultas funcionam em leitura. Consulte [MCP](MCP.md) para o contrato e [evidências da PRU-004](evidencias/PRU-004.md) para invariantes e limites.
-
-O schema nativo 2 lê projetos da primeira versão, preserva os identificadores existentes e cria os nós e vínculos antes representados apenas por um identificador analítico. Abrir não regrava o original. Antes da primeira alteração, o serviço conserva seus bytes em `prumo-v1-<sha256>.backup`, ao lado do projeto, e só então publica a versão convertida. Um backup existente com conteúdo diferente bloqueia a alteração. Faça a primeira gravação em uma pasta que permita criar essa cópia.
 
 ## Referências normativas e capacidades
 
@@ -55,6 +67,8 @@ O nome exato do pacote e os argumentos do servidor também aparecem em `cargo ru
 
 As ferramentas `prumo.registry.read`, `prumo.registry.audit`, `prumo.norms.package` e `prumo.results.gate` consultam o registro. `prumo.norms.register`, `prumo.norms.pin` e `prumo.norms.migrate` usam o mesmo serviço da interface e exigem escrita autorizada e revisão atual. Fixação e migração também conferem os hashes do pacote.
 
+`prumo.storage.status` consulta o arquivo e as fontes de recuperação mesmo quando `prumo.project.read` falha. A consulta não cria arquivos auxiliares. `prumo.storage.migrate`, `prumo.storage.backup` e `prumo.storage.recover` recebem a identidade do diagnóstico obtida nessa mesma autorização de lançamento; migração e recuperação também exigem confirmação explícita. Os candidatos usam identificadores devolvidos pelo serviço. Não há ferramenta para escolher caminho, executar SQL ou gravar diretamente no banco. O catálogo atual anuncia 10 consultas em leitura e 22 ferramentas quando a escrita está autorizada.
+
 Uma segunda instância deve reabrir o projeto para ver a última revisão. Uma alteração com revisão antiga é recusada e pede atualização, preservando a alteração já salva pela outra instância.
 
 ## Verificar
@@ -76,8 +90,8 @@ Os testes de interface usam os widgets e a árvore de acessibilidade reais. Os t
 
 | Destino | Compilador | Interface | Persistência |
 |---|---|---|---|
-| x86_64-pc-windows-msvc | Rust 1.99.1, edition 2024 | eframe, OpenGL e AccessKit | Arquivo local |
-| x86_64-unknown-linux-gnu | Rust 1.99.1, edition 2024 | eframe, X11/Wayland, OpenGL e AccessKit | Arquivo local |
+| x86_64-pc-windows-msvc | Rust 1.99.1, edition 2024 | eframe, OpenGL e AccessKit | SQLite local e pacote `.prumo` |
+| x86_64-unknown-linux-gnu | Rust 1.99.1, edition 2024 | eframe, X11/Wayland, OpenGL e AccessKit | SQLite local e pacote `.prumo` |
 | wasm32-unknown-unknown | Rust 1.99.1 | Componente UI reutilizável, experimental | Sem aplicativo web distribuído |
 
 Features, dependências exatas e resolução transitiva são registradas em Cargo.toml e Cargo.lock. A primeira etapa distribui executáveis de desenvolvimento; instaladores e atualização pertencem às entregas posteriores.
