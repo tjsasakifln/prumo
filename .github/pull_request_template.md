@@ -22,3 +22,9 @@ Casos executados, resultado, evidência reproduzível, limitações e revisão i
 - [ ] Nenhuma pendência foi retirada apenas para concluir.
 - [ ] Artefato verificado corresponde ao commit examinado.
 - [ ] O escopo e a evidência distinguem modelagem, cálculo, verificação e emissão por disciplina.
+
+## Implementação Rust
+
+- [ ] Código próprio do produto respeita REQ-15 e TEC-RUST-01, incluindo interface e MCP.
+- [ ] Build, testes e análise estática usam toolchain/lockfile e matriz pertinentes ao código entregue; mudança apenas documental identifica essa condição.
+- [ ] Componentes externos, bindings, patches e fronteiras unsafe/FFI têm origem, função, licença e evidência conferidas quando aplicáveis.

@@ -191,3 +191,9 @@ As issues 239 a 243 executam campanhas por domínio; 244 realiza pilotos autoriz
 Os pilotos incluem no mínimo doze projetos reais autorizados, três com integração efetiva de estrutura e instalações e cada uma das oito disciplinas de instalações em pelo menos dois projetos. Casos sintéticos adicionais cobrem hipóteses e fronteiras ausentes nos pilotos. Dados identificáveis e arquivos de terceiros exigem autorização compatível.
 
 O aceite técnico é realizado por profissionais habilitados nas respectivas atribuições. A revisão estrutural isolada não qualifica elétrica, gás ou qualquer outra disciplina. O dossiê final liga cada capacidade a seus revisores, evidências, normas e limites. Planejamento revisado por agentes não equivale a esse aceite profissional.
+
+## Evidências da implementação Rust
+
+REQ-15 exige que a origem e a linguagem dos módulos próprios sejam conferidas em cada entrega e no candidato final, segundo [RUST.md](RUST.md). A base usa workspace Cargo, compilador fixado, lockfile e matriz de features/targets testada. Registrar dependências nativas, flags e SDKs usados no artefato. Testes de contrato cobrem conversões, unidades, erros, memória, recursos, cancelamento e concorrência nas integrações aplicáveis.
+
+A escolha de Rust, a aprovação do compilador e a ausência de unsafe no domínio não comprovam cálculo correto. Permanecem obrigatórias todas as camadas, tolerâncias, referências independentes, critérios de emissão e revisões profissionais deste documento. Alteração de crate, biblioteca externa ou compilador exige análise de impacto e repetição dos casos afetados.

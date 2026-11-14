@@ -1,0 +1,119 @@
+[
+  {
+    "id": "RS-001",
+    "title": "MCP Rust SDK oficial: rmcp",
+    "url": "https://github.com/modelcontextprotocol/rust-sdk",
+    "summary": "Repositório oficial de rmcp e rmcp-macros. O README consultado declara Tokio, implementação de MCP 2026-07-28 e compatibilidade com revisões anteriores.",
+    "accessed": "2026-11-14",
+    "type": "primary_repository",
+    "qualification": "Candidato prioritário para o servidor e clientes Rust. Fixar versão/commit, features, licença efetiva e testar cada perfil e transporte anunciado. O README de main não qualifica automaticamente uma release."
+  },
+  {
+    "id": "RS-002",
+    "title": "Documentação oficial publicada da crate rmcp",
+    "url": "https://docs.rs/rmcp/latest/rmcp/",
+    "summary": "Documenta APIs de servidor e cliente, ferramentas, recursos, prompts, flags de compilação e transportes stdio e Streamable HTTP.",
+    "accessed": "2026-11-14",
+    "type": "primary_documentation",
+    "qualification": "A URL latest é fonte de pesquisa. A adoção deve registrar a URL versionada e a release/commit efetiva; protocolo, autorização e equivalência dos comandos exigem ensaios do Prumo."
+  },
+  {
+    "id": "RS-003",
+    "title": "egui: interface em Rust para destinos nativos e web",
+    "url": "https://github.com/emilk/egui",
+    "summary": "Biblioteca de interface Rust de modo imediato com execução nativa e web e integração com sistemas de renderização.",
+    "accessed": "2026-11-14",
+    "type": "primary_repository",
+    "qualification": "Candidato, sem seleção antecipada. Avaliar acessibilidade, texto, múltiplas vistas, impressão, interação CAD/BIM, manutenção e desempenho com os casos reais do produto."
+  },
+  {
+    "id": "RS-004",
+    "title": "Dioxus: autoria Rust para interfaces multiplataforma",
+    "url": "https://github.com/DioxusLabs/dioxus",
+    "summary": "Framework de autoria Rust com destinos web e desktop. A documentação distingue execução WebView dos renderizadores nativos experimentais.",
+    "accessed": "2026-11-14",
+    "type": "primary_repository",
+    "qualification": "Comparar em ADR com casos BIM; não tratar renderizador experimental como base já qualificada. Recursos declarativos ou código gerado não autorizam lógica própria da aplicação em TypeScript."
+  },
+  {
+    "id": "RS-005",
+    "title": "wgpu: API gráfica Rust",
+    "url": "https://github.com/gfx-rs/wgpu",
+    "summary": "API gráfica Rust com backends nativos e execução WASM por WebGPU ou WebGL2, conforme o ambiente e as features escolhidas.",
+    "accessed": "2026-11-14",
+    "type": "primary_repository",
+    "qualification": "Candidato de renderização. Não é motor BIM, gerador de desenhos nem solução completa de acessibilidade. Qualificar drivers, precisão visual, limites e recuperação de falhas."
+  },
+  {
+    "id": "RS-006",
+    "title": "The Cargo Book: Workspaces",
+    "url": "https://doc.rust-lang.org/cargo/reference/workspaces.html",
+    "summary": "Workspaces agrupam pacotes, compartilham Cargo.lock e permitem metadados, dependências e lints comuns. Workspaces virtuais devem declarar o resolver explicitamente.",
+    "accessed": "2026-11-14",
+    "type": "primary_documentation",
+    "qualification": "Base para organizar o futuro código Rust; a decomposição exata dos crates deve seguir responsabilidades e testes, sem criar módulos vazios como evidência de entrega."
+  },
+  {
+    "id": "RS-007",
+    "title": "The rustup book: Overrides e rust-toolchain.toml",
+    "url": "https://rust-lang.github.io/rustup/overrides.html",
+    "summary": "Documenta seleção de toolchain, precedência de overrides e arquivo rust-toolchain.toml versionável, com canal, componentes e targets.",
+    "accessed": "2026-11-14",
+    "type": "primary_documentation",
+    "qualification": "Recomenda-se versão estável exata, componentes declarados e conferência do compilador efetivo no CI. Um canal flutuante stable não fixa uma versão de release."
+  },
+  {
+    "id": "RS-008",
+    "title": "The Cargo Book: Rust Version",
+    "url": "https://doc.rust-lang.org/cargo/reference/rust-version.html",
+    "summary": "rust-version declara a versão de Rust suportada por um pacote e participa das verificações de compatibilidade e resolução aplicáveis.",
+    "accessed": "2026-11-14",
+    "type": "primary_documentation",
+    "qualification": "Distinguir declaração de versão mínima/suportada de fixação do compilador. Manter edition, rust-version, toolchain e dependências consistentes e testadas."
+  },
+  {
+    "id": "RS-009",
+    "title": "The Cargo Book: cargo build e --locked",
+    "url": "https://doc.rust-lang.org/cargo/commands/cargo-build.html",
+    "summary": "Documenta seleção de pacotes, targets, features e o modo --locked, que recusa resolução que exija criar ou alterar o lockfile.",
+    "accessed": "2026-11-14",
+    "type": "primary_documentation",
+    "qualification": "Usar builds e testes com lockfile preservado. Isso não fixa sozinho bibliotecas nativas, SDKs do sistema, flags, ambiente de linkedição ou resultados numéricos."
+  },
+  {
+    "id": "RS-010",
+    "title": "The Rustonomicon: Foreign Function Interface",
+    "url": "https://doc.rust-lang.org/nomicon/ffi.html",
+    "summary": "Explica chamadas a bibliotecas estrangeiras, contratos inseguros e encapsulamento em interfaces seguras, incluindo memória, ABI e interoperabilidade.",
+    "accessed": "2026-11-14",
+    "type": "primary_documentation",
+    "qualification": "Base para requisitos de revisão de FFI. Cada binding adotado precisa de invariantes, ownership, tratamento de falhas, concorrência e testes próprios; não é prova de segurança do adaptador."
+  },
+  {
+    "id": "RS-011",
+    "title": "The Rust Reference: Behavior considered undefined",
+    "url": "https://doc.rust-lang.org/reference/behavior-considered-undefined.html",
+    "summary": "Explicita que unsafe não permite comportamento indefinido e atribui ao implementador a preservação das condições de segurança, incluindo ponteiros, concorrência e ABI.",
+    "accessed": "2026-11-14",
+    "type": "primary_documentation",
+    "qualification": "Justifica fronteiras pequenas e auditáveis. Rust e código sem unsafe na aplicação não validam automaticamente dependências, cálculo de engenharia ou conformidade normativa."
+  },
+  {
+    "id": "RS-012",
+    "title": "Documentação oficial publicada da crate eframe",
+    "url": "https://docs.rs/eframe/latest/eframe/",
+    "summary": "Framework associado ao egui para criar aplicações nativas e web com autoria Rust; documenta run_native e WebRunner.",
+    "accessed": "2026-11-14",
+    "type": "primary_documentation",
+    "qualification": "Complementa o candidato egui. Fixar versão e qualificar os recursos realmente usados, sem interpretar a existência de destinos multiplataforma como paridade funcional comprovada."
+  },
+  {
+    "id": "RS-013",
+    "title": "Licença do SDK MCP Rust",
+    "url": "https://github.com/modelcontextprotocol/rust-sdk/blob/main/LICENSE",
+    "summary": "Arquivo oficial informa transição para Apache-2.0 e preservação de MIT nos trechos anteriores sem consentimento de relicenciamento; documentação não normativa indicada sob CC-BY-4.0.",
+    "accessed": "2026-11-14",
+    "type": "primary_license",
+    "qualification": "Verificar arquivos e dependências do commit adotado. Não reduzir o licenciamento do SDK a uma licença única por inferência."
+  }
+]

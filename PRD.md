@@ -1,6 +1,6 @@
 # Prumo: requisitos de produto
 
-**Versão do planejamento:** 2.0. **Data:** 14/11/2026. **Estado:** especificação, sem software de cálculo implementado.
+**Versão do planejamento:** 2.1. **Data:** 14/11/2026. **Estado:** especificação, sem software de cálculo implementado.
 
 ## 1. Objetivo
 
@@ -8,7 +8,7 @@ Criar um sistema brasileiro profissional de estruturas e instalações prediais 
 
 O usuário poderá começar manualmente, pedir trabalho a um agente, revisar a alteração, continuar pela interface e emitir uma entrega coerente. As duas formas de operação acessarão o mesmo modelo e os mesmos comandos. O motor de cálculo será determinístico, independente de modelos de linguagem.
 
-O planejamento inicial criou o repositório e a fila estrutural; esta revisão amplia a especificação e registra o trabalho necessário para estruturas e instalações. A sequência tem **250 issues de implementação**, com conclusão numérica estrita. Esta especificação não declara que as funcionalidades, as metas de desempenho ou a confiabilidade já foram atingidas.
+O planejamento inicial criou o repositório e a fila estrutural; a revisão 2.0 ampliou o escopo para instalações e a 2.1 fixa Rust como linguagem obrigatória do produto. A sequência tem **250 issues de implementação**, com conclusão numérica estrita. Esta especificação não declara que as funcionalidades, as metas de desempenho ou a confiabilidade já foram atingidas.
 
 ## 2. Usuários e tarefas
 
@@ -21,6 +21,7 @@ A facilidade de operação não elimina a necessidade de conhecimento de engenha
 ## 3. Decisões iniciais de produto
 
 - **Nome:** Prumo.
+- **Linguagem obrigatória:** Rust para todo código próprio do produto, incluindo interface, BIM, regras de engenharia, cálculos próprios, persistência, CLI, MCP, serviços e adaptadores. Componentes externos reutilizados podem manter sua linguagem, com integração Rust qualificada. O framework será escolhido dentro dessa decisão, conforme [RUST.md](docs/RUST.md).
 - **Plataforma de lançamento planejada:** desktop Windows com operação local e interface web reutilizável. A escolha considera os fluxos CAD e o cálculo de modelos grandes. O ADR da issue 1 confirma a base; a issue 3 qualifica componentes e alternativas.
 - **Autonomia local:** abrir, editar, calcular e gerar entregas não depende de um provedor de agentes ou de um serviço remoto. Recursos de colaboração podem usar serviço autenticado sem retirar a operação local.
 - **Formato nativo:** pacote `.prumo` versionado, preservando os dados completos de cálculo. IFC é intercâmbio BIM e não substitui dados de análise que seu schema não represente.
@@ -47,6 +48,7 @@ A facilidade de operação não elimina a necessidade de conhecimento de engenha
 | REQ-12 | Preservação do escopo | Nenhuma capacidade retirada ou tolerância relaxada apenas para encerrar a sequência |
 | REQ-13 | Oito disciplinas de instalações integradas ao modelo estrutural | Cobertura por função, modelos físicos e redes, cálculos próprios, documentos e qualificação integrada |
 | REQ-14 | Apresentação com identidade própria | README e LEIAME sem nomes ou comparações de softwares de referência, com fontes preservadas na pesquisa |
+| REQ-15 | Implementação própria do produto em Rust | Workspace Cargo, toolchain fixada, interface e MCP Rust, integração externa qualificada e auditoria no candidato final |
 
 ## 5. Abrangência funcional
 
@@ -114,3 +116,9 @@ As issues 111 a 120 qualificam o incremento estrutural e preparam a expansão. A
 A interface distingue representar um equipamento, calcular seu comportamento, verificar regras aplicáveis e emitir documentos. Subestações, equipamentos e sistemas preventivos com suporte apenas de modelagem na fonte recebem esse limite explícito. Funções recentes documentadas, como carga térmica, entram na implementação e em testes próprios. Uma lacuna de fonte exige investigação e resolução do escopo, sem alegação de conformidade por inferência.
 
 O README e o LEIAME descrevem o Prumo por suas próprias capacidades. Marcas de referência, versões, fontes e comparações pertencem à documentação técnica de pesquisa.
+
+## 12. Decisão de implementação em Rust
+
+A revisão 2.1 acrescenta REQ-15 e TEC-RUST-01 por instrução do proprietário, com vínculo às 250 issues e preservação das 72 famílias obrigatórias. Rust abrange a implementação própria de todas as disciplinas e dos canais de interação. A primeira issue entrega a base Cargo real e a operação BIM/MCP; a qualificação e o lançamento conferem o mesmo requisito no código e no artefato distribuído.
+
+Bibliotecas e motores externos podem continuar em outras linguagens, com o papel e a fronteira descritos em [RUST.md](docs/RUST.md). A decisão conserva o reuso obrigatório, as rotinas de extensão controladas e todos os critérios de engenharia. Os scripts de manutenção do plano não integram a aplicação. O registro estruturado está em [technology.json](planning/technology.json).

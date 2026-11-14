@@ -4,6 +4,8 @@
 
 A fila ampliada preserva a correspondência entre número GitHub e sequência PRU. A etapa 120 é um marco estrutural; a liberação comercial pertence à etapa 250. Novas PRs não alteram os identificadores abaixo.
 
+**Decisão de linguagem: Rust.** O requisito REQ-15 e a política TEC-RUST-01 abrangem as 250 entregas. Todo código próprio do produto, incluindo interface, BIM, regras de engenharia, motores, CLI e MCP, será escrito em Rust, com workspace Cargo e toolchain fixada. Integrações de componentes externos e ferramentas do planejamento seguem [RUST.md](docs/RUST.md) e [technology.json](planning/technology.json). Esta decisão registra uma exigência de implementação, sem declarar código já concluído.
+
 ## Fases
 
 | Issues | Fase |

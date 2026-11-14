@@ -101,3 +101,7 @@ Metas pré-registradas: mediana de até 45 minutos em cada família; pelo menos 
 São críticos, entre outros: interpretar uma tubulação desconectada como conectada; aceitar equipamento apenas desenhado como dimensionado; confundir pressão absoluta com manométrica, W com VA ou CC com CA; usar resultado obsoleto; alterar reserva de incêndio sem perceber impacto; perder informação de circuito; emitir revisão incoerente. Cada falha crítica exige correção e nova avaliação dos cenários atingidos.
 
 Operação por uma mão, teclado, entrada numérica com unidades, foco visível, leitura de diagnóstico e desfazer são verificadas em tarefas estruturais e de instalações. Diagramas e representações espaciais devem permitir identificar relação física, lógica e analítica sem depender apenas de cor. Um fluxo assistido por agente deve permitir inspecionar as mudanças e continuar manualmente no mesmo estado.
+
+## Implementação da interface
+
+A interface própria será escrita em Rust, conforme [RUST.md](RUST.md). A escolha de framework deverá comprovar os fluxos, acessibilidade e métricas deste documento no ambiente real. Rust nativo e Rust/WASM são destinos a avaliar; a tecnologia não reduz o alcance das tarefas nem substitui os estudos com usuários.

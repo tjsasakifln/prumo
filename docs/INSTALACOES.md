@@ -74,3 +74,7 @@ A [política de reuso](REUSO.md) estende a avaliação de código aberto aos mot
 As primeiras issues já preparam o domínio comum. A 120 é um marco estrutural; 121 a 226 implementam a base e as disciplinas de instalações; 227 a 238 integram o conjunto; 239 a 250 qualificam e liberam a distribuição. A issue 250 conserva todos os requisitos estruturais anteriores e os acrescentados nesta revisão.
 
 Capacidades pertinentes documentadas e não discriminadas ainda devem ser registradas na issue correspondente antes de seu aceite. Uma lacuna de pesquisa não pode ser convertida em exclusão silenciosa nem em alegação de paridade completa. Fontes preservam atribuição na documentação técnica; README e LEIAME apresentam somente a identidade do Prumo.
+
+## Implementação em Rust
+
+O código próprio de todas as instalações seguirá REQ-15 e [RUST.md](RUST.md): entidades, redes, catálogos, comandos, cálculos próprios, regras, desenhos, interface e MCP em Rust. Motores externos serão integrados por adaptadores Rust e qualificados em seus domínios. Essa decisão preserva integralmente a cobertura e a ordem das entregas.

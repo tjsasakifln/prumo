@@ -1,47 +1,53 @@
 # Revisão do planejamento do Prumo
 
-**Versão 2.0, em 14/11/2026.** Objeto: ampliação do planejamento para estruturas e oito disciplinas de instalações, com 250 issues, 72 famílias obrigatórias e 14 requisitos permanentes. A revisão foi executada por agentes especializados, seguida da conferência do coordenador. Não houve implementação ou validação de cálculos nem aceite técnico profissional nesta sessão.
+**Versão 2.1, em 14/11/2026.** Objeto: complementar a documentação e as 250 issues com Rust como linguagem obrigatória do código próprio do produto. O plano preserva 72 famílias obrigatórias e passa a conter 15 requisitos permanentes. Não houve implementação de produto, execução de build Rust, validação de cálculos ou aceite técnico profissional nesta revisão.
 
-## Frentes examinadas
+## Decisão incorporada
 
-| Frente | Verificações realizadas |
+REQ-15 e TEC-RUST-01 vinculam Rust a todas as entregas, incluindo interface, BIM, redes, comandos, regras, cálculos próprios, persistência, serviços, CLI, MCP e adaptadores. A origem é a instrução do proprietário USR-05. A definição completa está em [RUST.md](RUST.md) e [technology.json](../planning/technology.json).
+
+O reuso pertinente continua obrigatório. Bibliotecas externas podem manter sua linguagem original, com origem, versão, licença, função, adaptação Rust e testes. Ferramentas Python do planejamento permanecem fora do runtime. Frameworks e versões serão escolhidos por evidência durante a implementação.
+
+## Revisões executadas
+
+| Frente | Escopo conferido | Registro |
+|---|---|---|
+| Arquitetura Rust | Interface, MCP, Cargo, FFI, unsafe, componentes, fontes primárias e critérios de implementação | [Parecer de arquitetura](../planning/reviews/2.1-architecture.json) |
+| Escopo e consistência | Comparação com a versão anterior, 250 issues, 72 famílias, requisitos, reuso, apresentação e preservação dos critérios de engenharia | [Parecer de escopo](../planning/reviews/2.1-scope.json) |
+| Controles do plano | Renderizador, verificador, testes positivos e mutações negativas em cópias temporárias | [Ensaios do verificador](../planning/reviews/2.1-validator.json) |
+
+Dois agentes fizeram revisão independente do conteúdo consolidado. Os scripts preparados por outro agente também foram examinados pelo revisor de escopo. O coordenador conferiu os pontos decisivos, aplicou as correções e verificou a publicação. Os pareceres finais não registram achados pendentes no recorte examinado. O [registro consolidado](../planning/review.json) distingue revisão documental de aprovação profissional.
+
+## Correções e complementos
+
+| Ponto encontrado | Tratamento |
 |---|---|
-| Cobertura das instalações | Catálogos e manuais oficiais, recursos avançados, edições e atualizações; água, esgoto, chuva, gás, incêndio, elétrica, fotovoltaica, SPDA, comunicação e climatização |
-| Normas e confiabilidade | Classes de evidência, transições, domínio dos métodos, independência de referências, atribuições profissionais e condições de qualificação |
-| Arquitetura e sequência | Modelo comum, portas e redes, catálogos, contratos UI/MCP, dependências, integração, emissão e liberação final |
-| Apresentação e controles | README/LEIAME com identidade própria, geração dos textos, integridade da fila, cobertura e registro de publicação |
+| Rust aparecia como decisão parcial e a interface previa autoria TypeScript/React | Rust tornou-se obrigatório para toda implementação própria, incluindo interface e MCP |
+| SDK TypeScript era candidato para o servidor próprio | SDK Rust rmcp tornou-se candidato prioritário; clientes externos de outras linguagens continuam possíveis para interoperabilidade |
+| Dois textos tratavam rmcp como escolha já concluída | Corrigidos para servidor Rust com SDK qualificado e rmcp prioritário, preservando a avaliação por evidências |
+| Um novo aceite de geometria falava da interface | Corrigido para geometria, topologia, tolerâncias e conversões próprias em Rust |
+| Expressão sobre proteção dos logs era ambígua | Especificada a supressão ou o mascaramento de dados sensíveis, com exclusão de segredos |
+| Reuso externo poderia ser confundido com autorização de outro núcleo próprio | Definidas fronteiras, papéis, origem e testes, preservando bibliotecas e extensões pertinentes |
+| A decisão poderia ficar apenas em texto introdutório | Política estruturada, REQ-15 nas 250 issues, critérios específicos em 32 issues e verificações automáticas do plano |
 
-As frentes fizeram revisão cruzada de conteúdo preparado por outro agente. Os pareceres não identificaram problema crítico ou grave remanescente no recorte examinado após as correções. As decisões e seus limites estão registrados em [review.json](../planning/review.json).
-
-## Correções incorporadas
-
-| Achado | Tratamento |
-|---|---|
-| O lançamento antigo antecederia instalações | Etapa 120 transformada em marco estrutural; liberação completa transferida para 250 |
-| Base poderia admitir apenas vigas e pilares | Contratos iniciais ampliados para disciplinas, ambientes, portas, redes e unidades específicas, sem exigir motores futuros |
-| Fotovoltaica e recursos recentes poderiam ser omitidos | Disciplina própria, baterias, inversores, CC/CA, geração e cálculo térmico incluídos explicitamente |
-| Diferenças entre documentos antigos e novos | Registro por capacidade e edição, com investigação obrigatória dos conflitos antes do aceite |
-| Subestação e preventivos poderiam receber aprovação por simples representação | Modelagem, cálculo, verificação e emissão separados no domínio e nas evidências |
-| Normas antigas de água quente e tratamento poderiam ser combinadas | Registro explícito de transições e confirmação do texto aplicável antes de implementar |
-| Série normativa de climatização poderia receber ano indiscriminado | Situação conferida por parte; suspensão histórica documentada e vigência atual pendente de verificação |
-| SPDA pediria telecom ainda futura na 207 | Portas/redes genéricas disponíveis nessa etapa; integração completa de sinais exigida após os módulos de telecom |
-| Climatização exigiria coordenação global antes da 227 | Testes locais e interfaces nas 225/226; transferência e coordenação geral nas 227/228/238 |
-| Marcos 111 a 118 ainda citavam binário final | Evidências delimitadas ao incremento estrutural e reconferidas no candidato ampliado |
-| Usabilidade e pilotos só cobririam estruturas | Campanhas finais com todas as oito disciplinas e onze famílias de tarefas, conforme UX e VALIDACAO |
-| Biblioteca existente poderia parecer componente homologado | Treze candidatos adicionais em triagem, com licença, domínio e testes próprios antes da adoção |
-| Lista normativa em texto poderia ser renderizada letra a letra | Integração normaliza listas; verificador rejeita tipos incorretos |
-| Nome de referência poderia reaparecer na apresentação | Verificação de README e LEIAME, incluindo alias, separadores e URLs codificadas |
+A pesquisa acrescentou 13 fontes técnicas primárias e uma instrução do proprietário. O índice contém 222 identificadores de fonte, incluindo instruções; isso não significa 222 sites distintos. O catálogo passou de 28 para 32 candidatos com rmcp, egui/eframe, Dioxus e wgpu, todos ainda sujeitos a qualificação.
 
 ## Verificação de integridade
 
-O comando `python3 scripts/validate_plan.py` verifica a sequência, predecessores, fases, identidades, fontes, requisitos, capacidades obrigatórias, textos gerados, links locais e manifesto de publicação. A etapa de preparação usa `--allow-unpublished` apenas enquanto os novos registros ainda não foram publicados; a entrega final exige a verificação completa.
+Foram conferidos sequência, dependências, identidades, 72 famílias obrigatórias, REQ-01 a REQ-15, fonte da decisão, política Rust, textos gerados, links locais, identidade do README/LEIAME e manifesto de publicação. Os requisitos anteriores e a matriz de cobertura foram preservados.
 
-Foram executadas doze mutações negativas em cópias temporárias, cobrindo redução da fila, ausência/opcionalidade de capacidade, perda dos requisitos novos, lançamento incorreto, marcas na apresentação, tipo inválido, aceite vazio e hash divergente. Todas foram rejeitadas pelos diagnósticos esperados. Um caso positivo de fonte com título sem descrição também passou. [Registro dos ensaios](../planning/reviews/2.0-validator.json).
+Vinte mutações negativas em cópias temporárias foram rejeitadas pelos diagnósticos esperados. Os casos cobrem linguagem ausente ou diferente, política tornada opcional, perda ou duplicidade de vínculo do REQ-15, interface fora de Rust, autorização indevida de lógica própria em outra linguagem, arquivo ausente ou malformado e regressões de cobertura, apresentação e manifesto. Três diagnósticos de arquivo/formato também foram conferidos no renderizador. O manifesto sintético desses ensaios ficou apenas na cópia de teste.
 
-O manifesto sintético usado para testar o verificador ficou restrito à cópia temporária. A confirmação da publicação real usa leitura independente das issues do GitHub, com comparação de número, título e corpo completo. O [registro publicado](../planning/github-issues.json) conserva os hashes e a situação efetivamente conferida.
+Após as correções de revisão, o plano final passou novamente pela conferência de renderização e pela validação integral. O verificador atesta integridade do planejamento. Não inspeciona código de produto ainda inexistente nem comprova correção numérica.
 
-## Histórico e limite desta revisão
+## Publicação das issues
 
-A versão 1.0 continha 120 entregas estruturais. Seu registro permanece em [revisão 1.0](../planning/reviews/1.0.json) e no histórico Git. A versão 2.0 preserva os requisitos estruturais e amplia o lançamento, sem marcar capacidades como implementadas por constarem no plano.
+As 250 issues existentes foram atualizadas e mantidas abertas. Cada resposta de atualização foi comparada com o texto aprovado. Uma leitura independente paginada da API do GitHub confirmou número, título, corpo integral e estado das 250 issues. O [manifesto](../planning/github-issues.json) registra os hashes desses corpos efetivamente conferidos.
 
-A consistência documental não prova a correção dos cálculos. As campanhas numéricas, os ensaios de integração, os estudos com usuários e os aceites por profissionais habilitados continuam como condições de conclusão das issues e da liberação comercial.
+Os textos foram aprovados antes da publicação. Depois disso, o backlog recebeu somente a atualização do estado de publicação. Os hashes anterior e publicado constam de [review.json](../planning/review.json). Nenhuma issue foi encerrada por esta alteração documental.
+
+## Histórico e limite
+
+A versão 1.0 continha 120 entregas estruturais. A versão 2.0 ampliou o produto para instalações e transferiu o lançamento completo para a issue 250. Os registros anteriores permanecem em [revisão 1.0](../planning/reviews/1.0.json), [revisão 2.0](../planning/reviews/2.0.json), [ensaios 2.0](../planning/reviews/2.0-validator.json) e no histórico Git.
+
+A versão 2.1 fixa a linguagem de implementação sem reduzir capacidades, ensaios, tolerâncias ou condições de lançamento. As campanhas numéricas, a integração, os estudos com usuários e os aceites profissionais continuam obrigatórios nas respectivas issues.

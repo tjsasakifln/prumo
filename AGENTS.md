@@ -16,6 +16,16 @@ Leia README.md, PRD.md, ROADMAP.md, a issue escolhida e os documentos pertinente
 
 A sequência ampliada mantém a correspondência entre número GitHub e identificador PRU. A antiga issue 120 passou a ser um marco de desenvolvimento estrutural; o lançamento completo pertence à 250. PRs e issues de manutenção criadas depois não alteram os identificadores PRU. Correções de uma entrega permanecem vinculadas a ela e devem ser resolvidas antes de avançar. Uma eventual subdivisão deve preservar a dependência e o aceite integral da issue original.
 
+## Rust obrigatório
+
+Implemente em Rust todo código próprio do produto, inclusive interface, BIM, redes, comandos, regras normativas, cálculos próprios, persistência, CLI, MCP, serviços, adaptadores e orquestração. Leia docs/RUST.md e planning/technology.json. REQ-15 e TEC-RUST-01 aplicam-se às 250 issues. A escolha futura de framework deve respeitar essa decisão do proprietário.
+
+Na issue 1, entregue workspace Cargo funcional, Cargo.lock e rust-toolchain.toml com compilador estável fixado; declare edition, rust-version, resolver, targets e features. Execute formatação, Clippy, testes e compilação com dependências fixadas na matriz adotada. Os comandos Cargo só passam a fazer parte da verificação do produto quando o workspace real existir.
+
+Componentes externos podem conservar suas linguagens, com origem, licença, versão, função, adaptador Rust e testes de fronteira documentados. Bindings gerados e patches externos têm escopo restrito e revisado. Não crie módulos próprios em outras linguagens sob o rótulo de dependência. O host de extensões e o executor de rotinas são Rust; conteúdo externo isolado continua sujeito a comandos e permissões.
+
+Proíba unsafe nas camadas puras próprias de domínio, comandos e regras. Concentre exceções necessárias em crates de integração pequenos, com invariantes e revisão. Rust não dispensa contraprovas numéricas, testes de integração nem revisão profissional. Os scripts Python de manutenção do planejamento permanecem fora do runtime do produto.
+
 ## Reuso obrigatório quando pertinente
 
 Antes de implementar um módulo, examine docs/REUSO.md e docs/candidatos-reuso.json. Procure componentes abertos adequados nas fontes oficiais. Compare adoção, adaptação e implementação própria pelo custo total.
@@ -53,6 +63,7 @@ Cada nova função relevante deve incluir operação equivalente por MCP. Depois
 ## Critério de conclusão de uma issue
 
 - Escopo e critérios específicos implementados, com comportamento funcional.
+- Código próprio em Rust, conforme REQ-15; compilação, dependências e fronteiras externas verificadas na parcela entregue.
 - Reuso examinado e decisão registrada; licenças resolvidas para o código incorporado.
 - Testes pertinentes executados sobre o commit e artefato corretos.
 - Referências normativas e limites atualizados quando houver cálculo.
