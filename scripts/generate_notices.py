@@ -13,6 +13,15 @@ TARGETS = ["x86_64-unknown-linux-gnu", "x86_64-pc-windows-msvc"]
 NOTICE = ROOT / "THIRD_PARTY_NOTICES.md"
 INVENTORY = ROOT / "docs/componentes/dependencias-pru001.json"
 UPSTREAM = ROOT / "docs/componentes/upstream-notices"
+# These inspected source distributions carry additional per-file attributions.
+# Keep their legal comment blocks as well as their root licenses. The lock and
+# package checksum identify the exact source of every preserved block.
+SOURCE_COMMENT_NOTICES = {
+    "approx", "geo", "heapless", "itertools", "lazy_static", "matrixmultiply",
+    "minimal-lexical", "num-complex", "num-integer", "num-rational",
+    "proc-macro-crate", "proc-macro-error", "rand", "rand_pcg", "rawpointer",
+    "robust", "spin", "stable_deref_trait", "wasmparser", "wide",
+}
 
 
 def cargo(*args):
@@ -46,11 +55,13 @@ def generate():
         notice_ids = []
 
         def add(text, origin):
-            text = text.strip() + "\n"
+            original_text_sha256 = sha(text)
+            text = "\n".join(line.rstrip(" \t") for line in text.strip().splitlines()) + "\n"
             digest = sha(text)
-            record = texts.setdefault(digest, {"text": text, "origins": []})
+            record = texts.setdefault(digest, {"text": text, "origins": [], "source_text_sha256": {}})
             if origin not in record["origins"]:
                 record["origins"].append(origin)
+            record["source_text_sha256"][origin] = original_text_sha256
             if digest not in notice_ids:
                 notice_ids.append(digest)
 
@@ -63,11 +74,20 @@ def generate():
                 if (is_notice and path.suffix.lower() not in [".rs", ".js", ".html", ".json", ".svg", ".png"]) or is_font_notice:
                     add(path.read_text(encoding="utf-8"), f"crate:{key[0]}@{key[1]}/{path.relative_to(base).as_posix()}")
             repository = package.get("repository") or ""
-            family = next((name for name in ["AccessKit/accesskit", "emilk/egui", "aclysma/profiling"] if name in repository), None)
-            if family:
-                for source in index:
-                    if source["repo"] == family:
-                        add((ROOT / source["local"]).read_text(), source["url"])
+            for source in index:
+                selected_packages = source.get("packages")
+                applies = (f"{key[0]}@{key[1]}" in selected_packages) if selected_packages else source["repo"] in repository
+                if applies:
+                    add((ROOT / source["local"]).read_text(), source["url"])
+            if package["name"] in SOURCE_COMMENT_NOTICES:
+                for path in sorted(base.rglob("*.rs")):
+                    contents = path.read_text(encoding="utf-8")
+                    comments = re.finditer(r"/\*[\s\S]*?\*/|^[ \t]*//[^\n]*(?:\n[ \t]*//[^\n]*)*", contents, re.M)
+                    for match in comments:
+                        block = match.group()
+                        if re.search(r"copyright|SPDX-License-Identifier|licensed under|Boost Software License|permission to use, copy", block, re.I):
+                            line = contents.count("\n", 0, match.start()) + 1
+                            add(block, f"crate:{key[0]}@{key[1]}/{path.relative_to(base).as_posix()}:{line} (legal comment)")
             if package["name"] in ["gl_generator", "khronos_api"]:
                 # These .crate archives carry license headers instead of root license files.
                 apache = next(source for source in index if source["repo"] == "emilk/egui" and source["path"] == "LICENSE-APACHE")
@@ -108,7 +128,8 @@ def generate():
         "lock_sha256": hashlib.sha256((ROOT / "Cargo.lock").read_bytes()).hexdigest(),
         "native_targets": TARGETS,
         "packages": records,
-        "license_texts": [{"sha256": digest, "origins": sorted(record["origins"])} for digest, record in sorted(texts.items())],
+        "license_text_normalization": "Displayed text strips trailing spaces/tabs and outer blank lines. source_text_sha256 retains the UTF-8 text received from each source before presentation normalization; preserved upstream files remain unchanged.",
+        "license_texts": [{"sha256": digest, "origins": sorted(record["origins"]), "source_text_sha256": dict(sorted(record["source_text_sha256"].items()))} for digest, record in sorted(texts.items())],
     }
     lines = ["# Prumo: third-party notices", "",
              "This file preserves license texts and attributions for the normal/build dependency graph of the Windows and Linux development binaries. Build tools are included conservatively; a listed component is not necessarily linked into every executable. The complete locked inventory also identifies test and other-platform dependencies separately.", "",

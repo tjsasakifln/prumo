@@ -47,5 +47,183 @@
     "path": "LICENSE-MIT",
     "url": "https://raw.githubusercontent.com/aclysma/profiling/8271551172eb6fa4cba47369aedd93790c623df9/LICENSE-MIT",
     "local": "docs/componentes/upstream-notices/aclysma-profiling/8271551172eb6fa4cba47369aedd93790c623df9/LICENSE-MIT"
+  },
+  {
+    "repo": "ricosjp/ruststep",
+    "sha": "697aacdcbbd1027d9628ea15c1af95c16a7490ba",
+    "path": "LICENSE",
+    "url": "https://github.com/ricosjp/ruststep/blob/697aacdcbbd1027d9628ea15c1af95c16a7490ba/LICENSE",
+    "local": "docs/componentes/upstream-notices/ricosjp-ruststep/697aacdcbbd1027d9628ea15c1af95c16a7490ba/LICENSE",
+    "packages": [
+      "ruststep@0.4.0"
+    ]
+  },
+  {
+    "repo": "whatisinternet/inflector",
+    "sha": "a4a95eac75043f4bffb127c7c8ec886b5b106053",
+    "path": "LICENSE.md",
+    "packages": [
+      "Inflector@0.11.4"
+    ],
+    "url": "https://github.com/whatisinternet/inflector/blob/a4a95eac75043f4bffb127c7c8ec886b5b106053/LICENSE.md",
+    "local": "docs/componentes/upstream-notices/whatisinternet-inflector/a4a95eac75043f4bffb127c7c8ec886b5b106053/LICENSE.md"
+  },
+  {
+    "repo": "georust/geo",
+    "sha": "5ab50b072e34a915a33eaa46c80763d51d61295e",
+    "path": "LICENSE-MIT",
+    "packages": [
+      "geo@0.33.1"
+    ],
+    "url": "https://github.com/georust/geo/blob/5ab50b072e34a915a33eaa46c80763d51d61295e/LICENSE-MIT",
+    "local": "docs/componentes/upstream-notices/georust-geo/5ab50b072e34a915a33eaa46c80763d51d61295e/LICENSE-MIT"
+  },
+  {
+    "repo": "georust/geo",
+    "sha": "5ab50b072e34a915a33eaa46c80763d51d61295e",
+    "path": "LICENSE-APACHE",
+    "packages": [
+      "geo@0.33.1"
+    ],
+    "url": "https://github.com/georust/geo/blob/5ab50b072e34a915a33eaa46c80763d51d61295e/LICENSE-APACHE",
+    "local": "docs/componentes/upstream-notices/georust-geo/5ab50b072e34a915a33eaa46c80763d51d61295e/LICENSE-APACHE"
+  },
+  {
+    "repo": "iShape-Rust/iKeySort",
+    "sha": "10a9a72f0cdae785dd2185896eed138b09945515",
+    "path": "LICENSE",
+    "packages": [
+      "i_key_sort@0.10.3"
+    ],
+    "url": "https://github.com/iShape-Rust/iKeySort/blob/10a9a72f0cdae785dd2185896eed138b09945515/LICENSE",
+    "local": "docs/componentes/upstream-notices/iShape-Rust-iKeySort/10a9a72f0cdae785dd2185896eed138b09945515/LICENSE"
+  },
+  {
+    "repo": "iShape-Rust/iOverlay",
+    "sha": "9448d8da87e11f5b7aedcf994967b18ff640c734",
+    "path": "LICENSE-MIT",
+    "packages": [
+      "i_overlay@4.5.2"
+    ],
+    "url": "https://github.com/iShape-Rust/iOverlay/blob/9448d8da87e11f5b7aedcf994967b18ff640c734/LICENSE-MIT",
+    "local": "docs/componentes/upstream-notices/iShape-Rust-iOverlay/9448d8da87e11f5b7aedcf994967b18ff640c734/LICENSE-MIT"
+  },
+  {
+    "repo": "iShape-Rust/iOverlay",
+    "sha": "9448d8da87e11f5b7aedcf994967b18ff640c734",
+    "path": "LICENSE-APACHE",
+    "packages": [
+      "i_overlay@4.5.2"
+    ],
+    "url": "https://github.com/iShape-Rust/iOverlay/blob/9448d8da87e11f5b7aedcf994967b18ff640c734/LICENSE-APACHE",
+    "local": "docs/componentes/upstream-notices/iShape-Rust-iOverlay/9448d8da87e11f5b7aedcf994967b18ff640c734/LICENSE-APACHE"
+  },
+  {
+    "repo": "georust/rstar",
+    "sha": "c8c5bf9e41468281d030869d409e3f67f1aaf5b7",
+    "path": "LICENSE-MIT",
+    "packages": [
+      "rstar@0.12.2"
+    ],
+    "url": "https://github.com/georust/rstar/blob/c8c5bf9e41468281d030869d409e3f67f1aaf5b7/LICENSE-MIT",
+    "local": "docs/componentes/upstream-notices/georust-rstar/c8c5bf9e41468281d030869d409e3f67f1aaf5b7/LICENSE-MIT"
+  },
+  {
+    "repo": "georust/rstar",
+    "sha": "c8c5bf9e41468281d030869d409e3f67f1aaf5b7",
+    "path": "LICENSE-APACHE",
+    "packages": [
+      "rstar@0.12.2"
+    ],
+    "url": "https://github.com/georust/rstar/blob/c8c5bf9e41468281d030869d409e3f67f1aaf5b7/LICENSE-APACHE",
+    "local": "docs/componentes/upstream-notices/georust-rstar/c8c5bf9e41468281d030869d409e3f67f1aaf5b7/LICENSE-APACHE"
+  },
+  {
+    "repo": "wasmi-labs/wasmi",
+    "sha": "2970aa871cc1001b57b267ccecdcd1e42306199e",
+    "path": "LICENSE-MIT",
+    "packages": [
+      "wasmi@2.0.0",
+      "wasmi_collections@2.0.0",
+      "wasmi_core@2.0.0",
+      "wasmi_ir@2.0.0"
+    ],
+    "url": "https://github.com/wasmi-labs/wasmi/blob/2970aa871cc1001b57b267ccecdcd1e42306199e/LICENSE-MIT",
+    "local": "docs/componentes/upstream-notices/wasmi-labs-wasmi/2970aa871cc1001b57b267ccecdcd1e42306199e/LICENSE-MIT"
+  },
+  {
+    "repo": "wasmi-labs/wasmi",
+    "sha": "2970aa871cc1001b57b267ccecdcd1e42306199e",
+    "path": "LICENSE-APACHE",
+    "packages": [
+      "wasmi@2.0.0",
+      "wasmi_collections@2.0.0",
+      "wasmi_core@2.0.0",
+      "wasmi_ir@2.0.0"
+    ],
+    "url": "https://github.com/wasmi-labs/wasmi/blob/2970aa871cc1001b57b267ccecdcd1e42306199e/LICENSE-APACHE",
+    "local": "docs/componentes/upstream-notices/wasmi-labs-wasmi/2970aa871cc1001b57b267ccecdcd1e42306199e/LICENSE-APACHE"
+  },
+  {
+    "repo": "bytecodealliance/wasm-tools",
+    "sha": "e66235859a6ec0502bf6f9dcc358953eda4cafcc",
+    "path": "LICENSE-MIT",
+    "packages": [
+      "wasmparser@0.228.0"
+    ],
+    "url": "https://github.com/bytecodealliance/wasm-tools/blob/e66235859a6ec0502bf6f9dcc358953eda4cafcc/LICENSE-MIT",
+    "local": "docs/componentes/upstream-notices/bytecodealliance-wasm-tools/e66235859a6ec0502bf6f9dcc358953eda4cafcc/LICENSE-MIT"
+  },
+  {
+    "repo": "bytecodealliance/wasm-tools",
+    "sha": "e66235859a6ec0502bf6f9dcc358953eda4cafcc",
+    "path": "LICENSE-APACHE",
+    "packages": [
+      "wasmparser@0.228.0"
+    ],
+    "url": "https://github.com/bytecodealliance/wasm-tools/blob/e66235859a6ec0502bf6f9dcc358953eda4cafcc/LICENSE-APACHE",
+    "local": "docs/componentes/upstream-notices/bytecodealliance-wasm-tools/e66235859a6ec0502bf6f9dcc358953eda4cafcc/LICENSE-APACHE"
+  },
+  {
+    "repo": "bytecodealliance/wasm-tools",
+    "sha": "e66235859a6ec0502bf6f9dcc358953eda4cafcc",
+    "path": "LICENSE-Apache-2.0_WITH_LLVM-exception",
+    "packages": [
+      "wasmparser@0.228.0"
+    ],
+    "url": "https://github.com/bytecodealliance/wasm-tools/blob/e66235859a6ec0502bf6f9dcc358953eda4cafcc/LICENSE-Apache-2.0_WITH_LLVM-exception",
+    "local": "docs/componentes/upstream-notices/bytecodealliance-wasm-tools/e66235859a6ec0502bf6f9dcc358953eda4cafcc/LICENSE-Apache-2.0_WITH_LLVM-exception"
+  },
+  {
+    "repo": "ricosjp/ruststep",
+    "sha": "07c3e374a851a2421d9475d09d72d1428defd054",
+    "path": "LICENSE",
+    "packages": [
+      "ruststep-derive@0.4.0"
+    ],
+    "url": "https://github.com/ricosjp/ruststep/blob/07c3e374a851a2421d9475d09d72d1428defd054/LICENSE",
+    "local": "docs/componentes/upstream-notices/ricosjp-ruststep/07c3e374a851a2421d9475d09d72d1428defd054/LICENSE"
+  },
+  {
+    "repo": "rutrum/convert-case",
+    "sha": "f72ca63c9d579fbab22e361c76e39d31d1e86a2e",
+    "path": "LICENSE",
+    "packages": [
+      "convert_case@0.4.0"
+    ],
+    "url": "https://github.com/rutrum/convert-case/blob/f72ca63c9d579fbab22e361c76e39d31d1e86a2e/LICENSE",
+    "local": "docs/componentes/upstream-notices/rutrum-convert-case/f72ca63c9d579fbab22e361c76e39d31d1e86a2e/LICENSE",
+    "note": "The 0.4.0 manifest at 300d9eef9e8c970e15f324afbc3df8b6a4ebbf71 declares MIT but includes no license file. This is the author's first subsequently published MIT license notice (2020-05-25), preserving the same author and copyright year."
+  },
+  {
+    "repo": "shibatch/sleef",
+    "sha": "7623d6cfa2712462880fa63a4d0f0b5f775d1a83",
+    "path": "LICENSE.txt",
+    "url": "https://github.com/shibatch/sleef/blob/7623d6cfa2712462880fa63a4d0f0b5f775d1a83/LICENSE.txt",
+    "local": "docs/componentes/upstream-notices/shibatch-sleef/7623d6cfa2712462880fa63a4d0f0b5f775d1a83/LICENSE.txt",
+    "packages": [
+      "wide@1.7.1"
+    ],
+    "note": "Supplemental Boost-1.0 terms for SLEEF polynomial coefficients explicitly attributed inside wide source files. The wide crate's own Zlib/Apache/MIT licenses remain separately preserved."
   }
 ]

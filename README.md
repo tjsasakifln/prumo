@@ -4,11 +4,12 @@
 
 O Prumo será um sistema profissional brasileiro para conceber, calcular, dimensionar, detalhar, compatibilizar e documentar estruturas e instalações. O objetivo é reduzir o esforço de aprendizagem e de operação, mantendo as hipóteses de engenharia claras, os resultados verificáveis e as entregas coerentes.
 
-**Estado em 14/11/2026: aplicação de desenvolvimento em Rust.** É possível criar, salvar, reabrir e alterar um projeto BIM pela interface e por MCP local, cadastrar referências normativas, fixar sua versão por projeto e conferir impedimentos de emissão. Cálculo, dimensionamento e emissão técnica ainda não estão disponíveis. A fila contém **250 issues sequenciais**; as entregas e evidências estão em [Estado da implementação](docs/IMPLEMENTACAO.md).
+**Estado em 14/11/2026: aplicação de desenvolvimento em Rust.** É possível criar, salvar, reabrir e alterar um projeto BIM pela interface e por MCP local, cadastrar referências normativas, fixar sua versão por projeto e conferir impedimentos de emissão. Os componentes de geometria, BIM, seções, álgebra linear e documentos têm ensaios acessíveis pela interface e por MCP. Cálculo, dimensionamento e emissão técnica ainda não estão disponíveis. A fila contém **250 issues sequenciais**; as entregas e evidências estão em [Estado da implementação](docs/IMPLEMENTACAO.md).
 
 ## Executar a versão de desenvolvimento
 
 ```sh
+cargo build --workspace --locked
 cargo run -p prumo-desktop --locked
 ```
 

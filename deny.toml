@@ -9,11 +9,13 @@ all-features = false
 
 [advisories]
 # These are informational merger/deprecation notices, not vulnerability waivers.
-# See docs/componentes/PRU-001.md. Reassess the AccessKit chain in PRU-003.
+# PRU-003 rechecked the AccessKit chain and the new build-only macro dependency.
+# Exact scope, evidence and removal conditions: docs/componentes/PRU-003.md.
 ignore = [
-    { id = "RUSTSEC-2026-0370", reason = "zvariant5 is used by AccessKit Linux; upstream merged it into zbus6. Scoped maintenance transition; reassess PRU-003." },
-    { id = "RUSTSEC-2026-0371", reason = "zbus_names4 is used by AccessKit Linux; upstream merged it into zbus6. Scoped maintenance transition; reassess PRU-003." },
-    { id = "RUSTSEC-2026-0372", reason = "zvariant_derive5 is used by AccessKit Linux; upstream merged it into zbus6. Scoped maintenance transition; reassess PRU-003." },
+    { id = "RUSTSEC-2026-0370", reason = "Rechecked PRU-003: AccessKit/AT-SPI requires zbus5.19; upstream AccessKit PR834 documents transition to zbus6. Maintenance only; remove after compatible upgrade, reassess each lock update and distribution." },
+    { id = "RUSTSEC-2026-0371", reason = "Rechecked PRU-003: zbus_names4 remains in the AccessKit Linux chain pending zbus6. Maintenance only; remove after compatible upgrade, reassess each lock update and distribution." },
+    { id = "RUSTSEC-2026-0372", reason = "Rechecked PRU-003: zvariant_derive5 remains in the AccessKit Linux chain pending zbus6. Maintenance only; remove after compatible upgrade, reassess each lock update and distribution." },
+    { id = "RUSTSEC-2024-0370", reason = "PRU-003 bounded STEP experiment only: proc-macro-error1.0.4 is a ruststep-derive build dependency over pinned Rust sources, not project inputs. Maintenance advisory, no vulnerability described. Reassess every lock update; remove or requalify before project IFC import." },
 ]
 
 [licenses]

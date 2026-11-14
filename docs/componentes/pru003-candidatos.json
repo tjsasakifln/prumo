@@ -1,0 +1,197 @@
+{
+  "schema_version": 1,
+  "issue": "PRU-003",
+  "checked_on": "2026-11-14",
+  "scope": "Avaliação documental dos seis candidatos nominais. Não confundir com o inventário Cargo e os ensaios Rust efetivamente executados.",
+  "candidates": [
+    {
+      "repo": "IfcOpenShell/IfcOpenShell",
+      "name": "IfcOpenShell",
+      "language": "C++ / Python",
+      "scope": "Leitura IFC e geometria, com aplicações separadas no mesmo repositório",
+      "license": "Núcleo LGPL-3.0-or-later; Bonsai, BonsaiViewer e IfcSverchok GPL-3.0-or-later; confirmar arquivos de cada produto",
+      "decision": "Não incorporado. Candidato futuro a intercâmbio IFC completo, separado do ensaio STEP restrito.",
+      "commercial": "Permissões dependem do subproduto e do modo de combinação/distribuição. Processo externo não elimina LGPL/GPL.",
+      "maintenance": "Snapshot de build v0.9.0post1, separado do release ifcsverchok 0.9.1 instável; arquitetura 0.9 altera o custo de migração.",
+      "sources": [
+        "https://builds.ifcopenshell.org/",
+        "https://docs.ifcopenshell.org/introduction",
+        "https://github.com/IfcOpenShell/IfcOpenShell/discussions/9759"
+      ],
+      "license_files": [
+        "README.md"
+      ],
+      "security": "Página oficial de segurança sem avisos publicados na consulta; isso não demonstra ausência de vulnerabilidades.",
+      "version": "v0.9.0post1 build",
+      "commit": "b5e509b223e1ab2c7eb4641211ea05209a2dfa3e",
+      "commit_date": "2026-10-15T09:51:19Z",
+      "release_url": "https://builds.ifcopenshell.org/",
+      "license_sources": [
+        "https://github.com/IfcOpenShell/IfcOpenShell/blob/b5e509b223e1ab2c7eb4641211ea05209a2dfa3e/README.md"
+      ],
+      "security_url": "https://github.com/IfcOpenShell/IfcOpenShell/security",
+      "executed_in_prumo": false,
+      "performance_measured_in_prumo": false,
+      "dependencies_distributed": false,
+      "engineering_release": false
+    },
+    {
+      "repo": "JWock82/Pynite",
+      "name": "PyNite",
+      "language": "Python",
+      "scope": "Análise estrutural, não equivalente a álgebra linear nem implementação automática de normas brasileiras",
+      "license": "MIT",
+      "decision": "Não incorporado. Candidato a referência independente de casos estruturais futuros, com entrada preparada separadamente.",
+      "commercial": "MIT permite uso comercial sob preservação de aviso/licença; NumPy, SciPy, Matplotlib e demais dependências exigem auditoria própria.",
+      "maintenance": "3.2.1 corrige transformações de cargas para massa modal e centroide de carga distribuída; Python >=3.11 no manifesto.",
+      "sources": [
+        "https://github.com/JWock82/Pynite/releases/tag/3.2.1"
+      ],
+      "license_files": [
+        "LICENSE",
+        "pyproject.toml"
+      ],
+      "security": "Página oficial de segurança sem avisos publicados na consulta; dependências Python não foram instaladas nem auditadas no Prumo.",
+      "version": "3.2.1",
+      "commit": "cfd2cd75f4c8d7141f5cdff250d1362e67668393",
+      "commit_date": "2026-10-29T03:51:14Z",
+      "release_url": "https://github.com/JWock82/Pynite/releases/tag/3.2.1",
+      "license_sources": [
+        "https://github.com/JWock82/Pynite/blob/cfd2cd75f4c8d7141f5cdff250d1362e67668393/LICENSE",
+        "https://github.com/JWock82/Pynite/blob/cfd2cd75f4c8d7141f5cdff250d1362e67668393/pyproject.toml"
+      ],
+      "security_url": "https://github.com/JWock82/Pynite/security",
+      "executed_in_prumo": false,
+      "performance_measured_in_prumo": false,
+      "dependencies_distributed": false,
+      "engineering_release": false
+    },
+    {
+      "repo": "OpenSees/OpenSees",
+      "name": "OpenSees",
+      "language": "C++ / C / Fortran e interfaces Tcl/Python",
+      "scope": "Modelos e análises estruturais não lineares, dependentes da formulação e dos materiais selecionados",
+      "license": "Licença própria UC Regents; não equivale a MIT/BSD",
+      "decision": "Não incorporado. Distribuição comercial bloqueada até autorização compatível; possível referência interna apenas dentro dos termos aplicáveis.",
+      "commercial": "COPYRIGHT distingue uso educacional/pesquisa/entidade sem fins lucrativos não comercial de uso interno por outras entidades; distribuição comercial exige licença UC.",
+      "maintenance": "3.8.0 adiciona materiais, elementos, integradores e LAPACK, aumentando a necessidade de qualificar cada modelo usado.",
+      "sources": [
+        "https://github.com/OpenSees/OpenSees/releases/tag/v3.8.0",
+        "https://opensees.github.io/OpenSeesDocumentation/developer/license.html"
+      ],
+      "license_files": [
+        "COPYRIGHT"
+      ],
+      "security": "Página oficial de segurança sem avisos publicados na consulta; não houve build nem auditoria das bibliotecas nativas.",
+      "version": "v3.8.0",
+      "commit": "6e55293513192aa05c7e1205e66a5a1a1ed088c4",
+      "commit_date": "2026-02-18T00:58:58Z",
+      "release_url": "https://github.com/OpenSees/OpenSees/releases/tag/v3.8.0",
+      "license_sources": [
+        "https://github.com/OpenSees/OpenSees/blob/6e55293513192aa05c7e1205e66a5a1a1ed088c4/COPYRIGHT"
+      ],
+      "security_url": "https://github.com/OpenSees/OpenSees/security",
+      "executed_in_prumo": false,
+      "performance_measured_in_prumo": false,
+      "dependencies_distributed": false,
+      "engineering_release": false
+    },
+    {
+      "repo": "DrTimothyAldenDavis/SuiteSparse",
+      "name": "SuiteSparse",
+      "language": "C / C++ com BLAS/LAPACK e opcionais",
+      "scope": "Álgebra linear esparsa; não monta nem valida modelos estruturais",
+      "license": "Por módulo: AMD BSD-3-Clause; KLU/BTF/LDL LGPL-2.1-or-later; CHOLMOD combina módulos LGPL/GPL; UMFPACK e SPQR GPL-2.0-or-later, com alternativas comerciais em componentes",
+      "decision": "Não incorporado. Reavaliar ao existir caso esparso com benefício medido e seleção explícita de módulos, opções e bibliotecas.",
+      "commercial": "Não existe aprovação comercial única do pacote. Selecionar módulos, excluir opcionais não necessários e cumprir copyleft ou contratar alternativa aplicável.",
+      "maintenance": "7.14.1 contém CHOLMOD 5.3.5, UMFPACK 6.3.8, KLU 2.3.6 e correção GraphBLAS 10.5.1.",
+      "sources": [
+        "https://github.com/DrTimothyAldenDavis/SuiteSparse/releases/tag/v7.14.1"
+      ],
+      "license_files": [
+        "LICENSE.txt",
+        "AMD/Doc/License.txt",
+        "CHOLMOD/Doc/License.txt",
+        "UMFPACK/Doc/License.txt"
+      ],
+      "security": "Consulta à página de segurança não concluída pelo provedor. Nenhum resultado negativo de vulnerabilidades é afirmado; binário e transitivas não foram auditados.",
+      "version": "v7.14.1",
+      "commit": "e202a5bcef55f5a780c26830ebd6ff13af193baf",
+      "commit_date": "2026-09-14T01:55:49Z",
+      "release_url": "https://github.com/DrTimothyAldenDavis/SuiteSparse/releases/tag/v7.14.1",
+      "license_sources": [
+        "https://github.com/DrTimothyAldenDavis/SuiteSparse/blob/e202a5bcef55f5a780c26830ebd6ff13af193baf/LICENSE.txt",
+        "https://github.com/DrTimothyAldenDavis/SuiteSparse/blob/e202a5bcef55f5a780c26830ebd6ff13af193baf/AMD/Doc/License.txt",
+        "https://github.com/DrTimothyAldenDavis/SuiteSparse/blob/e202a5bcef55f5a780c26830ebd6ff13af193baf/CHOLMOD/Doc/License.txt",
+        "https://github.com/DrTimothyAldenDavis/SuiteSparse/blob/e202a5bcef55f5a780c26830ebd6ff13af193baf/UMFPACK/Doc/License.txt"
+      ],
+      "security_url": "https://github.com/DrTimothyAldenDavis/SuiteSparse/security",
+      "executed_in_prumo": false,
+      "performance_measured_in_prumo": false,
+      "dependencies_distributed": false,
+      "engineering_release": false
+    },
+    {
+      "repo": "mrdoob/three.js",
+      "name": "Three.js",
+      "language": "JavaScript",
+      "scope": "Visualização WebGL/WebGPU; não é modelo BIM persistente nem solver",
+      "license": "MIT",
+      "decision": "Não incorporado na aplicação nativa desta etapa. Reavaliar visualizador Web com ponte Rust e medidas de precisão, acessibilidade e recursos.",
+      "commercial": "Preservar aviso MIT; licenças de addons, codecs, modelos, texturas e dados incluídos devem ser conferidas separadamente.",
+      "maintenance": "r187 (npm 0.187.0) remove APIs anteriormente depreciadas e corrige descarte de recursos; o custo da ponte e das migrações faz parte da decisão.",
+      "sources": [
+        "https://github.com/mrdoob/three.js/releases/tag/r187"
+      ],
+      "license_files": [
+        "LICENSE",
+        "package.json"
+      ],
+      "security": "Política SECURITY.md publicada e página sem avisos publicados na consulta; isso não equivale a auditoria do bundle.",
+      "version": "r187",
+      "commit": "7e89746a687bb88271253698fa108b1dd59825d0",
+      "commit_date": "2026-10-30T07:56:52Z",
+      "release_url": "https://github.com/mrdoob/three.js/releases/tag/r187",
+      "license_sources": [
+        "https://github.com/mrdoob/three.js/blob/7e89746a687bb88271253698fa108b1dd59825d0/LICENSE",
+        "https://github.com/mrdoob/three.js/blob/7e89746a687bb88271253698fa108b1dd59825d0/package.json"
+      ],
+      "security_url": "https://github.com/mrdoob/three.js/security",
+      "executed_in_prumo": false,
+      "performance_measured_in_prumo": false,
+      "dependencies_distributed": false,
+      "engineering_release": false
+    },
+    {
+      "repo": "Open-Cascade-SAS/OCCT",
+      "name": "Open CASCADE Technology",
+      "language": "C++",
+      "scope": "Kernel B-rep, modelagem, intercâmbio e malhas; escopo maior que transformações rígidas e polígonos simples",
+      "license": "LGPL-2.1 com exceção OCCT; alternativa comercial separada",
+      "decision": "Não incorporado. Candidato futuro a sólidos e operações B-rep, sujeito a qualificação de ABI, ownership, exceções e distribuição.",
+      "commercial": "A exceção trata código objeto que usa conteúdo de headers e exige aviso; não remove as demais obrigações LGPL da biblioteca.",
+      "maintenance": "8.0.1 mantém base C++17/API/ABI de 8.0.0p1 e corrige falhas em booleanas, healing, STEP, paralelismo e Windows.",
+      "sources": [
+        "https://github.com/Open-Cascade-SAS/OCCT/releases/tag/V8.0.1"
+      ],
+      "license_files": [
+        "README.md",
+        "OCCT_LGPL_EXCEPTION.txt"
+      ],
+      "security": "Página oficial de segurança sem avisos publicados na consulta; não houve build nem auditoria das transitivas.",
+      "version": "V8.0.1",
+      "commit": "b8f597c677811d1f9f4d8a97f5ae2825c0353a42",
+      "commit_date": "2026-07-30T11:43:15Z",
+      "release_url": "https://github.com/Open-Cascade-SAS/OCCT/releases/tag/V8.0.1",
+      "license_sources": [
+        "https://github.com/Open-Cascade-SAS/OCCT/blob/b8f597c677811d1f9f4d8a97f5ae2825c0353a42/README.md",
+        "https://github.com/Open-Cascade-SAS/OCCT/blob/b8f597c677811d1f9f4d8a97f5ae2825c0353a42/OCCT_LGPL_EXCEPTION.txt"
+      ],
+      "security_url": "https://github.com/Open-Cascade-SAS/OCCT/security",
+      "executed_in_prumo": false,
+      "performance_measured_in_prumo": false,
+      "dependencies_distributed": false,
+      "engineering_release": false
+    }
+  ]
+}

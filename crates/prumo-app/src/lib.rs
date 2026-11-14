@@ -3,6 +3,7 @@
 //! Project-scoped command service shared by desktop, CLI, and MCP.
 
 pub use prumo_domain::Command;
+use prumo_domain::components::{ComponentDescriptor, ExperimentBasis, QualificationReport};
 use prumo_domain::{
     ChangeRecord, Discipline, DomainError, Environment, LengthUnit, ModelState,
     PROJECT_SCHEMA_VERSION, PhysicalObject, Project, validate_name,
@@ -12,10 +13,12 @@ use prumo_registry::{
     NormativePackagePreview, NormativeState, RegistryCatalog, RegistryError, audit_coverage,
     bundled_catalog, compare_packages, evaluate_final_result, reason, register_reference,
 };
+use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
 use std::fs::{self, File, OpenOptions};
 use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
+use std::sync::atomic::AtomicBool;
 use std::time::{SystemTime, UNIX_EPOCH};
 use thiserror::Error;
 use uuid::Uuid;
@@ -37,6 +40,41 @@ pub struct ProjectService {
 }
 
 impl ProjectService {
+    /// Read-only inventory. This does not change capability release states.
+    pub fn component_inventory(&self) -> Vec<ComponentDescriptor> {
+        prumo_components::inventory()
+    }
+
+    pub fn qualify_components(&self) -> Result<QualificationReport, AppError> {
+        self.qualify_components_with_cancel(&AtomicBool::new(false))
+    }
+
+    /// Run the fixed reference suite, recording the selected project's identity.
+    /// Project contents never become solver inputs and no result is persisted.
+    pub fn qualify_components_with_cancel(
+        &self,
+        cancel: &AtomicBool,
+    ) -> Result<QualificationReport, AppError> {
+        let project = self.read()?;
+        let content = serde_json::to_vec(&project)?;
+        let basis = ExperimentBasis {
+            project_id: project.id,
+            revision: project.revision,
+            content_sha256: Sha256::digest(&content)
+                .iter()
+                .map(|byte| format!("{byte:02x}"))
+                .collect::<String>(),
+        };
+        let request = prumo_components::process::WorkerRequest::new(Some(basis));
+        let worker = prumo_components::process::installed_worker()?;
+        Ok(prumo_components::process::run_worker(
+            &worker,
+            &request,
+            cancel,
+            prumo_components::process::DEFAULT_TIMEOUT,
+        )?)
+    }
+
     /// Selects one project on the trusted host. This path is never a command parameter.
     pub fn open(
         path: impl Into<PathBuf>,
@@ -536,6 +574,8 @@ fn catalog_for(project: &Project) -> Result<RegistryCatalog, AppError> {
 
 #[derive(Debug, Error)]
 pub enum AppError {
+    #[error("{0}")]
+    Component(#[from] prumo_components::process::ProcessError),
     #[error("O pacote normativo mudou. Atualize a consulta e confira a versão antes de confirmar.")]
     PackageConflict,
     #[error("O projeto já possui um pacote fixado. Use a migração explícita para alterá-lo.")]
@@ -569,6 +609,7 @@ pub enum AppError {
 impl AppError {
     pub const fn code(&self) -> &'static str {
         match self {
+            Self::Component(_) => "component_qualification_failed",
             Self::PackageConflict => "package_conflict",
             Self::PackageAlreadyPinned => "package_already_pinned",
             Self::PackageNotPinned => "package_not_pinned",

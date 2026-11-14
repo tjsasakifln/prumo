@@ -7,8 +7,8 @@ use prumo_desktop::Desktop;
 use prumo_domain::LengthUnit;
 use rmcp::{
     ClientHandler, ClientLifecycleMode, ClientServiceExt, RoleClient,
-    model::{CallToolRequestParams, ProtocolVersion},
-    service::RunningService,
+    model::{CallToolRequestParams, ClientRequest, ProtocolVersion, Request},
+    service::{PeerRequestOptions, RunningService},
     transport::TokioChildProcess,
 };
 use serde_json::{Value, json};
@@ -68,7 +68,7 @@ async fn sdk_creates_modifies_and_reopens_real_project() {
     let info = client.peer_info().unwrap();
     assert_eq!(info.protocol_version, ProtocolVersion::V_2026_07_28);
     let tools = client.list_tools(None).await.unwrap();
-    assert_eq!(tools.tools.len(), 12);
+    assert_eq!(tools.tools.len(), 14);
     assert!(
         tools
             .tools
@@ -178,7 +178,7 @@ async fn readonly_is_enforced_for_unadvertised_mutations_and_creation() {
     let path = directory.path().join("protected.prumo");
     let client = sdk(&path, false).await;
     let tools = client.list_tools(None).await.unwrap();
-    assert_eq!(tools.tools.len(), 5);
+    assert_eq!(tools.tools.len(), 7);
     assert_eq!(tools.tools[0].name, "prumo.project.read");
     let denied = client
         .call_tool(
@@ -381,7 +381,7 @@ async fn unknown_version_and_missing_request_metadata_are_rejected() {
     let missing = client.receive().await;
     assert_eq!(missing["error"]["code"], -32602);
     let recovered = client.request("tools/list", json!({})).await;
-    assert_eq!(recovered["result"]["tools"].as_array().unwrap().len(), 5);
+    assert_eq!(recovered["result"]["tools"].as_array().unwrap().len(), 7);
     client.stop().await;
 }
 
@@ -638,6 +638,84 @@ async fn registry_mutations_require_write_and_cannot_forge_license_or_approval()
         )
         .await;
     assert!(result.is_err());
+    assert_eq!(host.read().unwrap(), before);
+    client.cancel().await.unwrap();
+}
+
+#[tokio::test]
+async fn component_qualification_is_readonly_and_restarts_after_cancellation() {
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path().join("components.prumo");
+    let host = ProjectService::open(&path, AccessMode::ReadWrite, "host").unwrap();
+    let before = host
+        .create("Qualificação de componentes", LengthUnit::Metre)
+        .unwrap();
+    let bytes_before = std::fs::read(&path).unwrap();
+    let client = sdk(&path, false).await;
+    let inventory = call(&client, "prumo.components.list", json!({})).await;
+    let components = inventory["components"].as_array().unwrap();
+    assert!(
+        components
+            .iter()
+            .any(|component| component["id"] == "bim-ruststep")
+    );
+    assert!(
+        components
+            .iter()
+            .any(|component| component["id"] == "documents-svg")
+    );
+    assert!(components.iter().all(|component| {
+        component["version"]
+            .as_str()
+            .is_some_and(|version| !version.is_empty())
+            && component["license"]
+                .as_str()
+                .is_some_and(|license| !license.is_empty())
+    }));
+    let cancelled = client
+        .send_cancellable_request(
+            ClientRequest::CallToolRequest(Request::new(CallToolRequestParams::new(
+                "prumo.components.qualify",
+            ))),
+            PeerRequestOptions::no_options(),
+        )
+        .await
+        .unwrap();
+    cancelled
+        .cancel(Some("Cancelamento solicitado pelo cliente de teste".into()))
+        .await
+        .unwrap();
+    let result = call(&client, "prumo.components.qualify", json!({})).await;
+    let report: prumo_domain::components::QualificationReport =
+        serde_json::from_value(result["qualification"].clone()).unwrap();
+    assert!(report.passed(), "{report:?}");
+    assert!(!report.engineering_release);
+    assert_eq!(result["calculation_available"], false);
+    assert_eq!(report.experiments.len(), components.len());
+    let basis = report.basis.unwrap();
+    assert_eq!(basis.project_id, before.id);
+    assert_eq!(basis.revision, before.revision);
+    assert_eq!(report.executable_sha256.len(), 64);
+    assert!(report.executable_bytes > 0);
+    assert!(
+        report.experiments.iter().any(|experiment| experiment
+            .artifact
+            .as_ref()
+            .is_some_and(|artifact| artifact.media_type == "image/svg+xml"
+                && artifact.content.contains("<svg")))
+    );
+    let invalid = client
+        .call_tool(
+            CallToolRequestParams::new("prumo.components.qualify").with_arguments(
+                json!({"path":"/other/project","shell":"unavailable"})
+                    .as_object()
+                    .unwrap()
+                    .clone(),
+            ),
+        )
+        .await;
+    assert!(invalid.is_err());
+    assert_eq!(std::fs::read(&path).unwrap(), bytes_before);
     assert_eq!(host.read().unwrap(), before);
     client.cancel().await.unwrap();
 }
