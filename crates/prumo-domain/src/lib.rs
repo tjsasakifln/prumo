@@ -8,10 +8,15 @@ use std::collections::{BTreeMap, BTreeSet};
 use thiserror::Error;
 use uuid::Uuid;
 
+pub mod canonical;
 pub mod components;
+pub mod dependencies;
+pub mod identity;
+pub mod model;
 pub mod registry;
+pub mod units;
 
-pub const PROJECT_SCHEMA_VERSION: u32 = 1;
+pub const PROJECT_SCHEMA_VERSION: u32 = 2;
 pub const MAX_NAME_CHARACTERS: usize = 160;
 pub const MAX_OBJECTS: usize = 10_000;
 pub const MIN_MEMBER_LENGTH_M: f64 = 1.0e-9;
@@ -52,6 +57,13 @@ pub enum Command {
         to_package_hash: String,
         confirm: bool,
     },
+    EditModel {
+        expected_revision: u64,
+        edit: model::ModelEdit,
+    },
+    InspectModel {
+        expected_revision: u64,
+    },
 }
 
 #[derive(Clone, Copy, Debug, Default, Deserialize, Eq, PartialEq, Serialize)]
@@ -81,9 +93,12 @@ impl LengthUnit {
     }
 
     pub fn to_metres(self, point: [f64; 3]) -> Result<[f64; 3], DomainError> {
-        let converted = point.map(|value| value * self.metres_per_unit());
-        validate_point(converted)?;
-        Ok(converted)
+        Ok(units::PointInput {
+            values: point,
+            unit: self,
+        }
+        .to_si()?
+        .as_array())
     }
 }
 
@@ -111,24 +126,21 @@ pub enum ModelState {
 #[serde(deny_unknown_fields)]
 pub struct PhysicalObject {
     pub id: Uuid,
-    pub analytical_id: Uuid,
     pub name: String,
     pub discipline: Discipline,
-    pub start_m: [f64; 3],
-    pub end_m: [f64; 3],
+    pub start_m: units::Point3,
+    pub end_m: units::Point3,
     pub state: ModelState,
+    pub role: model::PhysicalRole,
+    pub material_id: Option<Uuid>,
+    pub environment_id: Option<Uuid>,
     #[serde(default)]
     pub extensions: BTreeMap<String, Value>,
 }
 
 impl PhysicalObject {
     pub fn length_m(&self) -> f64 {
-        self.start_m
-            .into_iter()
-            .zip(self.end_m)
-            .map(|(a, b)| (b - a).powi(2))
-            .sum::<f64>()
-            .sqrt()
+        self.start_m.distance(self.end_m)
     }
 }
 
@@ -181,7 +193,7 @@ pub struct Port {
     pub object_id: Uuid,
     pub discipline: Discipline,
     pub kind: PortKind,
-    pub position_m: [f64; 3],
+    pub position_m: units::Point3,
     #[serde(default)]
     pub extensions: BTreeMap<String, Value>,
 }
@@ -192,6 +204,7 @@ pub struct Network {
     pub id: Uuid,
     pub name: String,
     pub discipline: Discipline,
+    pub kind: model::NetworkKind,
     pub environment_id: Option<Uuid>,
     pub port_ids: Vec<Uuid>,
     #[serde(default)]
@@ -234,6 +247,9 @@ pub struct Project {
     pub history: Vec<ChangeRecord>,
     #[serde(default)]
     pub normative: registry::NormativeState,
+    pub model: model::SemanticModel,
+    #[serde(default)]
+    pub dependencies: dependencies::DependencyGraph,
     #[serde(default)]
     pub extensions: BTreeMap<String, Value>,
 }
@@ -257,6 +273,16 @@ impl Project {
             validate_name(&change.actor)?;
             validate_name(&change.operation)?;
         }
+        self.validate_model_contents(self.revision)?;
+        self.dependencies.validate(
+            self.revision,
+            &crate::canonical::source_index_unchecked(self)?,
+        )?;
+        Ok(())
+    }
+
+    /// Model edits validate their next-revision metadata before the service stamps history.
+    pub fn validate_model_contents(&self, metadata_revision: u64) -> Result<(), DomainError> {
         let mut all_ids = BTreeSet::new();
         insert_id(&mut all_ids, self.id)?;
         if self.objects.len() > MAX_OBJECTS
@@ -269,12 +295,21 @@ impl Project {
         }
         for object in &self.objects {
             insert_id(&mut all_ids, object.id)?;
-            insert_id(&mut all_ids, object.analytical_id)?;
             validate_name(&object.name)?;
-            validate_point(object.start_m)?;
-            validate_point(object.end_m)?;
+            validate_point(object.start_m.as_array())?;
+            validate_point(object.end_m.as_array())?;
             if object.length_m() <= MIN_MEMBER_LENGTH_M {
                 return Err(DomainError::DegenerateMember);
+            }
+            if let Some(id) = object.material_id
+                && !self.model.materials.iter().any(|x| x.id == id)
+            {
+                return Err(DomainError::UnknownReference(id));
+            }
+            if let Some(id) = object.environment_id
+                && !self.environments.iter().any(|x| x.id == id)
+            {
+                return Err(DomainError::UnknownReference(id));
             }
         }
         for environment in &self.environments {
@@ -283,7 +318,7 @@ impl Project {
         }
         for port in &self.ports {
             insert_id(&mut all_ids, port.id)?;
-            validate_point(port.position_m)?;
+            validate_point(port.position_m.as_array())?;
             let object = self
                 .objects
                 .iter()
@@ -297,6 +332,17 @@ impl Project {
         for network in &self.networks {
             insert_id(&mut all_ids, network.id)?;
             validate_name(&network.name)?;
+            if network.kind == model::NetworkKind::Circuit
+                && !matches!(
+                    network.discipline,
+                    Discipline::Electrical
+                        | Discipline::Photovoltaic
+                        | Discipline::LightningProtection
+                        | Discipline::Cabling
+                )
+            {
+                return Err(DomainError::IncompatiblePort);
+            }
             if let Some(environment_id) = network.environment_id
                 && !self
                     .environments
@@ -339,7 +385,7 @@ impl Project {
                 return Err(DomainError::InvalidConnection);
             }
         }
-        Ok(())
+        model::validate_semantics(self, metadata_revision, &mut all_ids)
     }
 }
 
@@ -375,6 +421,20 @@ fn insert_id(ids: &mut BTreeSet<Uuid>, id: Uuid) -> Result<(), DomainError> {
 
 #[derive(Debug, Error)]
 pub enum DomainError {
+    #[error("Grandeza não finita, não positiva quando exigido, ou fora do domínio dimensional.")]
+    InvalidQuantity,
+    #[error("GUID IFC inválido; use a codificação de 22 caracteres especificada pelo IFC.")]
+    InvalidIfcGuid,
+    #[error("Modelo semântico inválido: {0}")]
+    InvalidModel(String),
+    #[error("Referencial ou transformação rígida inválida.")]
+    InvalidFrame,
+    #[error("A seleção não contém todas as peças e membros que compartilham os nós afetados.")]
+    SharedTopology,
+    #[error("Dependência inválida: {0}")]
+    InvalidDependency(String),
+    #[error("Snapshot inválido: {0}")]
+    InvalidSnapshot(String),
     #[error("Registro normativo inválido: {0}")]
     InvalidNormative(String),
     #[error("O nome deve conter de 1 a 160 caracteres, sem caracteres de controle.")]

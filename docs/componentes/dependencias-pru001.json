@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "scope": "Full Cargo.lock metadata; notices cover normal/build graph of distributed native targets, not only directly declared crates.",
-  "lock_sha256": "3b5d52a43f7ab63e92bf170682adb5397419a920af49f4b98d9dc48e266f3baf",
+  "lock_sha256": "6755d05eb0c48f083291ab04d7417ed231606465e8c07672b4d3838a15daf35d",
   "native_targets": [
     "x86_64-unknown-linux-gnu",
     "x86_64-pc-windows-msvc"
@@ -5295,6 +5295,7 @@
       ],
       "license_text_sha256": [
         "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+        "5822e59f88392b4a35965134c4c974e475959ebc625f140e42b1f39ba2495cc7",
         "b30df9a48463d1c99c6a66cdee623b1b0832c3811d58a80b338268d71cea190e"
       ]
     },
@@ -6266,6 +6267,25 @@
       ],
       "native_build_or_runtime_targets": [],
       "license_text_sha256": []
+    },
+    {
+      "name": "uom",
+      "version": "0.38.0",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "checksum": "a739f83872836c82a4f2527d4e54b37007b3de68cafe7edde95fd695968bf4b9",
+      "repository": "https://github.com/iliekturtles/uom",
+      "license_expression": "Apache-2.0 OR MIT",
+      "authors": [
+        "Mike Boutin <mike.boutin@gmail.com>"
+      ],
+      "native_build_or_runtime_targets": [
+        "x86_64-pc-windows-msvc",
+        "x86_64-unknown-linux-gnu"
+      ],
+      "license_text_sha256": [
+        "7539598540b835a59fb6a7d42a2e08dc725f8ee1ca96722333325223747f0653",
+        "8ad46ef9138e85f8bb3a6349f4736ebcfb73115cb5a11c2788f94a20f7b792ad"
+      ]
     },
     {
       "name": "uuid",
@@ -9060,6 +9080,15 @@
       }
     },
     {
+      "sha256": "5822e59f88392b4a35965134c4c974e475959ebc625f140e42b1f39ba2495cc7",
+      "origins": [
+        "crate:serde_json@1.0.154/src/lexical/mod.rs:1 (legal comment)"
+      ],
+      "source_text_sha256": {
+        "crate:serde_json@1.0.154/src/lexical/mod.rs:1 (legal comment)": "13512eb214c7b6be66e33a5fa988cb7b8973accb46670526d297ed92eab0b3a2"
+      }
+    },
+    {
       "sha256": "58545fed1565e42d687aecec6897d35c6d37ccb71479a137c0deb2203e125c79",
       "origins": [
         "crate:spin@0.9.9/LICENSE",
@@ -9372,6 +9401,15 @@
       ],
       "source_text_sha256": {
         "crate:regex-syntax@0.8.11/src/unicode_tables/LICENSE-UNICODE": "74db5baf44a41b1000312c673544b3374e4198af5605c7f9080a402cec42cfa3"
+      }
+    },
+    {
+      "sha256": "7539598540b835a59fb6a7d42a2e08dc725f8ee1ca96722333325223747f0653",
+      "origins": [
+        "crate:uom@0.38.0/LICENSE-MIT"
+      ],
+      "source_text_sha256": {
+        "crate:uom@0.38.0/LICENSE-MIT": "7539598540b835a59fb6a7d42a2e08dc725f8ee1ca96722333325223747f0653"
       }
     },
     {
@@ -9716,6 +9754,15 @@
       ],
       "source_text_sha256": {
         "crate:derive_more@0.99.20/LICENSE": "8a35369f3ca263b3c62fbb5032947e53b6bfebc6c8a4d1bb982de1c069f6fba5"
+      }
+    },
+    {
+      "sha256": "8ad46ef9138e85f8bb3a6349f4736ebcfb73115cb5a11c2788f94a20f7b792ad",
+      "origins": [
+        "crate:uom@0.38.0/LICENSE-APACHE"
+      ],
+      "source_text_sha256": {
+        "crate:uom@0.38.0/LICENSE-APACHE": "223741890e129dd801ba2ac7968971e25bddebb3da844fc0cd37d200f7e5eb91"
       }
     },
     {

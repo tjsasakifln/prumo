@@ -15,6 +15,20 @@ cargo run -p prumo-desktop --locked
 
 O `rust-toolchain.toml` instala a versão exata 1.99.1. Não há configuração manual obrigatória. A tela permite escolher o arquivo, criar projeto e unidade, adicionar uma peça, renomear, cadastrar ambiente e reabrir. Cada comando grava sua revisão. Coordenadas de entrada respeitam a unidade escolhida e o modelo conserva metros internamente.
 
+## Modelo físico, analítico e instalações
+
+Abra **Modelo físico e analítico**. As oito áreas reúnem peças, modelo analítico, materiais, ações, cópia e transformação, redes e portas, origem e unidades, medidas e dependências. Os seletores usam entidades do projeto. Os campos numéricos aceitam vírgula ou ponto decimal, sem separadores de milhares; um texto inválido permanece visível e impede a gravação.
+
+Uma peça **Somente visual** não cria elemento analítico. Para relacioná-la ao modelo analítico, altere sua função, crie nós e barra e estabeleça os vínculos. Um físico pode ter vários vínculos e um analítico pode ser compartilhado. Materiais e ações têm unidades declaradas; N ou kN não são aceitos em um campo de momento. Os eixos locais, o movimento rígido e a mudança de referencial de engenharia são operações explícitas. O mapa georreferenciado permanece separado do referencial de cálculo.
+
+Em **Redes e portas**, crie a rede ou circuito, as portas e suas atribuições. Conecte as portas pelo comando correspondente. Duas peças ou portas coincidentes não ficam conectadas pela aparência do desenho. O contrato valida a disciplina, o tipo de porta e a rede.
+
+Em **Medidas e dependências**, **Atualizar medidas do modelo** salva comprimentos e contagens reais da geometria, com revisão e identidade da base. Modificar uma dependência marca as medidas afetadas como obsoletas e preserva valor anterior, snapshot e causa. Essas medidas não são resultados de dimensionamento. Renomear o projeto ou alterar a unidade de apresentação preserva seus valores físicos.
+
+As ferramentas MCP equivalentes são `prumo.model.edit`, `prumo.model.inspect`, `prumo.model.snapshot` e `prumo.results.trace`. As duas primeiras exigem escrita e revisão atual. As consultas funcionam em leitura. Consulte [MCP](MCP.md) para o contrato e [evidências da PRU-004](evidencias/PRU-004.md) para invariantes e limites.
+
+O schema nativo 2 lê projetos da primeira versão, preserva os identificadores existentes e cria os nós e vínculos antes representados apenas por um identificador analítico. Abrir não regrava o original. Antes da primeira alteração, o serviço conserva seus bytes em `prumo-v1-<sha256>.backup`, ao lado do projeto, e só então publica a versão convertida. Um backup existente com conteúdo diferente bloqueia a alteração. Faça a primeira gravação em uma pasta que permita criar essa cópia.
+
 ## Referências normativas e capacidades
 
 Abra **Normas e capacidades** no projeto. A tela mostra a cobertura do inventário, as pendências técnicas e o pacote de referências disponível. **Fixar pacote de referências** preserva o conteúdo e sua identidade SHA-256 no arquivo do projeto.

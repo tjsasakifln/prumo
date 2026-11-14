@@ -1,6 +1,64 @@
 # MCP e operação do Prumo por agentes
 
-**Estado:** contrato proposto, sem servidor implementado nesta etapa de planejamento. **Data da referência:** 14/11/2026. A issue #1 deverá entregar uma operação real no projeto BIM, acessível pela interface e pelo MCP, com persistência e consulta. A issue #3 confirma decisões de arquitetura e compatibilidade aplicáveis.
+**Estado:** servidor Rust implementado com transporte local stdio, cliente real e projeto persistente. **Data da referência:** 14/11/2026. A seção seguinte descreve o catálogo efetivo até a implementação da PRU-004. Os demais requisitos deste documento orientam a evolução sequencial e só estão disponíveis quando anunciados pelo servidor. Evidências de integração e limites constam das entregas de cada issue.
+
+## Catálogo implementado
+
+O processo recebe o arquivo selecionado pelo host em `--project <arquivo.prumo>`. A sessão começa somente para leitura. A opção de lançamento `--allow-write` concede edição nesse mesmo arquivo; nenhuma ferramenta pode trocar o projeto, o ator ou a permissão. O serviço impõe a autorização mesmo quando um cliente chama diretamente uma operação de escrita que não foi anunciada.
+
+```sh
+cargo run -p prumo-mcp-server -- --project meu-projeto.prumo
+cargo run -p prumo-mcp-server -- --project meu-projeto.prumo --allow-write
+```
+
+O catálogo contém 9 consultas e, quando autorizadas, 9 ferramentas de escrita. Usa MCP `2026-07-28`, `server/discover`, rmcp `3.10.0` fixado e metadados de versão por requisição. O servidor recusa versões desconhecidas. HTTP e o perfil legado não estão habilitados.
+
+| Ferramentas atuais | Dados e comportamento |
+| --- | --- |
+| `prumo.project.read` | Projeto completo selecionado pelo host, revisão e identidades |
+| `prumo.registry.read`, `prumo.registry.audit` | Catálogo normativo e de capacidades; auditoria de cobertura e pendências |
+| `prumo.norms.package` | Pacote candidato, pacote ativo e impacto previsto da migração |
+| `prumo.results.gate` | Motivos da liberação ou do bloqueio de uma capacidade |
+| `prumo.components.list`, `prumo.components.qualify` | Inventário e bateria fixa de qualificação em processo separado; não calculam o projeto |
+| `prumo.model.snapshot` | Snapshot canônico completo de entradas, versão própria, revisão, SHA-256 e fontes; sem argumentos |
+| `prumo.results.trace` | Medidas geométricas salvas, bases preservadas, dependências, estados atuais ou obsoletos e causas de invalidação; sem argumentos |
+| `prumo.project.create`, `prumo.project.rename` | Criação sem substituir arquivo existente e alteração do nome com revisão esperada |
+| `prumo.model.add_member`, `prumo.model.add_environment` | Criação rápida de peça com barra analítica vinculada, ou de ambiente |
+| `prumo.norms.register`, `prumo.norms.pin`, `prumo.norms.migrate` | Cadastro de metadados públicos, fixação e migração explícita de pacote; nenhuma aprovação é inventada |
+| `prumo.model.edit` | Uma das 25 variantes fechadas de `ModelEdit`, com unidades e referências explícitas |
+| `prumo.model.inspect` | Atualiza comprimentos e resumo geométrico vinculados ao snapshot. Exige escrita e revisão esperada |
+
+### Edição física, analítica e de redes
+
+`prumo.model.edit` recebe `expected_revision` e `edit`. O segundo campo contém um objeto com discriminador também chamado `edit`. O schema usa `oneOf`, enumera todas as variantes e recusa propriedades extras em cada objeto. A desserialização e as regras finais pertencem ao domínio Rust compartilhado com a interface.
+
+Exemplo de argumentos para criar um objeto somente visual:
+
+```json
+{
+  "expected_revision": 1,
+  "edit": {
+    "edit": "add_physical",
+    "name": "Referência visual",
+    "discipline": "structure",
+    "role": "visual_only",
+    "start": { "values": [0, 0, 0], "unit": "metre" },
+    "end": { "values": [400, 0, 0], "unit": "centimetre" },
+    "material_id": null,
+    "environment_id": null
+  }
+}
+```
+
+A criação acima não cria barra analítica nem libera dimensionamento. Nós, barras e vínculos são operações próprias. Um objeto pode se relacionar com várias barras e uma barra com vários objetos. Portas precisam ser atribuídas a uma rede ou circuito e conectadas explicitamente; proximidade ou interseção gráfica não cria conexão.
+
+Força aceita `newton` ou `kilonewton`. Momento aceita `newton_metre` ou `kilonewton_metre`. Enviar `newton` no campo de momento é erro de entrada. Coordenadas aceitam `metre`, `centimetre` e `millimetre`; o armazenamento usa tipos em SI. Os campos `origin_world_m`, `map_origin_m` e `rotation_radians` declaram SI no próprio nome. A origem de engenharia e o georreferenciamento são separados.
+
+Uma mutação válida retorna o projeto e a nova revisão. Edições sem permissão, revisão desatualizada, grandeza inválida ou referência órfã não alteram o arquivo. Os códigos de negócio atuais incluem `permission_denied`, `revision_conflict` e `invalid_input`; falhas no formato dos argumentos usam erro JSON-RPC `-32602`. Uma chamada repetida com a revisão anterior falha por conflito, evitando uma segunda alteração. Chaves duráveis de idempotência e prévia genérica continuam no contrato de evolução abaixo.
+
+`prumo.model.inspect` mede a geometria efetiva e salva suas dependências. Seus registros mantêm `engineering_release: false`, e as respostas continuam declarando `calculation_available: false`. Uma alteração relevante conserva os valores históricos, marca os registros afetados como obsoletos e registra revisão, ator, fontes alteradas e resultados dependentes. O mapa completo entre variantes, controles da interface e ensaios está em [PRU-004-ui-mcp.md](evidencias/PRU-004-ui-mcp.md).
+
+As mensagens de entrada permanecem limitadas a 64 KiB. Somente protocolo sai em stdout. Os testes usam o SDK oficial em processo filho e um cliente independente de JSON/stdio, além de criar pela interface, modificar por MCP e reabrir o mesmo projeto. Referências: [PRU-001](evidencias/PRU-001-mcp.md), [PRU-002](evidencias/PRU-002-cobertura.md) e [PRU-003](evidencias/PRU-003.md).
 
 ## 1. Princípios
 

@@ -2813,10 +2813,12 @@ dependencies = [
 name = "prumo-domain"
 version = "0.1.0"
 dependencies = [
+ "nalgebra",
  "serde",
  "serde_json",
  "sha2",
  "thiserror 2.0.21",
+ "uom",
  "uuid",
 ]
 
@@ -3799,6 +3801,16 @@ name = "unicode-width"
 version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ca718471876992059f251e33aafc334346ada08042b7661dd1fe313a9bced557"
+
+[[package]]
+name = "uom"
+version = "0.38.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a739f83872836c82a4f2527d4e54b37007b3de68cafe7edde95fd695968bf4b9"
+dependencies = [
+ "num-traits",
+ "typenum",
+]
 
 [[package]]
 name = "uuid"

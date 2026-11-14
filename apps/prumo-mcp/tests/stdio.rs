@@ -21,6 +21,9 @@ use tokio::{
 const LIMIT: Duration = Duration::from_secs(10);
 const BINARY: &str = env!("CARGO_BIN_EXE_prumo-mcp");
 
+#[path = "stdio/model.rs"]
+mod model_tests;
+
 #[derive(Clone)]
 struct SdkClient;
 impl ClientHandler for SdkClient {}
@@ -68,7 +71,7 @@ async fn sdk_creates_modifies_and_reopens_real_project() {
     let info = client.peer_info().unwrap();
     assert_eq!(info.protocol_version, ProtocolVersion::V_2026_07_28);
     let tools = client.list_tools(None).await.unwrap();
-    assert_eq!(tools.tools.len(), 14);
+    assert_eq!(tools.tools.len(), 18);
     assert!(
         tools
             .tools
@@ -93,7 +96,8 @@ async fn sdk_creates_modifies_and_reopens_real_project() {
     assert_eq!(object["state"], "modelled");
     assert_eq!(added["calculation_available"], false);
     let physical_id = object["id"].clone();
-    let analytical_id = object["analytical_id"].clone();
+    assert!(object.get("analytical_id").is_none());
+    let analytical_id = added["project"]["model"]["links"][0]["analytical_id"].clone();
     assert_ne!(physical_id, analytical_id);
     client.cancel().await.unwrap();
 
@@ -103,7 +107,7 @@ async fn sdk_creates_modifies_and_reopens_real_project() {
     assert_eq!(read["project"]["id"], created["project"]["id"]);
     assert_eq!(read["project"]["objects"][0]["id"], physical_id);
     assert_eq!(
-        read["project"]["objects"][0]["analytical_id"],
+        read["project"]["model"]["links"][0]["analytical_id"],
         analytical_id
     );
     reopened.cancel().await.unwrap();
@@ -156,10 +160,7 @@ async fn actual_ui_save_restart_mcp_modify_and_ui_reopen_preserve_identity() {
         environment["project"]
     );
     assert_eq!(reopened_ui.id, initial.id);
-    assert_eq!(
-        reopened_ui.objects[0].analytical_id,
-        initial.objects[0].analytical_id
-    );
+    assert_eq!(reopened_ui.model.links, initial.model.links);
     desktop.view.end = desktop.view.start;
     {
         let mut harness = Harness::builder()
@@ -178,7 +179,7 @@ async fn readonly_is_enforced_for_unadvertised_mutations_and_creation() {
     let path = directory.path().join("protected.prumo");
     let client = sdk(&path, false).await;
     let tools = client.list_tools(None).await.unwrap();
-    assert_eq!(tools.tools.len(), 7);
+    assert_eq!(tools.tools.len(), 9);
     assert_eq!(tools.tools[0].name, "prumo.project.read");
     let denied = client
         .call_tool(
@@ -381,7 +382,7 @@ async fn unknown_version_and_missing_request_metadata_are_rejected() {
     let missing = client.receive().await;
     assert_eq!(missing["error"]["code"], -32602);
     let recovered = client.request("tools/list", json!({})).await;
-    assert_eq!(recovered["result"]["tools"].as_array().unwrap().len(), 7);
+    assert_eq!(recovered["result"]["tools"].as_array().unwrap().len(), 9);
     client.stop().await;
 }
 

@@ -11,6 +11,7 @@ use std::{
 };
 
 use prumo_app::{AccessMode, AppError, Command, ProjectService};
+use prumo_domain::model::ModelEdit;
 use prumo_domain::registry::NormReferenceInput;
 use prumo_domain::{LengthUnit, MAX_NAME_CHARACTERS, Project};
 use rmcp::{
@@ -25,6 +26,8 @@ use rmcp::{
 use serde::{Deserialize, de::DeserializeOwned};
 use serde_json::{Value, json};
 use tokio::sync::Semaphore;
+
+mod model_schema;
 
 pub const MAX_REQUEST_BYTES: usize = 64 * 1024;
 pub const SUPPORTED_PROTOCOL: &str = "2026-07-28";
@@ -88,6 +91,19 @@ struct Gate {
 
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
+struct InspectModel {
+    expected_revision: u64,
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct EditModel {
+    expected_revision: u64,
+    edit: ModelEdit,
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
 struct RegisterNorm {
     expected_revision: u64,
     reference: NormReferenceInput,
@@ -124,6 +140,10 @@ enum Operation {
     MigrateNorms(MigrateNorms),
     Components,
     QualifyComponents,
+    ModelSnapshot,
+    DependencyTrace,
+    InspectModel(InspectModel),
+    EditModel(Box<EditModel>),
 }
 
 fn decode<T: DeserializeOwned>(arguments: Value) -> Result<T, ErrorData> {
@@ -179,6 +199,16 @@ impl Operation {
                 decode::<Empty>(args)?;
                 Ok(Self::QualifyComponents)
             }
+            "prumo.model.snapshot" => {
+                decode::<Empty>(args)?;
+                Ok(Self::ModelSnapshot)
+            }
+            "prumo.results.trace" => {
+                decode::<Empty>(args)?;
+                Ok(Self::DependencyTrace)
+            }
+            "prumo.model.inspect" => decode(args).map(Self::InspectModel),
+            "prumo.model.edit" => decode(args).map(|params| Self::EditModel(Box::new(params))),
             _ => Err(ErrorData::invalid_params(
                 "Ferramenta inexistente.",
                 Some(json!({"code":"unknown_tool"})),
@@ -227,6 +257,21 @@ impl Operation {
                     .qualify_components_with_cancel(cancel)
                     .map(|report| json!({"qualification":report,"calculation_available":false}));
             }
+            Self::ModelSnapshot => {
+                return service
+                    .model_snapshot()
+                    .map(|snapshot| json!({"snapshot":snapshot,"calculation_available":false}));
+            }
+            Self::DependencyTrace => {
+                return service
+                    .dependency_report()
+                    .map(|dependencies| json!({"dependencies":dependencies,"calculation_available":false}));
+            }
+            Self::InspectModel(params) => service.inspect_model(params.expected_revision),
+            Self::EditModel(params) => service.execute(Command::EditModel {
+                expected_revision: params.expected_revision,
+                edit: params.edit,
+            }),
             Self::RegisterNorm(params) => service.execute(Command::RegisterNormReference {
                 expected_revision: params.expected_revision,
                 reference: params.reference,
@@ -297,6 +342,8 @@ pub fn tool_catalog(writable: bool) -> Vec<Tool> {
         definition("prumo.results.gate","Explica por que uma capacidade pode ou não emitir resultado final no pacote fixado do projeto. Não calcula nem concede aprovação.",json!({"capability_id":text}),&["capability_id"],true),
         definition("prumo.components.list","Consulta componentes, versões, procedência, licenças e limites dos adaptadores instalados.",json!({}),&[],true),
         definition("prumo.components.qualify","Executa a bateria fixa de qualificação em processo isolado, com prazo e recursos limitados. Retorna medidas e artefato de ensaio; não altera o projeto nem libera cálculo.",json!({}),&[],true),
+        definition("prumo.model.snapshot","Consulta o snapshot canônico completo dos dados de entrada, sua revisão, SHA-256 e fontes. Não altera o modelo.",json!({}),&[],true),
+        definition("prumo.results.trace","Consulta dependências, medidas geométricas e causas de invalidação. Nenhuma inspeção equivale a dimensionamento.",json!({}),&[],true),
     ]);
     if writable {
         tools.push(definition(
@@ -342,6 +389,20 @@ pub fn tool_catalog(writable: bool) -> Vec<Tool> {
             "Adiciona um ambiente ao projeto na revisão atual, sem cálculo de instalações.",
             json!({"expected_revision":revision,"name":text}),
             &["expected_revision", "name"],
+            false,
+        ));
+        tools.push(definition(
+            "prumo.model.inspect",
+            "Atualiza e salva medidas geométricas do modelo, vinculadas ao snapshot e às dependências. Não calcula resistência nem aprova elementos.",
+            json!({"expected_revision":revision}),
+            &["expected_revision"],
+            false,
+        ));
+        tools.push(definition(
+            "prumo.model.edit",
+            "Edita entidades físicas e analíticas, materiais, ações, unidades, origens e conexões explícitas pela mesma validação da interface. Cada variante exige seus dados tipados. A edição registra autoria e invalida medidas dependentes.",
+            json!({"expected_revision":revision,"edit":model_schema::edit_schema()}),
+            &["expected_revision","edit"],
             false,
         ));
     }
