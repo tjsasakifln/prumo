@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "status": "research_pending_not_approved",
+  "policy": "Nome citado como opção não constitui adoção nem licença verificada. Resolver fontes oficiais, licença por arquivo, versão, dependências e testes antes de incorporar.",
+  "candidates": [
+    {
+      "name": "Tauri",
+      "status": "research_pending",
+      "approved_for_incorporation": false
+    },
+    {
+      "name": "React",
+      "status": "research_pending",
+      "approved_for_incorporation": false
+    },
+    {
+      "name": "SuiteSparse",
+      "status": "research_pending",
+      "approved_for_incorporation": false
+    },
+    {
+      "name": "SQLite",
+      "status": "research_pending",
+      "approved_for_incorporation": false
+    },
+    {
+      "name": "sectionproperties",
+      "status": "research_pending",
+      "approved_for_incorporation": false
+    },
+    {
+      "name": "ezdxf",
+      "status": "research_pending",
+      "approved_for_incorporation": false
+    },
+    {
+      "name": "PDF.js",
+      "status": "research_pending",
+      "approved_for_incorporation": false
+    },
+    {
+      "name": "OpenCV",
+      "status": "research_pending",
+      "approved_for_incorporation": false
+    },
+    {
+      "name": "CALFEM",
+      "status": "research_pending",
+      "approved_for_incorporation": false
+    },
+    {
+      "name": "ARPACK",
+      "status": "research_pending",
+      "approved_for_incorporation": false
+    },
+    {
+      "name": "SLEPc",
+      "status": "research_pending",
+      "approved_for_incorporation": false
+    },
+    {
+      "name": "LibreDWG",
+      "status": "research_pending",
+      "approved_for_incorporation": false
+    },
+    {
+      "name": "Tauri updater",
+      "status": "research_pending",
+      "approved_for_incorporation": false
+    }
+  ]
+}

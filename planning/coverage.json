@@ -1,0 +1,1075 @@
+{
+  "schema_version": "1.0",
+  "baseline_date": "2026-11-14",
+  "status": "planned",
+  "scope_notice": "Mapa de planejamento das famílias pesquisadas. PRU-002 deve decompor a cobertura por produto, módulo, versão e domínio. A ligação a uma issue não demonstra implementação nem percentual de paridade.",
+  "traceability_policy": "As listas apontam entregas diretamente relevantes; dependências sequenciais transitivas estão no backlog. Uma issue pode implementar e qualificar aspectos distintos da mesma família. Toda família obrigatória permanece sujeita à liberação PRU-120.",
+  "capabilities": [
+    {
+      "capability_id": "PAR-01",
+      "title": "Concepção e modelagem",
+      "required": true,
+      "source_ids": [
+        "EB-01",
+        "CY-01"
+      ],
+      "implementation_issues": [
+        "PRU-004",
+        "PRU-009",
+        "PRU-010",
+        "PRU-011",
+        "PRU-012",
+        "PRU-013",
+        "PRU-014",
+        "PRU-015",
+        "PRU-016",
+        "PRU-017",
+        "PRU-018",
+        "PRU-019",
+        "PRU-020"
+      ],
+      "qualification_issues": [
+        "PRU-111",
+        "PRU-112",
+        "PRU-115",
+        "PRU-117"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "Inclui fluxos positivos de promoção de referências CAD/IFC; referências não se tornam resultados calculados."
+    },
+    {
+      "capability_id": "PAR-02",
+      "title": "Modelo analítico",
+      "required": true,
+      "source_ids": [
+        "TQ-01"
+      ],
+      "implementation_issues": [
+        "PRU-004",
+        "PRU-006",
+        "PRU-009",
+        "PRU-016",
+        "PRU-018",
+        "PRU-021",
+        "PRU-024",
+        "PRU-025",
+        "PRU-040"
+      ],
+      "qualification_issues": [
+        "PRU-008",
+        "PRU-112",
+        "PRU-113",
+        "PRU-114"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "Modelo físico, analítico e documental mantêm relações explícitas; objeto apenas geométrico permanece identificado."
+    },
+    {
+      "capability_id": "PAR-03",
+      "title": "Análise global",
+      "required": true,
+      "source_ids": [
+        "EB-01",
+        "TQ-02"
+      ],
+      "implementation_issues": [
+        "PRU-021",
+        "PRU-022",
+        "PRU-023",
+        "PRU-024",
+        "PRU-025",
+        "PRU-026",
+        "PRU-027",
+        "PRU-028",
+        "PRU-029",
+        "PRU-030",
+        "PRU-095",
+        "PRU-098"
+      ],
+      "qualification_issues": [
+        "PRU-008",
+        "PRU-060",
+        "PRU-070",
+        "PRU-080",
+        "PRU-090",
+        "PRU-112",
+        "PRU-113",
+        "PRU-114"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "Os métodos têm domínios próprios. Cobertura da família não autoriza tratar como validado um método ainda experimental."
+    },
+    {
+      "capability_id": "PAR-04",
+      "title": "Ações e combinações",
+      "required": true,
+      "source_ids": [
+        "TQ-01"
+      ],
+      "implementation_issues": [
+        "PRU-031",
+        "PRU-032",
+        "PRU-033",
+        "PRU-034",
+        "PRU-035",
+        "PRU-038",
+        "PRU-039"
+      ],
+      "qualification_issues": [
+        "PRU-008",
+        "PRU-060",
+        "PRU-070",
+        "PRU-080",
+        "PRU-090",
+        "PRU-112",
+        "PRU-113",
+        "PRU-114"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "Ações e combinações são verificadas por pacote normativo e situação; esforços concomitantes não podem ser substituídos por máximos independentes."
+    },
+    {
+      "capability_id": "PAR-05",
+      "title": "Instabilidade e não linearidade",
+      "required": true,
+      "source_ids": [
+        "TQ-01"
+      ],
+      "implementation_issues": [
+        "PRU-016",
+        "PRU-022",
+        "PRU-023",
+        "PRU-024",
+        "PRU-026",
+        "PRU-027",
+        "PRU-030",
+        "PRU-036",
+        "PRU-045",
+        "PRU-049",
+        "PRU-073",
+        "PRU-078",
+        "PRU-083",
+        "PRU-091",
+        "PRU-094"
+      ],
+      "qualification_issues": [
+        "PRU-008",
+        "PRU-060",
+        "PRU-080",
+        "PRU-090",
+        "PRU-113",
+        "PRU-114"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "Análise global não substitui verificação local nem permite estabilização numérica oculta."
+    },
+    {
+      "capability_id": "PAR-06",
+      "title": "Concreto armado",
+      "required": true,
+      "source_ids": [
+        "EB-01"
+      ],
+      "implementation_issues": [
+        "PRU-037",
+        "PRU-041",
+        "PRU-042",
+        "PRU-043",
+        "PRU-044",
+        "PRU-045",
+        "PRU-046",
+        "PRU-047",
+        "PRU-048",
+        "PRU-049",
+        "PRU-050",
+        "PRU-051",
+        "PRU-052",
+        "PRU-053"
+      ],
+      "qualification_issues": [
+        "PRU-060",
+        "PRU-112",
+        "PRU-113",
+        "PRU-115"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "Norma, edição, métodos, faixas de parâmetros e detalhamento precisam de evidências específicas."
+    },
+    {
+      "capability_id": "PAR-07",
+      "title": "Lajes e pavimentos",
+      "required": true,
+      "source_ids": [
+        "EB-02",
+        "CY-01"
+      ],
+      "implementation_issues": [
+        "PRU-014",
+        "PRU-023",
+        "PRU-024",
+        "PRU-025",
+        "PRU-030",
+        "PRU-037",
+        "PRU-046",
+        "PRU-047",
+        "PRU-048",
+        "PRU-053",
+        "PRU-058",
+        "PRU-066",
+        "PRU-074",
+        "PRU-087",
+        "PRU-095"
+      ],
+      "qualification_issues": [
+        "PRU-060",
+        "PRU-070",
+        "PRU-080",
+        "PRU-090",
+        "PRU-112",
+        "PRU-113",
+        "PRU-114",
+        "PRU-115"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "A mesma representação visual não torna equivalentes lajes maciças, nervuradas, industrializadas, mistas e pisos de madeira."
+    },
+    {
+      "capability_id": "PAR-08",
+      "title": "Elementos especiais",
+      "required": true,
+      "source_ids": [
+        "EB-02",
+        "TQ-01"
+      ],
+      "implementation_issues": [
+        "PRU-013",
+        "PRU-015",
+        "PRU-022",
+        "PRU-023",
+        "PRU-024",
+        "PRU-025",
+        "PRU-042",
+        "PRU-043",
+        "PRU-045",
+        "PRU-049",
+        "PRU-050",
+        "PRU-053",
+        "PRU-086"
+      ],
+      "qualification_issues": [
+        "PRU-060",
+        "PRU-080",
+        "PRU-090",
+        "PRU-112",
+        "PRU-113",
+        "PRU-114"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "Abrange geometria especial, transferências e regiões descontínuas; cada idealização exige validação."
+    },
+    {
+      "capability_id": "PAR-09",
+      "title": "Escadas e rampas",
+      "required": true,
+      "source_ids": [
+        "EB-02",
+        "CY-01"
+      ],
+      "implementation_issues": [
+        "PRU-015",
+        "PRU-023",
+        "PRU-025",
+        "PRU-037",
+        "PRU-048",
+        "PRU-050",
+        "PRU-053"
+      ],
+      "qualification_issues": [
+        "PRU-060",
+        "PRU-112",
+        "PRU-113",
+        "PRU-115"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "Conferir caminho de cargas, apoios, dimensões e armadura nas tipologias declaradas."
+    },
+    {
+      "capability_id": "PAR-10",
+      "title": "Fundações",
+      "required": true,
+      "source_ids": [
+        "EB-02",
+        "TQ-03"
+      ],
+      "implementation_issues": [
+        "PRU-061",
+        "PRU-062",
+        "PRU-063",
+        "PRU-064",
+        "PRU-065",
+        "PRU-066",
+        "PRU-067",
+        "PRU-069",
+        "PRU-076",
+        "PRU-093"
+      ],
+      "qualification_issues": [
+        "PRU-070",
+        "PRU-112",
+        "PRU-114",
+        "PRU-115"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "Verificações geotécnicas e estruturais têm estados separados; uma aprovação não substitui a outra."
+    },
+    {
+      "capability_id": "PAR-11",
+      "title": "Interação solo-estrutura",
+      "required": true,
+      "source_ids": [
+        "TQ-03"
+      ],
+      "implementation_issues": [
+        "PRU-030",
+        "PRU-061",
+        "PRU-062",
+        "PRU-063",
+        "PRU-064",
+        "PRU-066",
+        "PRU-067",
+        "PRU-093"
+      ],
+      "qualification_issues": [
+        "PRU-070",
+        "PRU-112",
+        "PRU-114",
+        "PRU-115"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "Dados de investigação, correlações, rigidez e convergência devem permanecer rastreáveis."
+    },
+    {
+      "capability_id": "PAR-12",
+      "title": "Contenções e reservatórios",
+      "required": true,
+      "source_ids": [
+        "EB-02"
+      ],
+      "implementation_issues": [
+        "PRU-031",
+        "PRU-032",
+        "PRU-039",
+        "PRU-048",
+        "PRU-050",
+        "PRU-059",
+        "PRU-061",
+        "PRU-068",
+        "PRU-069"
+      ],
+      "qualification_issues": [
+        "PRU-060",
+        "PRU-070",
+        "PRU-112",
+        "PRU-113",
+        "PRU-114",
+        "PRU-115"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "Água, solo, flutuação, alternância de uso, fissuração e estabilidade não são dispensados por uma análise ELU favorável."
+    },
+    {
+      "capability_id": "PAR-13",
+      "title": "Protensão",
+      "required": true,
+      "source_ids": [
+        "EB-03",
+        "TQ-06"
+      ],
+      "implementation_issues": [
+        "PRU-030",
+        "PRU-041",
+        "PRU-042",
+        "PRU-046",
+        "PRU-048",
+        "PRU-054",
+        "PRU-055"
+      ],
+      "qualification_issues": [
+        "PRU-060",
+        "PRU-112",
+        "PRU-113",
+        "PRU-115"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "Inclui perdas e todas as fases, armaduras ativa/passiva e efeitos primários/secundários sem dupla contagem."
+    },
+    {
+      "capability_id": "PAR-14",
+      "title": "Pré-moldados",
+      "required": true,
+      "source_ids": [
+        "EB-01",
+        "TQ-06",
+        "TQ-09"
+      ],
+      "implementation_issues": [
+        "PRU-030",
+        "PRU-050",
+        "PRU-051",
+        "PRU-052",
+        "PRU-053",
+        "PRU-054",
+        "PRU-055",
+        "PRU-057",
+        "PRU-058",
+        "PRU-069",
+        "PRU-093",
+        "PRU-101",
+        "PRU-102",
+        "PRU-104"
+      ],
+      "qualification_issues": [
+        "PRU-060",
+        "PRU-112",
+        "PRU-113",
+        "PRU-115"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "Inclui pi/TT/telhas e painéis/insertos. O manual PREO distingue elementos apenas documentados de elementos dimensionados; Prumo deve publicar essa distinção."
+    },
+    {
+      "capability_id": "PAR-15",
+      "title": "Aço",
+      "required": true,
+      "source_ids": [
+        "EB-04",
+        "CY-02"
+      ],
+      "implementation_issues": [
+        "PRU-071",
+        "PRU-072",
+        "PRU-073",
+        "PRU-075",
+        "PRU-076",
+        "PRU-077",
+        "PRU-078",
+        "PRU-079",
+        "PRU-080",
+        "PRU-093"
+      ],
+      "qualification_issues": [
+        "PRU-080",
+        "PRU-112",
+        "PRU-114",
+        "PRU-115"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "Normas de perfis laminados/soldados, tubulares e formados a frio possuem domínios separados."
+    },
+    {
+      "capability_id": "PAR-16",
+      "title": "Estruturas mistas",
+      "required": true,
+      "source_ids": [
+        "TQ-04"
+      ],
+      "implementation_issues": [
+        "PRU-030",
+        "PRU-042",
+        "PRU-071",
+        "PRU-072",
+        "PRU-073",
+        "PRU-074",
+        "PRU-075",
+        "PRU-076",
+        "PRU-079",
+        "PRU-080",
+        "PRU-093"
+      ],
+      "qualification_issues": [
+        "PRU-080",
+        "PRU-112",
+        "PRU-114",
+        "PRU-115"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "Compatibilidade entre materiais e fases deve ser demonstrada, inclusive conectores e serviço."
+    },
+    {
+      "capability_id": "PAR-17",
+      "title": "Ligações metálicas",
+      "required": true,
+      "source_ids": [
+        "CY-02"
+      ],
+      "implementation_issues": [
+        "PRU-016",
+        "PRU-073",
+        "PRU-075",
+        "PRU-076",
+        "PRU-077",
+        "PRU-078",
+        "PRU-079",
+        "PRU-080",
+        "PRU-093"
+      ],
+      "qualification_issues": [
+        "PRU-080",
+        "PRU-112",
+        "PRU-114",
+        "PRU-115"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "Aprovar a barra não aprova a ligação; rigidez da ligação precisa corresponder ao modelo global."
+    },
+    {
+      "capability_id": "PAR-18",
+      "title": "Madeira",
+      "required": true,
+      "source_ids": [
+        "CY-02"
+      ],
+      "implementation_issues": [
+        "PRU-081",
+        "PRU-082",
+        "PRU-083",
+        "PRU-084",
+        "PRU-085",
+        "PRU-086",
+        "PRU-087",
+        "PRU-088",
+        "PRU-089",
+        "PRU-090",
+        "PRU-093"
+      ],
+      "qualification_issues": [
+        "PRU-090",
+        "PRU-112",
+        "PRU-114",
+        "PRU-115"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "Madeira serrada, laminada colada e outros produtos não compartilham automaticamente todos os métodos e dados."
+    },
+    {
+      "capability_id": "PAR-19",
+      "title": "Alumínio",
+      "required": true,
+      "source_ids": [
+        "CY-01",
+        "CY-02"
+      ],
+      "implementation_issues": [
+        "PRU-010",
+        "PRU-022",
+        "PRU-023",
+        "PRU-094",
+        "PRU-101",
+        "PRU-102"
+      ],
+      "qualification_issues": [
+        "PRU-008",
+        "PRU-112",
+        "PRU-114",
+        "PRU-115"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "NBR 8800 não é a base normativa de alumínio; a referência específica será escolhida, licenciada e qualificada."
+    },
+    {
+      "capability_id": "PAR-20",
+      "title": "Material genérico",
+      "required": true,
+      "source_ids": [
+        "CY-01"
+      ],
+      "implementation_issues": [
+        "PRU-010",
+        "PRU-022",
+        "PRU-023",
+        "PRU-040",
+        "PRU-094"
+      ],
+      "qualification_issues": [
+        "PRU-008",
+        "PRU-112",
+        "PRU-114"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "Análise de esforços e deformações não equivale a dimensionamento ou aprovação normativa de material genérico."
+    },
+    {
+      "capability_id": "PAR-21",
+      "title": "Alvenaria e paredes",
+      "required": true,
+      "source_ids": [
+        "EB-01"
+      ],
+      "implementation_issues": [
+        "PRU-014",
+        "PRU-015",
+        "PRU-025",
+        "PRU-031",
+        "PRU-032",
+        "PRU-091",
+        "PRU-092",
+        "PRU-093"
+      ],
+      "qualification_issues": [
+        "PRU-112",
+        "PRU-114",
+        "PRU-115"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "Concreto e cerâmica, modulação, graute, interfaces e detalhes requerem ensaios e regras próprios."
+    },
+    {
+      "capability_id": "PAR-22",
+      "title": "Vento, dinâmica e sismo",
+      "required": true,
+      "source_ids": [
+        "EB-02",
+        "TQ-01"
+      ],
+      "implementation_issues": [
+        "PRU-028",
+        "PRU-029",
+        "PRU-031",
+        "PRU-032",
+        "PRU-033",
+        "PRU-034",
+        "PRU-035",
+        "PRU-036",
+        "PRU-038"
+      ],
+      "qualification_issues": [
+        "PRU-008",
+        "PRU-060",
+        "PRU-080",
+        "PRU-090",
+        "PRU-112",
+        "PRU-113",
+        "PRU-114",
+        "PRU-115"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "Métodos estático, dinâmico e sísmico precisam de critérios explícitos de aplicabilidade, massa, amortecimento e combinação."
+    },
+    {
+      "capability_id": "PAR-23",
+      "title": "Incêndio",
+      "required": true,
+      "source_ids": [
+        "EB-02",
+        "CY-01"
+      ],
+      "implementation_issues": [
+        "PRU-031",
+        "PRU-032",
+        "PRU-039",
+        "PRU-056",
+        "PRU-079",
+        "PRU-088"
+      ],
+      "qualification_issues": [
+        "PRU-060",
+        "PRU-080",
+        "PRU-090",
+        "PRU-112",
+        "PRU-113",
+        "PRU-114",
+        "PRU-115"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "O gerador de ações excepcionais não qualifica a resistência a quente dos materiais."
+    },
+    {
+      "capability_id": "PAR-24",
+      "title": "Desenhos e armaduras",
+      "required": true,
+      "source_ids": [
+        "EB-02",
+        "TQ-08"
+      ],
+      "implementation_issues": [
+        "PRU-051",
+        "PRU-052",
+        "PRU-053",
+        "PRU-057",
+        "PRU-058",
+        "PRU-069",
+        "PRU-080",
+        "PRU-090",
+        "PRU-092",
+        "PRU-101",
+        "PRU-103",
+        "PRU-106"
+      ],
+      "qualification_issues": [
+        "PRU-060",
+        "PRU-070",
+        "PRU-080",
+        "PRU-090",
+        "PRU-112",
+        "PRU-113",
+        "PRU-114",
+        "PRU-115",
+        "PRU-117"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "Edição livre de desenhos permanece distinguida de alteração estrutural; mudanças resistentes exigem reverificação."
+    },
+    {
+      "capability_id": "PAR-25",
+      "title": "Memoriais e quantitativos",
+      "required": true,
+      "source_ids": [
+        "EB-02",
+        "TQ-01"
+      ],
+      "implementation_issues": [
+        "PRU-025",
+        "PRU-040",
+        "PRU-096",
+        "PRU-102",
+        "PRU-106"
+      ],
+      "qualification_issues": [
+        "PRU-060",
+        "PRU-070",
+        "PRU-080",
+        "PRU-090",
+        "PRU-112",
+        "PRU-113",
+        "PRU-114",
+        "PRU-115"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "Quantitativos, memória e resultados precisam refletir o mesmo snapshot e preservar unidades e fontes."
+    },
+    {
+      "capability_id": "PAR-26",
+      "title": "Interoperabilidade BIM",
+      "required": true,
+      "source_ids": [
+        "EB-02",
+        "TQ-05"
+      ],
+      "implementation_issues": [
+        "PRU-004",
+        "PRU-005",
+        "PRU-018",
+        "PRU-104",
+        "PRU-105",
+        "PRU-106"
+      ],
+      "qualification_issues": [
+        "PRU-112",
+        "PRU-115",
+        "PRU-116"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "Perfis IFC e perdas são explícitos; dados não representáveis permanecem no formato nativo."
+    },
+    {
+      "capability_id": "PAR-27",
+      "title": "Coordenação",
+      "required": true,
+      "source_ids": [
+        "EB-02",
+        "TQ-05"
+      ],
+      "implementation_issues": [
+        "PRU-018",
+        "PRU-020",
+        "PRU-051",
+        "PRU-052",
+        "PRU-053",
+        "PRU-069",
+        "PRU-092",
+        "PRU-097",
+        "PRU-105",
+        "PRU-106",
+        "PRU-107"
+      ],
+      "qualification_issues": [
+        "PRU-112",
+        "PRU-115",
+        "PRU-116"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "BCF e IDS não validam o cálculo estrutural. Alterações geométricas oriundas da coordenação invalidam resultados dependentes."
+    },
+    {
+      "capability_id": "PAR-28",
+      "title": "Programação e agentes",
+      "required": true,
+      "source_ids": [
+        "EB-01"
+      ],
+      "implementation_issues": [
+        "PRU-001",
+        "PRU-006",
+        "PRU-007",
+        "PRU-019",
+        "PRU-098",
+        "PRU-099",
+        "PRU-100",
+        "PRU-108"
+      ],
+      "qualification_issues": [
+        "PRU-112",
+        "PRU-115",
+        "PRU-116",
+        "PRU-117"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "MCP é funcional desde PRU-001. A equivalência dos fluxos e a autoria visual de rotinas são concluídas em PRU-099 e PRU-108."
+    },
+    {
+      "capability_id": "PAR-29",
+      "title": "Formatos e ecossistemas",
+      "required": true,
+      "source_ids": [
+        "CY-01",
+        "TQ-05"
+      ],
+      "implementation_issues": [
+        "PRU-017",
+        "PRU-018",
+        "PRU-103",
+        "PRU-104",
+        "PRU-105",
+        "PRU-107",
+        "PRU-108"
+      ],
+      "qualification_issues": [
+        "PRU-112",
+        "PRU-115",
+        "PRU-116",
+        "PRU-118"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "Destinos, versões e licenças são definidos no inventário. Não há promessa de acesso a APIs privadas ou leitura integral de formatos fechados."
+    },
+    {
+      "capability_id": "PAR-30",
+      "title": "Operação simples e confiável",
+      "required": true,
+      "source_ids": [
+        "USR-01",
+        "A19",
+        "A20",
+        "A21"
+      ],
+      "implementation_issues": [
+        "PRU-001",
+        "PRU-005",
+        "PRU-006",
+        "PRU-011",
+        "PRU-012",
+        "PRU-019",
+        "PRU-020",
+        "PRU-040",
+        "PRU-108",
+        "PRU-109",
+        "PRU-110"
+      ],
+      "qualification_issues": [
+        "PRU-111",
+        "PRU-112",
+        "PRU-115",
+        "PRU-117",
+        "PRU-119"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "Requisito próprio do produto, explicitado pelo usuário. As metas de facilidade de uso precisam de medição com novos usuários."
+    },
+    {
+      "capability_id": "PAR-31",
+      "title": "Paredes de concreto",
+      "required": true,
+      "source_ids": [
+        "TQ-07"
+      ],
+      "implementation_issues": [
+        "PRU-015",
+        "PRU-023",
+        "PRU-024",
+        "PRU-025",
+        "PRU-031",
+        "PRU-032",
+        "PRU-037",
+        "PRU-041",
+        "PRU-048",
+        "PRU-049",
+        "PRU-053",
+        "PRU-069",
+        "PRU-093"
+      ],
+      "qualification_issues": [
+        "PRU-060",
+        "PRU-112",
+        "PRU-113",
+        "PRU-115"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "Sistema NBR 16055 é explicitamente distinto da verificação genérica de núcleo ou pilar-parede."
+    },
+    {
+      "capability_id": "PAR-32",
+      "title": "Barras unilaterais e tirantes",
+      "required": true,
+      "source_ids": [
+        "CY-03",
+        "CY-04",
+        "CY-05"
+      ],
+      "implementation_issues": [
+        "PRU-016",
+        "PRU-022",
+        "PRU-026",
+        "PRU-027",
+        "PRU-032",
+        "PRU-073",
+        "PRU-075",
+        "PRU-077",
+        "PRU-085"
+      ],
+      "qualification_issues": [
+        "PRU-008",
+        "PRU-080",
+        "PRU-090",
+        "PRU-112",
+        "PRU-114"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "PRU-022 define os tipos; a solução ativa é implementada em PRU-026. Inversão de vento, folga e reengate devem ser ensaiados."
+    },
+    {
+      "capability_id": "PAR-33",
+      "title": "Cálculo isolado",
+      "required": true,
+      "source_ids": [
+        "CY-01",
+        "TQ-04"
+      ],
+      "implementation_issues": [
+        "PRU-040",
+        "PRU-042",
+        "PRU-062",
+        "PRU-065",
+        "PRU-072",
+        "PRU-099",
+        "PRU-102"
+      ],
+      "qualification_issues": [
+        "PRU-060",
+        "PRU-070",
+        "PRU-080",
+        "PRU-112",
+        "PRU-113",
+        "PRU-114",
+        "PRU-117"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "Esforços externos preservam origem, unidades e concomitância; o relatório não aprova superestrutura não analisada."
+    },
+    {
+      "capability_id": "PAR-34",
+      "title": "Perfis de alma aligeirada",
+      "required": true,
+      "source_ids": [
+        "CY-05"
+      ],
+      "implementation_issues": [
+        "PRU-010",
+        "PRU-013",
+        "PRU-071",
+        "PRU-072",
+        "PRU-073",
+        "PRU-080"
+      ],
+      "qualification_issues": [
+        "PRU-080",
+        "PRU-112",
+        "PRU-114"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "A disponibilidade geométrica não prova todos os modos de verificação. Métodos complementares devem ser identificados sem atribuição indevida à NBR 8800."
+    },
+    {
+      "capability_id": "PAR-35",
+      "title": "Apresentação móvel",
+      "required": true,
+      "source_ids": [
+        "EB-05"
+      ],
+      "implementation_issues": [
+        "PRU-104"
+      ],
+      "qualification_issues": [
+        "PRU-112",
+        "PRU-115",
+        "PRU-117"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "Representação móvel/RA é um produto de apresentação com escala e orientação conferidas; não substitui modelo analítico ou documento de cálculo."
+    },
+    {
+      "capability_id": "PAR-36",
+      "title": "Intercâmbio analítico",
+      "required": true,
+      "source_ids": [
+        "EB-06"
+      ],
+      "implementation_issues": [
+        "PRU-108"
+      ],
+      "qualification_issues": [
+        "PRU-112",
+        "PRU-113",
+        "PRU-114",
+        "PRU-118"
+      ],
+      "release_gate": "PRU-120",
+      "evidence_status": "not_implemented",
+      "notes": "O inventário fixa destinos e versões por especificação pública ou licença. Importação no destino precisa conferir eixos, vínculos, ações e perdas; resultados de motores distintos não são presumidos iguais."
+    }
+  ]
+}

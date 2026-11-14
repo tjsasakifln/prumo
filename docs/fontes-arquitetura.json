@@ -1,0 +1,170 @@
+[
+  {
+    "id": "A01",
+    "title": "MCP specification 2026-07-28",
+    "url": "https://modelcontextprotocol.io/specification/2026-07-28",
+    "note": "Latest redireciona para esta revisão; base stateless e capacidades por requisição.",
+    "accessed_at": "2026-11-14",
+    "source_type": "primary"
+  },
+  {
+    "id": "A02",
+    "title": "MCP Versioning and Compatibility",
+    "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning.md",
+    "note": "server/discover, versão em cada requisição e compatibilidade separada com inicialização legada.",
+    "accessed_at": "2026-11-14",
+    "source_type": "primary"
+  },
+  {
+    "id": "A03",
+    "title": "MCP stdio",
+    "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/stdio.md",
+    "note": "Framing JSON-RPC e cancelamento do transporte local.",
+    "accessed_at": "2026-11-14",
+    "source_type": "primary"
+  },
+  {
+    "id": "A04",
+    "title": "MCP Streamable HTTP",
+    "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http",
+    "note": "Revisão moderna remove GET e sessões; requer validação de origem.",
+    "accessed_at": "2026-11-14",
+    "source_type": "primary"
+  },
+  {
+    "id": "A05",
+    "title": "MCP Authorization Security Considerations",
+    "url": "https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/security-considerations",
+    "note": "Token com audiência correta, PKCE e vedação de repasse de token.",
+    "accessed_at": "2026-11-14",
+    "source_type": "primary"
+  },
+  {
+    "id": "A06",
+    "title": "MCP Tasks extension",
+    "url": "https://modelcontextprotocol.io/extensions/tasks/overview",
+    "note": "Tarefas duráveis são extensão negociada, com polling e estados.",
+    "accessed_at": "2026-11-14",
+    "source_type": "primary"
+  },
+  {
+    "id": "A07",
+    "title": "buildingSMART Standards Server",
+    "url": "https://standards.buildingsmart.org/",
+    "note": "Catálogo identifica IFC4.3 ADD2 como final e IFC4.4 em desenvolvimento. Catálogo oficial indexado consultado; acesso integral ao HTML indisponível nesta pesquisa.",
+    "accessed_at": "2026-11-14",
+    "source_type": "primary"
+  },
+  {
+    "id": "A08",
+    "title": "IFC4.3.2.0 official documentation",
+    "url": "https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/",
+    "note": "Publicação oficial 4.3.2.0; registrar schema/perfil exatos.",
+    "accessed_at": "2026-11-14",
+    "source_type": "primary"
+  },
+  {
+    "id": "A09",
+    "title": "IFC4.3 IfcStructuralAnalysisDomain",
+    "url": "https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/ifcstructuralanalysisdomain/content.html",
+    "note": "Limites explícitos: dinâmica, cargas protensão, topologia MEF e resultados detalhados fora do domínio. Resumo oficial indexado consultado; acesso integral ao HTML indisponível nesta pesquisa.",
+    "accessed_at": "2026-11-14",
+    "source_type": "primary"
+  },
+  {
+    "id": "A10",
+    "title": "Information Delivery Specification",
+    "url": "https://www.buildingsmart.org/standards/bsi-standards/information-delivery-specification-ids/",
+    "note": "IDS 1.0 oficial para requisitos computáveis de informação; não equivaler a validação estrutural.",
+    "accessed_at": "2026-11-14",
+    "source_type": "primary"
+  },
+  {
+    "id": "A11",
+    "title": "BCF XML official repository",
+    "url": "https://github.com/buildingSMART/BCF-XML",
+    "note": "Especificação de intercâmbio de colaboração, branch release_3_0 observada.",
+    "accessed_at": "2026-11-14",
+    "source_type": "primary"
+  },
+  {
+    "id": "A12",
+    "title": "Tauri Capabilities",
+    "url": "https://tauri.app/security/capabilities/",
+    "note": "Privilégios de janelas/webviews controlados por capacidades; restrição explícita necessária.",
+    "accessed_at": "2026-11-14",
+    "source_type": "primary"
+  },
+  {
+    "id": "A13",
+    "title": "Tauri sidecars",
+    "url": "https://tauri.app/develop/sidecar/",
+    "note": "Empacotamento e execução de binários auxiliares.",
+    "accessed_at": "2026-11-14",
+    "source_type": "primary"
+  },
+  {
+    "id": "A14",
+    "title": "IfcOpenShell introduction and licensing",
+    "url": "https://docs.ifcopenshell.org/introduction",
+    "note": "Bibliotecas LGPL-3.0-or-later; Bonsai/Bonsai Viewer/IfcSverchok GPL-3.0-or-later.",
+    "accessed_at": "2026-11-14",
+    "source_type": "primary"
+  },
+  {
+    "id": "A15",
+    "title": "web-ifc official repository",
+    "url": "https://github.com/ThatOpen/engine_web-ifc",
+    "note": "Biblioteca IFC JavaScript/WASM, licença MPL-2.0.",
+    "accessed_at": "2026-11-14",
+    "source_type": "primary"
+  },
+  {
+    "id": "A16",
+    "title": "MCP TypeScript SDK license",
+    "url": "https://github.com/modelcontextprotocol/typescript-sdk/blob/main/LICENSE",
+    "note": "Transição de MIT para Apache-2.0; código preexistente sem consentimento permanece MIT.",
+    "accessed_at": "2026-11-14",
+    "source_type": "primary"
+  },
+  {
+    "id": "A17",
+    "title": "IfcMCP documentation",
+    "url": "https://docs.ifcopenshell.org/ifcmcp.html",
+    "note": "Servidor para consultas e mutações IFC; candidato a adaptação com comandos restritos e revisão de versão.",
+    "accessed_at": "2026-11-14",
+    "source_type": "primary"
+  },
+  {
+    "id": "A18",
+    "title": "Ifc2CA documentation",
+    "url": "https://docs.ifcopenshell.org/ifc2ca.html",
+    "note": "Conversão IFC para modelos analíticos usados no Code_Aster.",
+    "accessed_at": "2026-11-14",
+    "source_type": "primary"
+  },
+  {
+    "id": "A19",
+    "title": "WCAG 2.2",
+    "url": "https://www.w3.org/TR/WCAG22/",
+    "note": "Critérios de acessibilidade de conteúdo web; referência para teclado, foco e alternativa a arrastar.",
+    "accessed_at": "2026-11-14",
+    "source_type": "primary"
+  },
+  {
+    "id": "A20",
+    "title": "WCAG2ICT",
+    "url": "https://www.w3.org/TR/wcag2ict/",
+    "note": "Orientação informativa para aplicação de critérios WCAG a software e documentos não web.",
+    "accessed_at": "2026-11-14",
+    "source_type": "primary"
+  },
+  {
+    "id": "A21",
+    "title": "SUS: A Retrospective, John Brooke, 2013",
+    "url": "https://iihm.imag.fr/coutrix/ens/M2-MoSIG-HiL/1stAssignment/UsabilityQuestionnaire/JUS_Brooke_February_2013.pdf",
+    "note": "Artigo do autor da escala sobre medição de percepção de usabilidade; cópia institucional.",
+    "accessed_at": "2026-11-14",
+    "source_type": "primary"
+  }
+]

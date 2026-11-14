@@ -1,0 +1,5030 @@
+{
+  "schema_version": "1.0",
+  "project": "Prumo",
+  "repository": "tjsasakifln/prumo",
+  "baseline_date": "2026-11-14",
+  "state": "planning_only",
+  "sequence_policy": "strict_ascending",
+  "issue_count": 120,
+  "phases": [
+    {
+      "id": "01",
+      "name": "Base BIM, MCP e verificação",
+      "first": 1,
+      "last": 10
+    },
+    {
+      "id": "02",
+      "name": "Modelagem intuitiva",
+      "first": 11,
+      "last": 20
+    },
+    {
+      "id": "03",
+      "name": "Motor de análise estrutural",
+      "first": 21,
+      "last": 30
+    },
+    {
+      "id": "04",
+      "name": "Ações, combinações e resultados",
+      "first": 31,
+      "last": 40
+    },
+    {
+      "id": "05",
+      "name": "Dimensionamento de concreto",
+      "first": 41,
+      "last": 50
+    },
+    {
+      "id": "06",
+      "name": "Detalhamento e concreto avançado",
+      "first": 51,
+      "last": 60
+    },
+    {
+      "id": "07",
+      "name": "Fundações e interação com o solo",
+      "first": 61,
+      "last": 70
+    },
+    {
+      "id": "08",
+      "name": "Aço, mistos e ligações",
+      "first": 71,
+      "last": 80
+    },
+    {
+      "id": "09",
+      "name": "Madeira e ligações",
+      "first": 81,
+      "last": 90
+    },
+    {
+      "id": "10",
+      "name": "Sistemas complementares e agentes",
+      "first": 91,
+      "last": 100
+    },
+    {
+      "id": "11",
+      "name": "BIM, documentos e distribuição",
+      "first": 101,
+      "last": 110
+    },
+    {
+      "id": "12",
+      "name": "Qualificação e lançamento",
+      "first": 111,
+      "last": 120
+    }
+  ],
+  "issues": [
+    {
+      "sequence": 1,
+      "key": "PRU-001",
+      "title": "Fundação executável com projeto BIM e MCP desde a origem",
+      "phase": "01",
+      "phase_name": "Base BIM, MCP e verificação",
+      "goal": "Abrir o desenvolvimento com uma fatia real do produto, utilizável pela interface e por um cliente MCP.",
+      "scope": [
+        "Monorepo, comandos de desenvolvimento e integração contínua em Windows e Linux",
+        "ADR inicial da aplicação desktop com interface reutilizável, domínio isolado e processo de cálculo separado",
+        "Criar, salvar e reabrir projeto mínimo com unidades, revisão, um objeto físico e sua identidade analítica",
+        "Servidor MCP local funcional usando os mesmos comandos de criação e consulta da interface"
+      ],
+      "acceptance": [
+        "Instalação limpa executa a interface e o servidor sem edição manual de arquivos de configuração",
+        "Projeto criado pela interface é consultado e alterado pelo MCP, e o contrário, com identidade e revisão preservadas",
+        "Nenhum cálculo simulado é apresentado como resultado estrutural e nenhum botão essencial é apenas decorativo",
+        "Componentes usados nesta primeira etapa já passam por triagem de licença, versão e dependências; a issue 3 amplia a qualificação, sem autorizar uso prévio não examinado",
+        "MCP inicial é stdio local, limitado ao projeto selecionado, sem shell, SQL ou caminhos livres; autorização básica existe desde a primeira operação"
+      ],
+      "validation": [
+        "Teste de ponta a ponta UI > salvar > reiniciar > consultar por MCP",
+        "Cliente MCP real negocia a revisão suportada e rejeita versão desconhecida",
+        "CI verifica contratos, lint, testes e build reproduzível"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "Tauri",
+        "React",
+        "MCP TypeScript SDK",
+        "IfcMCP, sujeito a adaptação e qualificação do protocolo"
+      ],
+      "source_ids": [
+        "A01",
+        "A02",
+        "A12",
+        "USR-01",
+        "A17",
+        "A03",
+        "A14",
+        "A16"
+      ],
+      "depends_on": [],
+      "status": "planned",
+      "github_number": 1,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/1"
+    },
+    {
+      "sequence": 2,
+      "key": "PRU-002",
+      "title": "Registro normativo, inventário de paridade e estados de capacidade",
+      "phase": "01",
+      "phase_name": "Base BIM, MCP e verificação",
+      "goal": "Transformar a abrangência solicitada em capacidades identificadas e critérios normativos rastreáveis.",
+      "scope": [
+        "Expandir o inventário público por produto, módulo e versão e ligar cada capacidade ao backlog",
+        "Cadastrar norma, parte, edição, emendas, erratas, acesso autorizado, domínio e responsável pela interpretação",
+        "Estados planejado, experimental, verificado e liberado por combinação método/material/norma",
+        "Pacote normativo imutável por projeto e bloqueio de resultados finais de capacidades incompletas"
+      ],
+      "acceptance": [
+        "Todas as famílias documentadas possuem capacidade, responsável e issue de implementação, sem exclusão tácita",
+        "Metadados públicos e texto normativo efetivamente consultado são diferenciados",
+        "Alteração normativa cria nova versão, relatório de impacto e necessidade de recálculo"
+      ],
+      "validation": [
+        "Caso de projeto antigo preserva a edição ao abrir e migrar exige escolha explícita",
+        "Regra sem fonte licenciada e domínio aprovado não pode ser marcada verificada",
+        "Auditoria de cobertura detecta capacidade sem issue e norma não resolvida"
+      ],
+      "norms": [
+        "NBR 6118",
+        "NBR 8800",
+        "NBR 7190",
+        "NBR 8681"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "EB-02",
+        "CY-01",
+        "TQ-01",
+        "N01",
+        "USR-01"
+      ],
+      "depends_on": [
+        "PRU-001"
+      ],
+      "status": "planned",
+      "github_number": 2,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/2"
+    },
+    {
+      "sequence": 3,
+      "key": "PRU-003",
+      "title": "Qualificação de componentes abertos e arquitetura de adaptadores",
+      "phase": "01",
+      "phase_name": "Base BIM, MCP e verificação",
+      "goal": "Acelerar cada módulo pela reutilização que demonstre menor custo total e qualidade suficiente.",
+      "scope": [
+        "Comparar implementar, integrar, encapsular e contribuir no projeto de origem para cada componente necessário",
+        "Registrar licença por arquivo e dependência, distribuição comercial, versões, manutenção, vulnerabilidades e testes",
+        "Executar experiências delimitadas com candidatos a BIM, geometria, solver, seções e documentos",
+        "Criar interfaces substituíveis, inventário de componentes e decisões de adoção ou rejeição"
+      ],
+      "acceptance": [
+        "Componente incorporado possui commit ou versão fixada, procedência e obrigações cumpridas",
+        "Popularidade ou testes do fornecedor não são tratados como validação do Prumo",
+        "Nenhum motor é adotado fora do domínio demonstrado, e restrições comerciais não são presumidas resolvidas"
+      ],
+      "validation": [
+        "Executar a mesma bateria mínima através do adaptador e contra referência independente",
+        "Build limpo e auditoria de dependências transitivas",
+        "Medir desempenho, precisão, tamanho de distribuição e esforço de manutenção antes da decisão"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "IfcOpenShell",
+        "PyNite",
+        "OpenSees",
+        "SuiteSparse",
+        "Three.js",
+        "Open CASCADE"
+      ],
+      "source_ids": [
+        "USR-02",
+        "A09",
+        "N20",
+        "N21",
+        "N22",
+        "A14",
+        "A15",
+        "A16",
+        "A17",
+        "A18"
+      ],
+      "depends_on": [
+        "PRU-002"
+      ],
+      "status": "planned",
+      "github_number": 3,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/3"
+    },
+    {
+      "sequence": 4,
+      "key": "PRU-004",
+      "title": "Modelo físico e analítico com identidades e unidades tipadas",
+      "phase": "01",
+      "phase_name": "Base BIM, MCP e verificação",
+      "goal": "Dar ao Prumo uma representação BIM que preserve a semântica necessária ao cálculo.",
+      "scope": [
+        "Entidades físicas, analíticas, materiais, ações e relações 1:n e n:1",
+        "UUID interno, GUID IFC, origem e histórico de cópia, fusão e divisão",
+        "Grandezas tipadas, eixos locais, transformações e origem de engenharia separada do georreferenciamento",
+        "Snapshot canônico e grafo de dependências de resultados"
+      ],
+      "acceptance": [
+        "Objeto apenas visual nunca aparece como elemento dimensionado",
+        "Conversões de unidade e orientação preservam a resposta física",
+        "Qualquer mudança relevante invalida os resultados dependentes de maneira rastreável"
+      ],
+      "validation": [
+        "Round trip do modelo nativo sem perda de identidade ou semântica",
+        "Testes por permutação de nós, rotação, translação e conversão de unidades",
+        "Rejeitar força em campo de momento e referência analítica órfã"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "Bibliotecas de unidades e serialização qualificadas"
+      ],
+      "source_ids": [
+        "TQ-05",
+        "A09",
+        "USR-01"
+      ],
+      "depends_on": [
+        "PRU-003"
+      ],
+      "status": "planned",
+      "github_number": 4,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/4"
+    },
+    {
+      "sequence": 5,
+      "key": "PRU-005",
+      "title": "Arquivo Prumo, salvamento atômico e recuperação",
+      "phase": "01",
+      "phase_name": "Base BIM, MCP e verificação",
+      "goal": "Permitir trabalho local confiável e continuidade após falhas.",
+      "scope": [
+        "Banco transacional local e pacote .prumo versionado",
+        "Manifesto, hashes, snapshots, catálogos necessários e resultados vinculados",
+        "Autosave, recuperação, backup, migração e abertura sem conexão",
+        "Limites de pacote, validação de caminhos e proteção contra descompressão excessiva"
+      ],
+      "acceptance": [
+        "Interrupção durante salvamento mantém a última revisão íntegra recuperável",
+        "Projeto não depende da nuvem ou de um agente para abrir e calcular capacidades instaladas",
+        "Migração preserva cópia original e identifica incompatibilidades sem descartar dados"
+      ],
+      "validation": [
+        "Injetar queda em diferentes etapas de salvamento e recuperação",
+        "Abrir pacote corrompido, versão futura e caminhos maliciosos",
+        "Comparar hashes antes e depois de exportar e reabrir"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "SQLite",
+        "Biblioteca ZIP qualificada"
+      ],
+      "source_ids": [
+        "USR-01",
+        "A09"
+      ],
+      "depends_on": [
+        "PRU-004"
+      ],
+      "status": "planned",
+      "github_number": 5,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/5"
+    },
+    {
+      "sequence": 6,
+      "key": "PRU-006",
+      "title": "Comandos transacionais, desfazer e concorrência UI/MCP",
+      "phase": "01",
+      "phase_name": "Base BIM, MCP e verificação",
+      "goal": "Impedir divergências entre ações manuais e de agentes.",
+      "scope": [
+        "Comandos tipados com revisão base, idempotência, ator autenticado e pré-condições",
+        "Prévia de alterações e aplicação do mesmo plano por hash",
+        "Undo/redo auditados e operações em lote atômicas",
+        "Registro de autoria, efeitos e invalidação de resultados"
+      ],
+      "acceptance": [
+        "Repetir um comando idempotente não duplica objetos ou jobs",
+        "Comando baseado em revisão ultrapassada falha com conflito inteligível",
+        "Interface e MCP passam pelos mesmos validadores e produzem o mesmo snapshot"
+      ],
+      "validation": [
+        "Dois clientes alteram o mesmo elemento e nenhum trabalho é sobrescrito silenciosamente",
+        "Desfazer e refazer lotes preserva relações e unidades",
+        "Falha no meio de lote deixa o projeto no estado anterior"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "Bibliotecas de schema e serialização qualificadas"
+      ],
+      "source_ids": [
+        "A01",
+        "USR-01"
+      ],
+      "depends_on": [
+        "PRU-005"
+      ],
+      "status": "planned",
+      "github_number": 6,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/6"
+    },
+    {
+      "sequence": 7,
+      "key": "PRU-007",
+      "title": "MCP local, recursos e controle de acesso por projeto",
+      "phase": "01",
+      "phase_name": "Base BIM, MCP e verificação",
+      "goal": "Disponibilizar automação real, controlada e independente do fornecedor de agentes.",
+      "scope": [
+        "Descoberta, ferramentas, recursos e erros estruturados na revisão MCP fixada",
+        "Adaptador separado para clientes legados efetivamente escolhidos",
+        "Escopos de leitura, modelagem, cálculo e documentos por projeto",
+        "Resultado estruturado com unidades, revisão, estado e referências de evidência"
+      ],
+      "acceptance": [
+        "Cliente não recebe dados de projeto fora do seu escopo",
+        "Stdout contém somente mensagens de protocolo e logs ficam separados",
+        "Texto de documento importado não altera permissões ou comandos permitidos"
+      ],
+      "validation": [
+        "Conformidade da revisão atual e compatibilidade legada testadas separadamente",
+        "Negação de leitura, escrita e emissão sem escopo correspondente",
+        "Teste de repetição, desconexão, versão incompatível e entradas inválidas"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "MCP TypeScript SDK"
+      ],
+      "source_ids": [
+        "A01",
+        "A02",
+        "A03",
+        "A05",
+        "USR-01"
+      ],
+      "depends_on": [
+        "PRU-006"
+      ],
+      "status": "planned",
+      "github_number": 7,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/7"
+    },
+    {
+      "sequence": 8,
+      "key": "PRU-008",
+      "title": "Infraestrutura de verificação e casos de referência independentes",
+      "phase": "01",
+      "phase_name": "Base BIM, MCP e verificação",
+      "goal": "Fazer a evidência de correção preceder o desenvolvimento do cálculo.",
+      "scope": [
+        "Schema de caso com entrada, método, grandeza, unidade, valor esperado, tolerância e origem",
+        "Registro de independência entre implementação e referência",
+        "Execução determinística, evidências por SHA e relatórios de regressão",
+        "Casos aprovados e reprovados, fronteiras de norma, mecanismos e erros deliberados"
+      ],
+      "acceptance": [
+        "Tolerância é fixada e revisada antes de obter o resultado do código sob teste",
+        "Comparar duas interfaces do mesmo motor não conta como independência",
+        "Falha crítica ou caso sem evidência impede liberar a capacidade"
+      ],
+      "validation": [
+        "Bateria inicial de viga, treliça e pórtico com soluções analíticas",
+        "Teste que troca sinal ou unidade é detectado pela infraestrutura",
+        "Relatório identifica commit, plataforma, build e dependências usados"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "Frameworks de testes e bibliotecas científicas independentes"
+      ],
+      "source_ids": [
+        "N17",
+        "N18",
+        "N19",
+        "USR-01",
+        "N16"
+      ],
+      "depends_on": [
+        "PRU-007"
+      ],
+      "status": "planned",
+      "github_number": 8,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/8"
+    },
+    {
+      "sequence": 9,
+      "key": "PRU-009",
+      "title": "Geometria robusta, topologia e tolerâncias distintas",
+      "phase": "01",
+      "phase_name": "Base BIM, MCP e verificação",
+      "goal": "Garantir que encaixes visuais correspondam a relações geométricas bem definidas.",
+      "scope": [
+        "Predicados robustos, interseções, faces, orientação e saneamento geométrico",
+        "Tolerâncias separadas para seleção, união topológica, malha e análise",
+        "Detecção de duplicados, faces invertidas e elementos degenerados",
+        "Prévia de alteração de conectividade e procedência das correções"
+      ],
+      "acceptance": [
+        "Contato gráfico não cria vínculo resistente sem regra visível",
+        "Modelo em coordenadas geográficas mantém precisão local",
+        "Correção automática não modifica dimensões ou conectividade sem registro"
+      ],
+      "validation": [
+        "Geometrias quase coincidentes, vãos muito curtos e grande extensão de coordenadas",
+        "Invariância a ordem de inserção de elementos",
+        "Testes de interseções e orientação com casos degenerados"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "Open CASCADE",
+        "CGAL",
+        "Biblioteca robusta de triangulação"
+      ],
+      "source_ids": [
+        "A09",
+        "USR-01"
+      ],
+      "depends_on": [
+        "PRU-008"
+      ],
+      "status": "planned",
+      "github_number": 9,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/9"
+    },
+    {
+      "sequence": 10,
+      "key": "PRU-010",
+      "title": "Catálogos de materiais, seções e propriedades rastreáveis",
+      "phase": "01",
+      "phase_name": "Base BIM, MCP e verificação",
+      "goal": "Fornecer dados físicos consistentes a todos os módulos.",
+      "scope": [
+        "Materiais isotrópicos e ortotrópicos, classes e propriedades dependentes de condição",
+        "Seções paramétricas e arbitrárias, áreas, centroides, inércias e torção",
+        "Dados de catálogo com fonte, unidades, edição, revisão e intervalo de aplicação",
+        "Customizações explícitas sem substituir silenciosamente o catálogo do projeto"
+      ],
+      "acceptance": [
+        "Propriedade geométrica é conferida para seções simétricas e assimétricas",
+        "Valor característico não se confunde com valor de cálculo",
+        "Revisão de catálogo invalida apenas os resultados afetados e mantém o histórico"
+      ],
+      "validation": [
+        "Retângulo, círculo, seção I, caixa e seção composta contra solução independente",
+        "Rejeitar propriedades fisicamente impossíveis",
+        "Importação de catálogo conserva precisão, fonte e unidade"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "sectionproperties",
+        "Biblioteca de unidades qualificada"
+      ],
+      "source_ids": [
+        "CY-02",
+        "EB-04",
+        "USR-01"
+      ],
+      "depends_on": [
+        "PRU-009"
+      ],
+      "status": "planned",
+      "github_number": 10,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/10"
+    },
+    {
+      "sequence": 11,
+      "key": "PRU-011",
+      "title": "Ambiente 2D/3D, navegação e acessibilidade desde a base",
+      "phase": "02",
+      "phase_name": "Modelagem intuitiva",
+      "goal": "Tornar o modelo legível e manipulável com baixa carga de aprendizado.",
+      "scope": [
+        "Planta, corte, 3D, árvore de objetos e propriedades sincronizadas",
+        "Seleção, ocultação, isolamento, corte e localização de erros",
+        "Comandos descobríveis, linguagem em português e ajuda contextual",
+        "Fluxos completos por teclado e mouse, sem gesto bimanual ou arraste obrigatório"
+      ],
+      "acceptance": [
+        "Seleção de um objeto destaca a mesma identidade em todas as vistas",
+        "Estado não depende apenas de cores e foco de teclado permanece visível",
+        "Operações frequentes têm alternativa por clique simples ou entrada numérica"
+      ],
+      "validation": [
+        "Teste de navegação por teclado e leitor de tela nas partes compatíveis",
+        "Selecionar objeto oculto, sobreposto e de pavimento diferente",
+        "Verificação visual com escala de interface e alto contraste"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "Three.js",
+        "React",
+        "Componentes acessíveis qualificados"
+      ],
+      "source_ids": [
+        "EB-02",
+        "CY-01",
+        "USR-01"
+      ],
+      "depends_on": [
+        "PRU-010"
+      ],
+      "status": "planned",
+      "github_number": 11,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/11"
+    },
+    {
+      "sequence": 12,
+      "key": "PRU-012",
+      "title": "Eixos, níveis, cotas e encaixes com entrada numérica",
+      "phase": "02",
+      "phase_name": "Modelagem intuitiva",
+      "goal": "Permitir construir a malha do projeto de modo previsível.",
+      "scope": [
+        "Eixos ortogonais e inclinados, níveis, offsets e sistemas locais",
+        "Captura de extremidade, alinhamento, interseção e distância",
+        "Prévia de encaixe mostrando o vínculo proposto",
+        "Entrada com unidade explícita, vírgula decimal e operações numéricas controladas"
+      ],
+      "acceptance": [
+        "Usuário cria níveis e eixos sem editar arquivos externos",
+        "Encaixe distingue alinhamento visual de conexão estrutural",
+        "Mover nível atualiza dependentes e mostra o impacto antes de aplicar"
+      ],
+      "validation": [
+        "Modelos com eixos inclinados e pavimentos desnivelados",
+        "Operação completa sem arrastar o mouse",
+        "Entradas ambíguas de unidade e separador decimal produzem diagnóstico"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "Motor geométrico qualificado"
+      ],
+      "source_ids": [
+        "EB-02",
+        "CY-01",
+        "USR-01"
+      ],
+      "depends_on": [
+        "PRU-011"
+      ],
+      "status": "planned",
+      "github_number": 12,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/12"
+    },
+    {
+      "sequence": 13,
+      "key": "PRU-013",
+      "title": "Peças paramétricas: pilares, vigas, barras e treliças",
+      "phase": "02",
+      "phase_name": "Modelagem intuitiva",
+      "goal": "Montar o esqueleto resistente com peças editáveis.",
+      "scope": [
+        "Pilares verticais/inclinados, vigas retas/curvas e barras genéricas",
+        "Seções constantes e variáveis, alinhamentos, excentricidades e treliças",
+        "Prévia 3D e analítica com continuidade entre níveis",
+        "Criação individual, por pontos, por eixos e via MCP"
+      ],
+      "acceptance": [
+        "Cada peça possui material, seção, comprimento e relação analítica verificáveis",
+        "Alterar seção ou direção atualiza o modelo e invalida resultados",
+        "Treliça não recebe rigidez à flexão inadvertida"
+      ],
+      "validation": [
+        "Pórtico inclinado, viga curva e pilar com mudança de seção",
+        "Reconstrução de exemplo pela UI e MCP com snapshots equivalentes",
+        "Conexões duplicadas e barras de comprimento nulo são recusadas"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "Open CASCADE",
+        "Three.js"
+      ],
+      "source_ids": [
+        "EB-02",
+        "CY-02",
+        "USR-01"
+      ],
+      "depends_on": [
+        "PRU-012"
+      ],
+      "status": "planned",
+      "github_number": 13,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/13"
+    },
+    {
+      "sequence": 14,
+      "key": "PRU-014",
+      "title": "Lajes, painéis, aberturas e regiões de espessura variável",
+      "phase": "02",
+      "phase_name": "Modelagem intuitiva",
+      "goal": "Modelar pavimentos sem perder a relação entre contorno e comportamento.",
+      "scope": [
+        "Lajes maciças, nervuradas, grelhas paramétricas, balanços e capitéis",
+        "Aberturas, bordas livres, rebaixos, regiões de espessura e inclinação",
+        "Contornos físicos e regiões analíticas relacionados",
+        "Prévia de mudanças que afetem apoios, malha e punção"
+      ],
+      "acceptance": [
+        "Abertura não mantém rigidez ou carga na área removida por engano",
+        "Laje inclinada e degraus de espessura conservam cotas e unidades",
+        "Representação de nervuras não duplica massa e rigidez da capa"
+      ],
+      "validation": [
+        "Contornos côncavos, múltiplas aberturas e abertura junto ao pilar",
+        "Editar abertura invalida resultados de referência registrados como fixture de teste, nunca apresentados como cálculo real; integração numérica é obrigatória nas issues 25, 40 e 112",
+        "Peso próprio é auditável por componente físico"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "Motor geométrico e triangulação qualificados"
+      ],
+      "source_ids": [
+        "EB-02",
+        "CY-01",
+        "TQ-02"
+      ],
+      "depends_on": [
+        "PRU-013"
+      ],
+      "status": "planned",
+      "github_number": 14,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/14"
+    },
+    {
+      "sequence": 15,
+      "key": "PRU-015",
+      "title": "Paredes, núcleos, escadas e rampas",
+      "phase": "02",
+      "phase_name": "Modelagem intuitiva",
+      "goal": "Representar elementos verticais e inclinados com seu caminho de cargas.",
+      "scope": [
+        "Paredes estruturais, núcleos, aberturas e vigas de acoplamento",
+        "Escadas convencionais, plissadas e autoportantes; rampas e patamares",
+        "Ligação explícita com lajes, pilares, vigas e apoios",
+        "Separar referência arquitetônica de elemento estrutural promovido"
+      ],
+      "acceptance": [
+        "Apoios e continuidade de escadas são inspectáveis, sem conexão visual presumida",
+        "Parede com abertura mantém topologia e caminho de cargas candidatos pelas regiões remanescentes; a transferência numérica será demonstrada nas issues 25 e 49",
+        "Modificação de patamar propaga para o modelo analítico e documentos"
+      ],
+      "validation": [
+        "Escada em balanço, escada entre pavimentos e núcleo aberto",
+        "Verificação de orientação de faces e eixos locais",
+        "Comparar criação manual e paramétrica sem elementos órfãos"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "Motor geométrico qualificado"
+      ],
+      "source_ids": [
+        "EB-02",
+        "TQ-05",
+        "CY-01"
+      ],
+      "depends_on": [
+        "PRU-014"
+      ],
+      "status": "planned",
+      "github_number": 15,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/15"
+    },
+    {
+      "sequence": 16,
+      "key": "PRU-016",
+      "title": "Apoios, liberações, molas e ligações semirrígidas",
+      "phase": "02",
+      "phase_name": "Modelagem intuitiva",
+      "goal": "Tornar hipóteses mecânicas explícitas no modelo de encaixes.",
+      "scope": [
+        "Restrições por grau de liberdade e eixo local/global",
+        "Rótulas, liberações parciais, molas, links rígidos e excentricidades",
+        "Ligações semirrígidas e apoios unilaterais como dados do domínio",
+        "Biblioteca de hipóteses com visualização e justificativa"
+      ],
+      "acceptance": [
+        "Cada ligação mostra os graus de liberdade restringidos e sua rigidez",
+        "Nenhuma estabilização artificial é acrescentada para esconder mecanismo",
+        "Interfaces UI/MCP recusam vínculos contraditórios com erro localizável"
+      ],
+      "validation": [
+        "Pórticos articulado, engastado e com mola têm graus de liberdade e vínculos comparados com especificações independentes; a resposta numérica é testada nas issues 22 e 25",
+        "Mecanismo causado por rótulas duplicadas é detectado",
+        "Rotação do apoio preserva direção física da restrição"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "Adaptador de solver qualificado"
+      ],
+      "source_ids": [
+        "TQ-01",
+        "CY-02",
+        "USR-01"
+      ],
+      "depends_on": [
+        "PRU-015"
+      ],
+      "status": "planned",
+      "github_number": 16,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/16"
+    },
+    {
+      "sequence": 17,
+      "key": "PRU-017",
+      "title": "Referências CAD, PDF e imagens com escala conferível",
+      "phase": "02",
+      "phase_name": "Modelagem intuitiva",
+      "goal": "Usar arquitetura e croquis como referência sem atribuir precisão inexistente.",
+      "scope": [
+        "Importar DXF e referências PDF/imagem com camadas e transformação",
+        "Calibrar por duas distâncias, cotas e origem; preservar original autorizado",
+        "Vetorização assistida como proposta a conferir, com confiança e diferença geométrica",
+        "Separar camadas de referência de peças calculáveis",
+        "Converter referências válidas selecionadas em peças paramétricas editáveis, após prévia e conferência dimensional"
+      ],
+      "acceptance": [
+        "Escala incorreta e imagem distorcida são identificáveis por conferência de cotas",
+        "Traço importado não vira viga aprovada automaticamente",
+        "Coordenadas e origem permanecem rastreáveis após mover a referência",
+        "Conversão positiva de uma planta de referência gera pilares, vigas e contornos editáveis com origem rastreada"
+      ],
+      "validation": [
+        "PDF vetorial, PDF raster e imagem com deformação",
+        "DXF com blocos, unidades ausentes e camadas desligadas",
+        "Comparação de distância conhecida antes e depois da importação"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "ezdxf",
+        "PDF.js",
+        "OpenCV"
+      ],
+      "source_ids": [
+        "CY-01",
+        "USR-01"
+      ],
+      "depends_on": [
+        "PRU-016"
+      ],
+      "status": "planned",
+      "github_number": 17,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/17"
+    },
+    {
+      "sequence": 18,
+      "key": "PRU-018",
+      "title": "Importação IFC e promoção controlada para o modelo estrutural",
+      "phase": "02",
+      "phase_name": "Modelagem intuitiva",
+      "goal": "Receber BIM preservando a distinção entre referência e cálculo.",
+      "scope": [
+        "IFC2x3, IFC4 e IFC4.3 nos perfis de entrada declarados",
+        "Unidades, GUIDs, georreferenciamento, níveis, materiais e propriedades",
+        "Mapeamento físico/analítico com relatório de dados ausentes",
+        "Importação incremental, comparação de revisões e perdas conhecidas",
+        "Promover elementos IFC selecionados para objetos editáveis com mapeamento de seção, material e hipóteses explícitas"
+      ],
+      "acceptance": [
+        "IFC arquitetônico não é considerado modelo analítico validado",
+        "Elementos desconhecidos permanecem referência identificada, sem descarte silencioso",
+        "Reimportação evita duplicação e apresenta conflitos para resolução",
+        "Importação positiva cria um conjunto estrutural editável que pode ser salvo e reaberto, mantendo GUID de origem"
+      ],
+      "validation": [
+        "Arquivos de pelo menos três geradores, com unidades e coordenadas diferentes",
+        "Ciclos de importação conservam identidades de origem",
+        "Parser recusa arquivo malformado, consumo excessivo e referência inválida"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "IfcOpenShell",
+        "web-ifc"
+      ],
+      "source_ids": [
+        "A07",
+        "A08",
+        "A09",
+        "TQ-05"
+      ],
+      "depends_on": [
+        "PRU-017"
+      ],
+      "status": "planned",
+      "github_number": 18,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/18"
+    },
+    {
+      "sequence": 19,
+      "key": "PRU-019",
+      "title": "Conjuntos paramétricos, repetição e edição em lote",
+      "phase": "02",
+      "phase_name": "Modelagem intuitiva",
+      "goal": "Reduzir trabalho repetitivo sem ocultar alterações estruturais.",
+      "scope": [
+        "Copiar pavimentos, pórticos, treliças e conjuntos com vínculo paramétrico opcional",
+        "Editar material/seção/nível em lote com seleção e prévia",
+        "Biblioteca de soluções de partida para casa, edifício e galpão",
+        "Resolver exceções de instâncias sem modificar outras silenciosamente"
+      ],
+      "acceptance": [
+        "Cópias recebem novas identidades e mantêm origem rastreável",
+        "Alteração de conjunto mostra todos os objetos e resultados afetados",
+        "Modelos de partida identificam hipóteses e dados ainda não definidos"
+      ],
+      "validation": [
+        "Copiar pavimento com abertura, apoio e carga sem duplicar entidades partilhadas",
+        "Aplicar e desfazer edição de centenas de peças",
+        "Instância modificada permanece distinta após atualização do modelo-base"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "Bibliotecas paramétricas qualificadas"
+      ],
+      "source_ids": [
+        "EB-02",
+        "CY-01",
+        "USR-01"
+      ],
+      "depends_on": [
+        "PRU-018"
+      ],
+      "status": "planned",
+      "github_number": 19,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/19"
+    },
+    {
+      "sequence": 20,
+      "key": "PRU-020",
+      "title": "Revisão de modelo e fluxo guiado antes do cálculo",
+      "phase": "02",
+      "phase_name": "Modelagem intuitiva",
+      "goal": "Conduzir o usuário de um modelo montado a um modelo verificável.",
+      "scope": [
+        "Assistente com etapas projeto, geometria, vínculos, materiais, ações e revisão",
+        "Checagem de caminho de cargas, desconexões, duplicados e hipóteses ausentes",
+        "Diagnóstico com causa, localização, impacto e alternativas",
+        "Prioridade por gravidade e acompanhamento sem esconder falhas"
+      ],
+      "acceptance": [
+        "Ausência de dado crítico impede avançar para emissão validada",
+        "Mensagem explica a falha sem exigir conhecimento de código ou logs",
+        "Concluir o assistente não equivale a aprovar cálculo ainda inexistente"
+      ],
+      "validation": [
+        "Casos com pilar desconectado, laje sem apoio, material ausente e carga duplicada",
+        "Novos usuários encontram e corrigem os defeitos previstos sem instrução externa",
+        "UI e MCP apresentam o mesmo conjunto de impedimentos"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "Motor de regras e componentes de interface qualificados"
+      ],
+      "source_ids": [
+        "USR-01",
+        "TQ-01"
+      ],
+      "depends_on": [
+        "PRU-019"
+      ],
+      "status": "planned",
+      "github_number": 20,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/20"
+    },
+    {
+      "sequence": 21,
+      "key": "PRU-021",
+      "title": "Contrato do solver e solução linear esparsa verificável",
+      "phase": "03",
+      "phase_name": "Motor de análise estrutural",
+      "goal": "Estabelecer um motor numérico substituível com falha controlada.",
+      "scope": [
+        "Entrada imutável, graus de liberdade, condições de contorno e montagem esparsa",
+        "Solução linear, reações, equilíbrio, condicionamento e diagnósticos",
+        "Worker isolado com cancelamento, limites e rastreabilidade",
+        "Seleção e qualificação do backend pelos casos da issue 8"
+      ],
+      "acceptance": [
+        "Resultado registra método, versão, tolerâncias e snapshot exato",
+        "Matriz singular ou mal condicionada não produz aprovação aparente",
+        "Processo de cálculo não bloqueia a interface nem altera o projeto"
+      ],
+      "validation": [
+        "Sistemas de equações de referência derivados independentemente de viga e treliça, com matrizes e soluções analíticas conhecidas; formulações completas de elemento entram na issue 22",
+        "Invariância a ordenação de nós, sinais e sistema de unidades",
+        "Limites de memória, cancelamento e falha de worker testados"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "SuiteSparse",
+        "Eigen",
+        "PyNite"
+      ],
+      "source_ids": [
+        "N17",
+        "N18",
+        "N20",
+        "USR-02"
+      ],
+      "depends_on": [
+        "PRU-020"
+      ],
+      "status": "planned",
+      "github_number": 21,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/21"
+    },
+    {
+      "sequence": 22,
+      "key": "PRU-022",
+      "title": "Elementos de barras, pórticos e torção em 2D e 3D",
+      "phase": "03",
+      "phase_name": "Motor de análise estrutural",
+      "goal": "Calcular estruturas de barras com hipóteses mecânicas conhecidas.",
+      "scope": [
+        "Tração/compressão, flexão, cisalhamento e torção com eixos locais",
+        "Formulações Euler-Bernoulli e Timoshenko com domínio declarado",
+        "Carregamentos distribuídos, térmicos, pontuais e deformações impostas",
+        "Liberações, offsets, seções variáveis e recuperação de esforços",
+        "Barras apenas à tração/compressão e cabos com pré-tensão como tipos explícitos do domínio, cuja solução ativa depende da issue 26",
+        "Gerador básico de grelha: rigidez equivalente de barras, torção, massa e ligações necessárias ao dimensionamento de pavimentos"
+      ],
+      "acceptance": [
+        "Sinal dos esforços e convenções são documentados e visíveis",
+        "Torção de Saint-Venant não é confundida com empenamento restringido",
+        "Formulação inadequada à geometria é recusada ou exige escolha justificada"
+      ],
+      "validation": [
+        "Balanço, viga biapoiada, pórtico espacial e torção de seção conhecida",
+        "Convergência para seção variável e influência da deformação por cisalhamento",
+        "Extremidades liberadas não mantêm momento espúrio",
+        "Grelha regular de referência com fechamento de forças e comparação independente de rigidez equivalente"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "PyNite",
+        "CALFEM",
+        "Backend qualificado"
+      ],
+      "source_ids": [
+        "CY-02",
+        "N20",
+        "N22"
+      ],
+      "depends_on": [
+        "PRU-021"
+      ],
+      "status": "planned",
+      "github_number": 22,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/22"
+    },
+    {
+      "sequence": 23,
+      "key": "PRU-023",
+      "title": "Placas, cascas e malha com convergência documentada",
+      "phase": "03",
+      "phase_name": "Motor de análise estrutural",
+      "goal": "Analisar lajes, paredes e placas sem depender de uma malha arbitrária.",
+      "scope": [
+        "Elementos de placa/casca com membrana, flexão e orientação coerentes",
+        "Malha com aberturas, refinamento local e verificação de qualidade",
+        "Tratamento de singularidades, suavização e recuperação de esforços",
+        "Critérios de convergência por grandeza e região"
+      ],
+      "acceptance": [
+        "Refinamento mostra estabilidade da grandeza de interesse",
+        "Pico em singularidade não é convertido automaticamente em armadura sem método",
+        "Malha inválida, travamento ou elemento invertido são diagnosticados"
+      ],
+      "validation": [
+        "Patch tests de membrana e flexão, placa analítica e casca de referência",
+        "Sequências de malha e comparação de energia, reações e deslocamentos",
+        "Testes de razão de aspecto, espessura e orientação"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "Gmsh",
+        "CalculiX",
+        "Code_Aster",
+        "Motor MEF qualificado"
+      ],
+      "source_ids": [
+        "CY-02",
+        "N17",
+        "N19",
+        "USR-02"
+      ],
+      "depends_on": [
+        "PRU-022"
+      ],
+      "status": "planned",
+      "github_number": 23,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/23"
+    },
+    {
+      "sequence": 24,
+      "key": "PRU-024",
+      "title": "Diafragmas, vínculos multiponto e condensação",
+      "phase": "03",
+      "phase_name": "Motor de análise estrutural",
+      "goal": "Unir os subsistemas sem introduzir rigidez ou restrições indevidas.",
+      "scope": [
+        "Diafragmas rígidos, flexíveis e semirrígidos com critério de uso",
+        "Restrições multiponto, links e offsets com força equivalente",
+        "Condensação de subsistemas e recuperação de resultados",
+        "Acoplamento entre barras, paredes e lajes"
+      ],
+      "acceptance": [
+        "Energia, reações e esforços permanecem consistentes na transformação",
+        "Diafragma não elimina deformação relevante sem aviso e hipótese registrada",
+        "Dependência redundante de vínculos é detectada antes de resolver"
+      ],
+      "validation": [
+        "Modelo completo versus condensado em caso analítico",
+        "Pavimento assimétrico com torção e centro de massa deslocado",
+        "Restrições conflitantes e redundantes têm diagnóstico localizável"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "Backend esparso e MEF qualificados"
+      ],
+      "source_ids": [
+        "TQ-01",
+        "CY-01",
+        "USR-01"
+      ],
+      "depends_on": [
+        "PRU-023"
+      ],
+      "status": "planned",
+      "github_number": 24,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/24"
+    },
+    {
+      "sequence": 25,
+      "key": "PRU-025",
+      "title": "Transferência de cargas e conservação entre componentes",
+      "phase": "03",
+      "phase_name": "Motor de análise estrutural",
+      "goal": "Assegurar que toda ação aplicada alcance os apoios sem duplicação.",
+      "scope": [
+        "Peso próprio por objeto físico e distribuição de cargas de área/linha",
+        "Transferência entre lajes, vigas, paredes, pilares e fundações",
+        "Carregamento de paredes e equipamentos por posição real",
+        "Livro de balanço de forças e momentos por pavimento e modelo"
+      ],
+      "acceptance": [
+        "Soma de cargas e reações fecha dentro da tolerância pré-fixada",
+        "Peso próprio não é contado novamente em componentes equivalentes",
+        "Remover abertura ou apoio atualiza a distribuição e invalida a análise"
+      ],
+      "validation": [
+        "Pavimento irregular com aberturas e parede fora de eixo",
+        "Comparação por área tributária em caso compatível e por MEF independente",
+        "Carga isolada rastreada até os apoios",
+        "Pilar nascendo sobre laje transfere sua reação à laje e aos apoios sem bypass ou perda de carga",
+        "Resposta numérica dos vínculos e caminhos de carga modelados nas issues 13 a 20, incluindo rótulas, molas e aberturas"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "Motor geométrico e solver qualificados"
+      ],
+      "source_ids": [
+        "TQ-01",
+        "CY-01",
+        "N17"
+      ],
+      "depends_on": [
+        "PRU-024"
+      ],
+      "status": "planned",
+      "github_number": 25,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/25"
+    },
+    {
+      "sequence": 26,
+      "key": "PRU-026",
+      "title": "Segunda ordem geométrica, instabilidade e imperfeições",
+      "phase": "03",
+      "phase_name": "Motor de análise estrutural",
+      "goal": "Distinguir convergência numérica de estabilidade estrutural.",
+      "scope": [
+        "P-Delta global, efeitos locais e formulação geométrica com domínio definido",
+        "Flambagem elástica como ferramenta diagnóstica, sem confundir com resistência de cálculo",
+        "Imperfeições e cargas nocionais conforme pacote aplicável",
+        "Critérios de convergência, incremento e estado limite de estabilidade",
+        "Ativação, desativação e reengate de barras unilaterais e cabos pré-tensionados por combinação e etapa"
+      ],
+      "acceptance": [
+        "Estrutura instável não é estabilizada por molas artificiais ocultas",
+        "Método informa limitações para placas, barras e grandes deslocamentos",
+        "Ausência de convergência bloqueia resultados finais",
+        "Tirante frouxo não conserva rigidez compressiva nem estabiliza artificialmente o modelo"
+      ],
+      "validation": [
+        "Coluna de Euler, pórtico deslocável e caso próximo da carga crítica",
+        "Comparar trajetória carga-deslocamento com referência independente",
+        "Verificar dependência de passo e perturbação inicial",
+        "Contraventamento cruzado sob inversão de vento e cabo com pré-tensão contra referência independente"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "OpenSees sob licença compatível",
+        "CalculiX",
+        "Backend qualificado"
+      ],
+      "source_ids": [
+        "N20",
+        "N21",
+        "N22",
+        "TQ-01",
+        "CY-03",
+        "CY-04",
+        "CY-05"
+      ],
+      "depends_on": [
+        "PRU-025"
+      ],
+      "status": "planned",
+      "github_number": 26,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/26"
+    },
+    {
+      "sequence": 27,
+      "key": "PRU-027",
+      "title": "Não linearidade física e rigidez dependente do estado",
+      "phase": "03",
+      "phase_name": "Motor de análise estrutural",
+      "goal": "Representar fissuração e resposta constitutiva sem atalhos não documentados.",
+      "scope": [
+        "Leis constitutivas, integração de seções e modelos de dano/plasticidade escolhidos",
+        "Rigidez fissurada, descarregamento e atualização iterativa",
+        "Critérios de convergência por resíduo, deslocamento e energia",
+        "Separar análise não linear de coeficientes simplificados normativos"
+      ],
+      "acceptance": [
+        "Lei e parâmetros usados constam do resultado",
+        "Divergência e solução dependente de caminho ficam explícitas",
+        "Combinações não lineares não são obtidas por soma indevida de respostas"
+      ],
+      "validation": [
+        "Diagrama momento-curvatura independente e ensaio numérico de seção",
+        "Ciclos de carga quando o modelo os declarar suportados",
+        "Sensibilidade a malha, regularização e tamanho de incremento"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "OpenSees sob licença compatível",
+        "Code_Aster",
+        "Backend qualificado"
+      ],
+      "source_ids": [
+        "TQ-01",
+        "N17",
+        "N22"
+      ],
+      "depends_on": [
+        "PRU-026"
+      ],
+      "status": "planned",
+      "github_number": 27,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/27"
+    },
+    {
+      "sequence": 28,
+      "key": "PRU-028",
+      "title": "Modos próprios, massas e participação modal",
+      "phase": "03",
+      "phase_name": "Motor de análise estrutural",
+      "goal": "Fornecer uma base verificável às análises dinâmicas.",
+      "scope": [
+        "Matriz de massa consistente/concentrada e origem das massas",
+        "Autovalores, modos, normalização e participação",
+        "Modos rígidos e efeitos de diafragma, vinculação e unidades",
+        "Diagnóstico de truncamento modal e frequências não físicas"
+      ],
+      "acceptance": [
+        "Peso próprio e parcelas variáveis não duplicam massa",
+        "Modos relevantes atendem critério de participação registrado",
+        "Frequência, unidade e normalização acompanham cada modo exportado"
+      ],
+      "validation": [
+        "Oscilador de um grau, pórtico de múltiplos graus e viga analítica",
+        "Ortogonalidade e convergência de frequências",
+        "Teste de massa zero, negativa e vínculo insuficiente"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "ARPACK",
+        "SLEPc",
+        "Backend qualificado"
+      ],
+      "source_ids": [
+        "TQ-01",
+        "CY-02",
+        "N17"
+      ],
+      "depends_on": [
+        "PRU-027"
+      ],
+      "status": "planned",
+      "github_number": 28,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/28"
+    },
+    {
+      "sequence": 29,
+      "key": "PRU-029",
+      "title": "Resposta dinâmica, espectral e histórico no tempo",
+      "phase": "03",
+      "phase_name": "Motor de análise estrutural",
+      "goal": "Executar métodos dinâmicos com superposição e amortecimento controlados.",
+      "scope": [
+        "Resposta espectral com combinação modal adequada e direções",
+        "Integração no tempo, excitação de base e ações periódicas",
+        "Amortecimento, passo, duração e estabilidade numérica",
+        "Estado completo da análise e tratamento de sinais e envelopes"
+      ],
+      "acceptance": [
+        "Resultado indica método, número de modos, amortecimento e passo",
+        "Máximos não simultâneos não são combinados como se fossem concomitantes",
+        "Método incompatível com não linearidade selecionada é impedido"
+      ],
+      "validation": [
+        "Oscilador forçado e resposta a degrau contra solução analítica",
+        "Sensibilidade a passo, amortecimento e truncamento",
+        "Comparação com referência independente em modelo multigrau"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "OpenSees sob licença compatível",
+        "Code_Aster",
+        "Backend qualificado"
+      ],
+      "source_ids": [
+        "TQ-01",
+        "CY-02",
+        "N17"
+      ],
+      "depends_on": [
+        "PRU-028"
+      ],
+      "status": "planned",
+      "github_number": 29,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/29"
+    },
+    {
+      "sequence": 30,
+      "key": "PRU-030",
+      "title": "Etapas construtivas, fluência e retração no motor",
+      "phase": "03",
+      "phase_name": "Motor de análise estrutural",
+      "goal": "Preservar a história de execução que altera a resposta estrutural.",
+      "scope": [
+        "Ativação/desativação de elementos, escoramentos e ações por etapa",
+        "Idade dos materiais, fluência, retração e deformações impostas",
+        "Transferência de estado entre etapas e acúmulo de resposta",
+        "Modelos dependentes do tempo separados dos pacotes normativos"
+      ],
+      "acceptance": [
+        "Ordem das etapas é parte do snapshot e afeta resultados de modo rastreável",
+        "Remover escoramento não zera deformações e esforços anteriores",
+        "Não linearidade e efeitos diferidos mantêm história coerente"
+      ],
+      "validation": [
+        "Viga escorada e desescorada em sequência conhecida",
+        "Comparar execução por etapas com modelo instantâneo e justificar diferenças",
+        "Teste de passo temporal e limites iniciais/finais"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "Backend com análise por etapas qualificado"
+      ],
+      "source_ids": [
+        "EB-01",
+        "TQ-01",
+        "TQ-02"
+      ],
+      "depends_on": [
+        "PRU-029"
+      ],
+      "status": "planned",
+      "github_number": 30,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/30"
+    },
+    {
+      "sequence": 31,
+      "key": "PRU-031",
+      "title": "Ações permanentes, variáveis e situações especiais",
+      "phase": "04",
+      "phase_name": "Ações, combinações e resultados",
+      "goal": "Cadastrar ações brasileiras de maneira explícita e auditável.",
+      "scope": [
+        "Peso próprio, revestimentos, paredes, ocupação, equipamentos e armazenamento",
+        "Temperatura, retração imposta, recalque, água, solo e ações de montagem",
+        "Grupos de simultaneidade, cargas alternadas e posição variável quando aplicável",
+        "Fonte e responsável por valores informados e catálogos"
+      ],
+      "acceptance": [
+        "Cada ação tem unidade, categoria, origem e duração",
+        "Valor sugerido não é aceito como dado confirmado sem identificação",
+        "Cargas incompatíveis ou ausentes impedem conclusão do caso"
+      ],
+      "validation": [
+        "Área tributária, carga concentrada, temperatura e recalque conhecidos",
+        "Cargas alternadas em pavimentos e reservatório cheio/vazio",
+        "Peso próprio manual e automático não coexistem sem regra explícita"
+      ],
+      "norms": [
+        "NBR 6120",
+        "NBR 6122",
+        "NBR 9062"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "TQ-01",
+        "CY-01",
+        "N01"
+      ],
+      "depends_on": [
+        "PRU-030"
+      ],
+      "status": "planned",
+      "github_number": 31,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/31"
+    },
+    {
+      "sequence": 32,
+      "key": "PRU-032",
+      "title": "Combinações ELU e ELS conforme pacote normativo",
+      "phase": "04",
+      "phase_name": "Ações, combinações e resultados",
+      "goal": "Gerar e explicar combinações e envelopes sem perder simultaneidade.",
+      "scope": [
+        "Situações persistentes, transitórias e excepcionais; ELS raro, frequente e quase permanente",
+        "Fatores por ação, favorabilidade, duração e categoria normativa",
+        "Envelopes com combinação governante e esforços concomitantes",
+        "Reprocessamento próprio para combinações com resposta não linear"
+      ],
+      "acceptance": [
+        "Cada coeficiente mostra norma, edição, item e condição de aplicação",
+        "Lista de combinações pode ser auditada e reproduzida",
+        "Não usar máximos independentes de N, M e V como combinação física inexistente"
+      ],
+      "validation": [
+        "Exemplos independentes com ação principal variável e carregamentos alternados",
+        "Casos favorável/desfavorável, ausência de ação e exclusão mútua",
+        "Comparar enumeração completa e otimizada sem perder caso governante"
+      ],
+      "norms": [
+        "NBR 8681",
+        "NBR 6118",
+        "NBR 8800",
+        "NBR 7190"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "N01",
+        "TQ-01",
+        "CY-01"
+      ],
+      "depends_on": [
+        "PRU-031"
+      ],
+      "status": "planned",
+      "github_number": 32,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/32"
+    },
+    {
+      "sequence": 33,
+      "key": "PRU-033",
+      "title": "Vento estático, direções e pressões externas/internas",
+      "phase": "04",
+      "phase_name": "Ações, combinações e resultados",
+      "goal": "Aplicar vento com dados de local e geometria conferíveis.",
+      "scope": [
+        "Velocidade de referência com fonte autorizada, terreno, topografia e fatores",
+        "Pressões internas/externas, zonas, cobertura e múltiplas direções",
+        "Forças distribuídas e resultantes por nível e componente",
+        "Entrada de ensaio específico com unidades, orientação e procedência"
+      ],
+      "acceptance": [
+        "Mapas e coeficientes têm edição e direitos de uso verificados",
+        "Hipótese de abertura dominante e permeabilidade é visível",
+        "Forças e momentos resultantes fecham com as pressões aplicadas"
+      ],
+      "validation": [
+        "Edifício regular, galpão com cobertura e caso de abertura dominante",
+        "Rotação do edifício e direção do vento",
+        "Reprodução independente de pressões e resultantes"
+      ],
+      "norms": [
+        "NBR 6123",
+        "NBR 8681"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "EB-02",
+        "CY-01",
+        "N01"
+      ],
+      "depends_on": [
+        "PRU-032"
+      ],
+      "status": "planned",
+      "github_number": 33,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/33"
+    },
+    {
+      "sequence": 34,
+      "key": "PRU-034",
+      "title": "Efeitos dinâmicos do vento e dados de túnel",
+      "phase": "04",
+      "phase_name": "Ações, combinações e resultados",
+      "goal": "Cobrir estruturas sensíveis à ação dinâmica do vento.",
+      "scope": [
+        "Critérios de aplicabilidade, frequências, amortecimento e correlação espacial",
+        "Resposta longitudinal/transversal e acelerações nos métodos qualificados",
+        "Importação de forças/históricos de túnel com mapa de eixos",
+        "Combinação e documentação das hipóteses adotadas"
+      ],
+      "acceptance": [
+        "Método estático não é usado fora do domínio sem bloqueio ou revisão técnica",
+        "Dados externos conservam escala, tempo, orientação e autoria",
+        "Critérios de conforto e resistência são apresentados separadamente"
+      ],
+      "validation": [
+        "Benchmark de edifício esbelto e resposta modal independente",
+        "Mudança de amortecimento e frequência produz tendência física esperada",
+        "Arquivo de túnel com unidade incorreta é rejeitado"
+      ],
+      "norms": [
+        "NBR 6123",
+        "NBR 8681"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "EB-02",
+        "TQ-01",
+        "N01"
+      ],
+      "depends_on": [
+        "PRU-033"
+      ],
+      "status": "planned",
+      "github_number": 34,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/34"
+    },
+    {
+      "sequence": 35,
+      "key": "PRU-035",
+      "title": "Ação sísmica e dimensionamento sismorresistente",
+      "phase": "04",
+      "phase_name": "Ações, combinações e resultados",
+      "goal": "Implementar os requisitos sísmicos aplicáveis a edificações brasileiras.",
+      "scope": [
+        "Parâmetros de local, solo, importância, sistema e regularidade",
+        "Método estático equivalente e espectral quando admissíveis",
+        "Torção acidental, direções, deslocamentos e forças de projeto",
+        "Requisitos de concepção e detalhamento ligados aos materiais"
+      ],
+      "acceptance": [
+        "Seleção de método respeita limitações normativas registradas",
+        "Deslocamentos, participação modal e combinações são auditáveis",
+        "Redução de força não elimina exigências de ductilidade e detalhes",
+        "O aceite desta etapa cobre ações, métodos e diagnósticos; requisitos resistentes e detalhes ainda não implementados ficam pendentes e bloqueiam emissão até as respectivas issues e campanhas finais"
+      ],
+      "validation": [
+        "Edifícios regular e irregular com verificação independente",
+        "Base shear, modos e torção em casos conhecidos",
+        "Fronteiras de categoria e limites de aplicação testados"
+      ],
+      "norms": [
+        "NBR 15421",
+        "NBR 8681",
+        "NBR 6118",
+        "NBR 8800"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "TQ-01",
+        "CY-02",
+        "N01"
+      ],
+      "depends_on": [
+        "PRU-034"
+      ],
+      "status": "planned",
+      "github_number": 35,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/35"
+    },
+    {
+      "sequence": 36,
+      "key": "PRU-036",
+      "title": "Estabilidade global, deslocabilidade e deriva",
+      "phase": "04",
+      "phase_name": "Ações, combinações e resultados",
+      "goal": "Explicar os mecanismos que governam a estabilidade do conjunto.",
+      "scope": [
+        "Indicadores e métodos normativos de estabilidade por material",
+        "Gama-z e parâmetros simplificados apenas no domínio permitido",
+        "Deslocamentos entre pavimentos, torção e efeitos de segunda ordem",
+        "Comparação entre método simplificado e análise refinada quando requerida"
+      ],
+      "acceptance": [
+        "Coeficiente fora de aplicabilidade não vira aprovação por extrapolação",
+        "Esforços amplificados preservam combinação e concomitância",
+        "Relatório identifica pavimento, direção e combinação governantes"
+      ],
+      "validation": [
+        "Pórticos pouco e muito deslocáveis, assimétricos e com transição",
+        "Comparar método simplificado com segunda ordem direta",
+        "Testes nos limites de aplicabilidade normativa"
+      ],
+      "norms": [
+        "NBR 6118",
+        "NBR 8800",
+        "NBR 7190"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "TQ-01",
+        "EB-02",
+        "N01"
+      ],
+      "depends_on": [
+        "PRU-035"
+      ],
+      "status": "planned",
+      "github_number": 36,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/36"
+    },
+    {
+      "sequence": 37,
+      "key": "PRU-037",
+      "title": "Deslocamentos imediatos, diferidos e recalques impostos",
+      "phase": "04",
+      "phase_name": "Ações, combinações e resultados",
+      "goal": "Verificar serviço considerando o que realmente se deforma ao longo do tempo.",
+      "scope": [
+        "Flecha total, incremental, contraflecha e limites por finalidade",
+        "Fissuração, fluência, retração e etapas nos modelos aplicáveis",
+        "Recalques e deslocamentos diferenciais impostos",
+        "Compatibilidade com vedações e componentes não estruturais"
+      ],
+      "acceptance": [
+        "Parcela instantânea e diferida são separadas e rastreáveis",
+        "Contraflecha não esconde verificação de resistência ou vibração",
+        "Limites e combinações de serviço têm fonte normativa identificada"
+      ],
+      "validation": [
+        "Viga fissurada com carga sustentada e sequência construtiva",
+        "Apoios com recalque diferencial conhecido",
+        "Comparação de deslocamento incremental após execução de vedação"
+      ],
+      "norms": [
+        "NBR 6118",
+        "NBR 8800",
+        "NBR 7190",
+        "NBR 15575"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "EB-02",
+        "TQ-01",
+        "N01"
+      ],
+      "depends_on": [
+        "PRU-036"
+      ],
+      "status": "planned",
+      "github_number": 37,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/37"
+    },
+    {
+      "sequence": 38,
+      "key": "PRU-038",
+      "title": "Vibração em serviço, fadiga e ações repetidas",
+      "phase": "04",
+      "phase_name": "Ações, combinações e resultados",
+      "goal": "Verificar fenômenos que uma análise estática de resistência não cobre.",
+      "scope": [
+        "Frequência, aceleração, amortecimento e critérios de conforto",
+        "Espectros/ciclos de ações e faixas de tensão para fadiga",
+        "Detalhes e categorias normativas por material suportado",
+        "Registro de hipóteses de uso e limites do método"
+      ],
+      "acceptance": [
+        "Verificação de fadiga usa faixa concomitante e histórico coerente",
+        "Ressonância e dados insuficientes geram impedimentos claros",
+        "Método de concreto não é reutilizado em aço ou madeira sem regra própria",
+        "Nesta etapa ficam verificadas a infraestrutura de ciclos/vibração e regras com dados suficientes; emissão por material exige verificação da seção, armadura e ligação reais nas issues posteriores"
+      ],
+      "validation": [
+        "Piso sob ação periódica e membro sob ciclo conhecido",
+        "Casos imediatamente abaixo e acima de limites",
+        "Comparação com cálculo independente e sensibilidade ao amortecimento"
+      ],
+      "norms": [
+        "NBR 6118",
+        "NBR 8800",
+        "NBR 7190",
+        "NBR 6120"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "TQ-01",
+        "CY-02",
+        "N01"
+      ],
+      "depends_on": [
+        "PRU-037"
+      ],
+      "status": "planned",
+      "github_number": 38,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/38"
+    },
+    {
+      "sequence": 39,
+      "key": "PRU-039",
+      "title": "Ações térmicas, incêndio e situações excepcionais",
+      "phase": "04",
+      "phase_name": "Ações, combinações e resultados",
+      "goal": "Preparar análises de situações excepcionais sem misturar critérios de uso normal.",
+      "scope": [
+        "Exposição térmica, tempo requerido e combinações excepcionais",
+        "Temperatura uniforme/gradiente e restrições de dilatação",
+        "Interfaces para propriedades e resistências a quente por material",
+        "Robustez e perdas locais de suporte nos métodos formalmente definidos"
+      ],
+      "acceptance": [
+        "Tempo de resistência requerido não é deduzido sem os dados de uso e enquadramento",
+        "Resultado distingue ação térmica, análise e resistência a quente",
+        "Situação fora do método validado permanece bloqueada",
+        "O aceite desta etapa é do gerador de ações/análise térmica; resistência a quente é liberada somente após as issues específicas de cada material"
+      ],
+      "validation": [
+        "Barra livre e impedida sob temperatura conhecida",
+        "Combinação excepcional versus normal",
+        "Casos de exposição assimétrica e gradiente térmico"
+      ],
+      "norms": [
+        "NBR 14432",
+        "NBR 15200",
+        "NBR 14323",
+        "NBR 8681"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "CY-01",
+        "EB-02",
+        "N01"
+      ],
+      "depends_on": [
+        "PRU-038"
+      ],
+      "status": "planned",
+      "github_number": 39,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/39"
+    },
+    {
+      "sequence": 40,
+      "key": "PRU-040",
+      "title": "Exploração de resultados e explicação verificável",
+      "phase": "04",
+      "phase_name": "Ações, combinações e resultados",
+      "goal": "Permitir entender cada resultado e localizar o que precisa ser corrigido.",
+      "scope": [
+        "Diagramas, deformadas, isovalores, reações e cortes",
+        "Filtros de combinação, etapa, material e estado de verificação",
+        "Consulta de hipótese, método, valor, limite e caso governante",
+        "Explicações em linguagem natural vinculadas a dados calculados"
+      ],
+      "acceptance": [
+        "Deformada identifica escala gráfica e unidade física",
+        "Resultado desatualizado é distinguido e não pode alimentar emissão final",
+        "Toda explicação quantitativa aponta objeto, revisão e evidência existente"
+      ],
+      "validation": [
+        "Seleção de extremo recupera esforços concomitantes corretos",
+        "Troca de combinação não mantém legenda ou valor anterior",
+        "UI e MCP devolvem os mesmos resultados e estados"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "Three.js",
+        "Biblioteca de gráficos qualificada"
+      ],
+      "source_ids": [
+        "TQ-01",
+        "CY-01",
+        "USR-01"
+      ],
+      "depends_on": [
+        "PRU-039"
+      ],
+      "status": "planned",
+      "github_number": 40,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/40"
+    },
+    {
+      "sequence": 41,
+      "key": "PRU-041",
+      "title": "Concreto: materiais, durabilidade e hipóteses normativas",
+      "phase": "05",
+      "phase_name": "Dimensionamento de concreto",
+      "goal": "Fundamentar o dimensionamento em propriedades e condições coerentes.",
+      "scope": [
+        "Classes de concreto e aço, diagramas, fatores e intervalos de aplicação",
+        "Agressividade, cobrimentos, vida útil e requisitos de durabilidade",
+        "Parâmetros por idade, condição e estado limite",
+        "Catálogo de regras com edição, item, justificativa e testes"
+      ],
+      "acceptance": [
+        "Valores de material não são extrapolados além do domínio implementado",
+        "Classe ambiental e cobrimento permanecem visíveis e revisáveis",
+        "Edição 6118 e emendas do projeto estão vinculadas às regras executadas"
+      ],
+      "validation": [
+        "Classes nos limites e fora do intervalo autorizado",
+        "Diferenciar resistência característica, média e de cálculo",
+        "Revisão independente das tabelas e coeficientes transcritos"
+      ],
+      "norms": [
+        "NBR 6118",
+        "NBR 12655",
+        "NBR 7480",
+        "NBR 14931"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "N01",
+        "EB-02",
+        "CY-01"
+      ],
+      "depends_on": [
+        "PRU-040"
+      ],
+      "status": "planned",
+      "github_number": 41,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/41"
+    },
+    {
+      "sequence": 42,
+      "key": "PRU-042",
+      "title": "Concreto: seções e interação N-Mx-My",
+      "phase": "05",
+      "phase_name": "Dimensionamento de concreto",
+      "goal": "Verificar resistência de seções sob esforços concomitantes.",
+      "scope": [
+        "Compatibilidade de deformações, integração e domínios resistentes",
+        "Seções retangulares, circulares, T, L e poligonais com aberturas",
+        "Armaduras em posições reais e diagramas materiais normativos",
+        "Superfícies resistentes, combinação governante e deformações limite",
+        "Modo de verificação de seção isolada por esforços externos, com unidades, combinações, concomitância e procedência"
+      ],
+      "acceptance": [
+        "Interação biaxial usa N, Mx e My da mesma combinação",
+        "Armadura removida ou movida altera a capacidade e invalida a verificação",
+        "Discretização e iteração têm tolerância e diagnóstico definidos",
+        "Relatório de elemento isolado delimita a conclusão e não declara aprovada a superestrutura que não foi modelada"
+      ],
+      "validation": [
+        "Compressão centrada, flexão simples e oblíqua contra cálculo independente",
+        "Seções simétricas e assimétricas sob rotação",
+        "Fronteiras dos domínios e casos quase sem força normal"
+      ],
+      "norms": [
+        "NBR 6118"
+      ],
+      "reuse_candidates": [
+        "Biblioteca de integração de seções qualificada"
+      ],
+      "source_ids": [
+        "N01",
+        "TQ-01"
+      ],
+      "depends_on": [
+        "PRU-041"
+      ],
+      "status": "planned",
+      "github_number": 42,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/42"
+    },
+    {
+      "sequence": 43,
+      "key": "PRU-043",
+      "title": "Concreto: vigas à flexão, força normal e ductilidade",
+      "phase": "05",
+      "phase_name": "Dimensionamento de concreto",
+      "goal": "Dimensionar vigas com armadura exequível e comportamento dúctil.",
+      "scope": [
+        "Flexão positiva/negativa, armadura simples/dupla e ação normal",
+        "Armaduras mínima/máxima, redistribuição permitida e limites de ductilidade",
+        "Seções T e largura colaborante com domínio explícito",
+        "Escolha discreta de barras com comparação de alternativas"
+      ],
+      "acceptance": [
+        "Armadura selecionada é rechecada pela geometria real, incluindo altura útil",
+        "Redistribuição não ocorre sem cumprir seus requisitos",
+        "Cada trecho indica demanda, capacidade, combinação e regra governante"
+      ],
+      "validation": [
+        "Viga biapoiada, contínua, balanço e seção T",
+        "Casos abaixo/acima da armadura mínima e limite de ductilidade",
+        "Comparação manual independente de três seções representativas"
+      ],
+      "norms": [
+        "NBR 6118"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "EB-02",
+        "CY-01",
+        "N01"
+      ],
+      "depends_on": [
+        "PRU-042"
+      ],
+      "status": "planned",
+      "github_number": 43,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/43"
+    },
+    {
+      "sequence": 44,
+      "key": "PRU-044",
+      "title": "Concreto: cisalhamento, torção e interação em vigas",
+      "phase": "05",
+      "phase_name": "Dimensionamento de concreto",
+      "goal": "Cobrir modos de ruptura que não são resolvidos pela flexão.",
+      "scope": [
+        "Modelos normativos de cisalhamento e compressão diagonal",
+        "Torção de equilíbrio/compatibilidade e interação com esforço cortante",
+        "Armadura transversal/longitudinal, mínimos e espaçamentos",
+        "Aberturas e regiões onde o modelo de viga convencional é inaplicável"
+      ],
+      "acceptance": [
+        "Combinação usa esforços concomitantes e sinais coerentes",
+        "Ruptura de biela comprimida não é resolvida só aumentando estribos",
+        "Abertura fora do modelo permitido exige método específico e bloqueia simplificação"
+      ],
+      "validation": [
+        "Viga sob V, T e V+T, incluindo troca de combinação governante",
+        "Limites de compressão diagonal e espaçamento",
+        "Conferência independente de armadura e capacidade"
+      ],
+      "norms": [
+        "NBR 6118"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "EB-02",
+        "CY-01",
+        "N01"
+      ],
+      "depends_on": [
+        "PRU-043"
+      ],
+      "status": "planned",
+      "github_number": 44,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/44"
+    },
+    {
+      "sequence": 45,
+      "key": "PRU-045",
+      "title": "Concreto: pilares, esbeltez e segunda ordem local",
+      "phase": "05",
+      "phase_name": "Dimensionamento de concreto",
+      "goal": "Dimensionar pilares com imperfeições e instabilidade compatíveis com o modelo global.",
+      "scope": [
+        "Classificação de esbeltez, comprimento equivalente e vinculação",
+        "Métodos locais normativos e análise refinada quando exigida",
+        "Flexão oblíqua, excentricidades, fluência e efeitos mínimos",
+        "Interação entre forças globais e amplificações locais sem dupla contagem"
+      ],
+      "acceptance": [
+        "Comprimento de flambagem tem hipótese rastreável e pode ser inspecionado",
+        "Método simplificado fora do domínio não é usado",
+        "Pilar de transição conserva esforços e efeitos de montagem pertinentes"
+      ],
+      "validation": [
+        "Pilar curto, esbelto, em balanço e com seção variável",
+        "Casos de força normal muito baixa e flexão biaxial",
+        "Comparar método local com análise refinada independente"
+      ],
+      "norms": [
+        "NBR 6118"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "EB-02",
+        "TQ-01",
+        "N01"
+      ],
+      "depends_on": [
+        "PRU-044"
+      ],
+      "status": "planned",
+      "github_number": 45,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/45"
+    },
+    {
+      "sequence": 46,
+      "key": "PRU-046",
+      "title": "Concreto: lajes maciças, nervuradas e faixas de dimensionamento",
+      "phase": "05",
+      "phase_name": "Dimensionamento de concreto",
+      "goal": "Transformar esforços de pavimentos em armaduras com método consistente.",
+      "scope": [
+        "Lajes unidirecionais/bidirecionais, nervuradas e grelhas",
+        "Integração de esforços, torção de placa e orientação das armaduras",
+        "Bordas, balanços, aberturas, distribuição e mínimos",
+        "Modelos de apoio e faixas com critérios normativos"
+      ],
+      "acceptance": [
+        "Malha mais fina não produz mudança arbitrária de armadura por singularidade",
+        "Capa e nervuras não são dimensionadas com rigidez duplicada",
+        "Armaduras em duas direções usam transformação de esforços explicitada"
+      ],
+      "validation": [
+        "Placa apoiada, laje contínua e nervurada contra referências independentes",
+        "Convergência de momento integrado em faixa",
+        "Abertura junto a apoio e borda livre com verificação específica"
+      ],
+      "norms": [
+        "NBR 6118"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "EB-02",
+        "TQ-02",
+        "CY-01"
+      ],
+      "depends_on": [
+        "PRU-045"
+      ],
+      "status": "planned",
+      "github_number": 46,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/46"
+    },
+    {
+      "sequence": 47,
+      "key": "PRU-047",
+      "title": "Concreto: punção, pilares de borda e capitéis",
+      "phase": "05",
+      "phase_name": "Dimensionamento de concreto",
+      "goal": "Verificar transferência laje-pilar com geometrias e momentos reais.",
+      "scope": [
+        "Perímetros críticos, borda, canto, aberturas e alterações de espessura",
+        "Momento transferido, assimetria e armadura de punção",
+        "Capitéis, ábacos e detalhamento da região",
+        "Vínculo entre reações, combinação e esforço de punção"
+      ],
+      "acceptance": [
+        "Abertura que reduz perímetro altera capacidade de forma rastreável",
+        "Pilar de borda/canto não usa perímetro de pilar interno",
+        "Aumento de armadura não oculta limite de resistência do concreto"
+      ],
+      "validation": [
+        "Pilares interno, de borda e de canto com momento não nulo",
+        "Perímetros interceptados por aberturas e mudança de espessura",
+        "Comparação independente de geometria, demanda e capacidade",
+        "Pilar apoiado em laje de transferência com momentos e perímetros críticos próprios"
+      ],
+      "norms": [
+        "NBR 6118"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "EB-02",
+        "CY-01",
+        "N01"
+      ],
+      "depends_on": [
+        "PRU-046"
+      ],
+      "status": "planned",
+      "github_number": 47,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/47"
+    },
+    {
+      "sequence": 48,
+      "key": "PRU-048",
+      "title": "Concreto: fissuração e serviço com armadura efetiva",
+      "phase": "05",
+      "phase_name": "Dimensionamento de concreto",
+      "goal": "Verificar serviço depois da escolha real de armaduras.",
+      "scope": [
+        "Abertura de fissura, tensões, deformação e combinações de serviço",
+        "Rigidez e altura útil atualizadas pela armadura efetiva",
+        "Fluência, retração e contribuição do concreto tracionado nos métodos aprovados",
+        "Limites por exposição, finalidade e situação de projeto"
+      ],
+      "acceptance": [
+        "Alterar bitola, quantidade ou posição das barras recalcula ELS",
+        "Armadura suficiente no ELU não aprova ELS automaticamente",
+        "Resultado separa premissas e parcela de longo prazo"
+      ],
+      "validation": [
+        "Viga fissurada, peça tracionada e laje com carga sustentada",
+        "Caso que passa ELU e falha em fissuração",
+        "Comparação com referências independentes e análise de sensibilidade"
+      ],
+      "norms": [
+        "NBR 6118",
+        "NBR 15575"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "EB-02",
+        "TQ-02",
+        "N01"
+      ],
+      "depends_on": [
+        "PRU-047"
+      ],
+      "status": "planned",
+      "github_number": 48,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/48"
+    },
+    {
+      "sequence": 49,
+      "key": "PRU-049",
+      "title": "Concreto: paredes, núcleos e sistema de paredes moldadas no local",
+      "phase": "05",
+      "phase_name": "Dimensionamento de concreto",
+      "goal": "Dimensionar elementos de superfície e núcleos com esforços integrados.",
+      "scope": [
+        "Pilares-parede, paredes esbeltas, núcleos abertos/fechados",
+        "Integração de N, M, V e torção por região resistente",
+        "Instabilidade local, regiões de borda e vigas de acoplamento",
+        "Aberturas e ligação entre paredes e lajes",
+        "Sistema de paredes de concreto moldadas no local: paredes do edifício, juntas, encontros, aberturas, telas e reforços conforme NBR 16055"
+      ],
+      "acceptance": [
+        "Esforços de casca são convertidos com método e seção de corte documentados",
+        "Instabilidade de região de parede não desaparece no resultado global",
+        "Armadura proposta respeita cobertura, distribuição e interferências",
+        "A verificação do sistema de paredes não é substituída pela de um pilar-parede isolado"
+      ],
+      "validation": [
+        "Parede isolada, núcleo assimétrico e parede com abertura",
+        "Comparação de resultantes de corte com reações",
+        "Benchmark independente de região de borda e acoplamento",
+        "Edifício de paredes moldadas no local com aberturas e transferência para fundação, verificado independentemente"
+      ],
+      "norms": [
+        "NBR 6118",
+        "NBR 15421",
+        "NBR 16055"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "TQ-01",
+        "EB-02",
+        "N01",
+        "TQ-07",
+        "N23"
+      ],
+      "depends_on": [
+        "PRU-048"
+      ],
+      "status": "planned",
+      "github_number": 49,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/49"
+    },
+    {
+      "sequence": 50,
+      "key": "PRU-050",
+      "title": "Concreto: regiões descontínuas, consolos e elementos inclinados",
+      "phase": "05",
+      "phase_name": "Dimensionamento de concreto",
+      "goal": "Cobrir peças nas quais a teoria usual de vigas é insuficiente.",
+      "scope": [
+        "Bielas e tirantes, nós, ancoragens e limites de compressão",
+        "Consolos, dentes Gerber, vigas-parede, transições e aberturas",
+        "Escadas, rampas e marquises com armaduras e vinculações próprias",
+        "Hipótese resistente explícita, equilíbrio local e revisão do modelo"
+      ],
+      "acceptance": [
+        "Modelo de bielas fecha equilíbrio e permite conferir os nós",
+        "Armadura de suspensão e ancoragem participa da verificação",
+        "Marquise e escada não são aprovadas só pela armadura de flexão"
+      ],
+      "validation": [
+        "Consolo, viga-parede e região com abertura contra cálculo independente",
+        "Escada autoportante e balanço com verificação de apoio",
+        "Casos com falha de nó ou ancoragem apesar de tirante suficiente"
+      ],
+      "norms": [
+        "NBR 6118",
+        "NBR 9062"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "EB-02",
+        "TQ-06",
+        "N01"
+      ],
+      "depends_on": [
+        "PRU-049"
+      ],
+      "status": "planned",
+      "github_number": 50,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/50"
+    },
+    {
+      "sequence": 51,
+      "key": "PRU-051",
+      "title": "Armaduras de vigas, ancoragens e emendas construtíveis",
+      "phase": "06",
+      "phase_name": "Detalhamento e concreto avançado",
+      "goal": "Produzir armaduras que possam ser executadas e verificadas no modelo.",
+      "scope": [
+        "Bitolas, camadas, espaçamentos, cobrimento, dobramento e extensão",
+        "Ancoragens, emendas, cortes, estribos e armadura de pele",
+        "Editor 2D/3D associado ao dimensionamento",
+        "Numeração, comprimento e lista de barras vinculados ao objeto"
+      ],
+      "acceptance": [
+        "Detalhe respeita posição real e altura útil usada no cálculo",
+        "Edição manual exige reverificação automática",
+        "Barras que colidem ou não cabem geram impedimento localizado"
+      ],
+      "validation": [
+        "Viga contínua com mudança de seção e apoio estreito",
+        "Emenda em região inadequada e ancoragem insuficiente",
+        "Conferência de comprimento de corte, quantidade e representação gráfica"
+      ],
+      "norms": [
+        "NBR 6118",
+        "NBR 7480",
+        "NBR 14931"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "EB-02",
+        "CY-01",
+        "TQ-06"
+      ],
+      "depends_on": [
+        "PRU-050"
+      ],
+      "status": "planned",
+      "github_number": 51,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/51"
+    },
+    {
+      "sequence": 52,
+      "key": "PRU-052",
+      "title": "Armaduras de pilares, encontros e nós congestionados",
+      "phase": "06",
+      "phase_name": "Detalhamento e concreto avançado",
+      "goal": "Detalhar a transferência entre pilares, vigas e fundações.",
+      "scope": [
+        "Armadura longitudinal/transversal, mudanças de seção e arranques",
+        "Emendas, confinamento e requisitos de nó",
+        "Compatibilização 3D de barras concorrentes e sequência executiva",
+        "Editor com alternativas de arranjo e motivos de reprovação"
+      ],
+      "acceptance": [
+        "Encontro de vigas e pilar verifica espaço livre e ancoragem",
+        "Mudança de seção não interrompe continuidade sem detalhe",
+        "Quantitativos são extraídos das barras efetivamente detalhadas"
+      ],
+      "validation": [
+        "Nó de cobertura, nó intermediário e pilar com transição",
+        "Congestionamento deliberado detectado",
+        "Cálculo de altura útil atualizado após troca de arranjo"
+      ],
+      "norms": [
+        "NBR 6118",
+        "NBR 14931",
+        "NBR 15421"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "EB-02",
+        "CY-01",
+        "TQ-06"
+      ],
+      "depends_on": [
+        "PRU-051"
+      ],
+      "status": "planned",
+      "github_number": 52,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/52"
+    },
+    {
+      "sequence": 53,
+      "key": "PRU-053",
+      "title": "Armaduras de lajes, paredes, escadas e regiões especiais",
+      "phase": "06",
+      "phase_name": "Detalhamento e concreto avançado",
+      "goal": "Completar o detalhamento de superfícies e peças inclinadas.",
+      "scope": [
+        "Malhas, barras positivas/negativas, distribuição e bordas",
+        "Aberturas, punção, paredes, escadas e rampas",
+        "Compatibilidade de ancoragens entre subsistemas",
+        "Edição, numeração, listas e visualização por camada",
+        "Telas, reforços de aberturas, juntas e encontros de paredes moldadas no local"
+      ],
+      "acceptance": [
+        "Armaduras extras de abertura e punção estão vinculadas à verificação que as exige",
+        "Detalhes não se sobrepõem de modo ilegível nas vistas",
+        "A soma dos quantitativos coincide com as barras do modelo"
+      ],
+      "validation": [
+        "Laje com abertura junto a pilar, núcleo e escada plissada",
+        "Alteração de abertura atualiza barras e relatório de impacto",
+        "Revisão visual de desenhos e checagem independente de quantidades"
+      ],
+      "norms": [
+        "NBR 6118",
+        "NBR 14931",
+        "NBR 16055"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "EB-02",
+        "TQ-02",
+        "CY-01",
+        "TQ-07",
+        "N23"
+      ],
+      "depends_on": [
+        "PRU-052"
+      ],
+      "status": "planned",
+      "github_number": 53,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/53"
+    },
+    {
+      "sequence": 54,
+      "key": "PRU-054",
+      "title": "Protensão: cabos, traçados e ações equivalentes",
+      "phase": "06",
+      "phase_name": "Detalhamento e concreto avançado",
+      "goal": "Representar a protensão como sistema físico e analítico completo.",
+      "scope": [
+        "Pré/pós-tração, aderência, trajetória, força e etapas de aplicação",
+        "Cabos, bainhas, ancoragens, desvios e influência geométrica",
+        "Ações equivalentes e separação de efeitos primários/secundários",
+        "Compatibilidade com modelo global e documentação do lançamento"
+      ],
+      "acceptance": [
+        "Traçado e excentricidade ficam visíveis em planta, corte e analítico",
+        "Efeitos isostáticos/hiperestáticos não são duplicados entre ação e resistência",
+        "Aplicação por etapa preserva transferência e condições de apoio"
+      ],
+      "validation": [
+        "Viga isostática e contínua com cabo conhecido",
+        "Equilíbrio de forças equivalentes e ancoragens",
+        "Confronto independente de efeitos primários e secundários"
+      ],
+      "norms": [
+        "NBR 6118",
+        "NBR 7482",
+        "NBR 7483"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "EB-03",
+        "TQ-02",
+        "TQ-06"
+      ],
+      "depends_on": [
+        "PRU-053"
+      ],
+      "status": "planned",
+      "github_number": 54,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/54"
+    },
+    {
+      "sequence": 55,
+      "key": "PRU-055",
+      "title": "Protensão: perdas, ELU, ELS, fadiga e ancoragens",
+      "phase": "06",
+      "phase_name": "Detalhamento e concreto avançado",
+      "goal": "Validar cada fase e condição de serviço de peças protendidas.",
+      "scope": [
+        "Perdas por atrito, acomodação, encurtamento, relaxação, fluência e retração",
+        "Tensões na transferência e em serviço, descompressão e fissuração",
+        "Armadura passiva, resistência última e fadiga aplicável",
+        "Zonas de ancoragem e dados de sistema com procedência"
+      ],
+      "acceptance": [
+        "Perdas são discriminadas e não apenas um percentual arbitrário",
+        "Armaduras ativa/passiva e detalhes são verificados juntos",
+        "Catálogo de ancoragem não autoriza uso fora da configuração certificada"
+      ],
+      "validation": [
+        "Casos de pré-tração e pós-tração aderente/não aderente",
+        "Perdas instantâneas e diferidas contra referência independente",
+        "Exemplo que passa no estado final e falha na transferência"
+      ],
+      "norms": [
+        "NBR 6118",
+        "NBR 7482",
+        "NBR 7483"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "EB-03",
+        "TQ-02",
+        "TQ-06"
+      ],
+      "depends_on": [
+        "PRU-054"
+      ],
+      "status": "planned",
+      "github_number": 55,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/55"
+    },
+    {
+      "sequence": 56,
+      "key": "PRU-056",
+      "title": "Concreto em incêndio e detalhamento de proteção",
+      "phase": "06",
+      "phase_name": "Detalhamento e concreto avançado",
+      "goal": "Verificar resistência ao fogo nas situações e métodos qualificados.",
+      "scope": [
+        "Métodos tabulares, simplificados ou avançados com aplicabilidade",
+        "Exposição por face, distância de eixo e propriedades a quente",
+        "Pilares, vigas, lajes e estabilidade durante incêndio",
+        "Detalhes de proteção e relatório com tempo requerido"
+      ],
+      "acceptance": [
+        "Peça fora dos limites do método não recebe aprovação extrapolada",
+        "Mudança de cobrimento/arranjo recalcula a resistência ao fogo",
+        "Requisito de tempo vem de enquadramento documentado"
+      ],
+      "validation": [
+        "Viga, laje e pilar em exposições distintas",
+        "Fronteiras dos limites tabulares e geométricos",
+        "Comparação independente com exemplos normativos autorizados"
+      ],
+      "norms": [
+        "NBR 15200",
+        "NBR 14432",
+        "NBR 6118"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "EB-02",
+        "CY-01",
+        "N01"
+      ],
+      "depends_on": [
+        "PRU-055"
+      ],
+      "status": "planned",
+      "github_number": 56,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/56"
+    },
+    {
+      "sequence": 57,
+      "key": "PRU-057",
+      "title": "Pré-moldados: fases, ligações, apoios e tolerâncias",
+      "phase": "06",
+      "phase_name": "Detalhamento e concreto avançado",
+      "goal": "Projetar a peça desde a desforma até a estrutura solidarizada.",
+      "scope": [
+        "Desforma, armazenamento, içamento, transporte, montagem e fase final",
+        "Apoios, consolos, dentes, cálices, pinos e ligações semirrígidas",
+        "Resistências por idade, estabilidade temporária e tolerâncias",
+        "Sequência de montagem e detalhes de ligação",
+        "Insertos, painéis de fachada e elementos pi/TT/telhas no inventário de fabricação e montagem, com estados analisado/dimensionado separados"
+      ],
+      "acceptance": [
+        "Uma peça só é aprovada se todas as fases exigidas passarem",
+        "Apoio mínimo considera geometria e tolerância de montagem",
+        "Ligação modelada corresponde à rigidez e ao detalhe emitido"
+      ],
+      "validation": [
+        "Viga transportada, pilar em montagem e ligação com cálice",
+        "Caso crítico temporário diferente do estado final",
+        "Verificação independente de içamento, apoio e estabilidade",
+        "Painel de fechamento sob vento, içamento e apoio, com ligações e insertos conferidos"
+      ],
+      "norms": [
+        "NBR 9062",
+        "NBR 6118"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "EB-01",
+        "TQ-06",
+        "CY-01",
+        "TQ-09"
+      ],
+      "depends_on": [
+        "PRU-056"
+      ],
+      "status": "planned",
+      "github_number": 57,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/57"
+    },
+    {
+      "sequence": 58,
+      "key": "PRU-058",
+      "title": "Lajes pré-fabricadas, alveolares e seções compostas",
+      "phase": "06",
+      "phase_name": "Detalhamento e concreto avançado",
+      "goal": "Cobrir pavimentos industrializados com verificações de etapa e interface.",
+      "scope": [
+        "Vigotas, treliçadas, alveolares e capa de solidarização",
+        "Fase sem escoramento/com escoramento e resistência por idade",
+        "Cisalhamento de interface, apoio, aberturas e armadura complementar",
+        "Catálogos de fabricante vinculados à configuração ensaiada",
+        "Lajes/seções pi e TT e telhas estruturais pré-moldadas, com etapas, apoios e interfaces próprias"
+      ],
+      "acceptance": [
+        "Seção final composta não é usada antes da solidarização",
+        "Propriedades e limites de catálogo têm versão e origem",
+        "Alterar abertura ou apoio aciona revisão da peça industrializada"
+      ],
+      "validation": [
+        "Laje alveolar e treliçada nas fases de montagem e serviço",
+        "Caso de interface governante e apoio insuficiente",
+        "Comparação independente de esforços, flecha e resistência"
+      ],
+      "norms": [
+        "NBR 14859",
+        "NBR 14861",
+        "NBR 9062",
+        "NBR 6118"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "CY-01",
+        "EB-02",
+        "TQ-06"
+      ],
+      "depends_on": [
+        "PRU-057"
+      ],
+      "status": "planned",
+      "github_number": 58,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/58"
+    },
+    {
+      "sequence": 59,
+      "key": "PRU-059",
+      "title": "Reservatórios, piscinas e estruturas enterradas de concreto",
+      "phase": "06",
+      "phase_name": "Detalhamento e concreto avançado",
+      "goal": "Tratar água, solo, estanqueidade e alternância de carregamentos.",
+      "scope": [
+        "Paredes, fundo, tampa, juntas e restrições de deformação",
+        "Casos cheio/vazio, empuxo externo, subpressão e flutuação",
+        "Fissuração, temperatura e retração relacionadas à função",
+        "Detalhamento, aberturas e interação com apoios/solo"
+      ],
+      "acceptance": [
+        "Caso vazio com nível externo elevado integra as combinações",
+        "Estanqueidade não é presumida apenas por resistência ELU",
+        "Hipóteses de juntas e restrição constam do modelo e memorial",
+        "Nesta etapa a verificação estrutural usa pressões, níveis e vínculos explicitamente fornecidos; adequação geotécnica e interação ainda pendentes não são declaradas aprovadas antes das issues 61 a 70"
+      ],
+      "validation": [
+        "Reservatório elevado e enterrado com cenários de água distintos",
+        "Equilíbrio de pressão e verificação de flutuação",
+        "Comparação independente de fissuração e armaduras"
+      ],
+      "norms": [
+        "NBR 6118",
+        "NBR 8681",
+        "NBR 6122"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "EB-02",
+        "CY-01",
+        "N01"
+      ],
+      "depends_on": [
+        "PRU-058"
+      ],
+      "status": "planned",
+      "github_number": 59,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/59"
+    },
+    {
+      "sequence": 60,
+      "key": "PRU-060",
+      "title": "Qualificação integrada de concreto e detalhamento",
+      "phase": "06",
+      "phase_name": "Detalhamento e concreto avançado",
+      "goal": "Concluir a família de concreto com contraprovas de cálculo e execução.",
+      "scope": [
+        "Bateria por capacidade, classe, método e limite de aplicação",
+        "Modelos completos moldados no local, protendidos e pré-moldados",
+        "Conferência de desenhos, listas, memoriais e resultados do mesmo snapshot",
+        "Registro de divergências e revisão técnica independente",
+        "Sistema completo de paredes de concreto moldadas no local, além de pilares-parede e núcleos"
+      ],
+      "acceptance": [
+        "Todos os casos obrigatórios passam com tolerância pré-registrada e zero falso aprovado",
+        "Comparações comerciais têm hipóteses equalizadas e licença de uso regular",
+        "Nenhuma capacidade incompleta recebe estado liberado",
+        "A qualificação nesta etapa usa resultados e desenhos técnicos nativos disponíveis no módulo; acabamento multiformato e emissão comercial integrada são aceitos nas issues 101 a 106, sem dependência circular",
+        "Ensaios de concreto com fundações ou reservatórios usam ações e vínculos prescritos; a qualificação geotécnica integrada ocorre depois, nas issues 70 e 114"
+      ],
+      "validation": [
+        "Casa, edifício assimétrico, laje protendida e galpão pré-moldado",
+        "Falhas deliberadas de punção, ancoragem, fase e vínculo",
+        "Revisão numérica e gráfica por profissional habilitado que não implementou as regras"
+      ],
+      "norms": [
+        "NBR 6118",
+        "NBR 9062",
+        "NBR 15200",
+        "NBR 16055"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "N17",
+        "N18",
+        "N19",
+        "USR-01",
+        "N16",
+        "N23",
+        "TQ-07"
+      ],
+      "depends_on": [
+        "PRU-059"
+      ],
+      "status": "planned",
+      "github_number": 60,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/60"
+    },
+    {
+      "sequence": 61,
+      "key": "PRU-061",
+      "title": "Dados geotécnicos, investigação e perfis de solo",
+      "phase": "07",
+      "phase_name": "Fundações e interação com o solo",
+      "goal": "Separar dados observados, parâmetros interpretados e hipóteses de fundação.",
+      "scope": [
+        "Sondagens, camadas, nível de água e documentos de investigação",
+        "Parâmetros característicos/de cálculo e correlações com domínio",
+        "Responsável, fonte, validade e incerteza de cada parâmetro",
+        "Modelo geotécnico vinculado a fundações e contenções"
+      ],
+      "acceptance": [
+        "Ausência de investigação não é preenchida com solo fictício",
+        "Correlação empírica mostra método e limites",
+        "Revisão de nível de água ou parâmetro invalida as verificações afetadas"
+      ],
+      "validation": [
+        "Importar perfis com cotas e unidades diferentes",
+        "Detectar camadas sobrepostas, vazios e valores incoerentes",
+        "Conferência independente de transformação de cota e parâmetro derivado"
+      ],
+      "norms": [
+        "NBR 6122",
+        "NBR 6484",
+        "NBR 8036"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "TQ-03",
+        "N01",
+        "USR-01"
+      ],
+      "depends_on": [
+        "PRU-060"
+      ],
+      "status": "planned",
+      "github_number": 61,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/61"
+    },
+    {
+      "sequence": 62,
+      "key": "PRU-062",
+      "title": "Sapatas isoladas e verificações geotécnicas/estruturais",
+      "phase": "07",
+      "phase_name": "Fundações e interação com o solo",
+      "goal": "Dimensionar fundações rasas distinguindo resistência do solo e da peça.",
+      "scope": [
+        "Pressões de contato com excentricidade, perda de contato e esforços horizontais",
+        "Capacidade geotécnica, recalques, deslizamento e estabilidade",
+        "Flexão, cisalhamento, punção e ancoragens",
+        "Combinações e coeficientes conforme método adotado",
+        "Modo isolado com esforços/reações externos e procedência, unidade, combinação e concomitância verificadas"
+      ],
+      "acceptance": [
+        "Aprovação estrutural não é mostrada como aprovação geotécnica",
+        "Solo não suporta tração em modelo de contato unilateral",
+        "Método de capacidade e parâmetros são documentados",
+        "Verificação isolada não aprova automaticamente um edifício ou solo não representado"
+      ],
+      "validation": [
+        "Sapata centrada, excêntrica e em divisa",
+        "Caso com ELU atendido e recalque excessivo",
+        "Comparação independente de contato, recalque e armadura",
+        "Importação de tabela de esforços externos e reprodução independente da verificação isolada"
+      ],
+      "norms": [
+        "NBR 6122",
+        "NBR 6118",
+        "NBR 8681"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "TQ-03",
+        "EB-02",
+        "N01"
+      ],
+      "depends_on": [
+        "PRU-061"
+      ],
+      "status": "planned",
+      "github_number": 62,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/62"
+    },
+    {
+      "sequence": 63,
+      "key": "PRU-063",
+      "title": "Sapatas associadas, corridas e vigas de equilíbrio",
+      "phase": "07",
+      "phase_name": "Fundações e interação com o solo",
+      "goal": "Resolver fundações com interação e geometria limitada.",
+      "scope": [
+        "Associação de pilares, sapatas corridas e vigas de equilíbrio",
+        "Compatibilidade de deformações e excentricidades",
+        "Pressões, recalques diferenciais e distribuição de ações",
+        "Detalhamento das ligações e transferências locais"
+      ],
+      "acceptance": [
+        "Viga de equilíbrio não recebe apoio de solo inexistente por padrão",
+        "Equilíbrio global e de cada componente é verificável",
+        "Pilar de divisa preserva a excentricidade e os esforços devidos"
+      ],
+      "validation": [
+        "Dois pilares com cargas desiguais e viga de equilíbrio",
+        "Carga alternada e solo com rigidez desigual",
+        "Confronto independente da distribuição de pressão"
+      ],
+      "norms": [
+        "NBR 6122",
+        "NBR 6118"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "EB-02",
+        "TQ-03",
+        "N01"
+      ],
+      "depends_on": [
+        "PRU-062"
+      ],
+      "status": "planned",
+      "github_number": 63,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/63"
+    },
+    {
+      "sequence": 64,
+      "key": "PRU-064",
+      "title": "Estacas, tubulões, grupos e esforços laterais",
+      "phase": "07",
+      "phase_name": "Fundações e interação com o solo",
+      "goal": "Cobrir fundações profundas com capacidade e deformabilidade identificadas.",
+      "scope": [
+        "Famílias executivas, capacidade axial, tração, efeito de grupo e atrito negativo",
+        "Resposta lateral, rigidez, comprimento e condições de topo",
+        "Dimensionamento estrutural de concreto e interfaces para perfis metálicos",
+        "Tubulões e limites de execução registrados no domínio aplicável"
+      ],
+      "acceptance": [
+        "Método geotécnico não é extrapolado para família executiva distinta",
+        "Capacidade por elemento não substitui verificação de grupo",
+        "Estaca metálica permanece sem emissão final até o módulo de aço qualificá-la"
+      ],
+      "validation": [
+        "Estaca isolada, grupo excêntrico e esforço lateral",
+        "Atrito negativo e subpressão com sinal correto",
+        "Referências independentes de capacidade, rigidez e recalque"
+      ],
+      "norms": [
+        "NBR 6122",
+        "NBR 6118",
+        "NBR 8800"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "EB-02",
+        "TQ-03",
+        "N01"
+      ],
+      "depends_on": [
+        "PRU-063"
+      ],
+      "status": "planned",
+      "github_number": 64,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/64"
+    },
+    {
+      "sequence": 65,
+      "key": "PRU-065",
+      "title": "Blocos sobre estacas, bielas, tirantes e arranques",
+      "phase": "07",
+      "phase_name": "Fundações e interação com o solo",
+      "goal": "Transformar reações de fundação em blocos detalháveis.",
+      "scope": [
+        "Blocos de múltiplas estacas, divisa, excentricidade e tolerâncias",
+        "Modelos rígidos/flexíveis, nós, tirantes, punção e cisalhamento",
+        "Arranques, ancoragens e distribuição de armaduras",
+        "Compatibilidade entre posição real de estacas e forças",
+        "Modo isolado com esforços/reações externos e procedência, unidade, combinação e concomitância verificadas"
+      ],
+      "acceptance": [
+        "Distribuição de reações considera momentos e eventual tração",
+        "Tirante suficiente não aprova nó ou ancoragem insuficiente",
+        "Alteração de locação recalcula o bloco e suas estacas",
+        "Verificação isolada não aprova automaticamente um edifício ou solo não representado"
+      ],
+      "validation": [
+        "Blocos de duas, três e quatro estacas com excentricidade",
+        "Estaca deslocada e perda de contato de apoio",
+        "Confronto independente de equilíbrio, bielas e quantidades",
+        "Importação de tabela de esforços externos e reprodução independente da verificação isolada"
+      ],
+      "norms": [
+        "NBR 6118",
+        "NBR 6122"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "EB-02",
+        "TQ-03",
+        "N01"
+      ],
+      "depends_on": [
+        "PRU-064"
+      ],
+      "status": "planned",
+      "github_number": 65,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/65"
+    },
+    {
+      "sequence": 66,
+      "key": "PRU-066",
+      "title": "Radiers, pisos estruturais e contato unilateral",
+      "phase": "07",
+      "phase_name": "Fundações e interação com o solo",
+      "goal": "Calcular placas apoiadas no solo sem impor comportamento inadequado.",
+      "scope": [
+        "Rigidez de solo e modelos compatíveis com área de influência",
+        "Contato sem tração, perda de apoio e influência de juntas",
+        "Flexão, punção, recalque e recalque diferencial",
+        "Distribuição de cargas concentradas e alterações de subleito"
+      ],
+      "acceptance": [
+        "Coeficiente de reação não é tratado como constante universal do solo",
+        "Levantamento elimina tração fictícia do apoio",
+        "Refinamento de malha não muda rigidez global por escala incorreta de mola"
+      ],
+      "validation": [
+        "Radier simétrico e excêntrico com perda de contato",
+        "Malhas sucessivas conservam resposta da fundação",
+        "Comparação independente de pressões e recalques"
+      ],
+      "norms": [
+        "NBR 6122",
+        "NBR 6118"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "TQ-03",
+        "CY-01",
+        "N01"
+      ],
+      "depends_on": [
+        "PRU-065"
+      ],
+      "status": "planned",
+      "github_number": 66,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/66"
+    },
+    {
+      "sequence": 67,
+      "key": "PRU-067",
+      "title": "Interação integrada solo, fundação e superestrutura",
+      "phase": "07",
+      "phase_name": "Fundações e interação com o solo",
+      "goal": "Fechar a resposta do conjunto com rigidez e recalques compatíveis.",
+      "scope": [
+        "Acoplamento iterativo ou direto com método explicitado",
+        "Atualização de reações, rigidez, recalques e esforços",
+        "Influência de etapas, vizinhança e grupos conforme domínio",
+        "Convergência e rastreio das hipóteses geotécnicas"
+      ],
+      "acceptance": [
+        "Critério de convergência inclui forças e deslocamentos relevantes",
+        "Modelo não alterna silenciosamente para apoio rígido ao falhar",
+        "Mudança de solo atualiza superestrutura e documentação afetadas"
+      ],
+      "validation": [
+        "Pórtico em fundações deformáveis contra referência independente",
+        "Solo homogêneo, heterogêneo e caso sem convergência",
+        "Comparação entre apoio rígido e solução acoplada com interpretação"
+      ],
+      "norms": [
+        "NBR 6122",
+        "NBR 6118"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "TQ-03",
+        "EB-02",
+        "N17"
+      ],
+      "depends_on": [
+        "PRU-066"
+      ],
+      "status": "planned",
+      "github_number": 67,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/67"
+    },
+    {
+      "sequence": 68,
+      "key": "PRU-068",
+      "title": "Contenções, empuxos, drenagem e estabilidade",
+      "phase": "07",
+      "phase_name": "Fundações e interação com o solo",
+      "goal": "Projetar muros e contenções com fases e ações de solo/água.",
+      "scope": [
+        "Muros de gravidade, flexão e contrafortes; estados ativo, repouso e passivo quando aplicáveis",
+        "Sobrecarga, água, drenagem e fases de escavação/aterro",
+        "Deslizamento, tombamento, capacidade e estabilidade global do conjunto",
+        "Verificação estrutural e limites para contenções ancoradas ou outros sistemas"
+      ],
+      "acceptance": [
+        "Empuxo adotado corresponde à deformabilidade e à condição de movimento",
+        "Drenagem não elimina água sem hipótese e detalhe explícitos",
+        "Estabilidade global necessária e não demonstrada impede aprovação"
+      ],
+      "validation": [
+        "Muro com e sem água, com sobrecarga e solo estratificado",
+        "Comparação independente de empuxo e estabilidade",
+        "Caso em que dimensionamento da parede passa e estabilidade falha"
+      ],
+      "norms": [
+        "NBR 6122",
+        "NBR 6118",
+        "NBR 11682",
+        "NBR 5629"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "EB-02",
+        "CY-01",
+        "N01"
+      ],
+      "depends_on": [
+        "PRU-067"
+      ],
+      "status": "planned",
+      "github_number": 68,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/68"
+    },
+    {
+      "sequence": 69,
+      "key": "PRU-069",
+      "title": "Detalhamento de fundações e compatibilidade com execução",
+      "phase": "07",
+      "phase_name": "Fundações e interação com o solo",
+      "goal": "Entregar locação e armaduras coerentes com as verificações.",
+      "scope": [
+        "Plantas, cortes, cotas, arranques e listas de fundações",
+        "Locação de estacas, tolerâncias e relação com eixos e níveis",
+        "Armaduras de blocos, sapatas, radiers e muros",
+        "Interferências com redes, juntas, aberturas e dispositivos de drenagem"
+      ],
+      "acceptance": [
+        "Cotas de locação correspondem ao modelo georreferenciado/local emitido",
+        "Barras e ancoragens não colidem com elementos de execução",
+        "Alteração de fundação atualiza locação, quantitativo e memorial"
+      ],
+      "validation": [
+        "Pacote de fundações com elementos distintos e divisas",
+        "Conferência de coordenadas, quantidades e comprimentos",
+        "Revisão visual de escalas, textos e cortes"
+      ],
+      "norms": [
+        "NBR 6118",
+        "NBR 6122",
+        "NBR 14931"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "EB-02",
+        "CY-01",
+        "TQ-03"
+      ],
+      "depends_on": [
+        "PRU-068"
+      ],
+      "status": "planned",
+      "github_number": 69,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/69"
+    },
+    {
+      "sequence": 70,
+      "key": "PRU-070",
+      "title": "Qualificação independente de fundações e contenções",
+      "phase": "07",
+      "phase_name": "Fundações e interação com o solo",
+      "goal": "Comprovar as interfaces entre cálculo geotécnico, estrutural e documentos.",
+      "scope": [
+        "Casos isolados e integrados para cada método geotécnico adotado",
+        "Revisão de parâmetros, extrapolações, etapas e cenários de água",
+        "Pacotes completos com reações, capacidades, recalques e desenhos",
+        "Evidência técnica independente e limites publicados"
+      ],
+      "acceptance": [
+        "Não há aprovação conjunta quando uma disciplina está pendente",
+        "Todos os métodos implementados têm casos abaixo/no/acima dos limites",
+        "Divergências entre métodos são explicadas sem alargar tolerâncias para aprovação",
+        "A qualificação nesta etapa usa resultados e desenhos técnicos nativos disponíveis no módulo; acabamento multiformato e emissão comercial integrada são aceitos nas issues 101 a 106, sem dependência circular"
+      ],
+      "validation": [
+        "Edifício com fundação rasa, grupo de estacas e muro com água",
+        "Falhas deliberadas de sinal, capacidade, recalque e estabilidade",
+        "Revisão por profissional habilitado independente da implementação"
+      ],
+      "norms": [
+        "NBR 6122",
+        "NBR 6118",
+        "NBR 11682"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "TQ-03",
+        "N17",
+        "N18",
+        "N19",
+        "N16"
+      ],
+      "depends_on": [
+        "PRU-069"
+      ],
+      "status": "planned",
+      "github_number": 70,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/70"
+    },
+    {
+      "sequence": 71,
+      "key": "PRU-071",
+      "title": "Aço: materiais, perfis e classificação das seções",
+      "phase": "08",
+      "phase_name": "Aço, mistos e ligações",
+      "goal": "Preparar a base brasileira para aço e estruturas mistas.",
+      "scope": [
+        "Perfis laminados, soldados, tubulares e compostos com procedência",
+        "Propriedades, flambagem local e classificação por elemento",
+        "Aços, soldas e parafusos com valores característicos/de cálculo",
+        "Condições de apoio, contenção lateral e comprimentos efetivos",
+        "Geometria de vigas Boyd/casteladas e alma aligeirada, com limitações de domínio identificadas"
+      ],
+      "acceptance": [
+        "Versão corrigida da NBR 8800 do pacote é explicitada",
+        "Propriedades e classe da seção são conferidas independentemente",
+        "Perfis formados a frio seguem a família normativa própria"
+      ],
+      "validation": [
+        "Perfis I, U, L, caixa e seção soldada assimétrica",
+        "Limites de esbeltez de alma e mesa",
+        "Catálogo com troca de unidade detectada"
+      ],
+      "norms": [
+        "NBR 8800",
+        "NBR 16239",
+        "NBR 14762"
+      ],
+      "reuse_candidates": [
+        "sectionproperties",
+        "Catálogos abertos com licença"
+      ],
+      "source_ids": [
+        "EB-04",
+        "TQ-04",
+        "CY-02",
+        "N01",
+        "CY-05"
+      ],
+      "depends_on": [
+        "PRU-070"
+      ],
+      "status": "planned",
+      "github_number": 71,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/71"
+    },
+    {
+      "sequence": 72,
+      "key": "PRU-072",
+      "title": "Aço: tração, compressão, flexão, cisalhamento e interação",
+      "phase": "08",
+      "phase_name": "Aço, mistos e ligações",
+      "goal": "Verificar barras sob esforços reais e concomitantes.",
+      "scope": [
+        "Resistências e modos de ruptura por família de seção",
+        "Interação de força normal, momentos, cisalhamento e torção",
+        "Área líquida, efeitos de ligação e excentricidades",
+        "Seleção discreta de perfil e relatório de verificação",
+        "Modo isolado com esforços/reações externos e procedência, unidade, combinação e concomitância verificadas",
+        "Vigas casteladas/alma aligeirada com modos locais, método complementar qualificado e limites explícitos"
+      ],
+      "acceptance": [
+        "Cada modo indica demanda, resistência, limite e fonte normativa",
+        "Perfil escolhido é reanalisado com rigidez e peso atualizados",
+        "Verificação não usa somente o maior momento ignorando esforço normal concomitante",
+        "Verificação isolada não aprova automaticamente um edifício ou solo não representado"
+      ],
+      "validation": [
+        "Barras de tração, colunas e vigas com interação biaxial",
+        "Casos com seção líquida governante",
+        "Benchmark independente em diferentes classes de seção",
+        "Importação de tabela de esforços externos e reprodução independente da verificação isolada",
+        "Viga com aberturas de alma, comparando falhas de seção, montante e ligação do modelo adotado"
+      ],
+      "norms": [
+        "NBR 8800",
+        "Base complementar para vigas casteladas a qualificar"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "TQ-04",
+        "EB-04",
+        "CY-02",
+        "N01",
+        "CY-05"
+      ],
+      "depends_on": [
+        "PRU-071"
+      ],
+      "status": "planned",
+      "github_number": 72,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/72"
+    },
+    {
+      "sequence": 73,
+      "key": "PRU-073",
+      "title": "Aço: estabilidade, flambagem lateral e análise de segunda ordem",
+      "phase": "08",
+      "phase_name": "Aço, mistos e ligações",
+      "goal": "Tratar estabilidade como propriedade do sistema e do membro.",
+      "scope": [
+        "Flambagem flexional, torsional/flexotorsional e lateral com torção",
+        "Comprimentos destravados, travamentos e gradiente de momentos",
+        "Imperfeições, cargas nocionais e análise global/local",
+        "Empenamento restringido quando exigido pelo método qualificado"
+      ],
+      "acceptance": [
+        "Travamento cadastrado possui direção, rigidez e ligação verificáveis",
+        "Comprimento destravado não é confundido com comprimento geométrico",
+        "Verificação identifica os casos fora das hipóteses simplificadas"
+      ],
+      "validation": [
+        "Viga não travada, coluna assimétrica e pórtico deslocável",
+        "Sensibilidade à posição de carga e ao travamento",
+        "Comparação independente de cargas críticas e resistência normativa"
+      ],
+      "norms": [
+        "NBR 8800"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "CY-02",
+        "TQ-04",
+        "EB-04",
+        "N01"
+      ],
+      "depends_on": [
+        "PRU-072"
+      ],
+      "status": "planned",
+      "github_number": 73,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/73"
+    },
+    {
+      "sequence": 74,
+      "key": "PRU-074",
+      "title": "Estruturas mistas: vigas, pilares, lajes e conectores",
+      "phase": "08",
+      "phase_name": "Aço, mistos e ligações",
+      "goal": "Integrar aço e concreto considerando a sequência e a interface.",
+      "scope": [
+        "Vigas e pilares mistos, lajes steel deck e conectores",
+        "Fases construtivas, largura efetiva e ligação parcial/total",
+        "Fluência, retração, fissuração, instabilidade e serviço",
+        "Propriedades de chapas e dados de fabricante com validade"
+      ],
+      "acceptance": [
+        "Seção mista não atua antes da etapa correspondente",
+        "Conector é verificado para demanda e condição real da interface",
+        "Condições de montagem sem escoramento têm verificação própria"
+      ],
+      "validation": [
+        "Viga mista escorada/não escorada e pilar misto",
+        "Conexão parcial versus total e inversão de momento",
+        "Comparação independente de flecha e resistência"
+      ],
+      "norms": [
+        "NBR 8800",
+        "NBR 6118"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "TQ-04",
+        "CY-01",
+        "CY-02",
+        "N01"
+      ],
+      "depends_on": [
+        "PRU-073"
+      ],
+      "status": "planned",
+      "github_number": 74,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/74"
+    },
+    {
+      "sequence": 75,
+      "key": "PRU-075",
+      "title": "Ligações metálicas soldadas, parafusadas e semirrígidas",
+      "phase": "08",
+      "phase_name": "Aço, mistos e ligações",
+      "goal": "Dimensionar ligações e refletir sua rigidez no modelo.",
+      "scope": [
+        "Parafusos, soldas, chapas, enrijecedores, gussets e chapas de extremidade",
+        "Cisalhamento, tração, interação, esmagamento, bloco e efeitos locais",
+        "Classificação de rigidez/resistência e ligação ao modelo global",
+        "Detalhamento com tolerâncias, acessibilidade e montagem"
+      ],
+      "acceptance": [
+        "Ligação é verificada para todas as combinações governantes concomitantes",
+        "Mudança da ligação que altera rigidez invalida a análise global",
+        "Detalhe inclui geometria e consumíveis necessários à fabricação"
+      ],
+      "validation": [
+        "Ligação simples, resistente a momento e nó de treliça",
+        "Falha de chapa, parafuso e solda em casos separados",
+        "Comparação independente de resistência e comportamento"
+      ],
+      "norms": [
+        "NBR 8800",
+        "NBR 16239"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "CY-02",
+        "CY-01",
+        "N01"
+      ],
+      "depends_on": [
+        "PRU-074"
+      ],
+      "status": "planned",
+      "github_number": 75,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/75"
+    },
+    {
+      "sequence": 76,
+      "key": "PRU-076",
+      "title": "Chapas de base, chumbadores e interface aço-concreto",
+      "phase": "08",
+      "phase_name": "Aço, mistos e ligações",
+      "goal": "Verificar a transmissão ao concreto e à fundação sem lacunas entre módulos.",
+      "scope": [
+        "Base sob compressão, tração, flexão e cisalhamento",
+        "Chapa, solda, enrijecimento, ancoragem e concreto de apoio",
+        "Métodos de ruptura do concreto e dados certificados quando necessários",
+        "Rigidez da base, grout, instalação e tolerâncias"
+      ],
+      "acceptance": [
+        "Norma/método de chumbador é identificado, sem atribuir à NBR 8800 requisitos que não contém",
+        "Reações e rigidez são consistentes com superestrutura e fundação",
+        "Falta de dados do sistema de ancoragem impede emissão final"
+      ],
+      "validation": [
+        "Base articulada e engastada, com e sem tração",
+        "Ruptura do concreto e do aço governando separadamente",
+        "Conferência independente de contato e forças em chumbadores"
+      ],
+      "norms": [
+        "NBR 8800",
+        "NBR 6118",
+        "Base complementar de ancoragens a qualificar"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "CY-02",
+        "N01",
+        "USR-01"
+      ],
+      "depends_on": [
+        "PRU-075"
+      ],
+      "status": "planned",
+      "github_number": 76,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/76"
+    },
+    {
+      "sequence": 77,
+      "key": "PRU-077",
+      "title": "Perfis tubulares, treliças e nós específicos",
+      "phase": "08",
+      "phase_name": "Aço, mistos e ligações",
+      "goal": "Cobrir estruturas tubulares além da simples verificação de barras.",
+      "scope": [
+        "Seções circulares/retangulares, nós e excentricidades",
+        "Modos locais de ligação, plastificação, punção e instabilidade",
+        "Treliças, contraventamentos e ligação ao pórtico global",
+        "Limites geométricos dos métodos de nó"
+      ],
+      "acceptance": [
+        "Verificar a barra não implica verificar o nó",
+        "Geometria fora da tabela ou domínio do método é identificada",
+        "Excentricidade do nó integra ações e resistência"
+      ],
+      "validation": [
+        "Nós T, Y, K e configurações compatíveis com a norma adotada",
+        "Mudança de relação diâmetro/espessura nos limites",
+        "Benchmark independente de ligação e de treliça completa",
+        "Treliça com tirante unilateral sob alternância de ações"
+      ],
+      "norms": [
+        "NBR 16239",
+        "NBR 8800"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "CY-02",
+        "N01"
+      ],
+      "depends_on": [
+        "PRU-076"
+      ],
+      "status": "planned",
+      "github_number": 77,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/77"
+    },
+    {
+      "sequence": 78,
+      "key": "PRU-078",
+      "title": "Perfis formados a frio e instabilidade local/distorcional",
+      "phase": "08",
+      "phase_name": "Aço, mistos e ligações",
+      "goal": "Tratar perfis delgados com a base normativa correta.",
+      "scope": [
+        "Seções efetivas ou método resistente admitido pelo pacote",
+        "Flambagem local, distorcional e global com interação",
+        "Enrijecedores, furos, apoios, ligações e distorções",
+        "Terças, montantes e sistemas repetitivos com travamento real"
+      ],
+      "acceptance": [
+        "Aplicabilidade do método à seção e ao tipo de carregamento é comprovada",
+        "Regras de perfis laminados não substituem as de perfis delgados",
+        "Furos e enrijecedores alteram a capacidade quando pertinente"
+      ],
+      "validation": [
+        "Perfis U, U enrijecido, Z e seções de referência admitidas",
+        "Casos governados por modos distintos",
+        "Comparação independente das propriedades efetivas e resistência"
+      ],
+      "norms": [
+        "NBR 14762",
+        "NBR 6355"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "CY-02",
+        "N01"
+      ],
+      "depends_on": [
+        "PRU-077"
+      ],
+      "status": "planned",
+      "github_number": 78,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/78"
+    },
+    {
+      "sequence": 79,
+      "key": "PRU-079",
+      "title": "Aço e mistos em incêndio",
+      "phase": "08",
+      "phase_name": "Aço, mistos e ligações",
+      "goal": "Verificar a resistência e estabilidade sob temperatura.",
+      "scope": [
+        "Exposição, fator de massividade, proteção e propriedades térmicas",
+        "Redução de resistência/rigidez e estabilidade de membros",
+        "Elementos mistos e ligações conforme escopo qualificado",
+        "Documento de proteção e hipóteses de execução"
+      ],
+      "acceptance": [
+        "Proteção especificada tem dados e configuração compatíveis com o cálculo",
+        "Temperatura e resistência são verificações separadas e rastreáveis",
+        "Resultado não extrapola ensaio de fabricante sem base técnica"
+      ],
+      "validation": [
+        "Perfil protegido/não protegido e elemento misto",
+        "Caso governado por estabilidade a quente",
+        "Comparação independente de evolução térmica e capacidade"
+      ],
+      "norms": [
+        "NBR 14323",
+        "NBR 14432",
+        "NBR 8800"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "CY-02",
+        "CY-01",
+        "N01"
+      ],
+      "depends_on": [
+        "PRU-078"
+      ],
+      "status": "planned",
+      "github_number": 79,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/79"
+    },
+    {
+      "sequence": 80,
+      "key": "PRU-080",
+      "title": "Detalhamento metálico, listas e qualificação do módulo",
+      "phase": "08",
+      "phase_name": "Aço, mistos e ligações",
+      "goal": "Entregar fabricação e montagem coerentes com o cálculo.",
+      "scope": [
+        "Peças, conjuntos, marcas, soldas, parafusos e listas de materiais",
+        "Desenhos de oficina/montagem e interfaces de fabricação qualificadas",
+        "Compatibilidade de furos, folgas, proteção e sequência executiva",
+        "Bateria integrada de aço, mistos, tubulares, perfis delgados e bases"
+      ],
+      "acceptance": [
+        "Lista de peças coincide com objetos e versões do modelo",
+        "Edição de furo, solda ou seção exige nova verificação",
+        "Todas as famílias implementadas possuem casos independentes aprovados",
+        "A qualificação nesta etapa usa resultados e desenhos técnicos nativos disponíveis no módulo; acabamento multiformato e emissão comercial integrada são aceitos nas issues 101 a 106, sem dependência circular"
+      ],
+      "validation": [
+        "Galpão, pórtico misto e treliça com ligações completas",
+        "Conferência visual e dimensional dos desenhos",
+        "Revisão independente de cálculo, quantidades e montagem"
+      ],
+      "norms": [
+        "NBR 8800",
+        "NBR 14762",
+        "NBR 16239",
+        "NBR 14323"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "CY-02",
+        "TQ-04",
+        "N17",
+        "N19",
+        "N16"
+      ],
+      "depends_on": [
+        "PRU-079"
+      ],
+      "status": "planned",
+      "github_number": 80,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/80"
+    },
+    {
+      "sequence": 81,
+      "key": "PRU-081",
+      "title": "Madeira: classificação, propriedades e condições de uso",
+      "phase": "09",
+      "phase_name": "Madeira e ligações",
+      "goal": "Fundamentar o dimensionamento em caracterização adequada da madeira.",
+      "scope": [
+        "Madeira serrada e engenheirada, classes e propriedades com origem",
+        "Ortotropia, umidade, duração de ações e fatores de modificação",
+        "Dados de caracterização das partes aplicáveis da série 7190",
+        "Condições de exposição, preservação e durabilidade"
+      ],
+      "acceptance": [
+        "Espécie não substitui classificação e caracterização necessárias",
+        "Propriedades paralelas/perpendiculares às fibras são distintas",
+        "Dados insuficientes impedem verificar a família de produto"
+      ],
+      "validation": [
+        "Classes, umidades e durações nos limites normativos",
+        "Rotação de eixos materiais preserva comportamento esperado",
+        "Conferência independente de conversão de propriedade para valor de cálculo"
+      ],
+      "norms": [
+        "NBR 7190 partes 1 a 7"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "CY-02",
+        "N01",
+        "USR-01"
+      ],
+      "depends_on": [
+        "PRU-080"
+      ],
+      "status": "planned",
+      "github_number": 81,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/81"
+    },
+    {
+      "sequence": 82,
+      "key": "PRU-082",
+      "title": "Madeira: barras sob esforços simples e combinados",
+      "phase": "09",
+      "phase_name": "Madeira e ligações",
+      "goal": "Verificar resistência de peças de madeira com orientação real das fibras.",
+      "scope": [
+        "Tração, compressão paralela/perpendicular, flexão e cisalhamento",
+        "Interação de esforço normal e momentos biaxiais",
+        "Reduções por entalhe, furo e descontinuidade no domínio admitido",
+        "Apoios e esmagamento local"
+      ],
+      "acceptance": [
+        "Compressão perpendicular e contato são verificados separadamente",
+        "Combinações preservam duração e fatores aplicáveis",
+        "Detalhe fora do domínio não recebe resistência por extrapolação"
+      ],
+      "validation": [
+        "Viga, pilar, tirante e apoio com cálculo independente",
+        "Flexão oblíqua e seção com entalhe",
+        "Casos em que flexão passa e cisalhamento/apoio falha"
+      ],
+      "norms": [
+        "NBR 7190"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "CY-02",
+        "N01",
+        "USR-01"
+      ],
+      "depends_on": [
+        "PRU-081"
+      ],
+      "status": "planned",
+      "github_number": 82,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/82"
+    },
+    {
+      "sequence": 83,
+      "key": "PRU-083",
+      "title": "Madeira: instabilidade, travamentos e segunda ordem",
+      "phase": "09",
+      "phase_name": "Madeira e ligações",
+      "goal": "Representar o papel de contenções e ligações na estabilidade.",
+      "scope": [
+        "Flambagem de barras, estabilidade lateral e flexocompressão",
+        "Comprimentos efetivos, travamentos e rigidez de ligação",
+        "Imperfeições e deformações diferidas relevantes",
+        "Modelo global coerente com as hipóteses de membro"
+      ],
+      "acceptance": [
+        "Travamento precisa de direção e rigidez adequadas",
+        "Rigidez de ligação não é presumida infinita",
+        "Efeito local e global não é omitido ou contado em dobro"
+      ],
+      "validation": [
+        "Pilar esbelto, viga alta sem travamento e pórtico",
+        "Sensibilidade à rigidez de ligação",
+        "Confronto independente de estabilidade e resistência"
+      ],
+      "norms": [
+        "NBR 7190",
+        "NBR 8681"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "CY-02",
+        "N01"
+      ],
+      "depends_on": [
+        "PRU-082"
+      ],
+      "status": "planned",
+      "github_number": 83,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/83"
+    },
+    {
+      "sequence": 84,
+      "key": "PRU-084",
+      "title": "Ligações de madeira e interfaces com aço/concreto",
+      "phase": "09",
+      "phase_name": "Madeira e ligações",
+      "goal": "Dimensionar ligações que correspondam às peças efetivamente montadas.",
+      "scope": [
+        "Pregos, parafusos, pinos, cavilhas, chapas e conectores qualificados",
+        "Espaçamentos, bordas, embutimento, modos de ruptura e efeito de grupo",
+        "Rigidez/deslizamento e forças nas interfaces",
+        "Adesivos e sistemas proprietários somente com dados aplicáveis"
+      ],
+      "acceptance": [
+        "Capacidade de um conector não é multiplicada indiscriminadamente pelo número de peças",
+        "Geometria e direção da força/fibra entram na verificação",
+        "Alteração da ligação atualiza rigidez e esforços do conjunto quando necessário"
+      ],
+      "validation": [
+        "Ligação madeira-madeira, madeira-aço e apoio em concreto",
+        "Casos de borda insuficiente e grupo governante",
+        "Verificação independente de capacidade e deslizamento"
+      ],
+      "norms": [
+        "NBR 7190",
+        "NBR 8800",
+        "NBR 6118"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "CY-02",
+        "N01",
+        "USR-01"
+      ],
+      "depends_on": [
+        "PRU-083"
+      ],
+      "status": "planned",
+      "github_number": 84,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/84"
+    },
+    {
+      "sequence": 85,
+      "key": "PRU-085",
+      "title": "Coberturas, treliças e pórticos de madeira",
+      "phase": "09",
+      "phase_name": "Madeira e ligações",
+      "goal": "Oferecer conjuntos paramétricos sem simplificar suas ligações indevidamente.",
+      "scope": [
+        "Treliças, terças, caibros, pórticos e contraventamentos",
+        "Excentricidades, apoios, emendas e rigidez de nós",
+        "Cargas permanentes, vento, manutenção e montagem",
+        "Dimensionamento e atualização de cada peça do conjunto"
+      ],
+      "acceptance": [
+        "Modelo articulado só é usado onde a hipótese é adequada",
+        "Força de sucção verifica inversão de esforços e fixações",
+        "Conjunto detalhado corresponde ao modelo analítico"
+      ],
+      "validation": [
+        "Treliça sob gravidade/sucção e pórtico com ligação semirrígida",
+        "Alteração de inclinação atualiza cargas e comprimentos",
+        "Comparação independente de esforços, ligações e deformações"
+      ],
+      "norms": [
+        "NBR 7190",
+        "NBR 6120",
+        "NBR 6123"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "CY-02",
+        "N01",
+        "USR-01"
+      ],
+      "depends_on": [
+        "PRU-084"
+      ],
+      "status": "planned",
+      "github_number": 85,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/85"
+    },
+    {
+      "sequence": 86,
+      "key": "PRU-086",
+      "title": "Madeira laminada colada, peças curvas e seções variáveis",
+      "phase": "09",
+      "phase_name": "Madeira e ligações",
+      "goal": "Tratar produtos e geometrias com verificações próprias.",
+      "scope": [
+        "Laminada colada, peças curvas, afuniladas e vigas de altura variável",
+        "Tensão perpendicular às fibras, volume, curvatura e zonas de apoio",
+        "Ligações e requisitos de fabricação/controle pertinentes",
+        "Dados do produto e adesivo com rastreabilidade"
+      ],
+      "acceptance": [
+        "Regra para madeira serrada não é aplicada automaticamente à peça engenheirada",
+        "Tensões perpendiculares e regiões críticas são verificadas",
+        "Limitações de fabricação são apresentadas no detalhamento"
+      ],
+      "validation": [
+        "Viga curva, afunilada e peça com variação de seção",
+        "Caso governado por tração perpendicular",
+        "Confronto independente de tensões e resistência"
+      ],
+      "norms": [
+        "NBR 7190 e partes aplicáveis"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "CY-02",
+        "N01",
+        "USR-01"
+      ],
+      "depends_on": [
+        "PRU-085"
+      ],
+      "status": "planned",
+      "github_number": 86,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/86"
+    },
+    {
+      "sequence": 87,
+      "key": "PRU-087",
+      "title": "Pisos de madeira, diafragmas, fluência e vibração",
+      "phase": "09",
+      "phase_name": "Madeira e ligações",
+      "goal": "Cobrir os estados de serviço de sistemas leves.",
+      "scope": [
+        "Vigas e painéis com participação de ligações e diafragmas",
+        "Deformações instantâneas/diferidas e condições de umidade",
+        "Vibração, aceleração e rigidez efetiva",
+        "Detalhes de ligação, distribuição e compatibilidade"
+      ],
+      "acceptance": [
+        "Deslizamento de conexão não é ignorado onde influencia o serviço",
+        "Contraflecha não substitui verificação de conforto",
+        "Hipótese de diafragma é coerente com os conectores detalhados"
+      ],
+      "validation": [
+        "Piso simplesmente apoiado e conjunto com ligações deformáveis",
+        "Cargas sustentadas e alteração de condição de umidade",
+        "Comparação independente de frequência e flecha"
+      ],
+      "norms": [
+        "NBR 7190",
+        "NBR 6120",
+        "NBR 15575"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "CY-02",
+        "N01",
+        "USR-01"
+      ],
+      "depends_on": [
+        "PRU-086"
+      ],
+      "status": "planned",
+      "github_number": 87,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/87"
+    },
+    {
+      "sequence": 88,
+      "key": "PRU-088",
+      "title": "Madeira em incêndio e proteção das ligações",
+      "phase": "09",
+      "phase_name": "Madeira e ligações",
+      "goal": "Verificar a seção resistente remanescente e os detalhes críticos.",
+      "scope": [
+        "Métodos e dados térmicos aplicáveis ao produto",
+        "Carbonização, seção efetiva, exposição e proteção",
+        "Estabilidade e resistência de membros e ligações em incêndio",
+        "Tempo requerido e compatibilidade com o detalhe executado"
+      ],
+      "acceptance": [
+        "Método e base normativa são declarados, inclusive referências complementares necessárias",
+        "Exposição por face e proteção afetam a seção resistente",
+        "Ligação desprotegida não é aprovada só porque a barra resiste"
+      ],
+      "validation": [
+        "Peça exposta em três/quatro faces e peça protegida",
+        "Ligação com componente metálico sob aquecimento",
+        "Cálculo independente nos limites de seção remanescente"
+      ],
+      "norms": [
+        "NBR 7190",
+        "NBR 14432",
+        "Base complementar de incêndio em madeira a qualificar"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "CY-02",
+        "N01",
+        "USR-01"
+      ],
+      "depends_on": [
+        "PRU-087"
+      ],
+      "status": "planned",
+      "github_number": 88,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/88"
+    },
+    {
+      "sequence": 89,
+      "key": "PRU-089",
+      "title": "Painéis e produtos de madeira engenheirada",
+      "phase": "09",
+      "phase_name": "Madeira e ligações",
+      "goal": "Delimitar e verificar CLT, LVL e produtos além das hipóteses de madeira serrada.",
+      "scope": [
+        "Inventário de produtos e referência técnica/normativa adequada para cada família",
+        "Ortotropia, camadas, cisalhamento, ligações e comportamento de painel",
+        "Dados de fabricante/ensaio com configuração e validade",
+        "Métodos de ELU, ELS e fogo que não sejam cobertos diretamente pela série 7190"
+      ],
+      "acceptance": [
+        "Não declarar cobertura integral pela NBR 7190 quando o método depende de outra referência",
+        "Produto sem base licenciada e validada não é emitido como aprovado",
+        "Capacidade exigida pela matriz permanece requisito de lançamento até ser demonstrada"
+      ],
+      "validation": [
+        "Painel ortotrópico, ligação e produto laminado com referências independentes",
+        "Sensibilidade à orientação e composição de camadas",
+        "Ensaios/casos autorizados do produto confrontados com o modelo"
+      ],
+      "norms": [
+        "NBR 7190",
+        "Referências específicas de produtos engenheirados a qualificar"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "CY-02",
+        "N01",
+        "USR-01"
+      ],
+      "depends_on": [
+        "PRU-088"
+      ],
+      "status": "planned",
+      "github_number": 89,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/89"
+    },
+    {
+      "sequence": 90,
+      "key": "PRU-090",
+      "title": "Detalhamento, fabricação e qualificação de madeira",
+      "phase": "09",
+      "phase_name": "Madeira e ligações",
+      "goal": "Entregar estruturas de madeira com peças, ligações e comprovação completas.",
+      "scope": [
+        "Marcas, cortes, furos, entalhes, ligações e listas de peças",
+        "Orientação das fibras, classe/produto e proteção",
+        "Pacote de montagem e exportação de fabricação quando qualificada",
+        "Bateria integrada de madeira serrada/engenheirada e ligações"
+      ],
+      "acceptance": [
+        "Cada peça fabricada corresponde à seção e aos detalhes verificados",
+        "Alterar furo/entalhe invalida as verificações afetadas",
+        "Nenhuma família exigida fica em estado experimental no lançamento",
+        "A qualificação nesta etapa usa resultados e desenhos técnicos nativos disponíveis no módulo; acabamento multiformato e emissão comercial integrada são aceitos nas issues 101 a 106, sem dependência circular"
+      ],
+      "validation": [
+        "Cobertura de madeira, pórtico laminado e piso/painel",
+        "Conferência de quantidades, dimensões e desenhos",
+        "Revisão independente dos modos de falha e das interfaces"
+      ],
+      "norms": [
+        "NBR 7190",
+        "NBR 14432"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "CY-02",
+        "N17",
+        "N19",
+        "USR-01",
+        "N16"
+      ],
+      "depends_on": [
+        "PRU-089"
+      ],
+      "status": "planned",
+      "github_number": 90,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/90"
+    },
+    {
+      "sequence": 91,
+      "key": "PRU-091",
+      "title": "Alvenaria estrutural: modelo, materiais e dimensionamento",
+      "phase": "10",
+      "phase_name": "Sistemas complementares e agentes",
+      "goal": "Cobrir a família de alvenaria presente nos sistemas de referência.",
+      "scope": [
+        "Blocos de concreto/cerâmicos, argamassa, graute e propriedades",
+        "Paredes, grupos, interação, aberturas, compressão e flexão",
+        "Cisalhamento, esbeltez, ações horizontais e ligações",
+        "Interfaces com lajes, transições e fundações"
+      ],
+      "acceptance": [
+        "Parede de vedação não é promovida a resistente sem definição explícita",
+        "Propriedades de bloco não substituem as de prisma/parede exigidas",
+        "Combinações e efeitos de interação são auditáveis"
+      ],
+      "validation": [
+        "Parede isolada, grupo com aberturas e edifício de alvenaria",
+        "Fronteiras de esbeltez, excentricidade e compressão",
+        "Verificação independente de esforços e resistência"
+      ],
+      "norms": [
+        "NBR 16868 partes aplicáveis",
+        "NBR 6136",
+        "NBR 15270"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "EB-01",
+        "EB-02",
+        "CY-01",
+        "N01"
+      ],
+      "depends_on": [
+        "PRU-090"
+      ],
+      "status": "planned",
+      "github_number": 91,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/91"
+    },
+    {
+      "sequence": 92,
+      "key": "PRU-092",
+      "title": "Alvenaria: modulação, graute, armaduras e detalhamento",
+      "phase": "10",
+      "phase_name": "Sistemas complementares e agentes",
+      "goal": "Vincular dimensionamento à modulação realmente executável.",
+      "scope": [
+        "Primeira/segunda fiadas, amarrações, juntas e blocos especiais",
+        "Vergas, contravergas, cintas, graute e armaduras",
+        "Compatibilização de furos e instalações",
+        "Listas e elevações vinculadas à verificação"
+      ],
+      "acceptance": [
+        "Alteração de modulação ou abertura atualiza áreas resistentes e cargas",
+        "Armadura/graute detalhados são os considerados no cálculo",
+        "Quantitativos discriminam peças especiais e preenchimentos"
+      ],
+      "validation": [
+        "Encontros T/L, parede com aberturas e transição",
+        "Caso de interferência que remove célula estrutural",
+        "Conferência independente de listas, detalhes e capacidade"
+      ],
+      "norms": [
+        "NBR 16868",
+        "NBR 6136",
+        "NBR 15270"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "EB-01",
+        "EB-02",
+        "CY-01"
+      ],
+      "depends_on": [
+        "PRU-091"
+      ],
+      "status": "planned",
+      "github_number": 92,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/92"
+    },
+    {
+      "sequence": 93,
+      "key": "PRU-093",
+      "title": "Integração entre concreto, aço, madeira, alvenaria e fundações",
+      "phase": "10",
+      "phase_name": "Sistemas complementares e agentes",
+      "goal": "Garantir que sistemas mistos tenham interfaces calculadas e documentadas.",
+      "scope": [
+        "Transferência de ações, rigidez, excentricidades e fases entre materiais",
+        "Suportes, insertos, ligações e compatibilidade de deformações",
+        "Estacas metálicas integradas às verificações estruturais e geotécnicas",
+        "Auditoria de normas e capacidades de cada interface"
+      ],
+      "acceptance": [
+        "Interface não herda aprovação das duas peças sem sua própria verificação",
+        "Massa, rigidez e peso não são duplicados na união de modelos",
+        "Modelo global usa propriedades e etapas coerentes com os detalhes"
+      ],
+      "validation": [
+        "Edifício de concreto com cobertura metálica e fundação deformável",
+        "Estrutura de madeira sobre concreto e transição em alvenaria",
+        "Fechamento independente de forças e deformações nas interfaces"
+      ],
+      "norms": [
+        "NBR 6118",
+        "NBR 8800",
+        "NBR 7190",
+        "NBR 16868",
+        "NBR 6122"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "CY-01",
+        "CY-02",
+        "TQ-04",
+        "TQ-03"
+      ],
+      "depends_on": [
+        "PRU-092"
+      ],
+      "status": "planned",
+      "github_number": 93,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/93"
+    },
+    {
+      "sequence": 94,
+      "key": "PRU-094",
+      "title": "Alumínio e materiais genéricos com domínio declarado",
+      "phase": "10",
+      "phase_name": "Sistemas complementares e agentes",
+      "goal": "Evitar uma lacuna de paridade e separar análise de verificação normativa.",
+      "scope": [
+        "Barras e placas de material genérico para esforços e deformações",
+        "Alumínio com propriedades, instabilidade e ligações no escopo inventariado",
+        "Seleção/licenciamento de base normativa específica de alumínio",
+        "Estados distintos de analisado e dimensionado"
+      ],
+      "acceptance": [
+        "NBR 8800 não é apresentada como norma de dimensionamento de alumínio",
+        "Material genérico sem regra resistente não recebe selo de aprovação estrutural",
+        "Capacidades de alumínio exigidas pela matriz têm evidências próprias antes do lançamento"
+      ],
+      "validation": [
+        "Barra/placa genérica contra solução analítica",
+        "Membro e ligação de alumínio com referência normativa independente",
+        "Teste de tentativa de emitir material sem regras qualificadas"
+      ],
+      "norms": [
+        "Base normativa de alumínio a selecionar e licenciar"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "CY-01",
+        "CY-02",
+        "USR-01"
+      ],
+      "depends_on": [
+        "PRU-093"
+      ],
+      "status": "planned",
+      "github_number": 94,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/94"
+    },
+    {
+      "sequence": 95,
+      "key": "PRU-095",
+      "title": "Grelhas, modelos de pavimentos e escolha de idealização",
+      "phase": "10",
+      "phase_name": "Sistemas complementares e agentes",
+      "goal": "Oferecer alternativas de análise com equivalência e limitações transparentes.",
+      "scope": [
+        "Modelos de grelha, casca e pórtico integrado por pavimento",
+        "Conversão de rigidez, torção, nervuras e carregamentos",
+        "Comparação entre idealizações e critérios de escolha",
+        "Configurações distintas ELU/ELS rastreáveis sem misturar resultados",
+        "A grelha básica já é implementada e qualificada nas issues 22, 46 e 60; esta etapa aprofunda seleção, comparação e refinamento entre idealizações"
+      ],
+      "acceptance": [
+        "Mudança de idealização gera novo snapshot de análise",
+        "Carga, massa e rigidez equivalentes conservam as grandezas relevantes",
+        "Diferenças entre modelos são explicadas e não escondidas por um único índice"
+      ],
+      "validation": [
+        "Pavimento regular, nervurado e com transição",
+        "Grelha versus casca em casos compatíveis com solução independente",
+        "Convergência por refinamento e sensibilidade de torção"
+      ],
+      "norms": [
+        "NBR 6118"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "EB-02",
+        "TQ-01",
+        "TQ-02"
+      ],
+      "depends_on": [
+        "PRU-094"
+      ],
+      "status": "planned",
+      "github_number": 95,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/95"
+    },
+    {
+      "sequence": 96,
+      "key": "PRU-096",
+      "title": "Alternativas de projeto, quantitativos e otimização verificável",
+      "phase": "10",
+      "phase_name": "Sistemas complementares e agentes",
+      "goal": "Comparar soluções por desempenho, execução e custo sem reduzir segurança.",
+      "scope": [
+        "Busca de seções/arranjos dentro de restrições verificadas",
+        "Quantitativos por material, custo informado e fontes de preço",
+        "Comparação de flecha, massa, consumo, esforço de execução e impacto ambiental com dados disponíveis",
+        "Histórico de alternativas e justificativa da seleção"
+      ],
+      "acceptance": [
+        "Nenhuma alternativa é recomendada como válida sem todas as verificações aplicáveis",
+        "Preço estimado distingue fonte/data e não se confunde com orçamento contratado",
+        "Melhoria de custo não remove hipótese, carga ou requisito para passar"
+      ],
+      "validation": [
+        "Comparar soluções de concreto, aço e madeira sobre um mesmo programa",
+        "Teste de alternativa barata que falha em serviço ou ligação",
+        "Reprodução determinística de seleção e quantitativos"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "Otimizadores abertos qualificados"
+      ],
+      "source_ids": [
+        "CY-01",
+        "EB-02",
+        "USR-02"
+      ],
+      "depends_on": [
+        "PRU-095"
+      ],
+      "status": "planned",
+      "github_number": 96,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/96"
+    },
+    {
+      "sequence": 97,
+      "key": "PRU-097",
+      "title": "Revisão técnica, ATP e aprovação por revisão de projeto",
+      "phase": "10",
+      "phase_name": "Sistemas complementares e agentes",
+      "goal": "Dar suporte ao controle profissional da entrega estrutural.",
+      "scope": [
+        "Papéis de autor, verificador e emissor com escopo por projeto",
+        "Registro de comentários, respostas, pendências e resolução",
+        "Checklist aplicável de avaliação técnica conforme pacote normativo",
+        "Aprovação vinculada ao snapshot, documentos e identificação do responsável"
+      ],
+      "acceptance": [
+        "Fechar comentário não equivale a aprovar o conjunto",
+        "Mudança de modelo ou norma torna a aprovação anterior inadequada à nova revisão",
+        "Agente não pode se atribuir identidade ou assinatura do responsável técnico",
+        "O aceite desta etapa verifica a decisão sobre pacote técnico nativo e seus estados; o bloqueio da emissão multiformato definitiva é implementado e testado na issue 106"
+      ],
+      "validation": [
+        "Fluxo com aprovação, alteração posterior e nova revisão",
+        "Tentativa de emitir com pendência crítica ou evidência desatualizada",
+        "Auditoria de autoria, permissões e integridade de documentos aprovados"
+      ],
+      "norms": [
+        "NBR 6118",
+        "Recomendações técnicas aplicáveis de ATP"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "N01",
+        "USR-01"
+      ],
+      "depends_on": [
+        "PRU-096"
+      ],
+      "status": "planned",
+      "github_number": 97,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/97"
+    },
+    {
+      "sequence": 98,
+      "key": "PRU-098",
+      "title": "Cálculo em lote, filas e estudos paramétricos",
+      "phase": "10",
+      "phase_name": "Sistemas complementares e agentes",
+      "goal": "Permitir que agentes e usuários processem alternativas com controle de recursos.",
+      "scope": [
+        "Jobs duráveis, prioridade, cancelamento, retomada e limite de orçamento de recursos",
+        "Snapshots independentes e cache por entradas/versionamento",
+        "Múltiplas alternativas e comparação de diferenças",
+        "CLI e MCP com consulta de progresso e resultado estruturado"
+      ],
+      "acceptance": [
+        "Resultado de um job não é associado a revisão diferente da calculada",
+        "Cancelar impede tratar saída parcial como resultado final",
+        "Cache é invalidado por mudança de solver, norma, material ou hipótese"
+      ],
+      "validation": [
+        "Lote com sucesso, erro, timeout e cancelamento",
+        "Reinício do aplicativo recupera jobs sem duplicar mutações",
+        "Confronto entre execução isolada e em lote"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "Filas locais e cache por conteúdo qualificados"
+      ],
+      "source_ids": [
+        "A06",
+        "USR-01",
+        "USR-02"
+      ],
+      "depends_on": [
+        "PRU-097"
+      ],
+      "status": "planned",
+      "github_number": 98,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/98"
+    },
+    {
+      "sequence": 99,
+      "key": "PRU-099",
+      "title": "MCP completo para modelar, calcular, revisar e preparar entregas",
+      "phase": "10",
+      "phase_name": "Sistemas complementares e agentes",
+      "goal": "Expor os fluxos profissionais inteiros aos agentes por contratos controlados.",
+      "scope": [
+        "Ferramentas de consulta, proposta, aplicação, cálculo, resultados e documentos",
+        "Recursos de norma implementada, hipóteses, diagnósticos e modelos de partida",
+        "Procedimentos de agentes para três tipologias com entradas e limites",
+        "Transporte remoto autenticado quando ativado, mantendo operação local"
+      ],
+      "acceptance": [
+        "Todos os fluxos disponíveis até esta issue têm equivalência UI/MCP; os fluxos das issues 101 a 110 devem nascer com seus comandos MCP e são requalificados nas issues 112 e 116",
+        "Agente usa resultados existentes e não calcula resistência por texto probabilístico",
+        "Prévia e decisão técnica correspondem ao snapshot exato; emissão multiformato futura permanece pendente até a issue 106"
+      ],
+      "validation": [
+        "Casa de concreto, galpão de aço e cobertura de madeira por cliente MCP real",
+        "Cliente interrompido retoma sem duplicação ou perda de autoria",
+        "Testes separados de revisões de protocolo e de autorização remota"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "MCP SDK",
+        "IfcMCP como candidato com adaptador"
+      ],
+      "source_ids": [
+        "A01",
+        "A02",
+        "A05",
+        "A06",
+        "USR-01",
+        "USR-02",
+        "A04",
+        "A17"
+      ],
+      "depends_on": [
+        "PRU-098"
+      ],
+      "status": "planned",
+      "github_number": 99,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/99"
+    },
+    {
+      "sequence": 100,
+      "key": "PRU-100",
+      "title": "Resistência a instruções maliciosas e abuso de ferramentas por agentes",
+      "phase": "10",
+      "phase_name": "Sistemas complementares e agentes",
+      "goal": "Impedir que dados externos mudem políticas ou fabriquem aprovação.",
+      "scope": [
+        "Arquivos IFC/BCF/PDF e descrições tratados como dados não confiáveis",
+        "Escopos por ação/projeto, lista de destinos e limites de ferramentas",
+        "Bloqueio de shell, SQL e caminhos arbitrários em ferramentas públicas",
+        "Auditoria de chamadas, alterações e tentativas de escalada"
+      ],
+      "acceptance": [
+        "Texto importado não consegue conceder privilégio, transmitir projeto ou aprovar emissão",
+        "Falha de autorização impede a ação no serviço de domínio, não só na interface",
+        "Logs não incluem segredos nem conteúdo de projeto sem necessidade e consentimento"
+      ],
+      "validation": [
+        "Arquivos e mensagens com instruções de exfiltração e falsificação",
+        "Tentativas de atravessar diretórios, repetir tokens e trocar project_id",
+        "Teste adversarial independente dos fluxos de agente"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "Bibliotecas de autenticação e sandbox qualificadas"
+      ],
+      "source_ids": [
+        "A05",
+        "USR-01"
+      ],
+      "depends_on": [
+        "PRU-099"
+      ],
+      "status": "planned",
+      "github_number": 100,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/100"
+    },
+    {
+      "sequence": 101,
+      "key": "PRU-101",
+      "title": "Pranchas automáticas, cortes, detalhes e revisão visual",
+      "phase": "11",
+      "phase_name": "BIM, documentos e distribuição",
+      "goal": "Gerar desenhos profissionais que permaneçam coerentes com o modelo.",
+      "scope": [
+        "Plantas, cortes, elevações, detalhes e listas em folhas configuráveis",
+        "Escalas conferíveis, cotas, textos, legendas, carimbos e padrões de escritório",
+        "Paginação, organização e edição associativa sem perda de vínculo",
+        "Validação de sobreposição, conteúdo cortado e legibilidade",
+        "Editor 2D e biblioteca de detalhes autorais/licenciados, com intervenções manuais rastreáveis preservadas ao regenerar"
+      ],
+      "acceptance": [
+        "Todos os elementos dimensionados aparecem nas vistas e listas exigidas",
+        "Alteração de modelo atualiza folhas ou as marca desatualizadas",
+        "Arquivo exportado é aberto e inspecionado, incluindo última folha e detalhes densos",
+        "Regeneração apresenta conflitos entre edição manual e modelo, sem apagar ajustes nem manter detalhe estrutural obsoleto"
+      ],
+      "validation": [
+        "Pacote de múltiplos pavimentos e materiais com formatos de folha distintos",
+        "Conferência dimensional em impressão e arquivo vetorial",
+        "Regressão visual mais inspeção humana dos desenhos de piloto"
+      ],
+      "norms": [
+        "Normas de representação e execução aplicáveis"
+      ],
+      "reuse_candidates": [
+        "Motores vetoriais e paginação qualificados"
+      ],
+      "source_ids": [
+        "EB-02",
+        "CY-01",
+        "TQ-06",
+        "TQ-08"
+      ],
+      "depends_on": [
+        "PRU-100"
+      ],
+      "status": "planned",
+      "github_number": 101,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/101"
+    },
+    {
+      "sequence": 102,
+      "key": "PRU-102",
+      "title": "Memoriais de cálculo, relatórios e quantitativos reconciliados",
+      "phase": "11",
+      "phase_name": "BIM, documentos e distribuição",
+      "goal": "Entregar documentação que permita conferir a decisão de engenharia.",
+      "scope": [
+        "Memorial de hipóteses, materiais, ações, combinações, métodos e regras",
+        "Resultados por elemento com demanda, limite, caso governante e estado",
+        "Relatórios HTML/PDF/DOCX e tabelas CSV/XLSX conforme perfil de saída",
+        "Quantitativos e orçamento de referência com fonte, data e revisão"
+      ],
+      "acceptance": [
+        "Valores publicados correspondem ao snapshot aprovado",
+        "Relatório identifica verificações não aplicáveis e pendentes sem as converter em aprovação",
+        "Quantidades conciliam modelo, detalhamento, listas e memorial"
+      ],
+      "validation": [
+        "Recalcular independentemente amostras do memorial exportado",
+        "Conferir tabelas longas, fórmulas, unidades e paginação",
+        "Comparar totais dos formatos de saída e dos objetos de origem"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "Bibliotecas abertas de PDF, DOCX e planilhas qualificadas"
+      ],
+      "source_ids": [
+        "EB-02",
+        "CY-01",
+        "TQ-01",
+        "USR-02"
+      ],
+      "depends_on": [
+        "PRU-101"
+      ],
+      "status": "planned",
+      "github_number": 102,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/102"
+    },
+    {
+      "sequence": 103,
+      "key": "PRU-103",
+      "title": "Intercâmbio DWG/DXF e formatos de fabricação",
+      "phase": "11",
+      "phase_name": "BIM, documentos e distribuição",
+      "goal": "Atender os fluxos CAD e de produção sem formatos disfarçados.",
+      "scope": [
+        "Importação/exportação DXF e DWG real com versões declaradas",
+        "Avaliar SDK licenciado ou componente aberto compatível com o modelo comercial",
+        "Camadas, blocos, estilos, unidades, fontes e layouts",
+        "Formatos de fabricação/CIS/2 e integração adicional quando previstos na matriz de paridade"
+      ],
+      "acceptance": [
+        "Nenhum arquivo DXF renomeado é apresentado como DWG",
+        "Exportação abre em leitores independentes preservando geometria e escala",
+        "Limitação ou perda de dados é relatada antes da conclusão"
+      ],
+      "validation": [
+        "Round trip com blocos, cotas, layouts e textos portugueses",
+        "Abrir arquivos de lançamento em dois leitores independentes",
+        "Licença e distribuição do conversor verificadas no binário final"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "ezdxf",
+        "LibreDWG sob licença compatível",
+        "SDK DWG comercial qualificado"
+      ],
+      "source_ids": [
+        "CY-01",
+        "EB-02",
+        "USR-02"
+      ],
+      "depends_on": [
+        "PRU-102"
+      ],
+      "status": "planned",
+      "github_number": 103,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/103"
+    },
+    {
+      "sequence": 104,
+      "key": "PRU-104",
+      "title": "Exportação IFC físico, analítico e armaduras",
+      "phase": "11",
+      "phase_name": "BIM, documentos e distribuição",
+      "goal": "Publicar BIM interoperável sem prometer representação inexistente no IFC.",
+      "scope": [
+        "IFC4 e IFC4.3 com perfis e entidades suportados explicitados",
+        "Elementos físicos, materiais, propriedades, armaduras e relações analíticas",
+        "GUIDs, coordenadas, unidades, fases e proveniência",
+        "Pacote nativo preservando dados não representáveis no intercâmbio",
+        "Exportação de apresentação móvel e realidade aumentada por formatos públicos qualificados, distinguida de entrega de cálculo"
+      ],
+      "acceptance": [
+        "Exportação passa validação de schema e verificações semânticas aplicáveis",
+        "Reexportar o mesmo objeto preserva identidade conforme política",
+        "Dados de solver, protensão ou dinâmica ausentes no IFC permanecem no .prumo e no relatório de perdas"
+      ],
+      "validation": [
+        "Reabertura em pelo menos dois leitores de implementação independente",
+        "Confronto de posição, seção, material, barras e quantidades",
+        "Round trip com modelo misto e coordenadas de grande magnitude",
+        "Abrir exportação de apresentação em leitor móvel/realidade aumentada qualificado e conferir escala, orientação e unidades"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "IfcOpenShell",
+        "IfcTester",
+        "IfcDiff"
+      ],
+      "source_ids": [
+        "A07",
+        "A08",
+        "A09",
+        "EB-02",
+        "TQ-05",
+        "EB-05"
+      ],
+      "depends_on": [
+        "PRU-103"
+      ],
+      "status": "planned",
+      "github_number": 104,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/104"
+    },
+    {
+      "sequence": 105,
+      "key": "PRU-105",
+      "title": "BCF, IDS, colisões e coordenação de revisões",
+      "phase": "11",
+      "phase_name": "BIM, documentos e distribuição",
+      "goal": "Conectar a revisão estrutural à coordenação BIM.",
+      "scope": [
+        "BCF com câmera, componentes, comentários, estado e autoria",
+        "IDS para requisitos de informação, separado da conformidade de cálculo",
+        "Colisões, folgas, reservas e furos com efeito estrutural",
+        "Comparação de versões de arquitetura/instalações e atualização controlada"
+      ],
+      "acceptance": [
+        "BCF/IDS aprovado não altera o estado de verificação estrutural",
+        "Furo aprovado em coordenação exige reverificação do elemento",
+        "Resolver comentário mantém histórico e referência à revisão"
+      ],
+      "validation": [
+        "Troca de BCF com ferramenta independente",
+        "IDS detecta material/propriedade/unidade ausentes",
+        "Colisão corrigida por agente invalida cálculos e documentos pertinentes"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "IfcOpenShell BCF",
+        "IfcTester",
+        "IfcDiff"
+      ],
+      "source_ids": [
+        "A10",
+        "A11",
+        "EB-02",
+        "TQ-05"
+      ],
+      "depends_on": [
+        "PRU-104"
+      ],
+      "status": "planned",
+      "github_number": 105,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/105"
+    },
+    {
+      "sequence": 106,
+      "key": "PRU-106",
+      "title": "Emissão técnica, pacote imutável e rastreio de revisões",
+      "phase": "11",
+      "phase_name": "BIM, documentos e distribuição",
+      "goal": "Impedir a mistura de desenhos, modelos e memoriais de versões diferentes.",
+      "scope": [
+        "Manifesto de entrega com hashes de modelo, cálculo, normas e documentos",
+        "Estados rascunho, para revisão e emitido, com responsável identificado",
+        "Aprovação do conjunto exato e controle de substituições",
+        "Reabertura verificável da entrega sem credenciais ou texto normativo restrito"
+      ],
+      "acceptance": [
+        "Resultado não convergido, obsoleto ou sem revisão impede emissão validada",
+        "Documento substituído permanece identificável e não se sobrepõe silenciosamente ao anterior",
+        "Agente não assina nem aprova em nome do responsável técnico"
+      ],
+      "validation": [
+        "Tentar misturar prancha antiga com memorial novo",
+        "Modificar um arquivo após aprovação e detectar hash inválido",
+        "Abrir pacote em instalação limpa e conferir todos os arquivos"
+      ],
+      "norms": [
+        "Requisitos de responsabilidade e emissão aplicáveis"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "USR-01",
+        "N17",
+        "N18"
+      ],
+      "depends_on": [
+        "PRU-105"
+      ],
+      "status": "planned",
+      "github_number": 106,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/106"
+    },
+    {
+      "sequence": 107,
+      "key": "PRU-107",
+      "title": "Colaboração, permissões e sincronização com conflitos explícitos",
+      "phase": "11",
+      "phase_name": "BIM, documentos e distribuição",
+      "goal": "Permitir trabalho de equipe sem comprometer o projeto local.",
+      "scope": [
+        "Compartilhamento por projeto com papéis e escopos",
+        "Sincronização de revisões, bloqueios/mesclagem e conflitos",
+        "Criptografia em trânsito/repouso no serviço e recuperação",
+        "Operação offline e exportação integral dos dados do cliente"
+      ],
+      "acceptance": [
+        "Um usuário não acessa projeto de outra equipe por troca de identificador",
+        "Conflito de edição não é resolvido por sobrescrita silenciosa",
+        "Queda do serviço não impede abrir dados locais e preservar trabalho"
+      ],
+      "validation": [
+        "Dois usuários e um agente editando revisões concorrentes",
+        "Revogação de acesso, restauração e perda de conexão",
+        "Teste de isolamento, backup e recuperação"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "Bibliotecas de identidade e sincronização qualificadas"
+      ],
+      "source_ids": [
+        "A05",
+        "USR-01",
+        "USR-02"
+      ],
+      "depends_on": [
+        "PRU-106"
+      ],
+      "status": "planned",
+      "github_number": 107,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/107"
+    },
+    {
+      "sequence": 108,
+      "key": "PRU-108",
+      "title": "Extensões, API estável e ajuda contextual em português",
+      "phase": "11",
+      "phase_name": "BIM, documentos e distribuição",
+      "goal": "Permitir extensão controlada sem duplicar as regras do núcleo.",
+      "scope": [
+        "API e formato de extensão versionados com permissões declaradas",
+        "Procedimentos paramétricos e bibliotecas de conjuntos reutilizáveis",
+        "Ajuda contextual, exemplos completos e diagnóstico orientado à ação",
+        "Compatibilidade de versões e migração de extensões",
+        "Autoria de rotinas por programação visual e scripts restritos, usando comandos e permissões do núcleo",
+        "Conectores analíticos externos inventariados e implementados por especificação pública ou SDK autorizado, com relatório de perdas"
+      ],
+      "acceptance": [
+        "Extensão não pode contornar validação, resultados obsoletos ou emissão",
+        "Ajuda explica hipóteses e limites, além dos botões",
+        "Atualização de extensão registra impacto e exige nova qualificação quando pertinente"
+      ],
+      "validation": [
+        "Extensão legítima de conjunto paramétrico e extensão hostil",
+        "Projeto abre sem extensão opcional mantendo dados e aviso de dependência",
+        "Usuário resolve erro comum a partir da ajuda contextual",
+        "Rotina visual de geração paramétrica reproduz um modelo manual e respeita transações e limitações",
+        "Exportar modelo analítico para destino qualificado e comparar geometria, eixos, vínculos e ações com relatório de perdas"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "Sistemas de schema e isolamento qualificados"
+      ],
+      "source_ids": [
+        "EB-01",
+        "USR-01",
+        "USR-02",
+        "EB-06"
+      ],
+      "depends_on": [
+        "PRU-107"
+      ],
+      "status": "planned",
+      "github_number": 108,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/108"
+    },
+    {
+      "sequence": 109,
+      "key": "PRU-109",
+      "title": "Diagnóstico, privacidade e suporte com dados mínimos",
+      "phase": "11",
+      "phase_name": "BIM, documentos e distribuição",
+      "goal": "Tornar problemas reproduzíveis sem expor projetos ou segredos.",
+      "scope": [
+        "Logs estruturados e pacote de diagnóstico selecionável pelo usuário",
+        "Telemetria opcional sem conteúdo de projeto por padrão",
+        "Política de dados, retenção, exportação e exclusão recuperável quando aplicável",
+        "Canal de suporte, classificação de incidentes e retorno de correções"
+      ],
+      "acceptance": [
+        "Credenciais, modelos e documentos não entram em logs ou telemetria por acidente",
+        "Usuário vê e escolhe o conteúdo transmitido ao suporte",
+        "Falha crítica possui caminho de reprodução e tratamento documentado"
+      ],
+      "validation": [
+        "Inspeção de logs com credenciais e nomes confidenciais de teste",
+        "Desativação de telemetria e uso totalmente offline",
+        "Exercício de incidente com geração de diagnóstico mínimo"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "Bibliotecas de observabilidade com coleta controlada"
+      ],
+      "source_ids": [
+        "USR-01",
+        "USR-02"
+      ],
+      "depends_on": [
+        "PRU-108"
+      ],
+      "status": "planned",
+      "github_number": 109,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/109"
+    },
+    {
+      "sequence": 110,
+      "key": "PRU-110",
+      "title": "Instaladores, atualização e recuperação de versão",
+      "phase": "11",
+      "phase_name": "BIM, documentos e distribuição",
+      "goal": "Distribuir o produto com seus motores e dependências reais.",
+      "scope": [
+        "Instalador Windows, runtimes, workers e componentes de terceiros",
+        "Assinatura de pacote, inventário de componentes e requisitos de hardware",
+        "Atualização atômica, reversão e preservação de projetos",
+        "Modo offline, diagnóstico e teste em máquina limpa"
+      ],
+      "acceptance": [
+        "Cliente não precisa instalar Python, compilador ou dependência manualmente",
+        "Atualização interrompida permite recuperar versão estável",
+        "Versão antiga não grava schema novo sem controle e backup"
+      ],
+      "validation": [
+        "Instalar, atualizar, reverter e remover em máquinas limpas",
+        "Cálculo de benchmark pelo binário distribuído",
+        "Verificação de assinatura, licença e hashes dos componentes"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "Tauri updater",
+        "Ferramentas de empacotamento qualificadas"
+      ],
+      "source_ids": [
+        "A12",
+        "A13",
+        "USR-02"
+      ],
+      "depends_on": [
+        "PRU-109"
+      ],
+      "status": "planned",
+      "github_number": 110,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/110"
+    },
+    {
+      "sequence": 111,
+      "key": "PRU-111",
+      "title": "Desempenho, escala e resposta sob carga",
+      "phase": "12",
+      "phase_name": "Qualificação e lançamento",
+      "goal": "Definir limites operacionais verificáveis para o lançamento.",
+      "scope": [
+        "Corpus pequeno/médio/grande com hardware, número de objetos e graus de liberdade registrados",
+        "Medições de abertura, edição, memória, análise, documentação e consumo de disco",
+        "Metas publicadas após baseline e antes da otimização",
+        "Cancelamento, redução de resolução visual e limites seguros de trabalho"
+      ],
+      "acceptance": [
+        "Limites publicados correspondem a medições do binário candidato ao lançamento",
+        "Interface continua operável durante cálculo e exportação",
+        "Estouro de recurso falha de modo controlado, preservando o projeto",
+        "Corpus inclui todos os materiais, armadura 3D, IFC e desenhos; metas de desempenho não autorizam remover capacidades de lançamento"
+      ],
+      "validation": [
+        "Metas iniciais de estudo: 10 mil peças físicas, 100 mil graus de liberdade e equipamento de 16 GB, a qualificar por ADR",
+        "Ensaios repetidos registram mediana, p95 e pico de memória",
+        "Teste de projeto acima do limite anunciado sem corrupção ou falsa conclusão"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "Profilers e benchmarks abertos qualificados"
+      ],
+      "source_ids": [
+        "USR-01",
+        "USR-02"
+      ],
+      "depends_on": [
+        "PRU-110"
+      ],
+      "status": "planned",
+      "github_number": 111,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/111"
+    },
+    {
+      "sequence": 112,
+      "key": "PRU-112",
+      "title": "Fluxos completos e regressão entre disciplinas",
+      "phase": "12",
+      "phase_name": "Qualificação e lançamento",
+      "goal": "Verificar que módulos combinados entregam projetos utilizáveis.",
+      "scope": [
+        "Modelar, importar, calcular, corrigir, detalhar, revisar e emitir em todas as tipologias",
+        "Mesmos fluxos manuais e por MCP",
+        "Reabertura, migração, revisões e atualização de referências",
+        "Matriz requisito > issue > teste > evidência > artefato"
+      ],
+      "acceptance": [
+        "Não há etapa essencial concluída apenas por simulação ou dado fixo",
+        "Arquivos finais refletem o mesmo projeto e revisão",
+        "Todas as rotas suportadas possuem fluxo de erro e recuperação testado"
+      ],
+      "validation": [
+        "Casa, edifício alto, galpão metálico, cobertura de madeira, alvenaria e fundações",
+        "Protensão, pré-moldado, incêndio e sismo em casos aplicáveis",
+        "Executar em máquinas limpas pelos pacotes de distribuição"
+      ],
+      "norms": [],
+      "reuse_candidates": [],
+      "source_ids": [
+        "EB-02",
+        "CY-01",
+        "TQ-01",
+        "USR-01"
+      ],
+      "depends_on": [
+        "PRU-111"
+      ],
+      "status": "planned",
+      "github_number": 112,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/112"
+    },
+    {
+      "sequence": 113,
+      "key": "PRU-113",
+      "title": "Campanha independente de verificação de concreto",
+      "phase": "12",
+      "phase_name": "Qualificação e lançamento",
+      "goal": "Confirmar as capacidades de concreto no produto integrado candidato ao lançamento.",
+      "scope": [
+        "Bateria congelada e casos inéditos para equipe implementadora",
+        "ELU, ELS, estabilidade, protensão, pré-moldados, fogo e detalhamento",
+        "Comparações com solução analítica, referência independente e sistemas de referência quando autorizados",
+        "Relatório de divergências e decisão técnica",
+        "Sistema completo de paredes de concreto moldadas no local, além de pilares-parede e núcleos"
+      ],
+      "acceptance": [
+        "Zero falso aprovado na bateria obrigatória e nenhuma divergência grave sem explicação",
+        "Evidência identifica SHA do binário final e das entradas",
+        "Revisor habilitado independente registra aceite técnico, sem assinatura atribuída a agentes"
+      ],
+      "validation": [
+        "Casos fronteira e falhas deliberadas de carga, unidade, vínculo e armadura",
+        "Amostragem de todos os métodos e intervalos implementados",
+        "Repetir testes afetados após correção e vincular nova evidência"
+      ],
+      "norms": [
+        "NBR 6118",
+        "NBR 9062",
+        "NBR 15200",
+        "NBR 16055"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "N17",
+        "N18",
+        "N19",
+        "USR-01",
+        "N16",
+        "N23",
+        "TQ-07"
+      ],
+      "depends_on": [
+        "PRU-112"
+      ],
+      "status": "planned",
+      "github_number": 113,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/113"
+    },
+    {
+      "sequence": 114,
+      "key": "PRU-114",
+      "title": "Campanha independente de aço, madeira, alvenaria, alumínio e geotecnia",
+      "phase": "12",
+      "phase_name": "Qualificação e lançamento",
+      "goal": "Qualificar as demais famílias e interfaces no produto integrado.",
+      "scope": [
+        "Baterias por método, material, ligação, fase e condição de exposição",
+        "Aço/mistos/perfis delgados, madeira/produtos, alvenaria, alumínio e fundações",
+        "Compatibilidade entre resultados globais e verificações locais",
+        "Documentos, listas e modelos confrontados com resultados independentes"
+      ],
+      "acceptance": [
+        "Cada família prevista tem evidência técnica e domínio publicado",
+        "Método geotécnico ou produto de madeira sem comprovação não é dispensado para lançar",
+        "Duas interfaces de um mesmo motor não são contadas como referências independentes"
+      ],
+      "validation": [
+        "Casos cegos e extremos previamente definidos pelo verificador",
+        "Falhas de ligação, flambagem, umidade, recalque e interface",
+        "Revisão independente de resultados e detalhamento"
+      ],
+      "norms": [
+        "NBR 8800",
+        "NBR 7190",
+        "NBR 16868",
+        "NBR 6122",
+        "Base de alumínio qualificada"
+      ],
+      "reuse_candidates": [],
+      "source_ids": [
+        "N17",
+        "N18",
+        "N19",
+        "USR-01",
+        "N16"
+      ],
+      "depends_on": [
+        "PRU-113"
+      ],
+      "status": "planned",
+      "github_number": 114,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/114"
+    },
+    {
+      "sequence": 115,
+      "key": "PRU-115",
+      "title": "Pilotos profissionais e confronto de projetos completos",
+      "phase": "12",
+      "phase_name": "Qualificação e lançamento",
+      "goal": "Demonstrar o uso real antes de anunciar disponibilidade comercial.",
+      "scope": [
+        "Conjunto mínimo de dez projetos autorizados e representativos da cobertura",
+        "Engenheiros distintos da equipe implementadora executam fluxos completos",
+        "Conferência de modelo, hipóteses, cálculo, desenho, quantitativo e emissão",
+        "Registro de problemas, tempo, retrabalho e suporte"
+      ],
+      "acceptance": [
+        "Pilotos cobrem concreto, aço, madeira, mistos, alvenaria, fundações e situações avançadas",
+        "Não há defeito crítico ou grave conhecido pendente no escopo de lançamento",
+        "Uso em obra depende da revisão e responsabilidade profissional aplicáveis, sem liberação automática de piloto"
+      ],
+      "validation": [
+        "Comparar resultados com projetos de referência equalizando hipóteses",
+        "Conferência integral de ao menos um pacote por família principal",
+        "Executar recuperação de falha e mudança tardia de projeto"
+      ],
+      "norms": [],
+      "reuse_candidates": [],
+      "source_ids": [
+        "USR-01",
+        "N17",
+        "N18",
+        "N16"
+      ],
+      "depends_on": [
+        "PRU-114"
+      ],
+      "status": "planned",
+      "github_number": 115,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/115"
+    },
+    {
+      "sequence": 116,
+      "key": "PRU-116",
+      "title": "Auditoria de segurança, cadeia de dependências e MCP",
+      "phase": "12",
+      "phase_name": "Qualificação e lançamento",
+      "goal": "Qualificar a superfície de ataque do produto que será distribuído.",
+      "scope": [
+        "Parsers IFC/CAD/PDF, pacotes, extensões, atualização e permissões",
+        "MCP local/remoto, autenticação, isolamento e dados de equipe",
+        "Inventário de componentes, vulnerabilidades e assinatura de artefatos",
+        "Plano de atualização, relato de falhas e tratamento de incidentes"
+      ],
+      "acceptance": [
+        "Nenhuma vulnerabilidade crítica explorável ou grave sem mitigação verificada permanece no escopo",
+        "Auditoria usa o binário e a configuração de distribuição",
+        "Correção de dependência preserva as evidências numéricas ou dispara requalificação"
+      ],
+      "validation": [
+        "Fuzzing de entradas, arquivos malformados e abuso de recursos",
+        "Ataques de autorização, origem, repetição e instrução maliciosa",
+        "Teste independente de atualização e integridade da distribuição"
+      ],
+      "norms": [],
+      "reuse_candidates": [
+        "Scanners, fuzzers e ferramentas de inventário qualificadas"
+      ],
+      "source_ids": [
+        "A05",
+        "USR-02"
+      ],
+      "depends_on": [
+        "PRU-115"
+      ],
+      "status": "planned",
+      "github_number": 116,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/116"
+    },
+    {
+      "sequence": 117,
+      "key": "PRU-117",
+      "title": "Estudo independente de usabilidade e acessibilidade",
+      "phase": "12",
+      "phase_name": "Qualificação e lançamento",
+      "goal": "Comprovar a redução da curva de aprendizado com usuários novos.",
+      "scope": [
+        "Pelo menos doze engenheiros sem experiência no Prumo, perfil e experiência registrados",
+        "Três tipologias: casa de concreto, galpão de aço e cobertura de madeira",
+        "Roteiro neutro, observação independente e erros deliberados",
+        "Uso por uma mão, teclado, visibilidade de hipóteses e compreensão dos impedimentos"
+      ],
+      "acceptance": [
+        "Metas de produto: mediana de até 45 minutos por tipologia, pelo menos 90% de subtarefas concluídas e média SUS mínima 80",
+        "Zero erro crítico de interpretação que gere entrega insegura na bateria",
+        "Falha de meta exige correção e nova medição, sem trocar o roteiro depois de ver resultados",
+        "Pelo menos 90% dos participantes concluem o fluxo essencial completo conforme protocolo pré-registrado, além da meta de subtarefas"
+      ],
+      "validation": [
+        "Comparar primeiro uso e repetição, separando tempo de cálculo",
+        "Conferir entendimento de unidade, apoio, carga e resultado desatualizado",
+        "Registrar método de cegamento possível sem fingir ocultar a identidade da interface"
+      ],
+      "norms": [],
+      "reuse_candidates": [],
+      "source_ids": [
+        "USR-01",
+        "A19",
+        "A20",
+        "A21"
+      ],
+      "depends_on": [
+        "PRU-116"
+      ],
+      "status": "planned",
+      "github_number": 117,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/117"
+    },
+    {
+      "sequence": 118,
+      "key": "PRU-118",
+      "title": "Preparação comercial, licenças, termos e manutenção normativa",
+      "phase": "12",
+      "phase_name": "Qualificação e lançamento",
+      "goal": "Garantir que o produto possa ser distribuído e sustentado legalmente.",
+      "scope": [
+        "Modelo comercial, direitos de uso, licença de avaliação e acesso aos próprios dados",
+        "Obrigações de todos os componentes incorporados e documentos normativos",
+        "Termos, política de privacidade, suporte e procedimento de atualização de normas",
+        "Catálogo honesto de capacidades, limites e hardware suportado",
+        "Se o modelo exigir cobrança: regras de renovação, cancelamento, estorno, suspensão e reativação de licença, sem prometer condições ainda não aprovadas pelo proprietário"
+      ],
+      "acceptance": [
+        "Não há componente com restrição comercial não resolvida",
+        "Cliente consegue recuperar seu projeto conforme política publicada mesmo após expiração de licença",
+        "Marketing não anuncia conformidade, paridade ou certificação sem evidência correspondente"
+      ],
+      "validation": [
+        "Auditar inventário contra binário distribuído e avisos de terceiros",
+        "Cenários de licença válida, expirada, offline e renovada",
+        "Revisão responsável dos termos e da política de atualização normativa"
+      ],
+      "norms": [],
+      "reuse_candidates": [],
+      "source_ids": [
+        "USR-01",
+        "USR-02"
+      ],
+      "depends_on": [
+        "PRU-117"
+      ],
+      "status": "planned",
+      "github_number": 118,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/118"
+    },
+    {
+      "sequence": 119,
+      "key": "PRU-119",
+      "title": "Candidato de lançamento, distribuição e operação assistida",
+      "phase": "12",
+      "phase_name": "Qualificação e lançamento",
+      "goal": "Preparar a distribuição comercial e demonstrar recuperação e suporte.",
+      "scope": [
+        "Versão candidata assinada, canais de distribuição e documentação de instalação",
+        "Ativação/licenciamento e cobrança apenas se o modelo comercial escolhido a exigir",
+        "Backup, reversão de atualização e resposta a incidente numérico",
+        "Suporte, notas de versão, tutorial e catálogo de capacidades",
+        "Vincular incidente numérico a versões, regras, projetos e entregas já emitidas; avisar responsáveis e alertar ao reabrir projeto afetado, preservando o histórico"
+      ],
+      "acceptance": [
+        "Instalação, ativação, cálculo e entrega funcionam em ambiente limpo",
+        "Caminho comercial escolhido é testado integralmente sem cobrança real de teste",
+        "Mudança no candidato após validação identifica e reexecuta todos os testes afetados"
+      ],
+      "validation": [
+        "Teste de distribuição, instalação offline conforme licença e restauração",
+        "Exercício de retirar versão com defeito e avisar clientes afetados por canal autorizado",
+        "Verificar integridade de artefatos e correspondência à matriz de evidências",
+        "Se houver cobrança, testar sucesso, falha, renovação, cancelamento, estorno e restauração de acesso, preservando os arquivos do cliente"
+      ],
+      "norms": [],
+      "reuse_candidates": [],
+      "source_ids": [
+        "USR-01",
+        "USR-02"
+      ],
+      "depends_on": [
+        "PRU-118"
+      ],
+      "status": "planned",
+      "github_number": 119,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/119"
+    },
+    {
+      "sequence": 120,
+      "key": "PRU-120",
+      "title": "Lançamento do Prumo com cobertura e confiabilidade demonstradas",
+      "phase": "12",
+      "phase_name": "Qualificação e lançamento",
+      "goal": "Liberar a versão comercial somente com todas as condições de aceite satisfeitas.",
+      "scope": [
+        "Reconciliar todas as 119 entregas anteriores com código integrado e evidências atuais",
+        "Auditar a matriz de paridade e domínio normativo sem retirar capacidades para concluir",
+        "Aceite técnico independente, usabilidade, segurança, licenças e operação",
+        "Publicar versão 1.0.0, instaladores, documentação, notas e matriz de capacidades verificadas"
+      ],
+      "acceptance": [
+        "Todas as issues anteriores estão concluídas por implementação validada, sem fechamento por cancelamento ou simples declaração",
+        "Não há pendência crítica/grave, norma necessária sem acesso, capacidade obrigatória não verificada ou evidência de outro binário",
+        "O artefato distribuído tem o mesmo SHA-256 do candidato aprovado e a instalação final é conferida"
+      ],
+      "validation": [
+        "Auditoria final requisito > regra > código > teste > revisão > arquivo distribuído",
+        "Repetição dos testes de instalação, cálculo e emissão em máquinas limpas",
+        "Registro de responsáveis humanos, aceite, data, limites e plano de manutenção"
+      ],
+      "norms": [],
+      "reuse_candidates": [],
+      "source_ids": [
+        "USR-01",
+        "USR-02",
+        "N17",
+        "N18",
+        "N19",
+        "N16"
+      ],
+      "depends_on": [
+        "PRU-119"
+      ],
+      "status": "planned",
+      "github_number": 120,
+      "github_url": "https://github.com/tjsasakifln/prumo/issues/120"
+    }
+  ],
+  "publication_status": "published_and_read_back"
+}

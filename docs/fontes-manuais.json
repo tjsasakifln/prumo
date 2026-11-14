@@ -1,0 +1,204 @@
+[
+  {
+    "id": "EB-01",
+    "publisher": "AltoQi",
+    "title": "AltoQi Eberick: software para projetos estruturais",
+    "url": "https://www.altoqi.com.br/produtos/eberick",
+    "accessed": "2026-11-14",
+    "type": "official_product_documentation",
+    "summary": "Concreto, pré-moldados, protensão, alvenaria, perfis e programação visual; diferencia módulos e etapas construtivas.",
+    "qualification": "Declarações do fabricante; não evidenciam validação independente."
+  },
+  {
+    "id": "EB-02",
+    "publisher": "AltoQi",
+    "title": "Recursos do AltoQi Eberick",
+    "url": "https://www.altoqi.com.br/produtos/eberick/recursos",
+    "accessed": "2026-11-14",
+    "type": "official_feature_catalog",
+    "summary": "Inventário de elementos, análises, fundações, entregáveis e interoperabilidade.",
+    "qualification": "Disponibilidade precisa ser vinculada ao plano e à versão."
+  },
+  {
+    "id": "EB-03",
+    "publisher": "AltoQi Suporte",
+    "title": "Como processar uma estrutura com protensão?",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/4406429041943",
+    "accessed": "2026-11-14",
+    "published_or_updated": "2026-05-20",
+    "type": "official_manual_article",
+    "summary": "Configuração do processamento, perdas e distinção entre efeitos no ELU e ELS.",
+    "qualification": "Artigo cita NBR 6118:2014; não determina edição vigente."
+  },
+  {
+    "id": "EB-04",
+    "publisher": "AltoQi Suporte",
+    "title": "Dimensionamento de perfis metálicos no AltoQi Eberick",
+    "url": "https://suporte.altoqi.com.br/hc/pt-br/articles/360055652454",
+    "accessed": "2026-11-14",
+    "published_or_updated": "2025-12-29",
+    "type": "official_manual_article",
+    "summary": "Perfis, esbeltez, verificação de esforços e limitações do dimensionamento metálico.",
+    "qualification": "Há limites expressos para perfis compostos e necessidade de conferir flambagem."
+  },
+  {
+    "id": "CY-01",
+    "publisher": "CYPE",
+    "title": "CYPECAD",
+    "url": "https://info.cype.com/br/software/cypecad/",
+    "accessed": "2026-11-14",
+    "type": "official_product_manual",
+    "summary": "Fluxo de modelagem, análise, dimensionamento, edição de resultados, fundações e desenhos.",
+    "qualification": "Cada módulo e norma tem escopo específico; não extrapolar equivalência normativa entre países."
+  },
+  {
+    "id": "CY-02",
+    "publisher": "CYPE",
+    "title": "CYPE 3D",
+    "url": "https://info.cype.com/br/software/cype-3d/",
+    "accessed": "2026-11-14",
+    "type": "official_product_manual",
+    "summary": "Barras e placas de diferentes materiais, análise avançada e integrações.",
+    "qualification": "CYPE 3D é distinto do CYPECAD; Connect e StruBIM Steel também são aplicativos relacionados."
+  },
+  {
+    "id": "TQ-01",
+    "publisher": "TQS Docs",
+    "title": "Análise Estrutural",
+    "url": "https://docs.tqs.com.br/Docs/Details?id=343804092&language=pt-BR",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "summary": "Modelos analíticos, combinações, estabilidade, não linearidade, dinâmica e sismo.",
+    "qualification": "Artigo de visão geral; exige aprofundamento para critérios de cada análise."
+  },
+  {
+    "id": "TQ-02",
+    "publisher": "TQS Docs",
+    "title": "Detalhamento: lajes protendidas e modelos de análise",
+    "url": "https://docs.tqs.com.br/Docs/Details?id=3229&language=pt-BR",
+    "accessed": "2026-11-14",
+    "type": "official_manual_chapter",
+    "summary": "Detalhamento da protensão, Modelos IV/VI, modelos ELU/ELS e reprocessamento.",
+    "qualification": "Contém referências históricas de versões; útil para relações funcionais, não para catálogo atual."
+  },
+  {
+    "id": "TQ-03",
+    "publisher": "TQS Docs",
+    "title": "Aplicação para a Interação Integrada Estrutura e Solo",
+    "url": "https://docs.tqs.com.br/Docs/Details?id=1054843974&language=pt-BR",
+    "accessed": "2026-11-14",
+    "type": "official_manual_chapter",
+    "summary": "Integração SISEs, parâmetros geotécnicos, fundações, recalques e rigidez equivalente.",
+    "qualification": "Distinção entre reavaliação pelo usuário e solução estrutural integrada."
+  },
+  {
+    "id": "TQ-04",
+    "publisher": "TQS Docs",
+    "title": "Estruturas Metálicas: MetalCheck",
+    "url": "https://docs.tqs.com.br/Docs/Details?id=990689351&language=pt-BR",
+    "accessed": "2026-11-14",
+    "type": "official_manual_chapter",
+    "summary": "Vigas/pilares metálicos e mistos, modos de cálculo e integração com modelo global.",
+    "qualification": "Trecho consultado cita NBR 8800:2008; não usar como prova de vigência ou versão atual suportada."
+  },
+  {
+    "id": "TQ-05",
+    "publisher": "TQS Docs",
+    "title": "BIM",
+    "url": "https://docs.tqs.com.br/Docs/Details?id=428874089&language=pt-BR",
+    "accessed": "2026-11-14",
+    "type": "official_manual_article",
+    "summary": "Referências IFC, plug-ins, paredes/tubulações e distinção de objetos exclusivamente geométricos.",
+    "qualification": "Trechos sobre armadura podem refletir versões antigas; não presumir limitação atual sem confronto com notas de versão."
+  },
+  {
+    "id": "TQ-06",
+    "publisher": "TQS",
+    "title": "TQS Full LVP&S + PREO",
+    "url": "https://www.tqs.com.br/%C3%82/systems/tqs-preo/366i9tyvyu",
+    "accessed": "2026-11-14",
+    "type": "official_product_documentation",
+    "summary": "Pacote e módulos de protensão, pré-moldados, solo-estrutura e desenho de armaduras.",
+    "qualification": "A página combina textos de diferentes idiomas e referências históricas de normas."
+  },
+  {
+    "id": "TQ-07",
+    "publisher": "TQS Docs",
+    "title": "Paredes de Concreto",
+    "url": "https://docs.tqs.com.br/Docs/Details?id=311117186&language=pt-BR",
+    "type": "official_manual_index",
+    "summary": "Sistema de paredes de concreto, referência à NBR 16055, armaduras, elevações e corte de telas.",
+    "qualification": "O índice identifica o domínio; critérios e edição vigente exigem consulta técnica própria.",
+    "accessed": "2026-11-14"
+  },
+  {
+    "id": "TQ-08",
+    "publisher": "TQS Docs",
+    "title": "Editor de Armaduras",
+    "url": "https://docs.tqs.com.br/Docs/Details?id=3748&language=pt-BR",
+    "type": "official_manual_chapter",
+    "summary": "Editor AGC para criação e alteração de detalhes de armadura, listas e desenhos.",
+    "qualification": "O manual distingue edição de desenhos de verificação resistente; não atribuir dimensionamento automático ao editor.",
+    "accessed": "2026-11-14"
+  },
+  {
+    "id": "TQ-09",
+    "publisher": "TQS Docs",
+    "title": "Painéis de Fechamento",
+    "url": "https://docs.tqs.com.br/Docs/Details?id=2146481243&language=pt-BR",
+    "type": "official_manual_chapter",
+    "summary": "Painéis e insertos de fachada no PREO, desenhos de formas, quantitativos e BIM.",
+    "qualification": "Na versão descrita, painéis não são dimensionados; armadura e peso próprio dependem de entrada do usuário.",
+    "accessed": "2026-11-14"
+  },
+  {
+    "id": "CY-03",
+    "publisher": "CYPE",
+    "title": "CYPE 3D: Tirantes",
+    "url": "https://info.cype.com/br/tema/cype-3d-tirantes/",
+    "type": "official_product_manual",
+    "summary": "Definição de tirantes e hipóteses de seu comportamento axial.",
+    "qualification": "Aplicabilidade do método e exigências do sistema de contraventamento precisam ser registradas por versão.",
+    "accessed": "2026-11-14"
+  },
+  {
+    "id": "CY-04",
+    "publisher": "CYPE",
+    "title": "Versão 2024.d",
+    "url": "https://info.cype.com/br/novidades/versao-2024-d/",
+    "type": "official_release_notes",
+    "summary": "Módulos de barras apenas à tração e levantamento de apoios no CYPE 3D.",
+    "qualification": "Nota de versão evidencia introdução da capacidade, não comprova toda evolução posterior.",
+    "accessed": "2026-11-14"
+  },
+  {
+    "id": "CY-05",
+    "publisher": "CYPE",
+    "title": "CYPE 3D: Separador Geometria",
+    "url": "https://info.cype.com/br/produto/cype-3d-geometria/",
+    "type": "official_product_manual",
+    "summary": "Famílias de seções, perfis Boyd, barras só à tração com pré-tensão e seções especiais de alumínio.",
+    "qualification": "Geometria disponível não prova verificação de todos os modos de ruptura em qualquer norma.",
+    "accessed": "2026-11-14"
+  },
+  {
+    "id": "EB-05",
+    "publisher": "AltoQi",
+    "title": "Exportação do Modelo 3D em Realidade Aumentada",
+    "url": "https://www.altoqi.com.br/recursos/exportacao-do-modelo-3d-em-realidade-aumentada",
+    "type": "official_feature_documentation",
+    "summary": "Exportação de modelo para apresentação em realidade aumentada por aplicativo relacionado.",
+    "qualification": "O recurso descrito depende do Augin; Prumo deve comprovar o fluxo escolhido por especificação e licença próprias.",
+    "accessed": "2026-11-14"
+  },
+  {
+    "id": "EB-06",
+    "publisher": "AltoQi",
+    "title": "Exportação para o SAP 2000",
+    "url": "https://www.altoqi.com.br/recursos/exportacao-para-o-sap-2000",
+    "type": "official_feature_documentation",
+    "summary": "Intercâmbio de modelo analítico com SAP2000.",
+    "qualification": "Suporte do Prumo exige especificação pública ou licença; não implica identidade de resultados entre motores.",
+    "accessed": "2026-11-14"
+  }
+]

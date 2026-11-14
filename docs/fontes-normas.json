@@ -1,0 +1,209 @@
+[
+  {
+    "id": "N01",
+    "title": "ABNT Catálogo",
+    "url": "https://www.abntcatalogo.com.br/",
+    "publisher": "ABNT",
+    "accessed_at": "2026-11-14",
+    "evidence_class": "A",
+    "facts": "Catálogo exibe 6118:2026; 8800:2024 Versão Corrigida:2025; partes 1 a 6 da 15575 com edições individualizadas. Metadados apenas."
+  },
+  {
+    "id": "N02",
+    "title": "NBR 6118 tem emenda publicada pela ABNT",
+    "url": "https://site.abece.com.br/nbr-6118-tem-emenda-publicada-pela-abnt/",
+    "publisher": "ABECE",
+    "accessed_at": "2026-11-14",
+    "evidence_class": "B",
+    "facts": "Notícia de março de 2026 identifica emenda de 11/03/2026, equivalência à edição 2026 e alterações referentes à avaliação técnica de projeto."
+  },
+  {
+    "id": "N03",
+    "title": "NBR 8800 tem versão corrigida publicada",
+    "url": "https://site.abece.com.br/nbr-8800-tem-versao-corrigida-publicada/",
+    "publisher": "ABECE",
+    "accessed_at": "2026-11-14",
+    "evidence_class": "B",
+    "facts": "Publicação de fevereiro de 2025 identifica versão corrigida de 2025 da norma de 2024, incluindo ajustes em fórmulas."
+  },
+  {
+    "id": "N04",
+    "title": "Nova NBR 7190 é publicada",
+    "url": "https://site.abece.com.br/nova-nbr-7190-e-publicada/",
+    "publisher": "ABECE",
+    "accessed_at": "2026-11-14",
+    "evidence_class": "B",
+    "facts": "Parte 1 publicada em 29/06/2022; a associação registra critérios de dimensionamento, madeira engenheirada e incêndio."
+  },
+  {
+    "id": "N05",
+    "title": "Em vigor, a nova NBR 8681",
+    "url": "https://site.abece.com.br/em-vigor-a-nova-nbr-8681/",
+    "publisher": "ABECE",
+    "accessed_at": "2026-11-14",
+    "evidence_class": "B",
+    "facts": "Notícia de outubro de 2025 registra nova edição da norma de ações e segurança e participação direta da associação na revisão."
+  },
+  {
+    "id": "N06",
+    "title": "Normas Técnicas",
+    "url": "https://site.abece.com.br/normas-tecnicas/",
+    "publisher": "ABECE",
+    "accessed_at": "2026-11-14",
+    "evidence_class": "B",
+    "facts": "Lista trabalhos das comissões; registra 15200:2024, 8681:2025 e 15421:2023. A seção da 6118 antecede a notícia mais recente de 2026."
+  },
+  {
+    "id": "N07",
+    "title": "Boletim de normas técnicas do setor da construção civil junho/julho 2022",
+    "url": "https://cbic.org.br/wp-content/uploads/2022/07/boletim-de-normas-tecnicas-setor-da-construcao-civil-junhojulho2022.pdf",
+    "publisher": "CBIC",
+    "accessed_at": "2026-11-14",
+    "evidence_class": "B",
+    "facts": "Boletim setorial registra partes 1 a 7 da série 7190, publicadas em junho de 2022, incluindo métodos de ensaio e madeira engenheirada."
+  },
+  {
+    "id": "N08",
+    "title": "Em vigor, a nova NBR 6123",
+    "url": "https://site.abece.com.br/em-vigor-a-nova-nbr-6123/",
+    "publisher": "ABECE",
+    "accessed_at": "2026-11-14",
+    "evidence_class": "B",
+    "facts": "Notícia registra edição 2023 e ação estática/dinâmica do vento; não comprova por si eventuais correções posteriores."
+  },
+  {
+    "id": "N09",
+    "title": "ABNT convida associados ABMS para reunião sobre Projeto de Emenda à Norma de Projeto e Execução de Fundações",
+    "url": "https://www.abms.com.br/noticia/abnt-convida-associados-abms-para-reuniao",
+    "publisher": "ABMS",
+    "accessed_at": "2026-11-14",
+    "evidence_class": "B",
+    "facts": "Publicação de 21/03/2022 descreve consulta de emenda da 6122:2019. Exige conferir a consolidação publicada posteriormente no catálogo."
+  },
+  {
+    "id": "N10",
+    "title": "ABNT NBR 9062:2017 Comentários e Exemplos",
+    "url": "https://www.ibracon.org.br/loja/detalhes/4780",
+    "publisher": "IBRACON",
+    "accessed_at": "2026-11-14",
+    "evidence_class": "B",
+    "facts": "Publicação de 2022 vinculada ao comitê IBRACON/ABCIC comenta edição 2017 e disponibiliza erratas do livro. Situação atual da norma exige confirmação."
+  },
+  {
+    "id": "N11",
+    "title": "Nova NBR 14931 é publicada",
+    "url": "https://site.abece.com.br/nova-nbr-14931-e-publicada/",
+    "publisher": "ABECE",
+    "accessed_at": "2026-11-14",
+    "evidence_class": "B",
+    "facts": "Notícia de maio de 2023 descreve revisão de execução e interfaces com concreto armado, protendido e fibras."
+  },
+  {
+    "id": "N12",
+    "title": "Alterações de normas técnicas do setor da construção civil 2024",
+    "url": "https://cbic.org.br/wp-content/uploads/2025/02/boletim-alteracoes-de-normas-tecnicas-setor-da-construcao-civil-2024.pdf",
+    "publisher": "CBIC",
+    "accessed_at": "2026-11-14",
+    "evidence_class": "B",
+    "facts": "Boletim registra errata da NBR 15200 em 24/10/2024; incorporação à versão licenciada deve ser conferida."
+  },
+  {
+    "id": "N13",
+    "title": "Relatório de atividades 2013",
+    "url": "https://www.cbca-acobrasil.org.br/upfiles/downloads/relatorios/CBCA-Relatorio-de-Atividades-2013.pdf",
+    "publisher": "CBCA/Aço Brasil",
+    "accessed_at": "2026-11-14",
+    "evidence_class": "B",
+    "facts": "Relatório institucional registra publicação da 16239 e revisão da 14323 em 2013; não demonstra situação atual."
+  },
+  {
+    "id": "N14",
+    "title": "Palestras e Lives",
+    "url": "https://site.abece.com.br/palestras-lives/",
+    "publisher": "ABECE",
+    "accessed_at": "2026-11-14",
+    "evidence_class": "B",
+    "facts": "Acervo institucional identifica apresentações sobre a NBR 6120:2019; edição e erratas devem ser conferidas na ABNT."
+  },
+  {
+    "id": "N15",
+    "title": "FAQ do ABNT Catálogo",
+    "url": "https://abntcatalogo.com.br/faq.aspx",
+    "publisher": "ABNT",
+    "accessed_at": "2026-11-14",
+    "evidence_class": "A",
+    "facts": "Informa aquisição de normas e disponibilização eletrônica em visualizador próprio. Pesquisa pública não equivale a acesso licenciado ao texto."
+  },
+  {
+    "id": "N16",
+    "title": "V&V 10 Standard for Verification and Validation in Computational Solid Mechanics",
+    "url": "https://www.asme.org/codes-standards/find-codes-standards/standard-for-verification-and-validation-in-computational-solid-mechanics/2019",
+    "publisher": "ASME",
+    "accessed_at": "2026-11-14",
+    "evidence_class": "methodology",
+    "facts": "Referência metodológica para verificação, validação e quantificação de incertezas em mecânica computacional. Não representa certificação do Prumo."
+  },
+  {
+    "id": "N17",
+    "title": "NASA-STD-7009 Standard for Models and Simulations",
+    "url": "https://standards.nasa.gov/standard/nasa/nasa-std-7009",
+    "publisher": "NASA",
+    "accessed_at": "2026-11-14",
+    "evidence_class": "methodology",
+    "facts": "Página apresenta revisão B e requisitos de credibilidade, com critérios de aceitação definidos pelo projeto; referência de processo, sem aplicação normativa automática ao Prumo."
+  },
+  {
+    "id": "N18",
+    "title": "The Standard NAFEMS Benchmarks",
+    "url": "https://www.nafems.org/publications/resource_center/p18/",
+    "publisher": "NAFEMS",
+    "accessed_at": "2026-11-14",
+    "evidence_class": "benchmark",
+    "facts": "Conjunto independente cobre respostas estáticas, térmicas e vibração; descreve alvos analíticos/numéricos e erratas de benchmarks. Acesso completo pode depender de licença."
+  },
+  {
+    "id": "N19",
+    "title": "A Review of Benchmark Problem for Geometric Non-linear Behaviour of 3D Beams & Shells",
+    "url": "https://www.nafems.org/publications/resource_center/r0029/",
+    "publisher": "NAFEMS",
+    "accessed_at": "2026-11-14",
+    "evidence_class": "benchmark",
+    "facts": "Descreve dez problemas de barras/cascas 3D em não linearidade geométrica, com domínio limitado a pequenas deformações específicas e grandes deslocamentos/rotações."
+  },
+  {
+    "id": "N20",
+    "title": "Stability, PyNite 3.2.0 documentation",
+    "url": "https://pynite.readthedocs.io/en/stable/stability.html",
+    "publisher": "PyNite maintainers",
+    "accessed_at": "2026-11-14",
+    "evidence_class": "library_documentation",
+    "facts": "Documenta instabilidade e P-Delta; declara que o efeito de segunda ordem não é considerado nas placas."
+  },
+  {
+    "id": "N21",
+    "title": "Pushover Analysis, PyNite 3.2.0 documentation",
+    "url": "https://pynite.readthedocs.io/en/latest/pushover.html",
+    "publisher": "PyNite maintainers",
+    "accessed_at": "2026-11-14",
+    "evidence_class": "library_documentation",
+    "facts": "Documenta pushover público com primeira ordem; integração P-Delta pendente e limitações do comportamento de placas e quads."
+  },
+  {
+    "id": "N22",
+    "title": "VerificationAndValidation, OpenSeesWiki",
+    "url": "https://opensees.berkeley.edu/wiki/index.php/VerificationAndValidation",
+    "publisher": "OpenSees, UC Berkeley",
+    "accessed_at": "2026-11-14",
+    "evidence_class": "library_documentation",
+    "facts": "Descreve verificação por casos conhecidos e diferenças entre correção do código e adequação do modelo físico; exemplos não significam garantia universal."
+  },
+  {
+    "id": "N23",
+    "title": "Norma NBR 16055: 2022",
+    "url": "https://docs.tqs.com.br/Docs/Details?id=1971660650&language=pt-BR",
+    "publisher": "TQS",
+    "accessed_at": "2026-11-14",
+    "evidence_class": "C",
+    "facts": "Documentação do fabricante declara adaptação do módulo de paredes de concreto à NBR 16055:2022; situação atual e texto aplicável devem ser conferidos na ABNT."
+  }
+]
