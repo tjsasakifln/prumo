@@ -14,6 +14,7 @@ pub mod dependencies;
 pub mod identity;
 pub mod model;
 pub mod registry;
+pub mod storage;
 pub mod units;
 
 pub const PROJECT_SCHEMA_VERSION: u32 = 2;

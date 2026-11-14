@@ -3,6 +3,9 @@
 //! Project-scoped command service shared by desktop, CLI, and MCP.
 
 pub use prumo_domain::Command;
+mod storage;
+#[cfg(test)]
+mod storage_fault_tests;
 use prumo_domain::canonical::{ModelSnapshot, source_index_unchecked};
 use prumo_domain::components::{ComponentDescriptor, ExperimentBasis, QualificationReport};
 use prumo_domain::dependencies::{DependencyGraph, SourceKind};
@@ -19,7 +22,6 @@ use prumo_registry::{
 use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
 use std::fs::{self, File, OpenOptions};
-use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
 use std::sync::atomic::AtomicBool;
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -40,6 +42,9 @@ pub struct ProjectService {
     lock_path: PathBuf,
     access: AccessMode,
     actor: String,
+    write_basis: Option<(Uuid, String)>,
+    #[cfg(test)]
+    fault: Option<storage::SavePhase>,
 }
 
 impl ProjectService {
@@ -58,17 +63,25 @@ impl ProjectService {
             .and_then(serde_json::Value::as_str)
             .ok_or_else(|| AppError::InvalidInput("Edição sem operação declarada.".into()))?
             .to_owned();
-        self.mutate(expected_revision, &format!("model.{tag}"), |project| {
-            prumo_domain::model::apply_model_edit(project, edit, &self.actor)
-                .map_err(invalid_input)?;
-            Ok(())
-        })
+        self.mutate(
+            expected_revision,
+            &format!("model.{tag}"),
+            serde_json::to_value(&edit)?,
+            |project| {
+                prumo_domain::model::apply_model_edit(project, edit, &self.actor)
+                    .map_err(invalid_input)?;
+                Ok(())
+            },
+        )
     }
 
     pub fn inspect_model(&self, expected_revision: u64) -> Result<Project, AppError> {
-        self.mutate(expected_revision, "inspect_model", |project| {
-            prumo_domain::dependencies::inspect_model(project).map_err(invalid_input)
-        })
+        self.mutate(
+            expected_revision,
+            "inspect_model",
+            serde_json::json!({"operation":"inspect_model"}),
+            |project| prumo_domain::dependencies::inspect_model(project).map_err(invalid_input),
+        )
     }
 
     /// Read-only inventory. This does not change capability release states.
@@ -142,6 +155,9 @@ impl ProjectService {
             lock_path,
             access,
             actor,
+            write_basis: None,
+            #[cfg(test)]
+            fault: None,
         })
     }
 
@@ -151,6 +167,29 @@ impl ProjectService {
 
     pub const fn access_mode(&self) -> AccessMode {
         self.access
+    }
+
+    /// Bind an editor's displayed basis without trusting a fresh on-disk revision
+    /// to represent the content that the person actually reviewed. The check is
+    /// performed inside the same project lock as the eventual model mutation.
+    pub fn with_write_basis(
+        &self,
+        project_id: Uuid,
+        primary_sha256: String,
+    ) -> Result<Self, AppError> {
+        if project_id.is_nil()
+            || primary_sha256.len() != 64
+            || !primary_sha256
+                .bytes()
+                .all(|byte| byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte))
+        {
+            return Err(AppError::InvalidInput(
+                "Base de edição inválida. Reabra o arquivo.".into(),
+            ));
+        }
+        let mut scoped = self.clone();
+        scoped.write_basis = Some((project_id, primary_sha256));
+        Ok(scoped)
     }
 
     pub fn execute(&self, command: Command) -> Result<Project, AppError> {
@@ -222,7 +261,10 @@ impl ProjectService {
             dependencies: DependencyGraph::default(),
             extensions: BTreeMap::new(),
         };
-        self.save_locked(&project)?;
+        self.save_new_locked(
+            &project,
+            serde_json::json!({"operation":"create", "name":project.name, "units":project.units}),
+        )?;
         Ok(project)
     }
 
@@ -231,6 +273,14 @@ impl ProjectService {
         // Opening that file gives one complete snapshot, including during a save.
         // A query must also work when the project directory is not writable.
         self.read_snapshot()
+    }
+
+    /// A native editor must associate its model with the bytes from that exact
+    /// read, rather than borrowing a hash from a later, independent diagnosis.
+    pub fn read_with_basis(&self) -> Result<(Project, String), AppError> {
+        let file = self.load_primary()?;
+        let hash = file.sha256();
+        Ok((file.project, hash))
     }
 
     /// Coordinates use the project's declared display unit; storage is always in metres.
@@ -244,47 +294,51 @@ impl ProjectService {
         self.require_write()?;
         let name = name.into();
         validate_name(&name).map_err(invalid_input)?;
-        self.mutate(expected_revision, "add_member", |project| {
-            let object = PhysicalObject {
-                id: Uuid::new_v4(),
-                name,
-                discipline: Discipline::Structure,
-                start_m: PointInput {
-                    values: start,
-                    unit: project.units,
+        self.mutate(
+            expected_revision,
+            "add_member",
+            serde_json::json!({"operation":"add_member", "name":name, "start":start, "end":end}),
+            |project| {
+                let object = PhysicalObject {
+                    id: Uuid::new_v4(),
+                    name,
+                    discipline: Discipline::Structure,
+                    start_m: PointInput {
+                        values: start,
+                        unit: project.units,
+                    }
+                    .to_si()
+                    .map_err(invalid_input)?,
+                    end_m: PointInput {
+                        values: end,
+                        unit: project.units,
+                    }
+                    .to_si()
+                    .map_err(invalid_input)?,
+                    state: ModelState::Modelled,
+                    role: PhysicalRole::AnalyticalSource,
+                    material_id: None,
+                    environment_id: None,
+                    extensions: BTreeMap::new(),
+                };
+                if object.length_m() <= prumo_domain::MIN_MEMBER_LENGTH_M {
+                    return Err(invalid_input(DomainError::DegenerateMember));
                 }
-                .to_si()
-                .map_err(invalid_input)?,
-                end_m: PointInput {
-                    values: end,
-                    unit: project.units,
-                }
-                .to_si()
-                .map_err(invalid_input)?,
-                state: ModelState::Modelled,
-                role: PhysicalRole::AnalyticalSource,
-                material_id: None,
-                environment_id: None,
-                extensions: BTreeMap::new(),
-            };
-            if object.length_m() <= prumo_domain::MIN_MEMBER_LENGTH_M {
-                return Err(invalid_input(DomainError::DegenerateMember));
-            }
-            let physical_id = object.id;
-            project.objects.push(object);
-            prumo_domain::model::initialize_legacy_member(
-                project,
-                physical_id,
-                None,
-                &self.actor,
-                project
-                    .revision
-                    .checked_add(1)
-                    .ok_or_else(|| AppError::InvalidInput("Limite de revisões atingido.".into()))?,
-            )
-            .map_err(invalid_input)?;
-            Ok(())
-        })
+                let physical_id = object.id;
+                project.objects.push(object);
+                prumo_domain::model::initialize_legacy_member(
+                    project,
+                    physical_id,
+                    None,
+                    &self.actor,
+                    project.revision.checked_add(1).ok_or_else(|| {
+                        AppError::InvalidInput("Limite de revisões atingido.".into())
+                    })?,
+                )
+                .map_err(invalid_input)?;
+                Ok(())
+            },
+        )
     }
 
     pub fn rename_project(
@@ -295,10 +349,15 @@ impl ProjectService {
         self.require_write()?;
         let name = name.into();
         validate_name(&name).map_err(invalid_input)?;
-        self.mutate(expected_revision, "rename_project", |project| {
-            project.name = name;
-            Ok(())
-        })
+        self.mutate(
+            expected_revision,
+            "rename_project",
+            serde_json::json!({"operation":"rename_project", "name":name}),
+            |project| {
+                project.name = name;
+                Ok(())
+            },
+        )
     }
 
     pub fn add_environment(
@@ -309,26 +368,30 @@ impl ProjectService {
         self.require_write()?;
         let name = name.into();
         validate_name(&name).map_err(invalid_input)?;
-        self.mutate(expected_revision, "add_environment", |project| {
-            let id = Uuid::new_v4();
-            project.environments.push(Environment {
-                id,
-                name,
-                extensions: BTreeMap::new(),
-            });
-            prumo_domain::model::record_identity(
-                project,
-                id,
-                &self.actor,
-                project
-                    .revision
-                    .checked_add(1)
-                    .ok_or_else(|| AppError::InvalidInput("Limite de revisões atingido.".into()))?,
-                true,
-            )
-            .map_err(invalid_input)?;
-            Ok(())
-        })
+        self.mutate(
+            expected_revision,
+            "add_environment",
+            serde_json::json!({"operation":"add_environment", "name":name}),
+            |project| {
+                let id = Uuid::new_v4();
+                project.environments.push(Environment {
+                    id,
+                    name,
+                    extensions: BTreeMap::new(),
+                });
+                prumo_domain::model::record_identity(
+                    project,
+                    id,
+                    &self.actor,
+                    project.revision.checked_add(1).ok_or_else(|| {
+                        AppError::InvalidInput("Limite de revisões atingido.".into())
+                    })?,
+                    true,
+                )
+                .map_err(invalid_input)?;
+                Ok(())
+            },
+        )
     }
 
     pub fn registry_catalog(&self) -> Result<RegistryCatalog, AppError> {
@@ -386,22 +449,27 @@ impl ProjectService {
         reference: NormReferenceInput,
     ) -> Result<Project, AppError> {
         self.require_write()?;
-        self.mutate(expected_revision, "register_norm_reference", |project| {
-            let catalog = catalog_for(project)?;
-            let next_revision = project
-                .revision
-                .checked_add(1)
-                .ok_or_else(|| AppError::InvalidInput("Limite de revisões atingido.".into()))?;
-            let version = format!("project:{}:revision:{next_revision}", project.id);
-            let (updated, change) =
-                register_reference(&catalog, reference, version, next_revision)?;
-            project.normative.catalog = Some(updated);
-            project.normative.registry_changes.push(change);
-            if project.normative.active.is_some() {
-                project.normative.recalculation_required = true;
-            }
-            Ok(())
-        })
+        self.mutate(
+            expected_revision,
+            "register_norm_reference",
+            serde_json::json!({"operation":"register_norm_reference", "reference":reference}),
+            |project| {
+                let catalog = catalog_for(project)?;
+                let next_revision = project
+                    .revision
+                    .checked_add(1)
+                    .ok_or_else(|| AppError::InvalidInput("Limite de revisões atingido.".into()))?;
+                let version = format!("project:{}:revision:{next_revision}", project.id);
+                let (updated, change) =
+                    register_reference(&catalog, reference, version, next_revision)?;
+                project.normative.catalog = Some(updated);
+                project.normative.registry_changes.push(change);
+                if project.normative.active.is_some() {
+                    project.normative.recalculation_required = true;
+                }
+                Ok(())
+            },
+        )
     }
 
     pub fn pin_normative_package(
@@ -410,19 +478,24 @@ impl ProjectService {
         package_hash: &str,
     ) -> Result<Project, AppError> {
         self.require_write()?;
-        self.mutate(expected_revision, "pin_normative_package", |project| {
-            if project.normative.active.is_some() {
-                return Err(AppError::PackageAlreadyPinned);
-            }
-            let candidate = NormativePackage::from_catalog(&catalog_for(project)?)?;
-            if candidate.hash != package_hash {
-                return Err(AppError::PackageConflict);
-            }
-            project.normative.catalog = Some(candidate.catalog.clone());
-            project.normative.active = Some(candidate);
-            project.normative.recalculation_required = true;
-            Ok(())
-        })
+        self.mutate(
+            expected_revision,
+            "pin_normative_package",
+            serde_json::json!({"operation":"pin_normative_package", "package_hash":package_hash}),
+            |project| {
+                if project.normative.active.is_some() {
+                    return Err(AppError::PackageAlreadyPinned);
+                }
+                let candidate = NormativePackage::from_catalog(&catalog_for(project)?)?;
+                if candidate.hash != package_hash {
+                    return Err(AppError::PackageConflict);
+                }
+                project.normative.catalog = Some(candidate.catalog.clone());
+                project.normative.active = Some(candidate);
+                project.normative.recalculation_required = true;
+                Ok(())
+            },
+        )
     }
 
     pub fn migrate_normative_package(
@@ -436,7 +509,7 @@ impl ProjectService {
         if !confirm {
             return Err(AppError::ConfirmationRequired);
         }
-        self.mutate(expected_revision, "migrate_normative_package", |project| {
+        self.mutate(expected_revision, "migrate_normative_package", serde_json::json!({"operation":"migrate_normative_package", "from_package_hash":from_package_hash, "to_package_hash":to_package_hash, "confirm":confirm}), |project| {
             let original = project
                 .normative
                 .active
@@ -500,11 +573,14 @@ impl ProjectService {
         &self,
         expected_revision: u64,
         operation: &str,
+        command: serde_json::Value,
         mutation: impl FnOnce(&mut Project) -> Result<(), AppError>,
     ) -> Result<Project, AppError> {
         self.require_write()?;
         let _lock = self.lock()?;
-        let (mut project, legacy_bytes) = self.read_snapshot_with_origin()?;
+        let original = self.load_primary()?;
+        self.check_write_basis(&original)?;
+        let mut project = original.project.clone();
         if project.revision != expected_revision {
             return Err(AppError::Conflict {
                 expected: expected_revision,
@@ -534,10 +610,7 @@ impl ProjectService {
             .history
             .push(self.change(project.revision, operation)?);
         project.validate().map_err(invalid_input)?;
-        if let Some(bytes) = legacy_bytes {
-            self.preserve_legacy(&bytes)?;
-        }
-        self.save_locked(&project)?;
+        self.save_changed_locked(&original, &project, command)?;
         Ok(project)
     }
 
@@ -579,108 +652,7 @@ impl ProjectService {
     }
 
     fn read_snapshot(&self) -> Result<Project, AppError> {
-        self.read_snapshot_with_origin().map(|(project, _)| project)
-    }
-
-    fn read_snapshot_with_origin(&self) -> Result<(Project, Option<Vec<u8>>), AppError> {
-        reject_non_regular(&self.path)?;
-        let file = match File::open(&self.path) {
-            Ok(file) => file,
-            Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
-                return Err(AppError::NotFound);
-            }
-            Err(error) => return Err(error.into()),
-        };
-        if file.metadata()?.len() > MAX_PROJECT_BYTES {
-            return Err(AppError::InvalidProject(
-                "Arquivo maior que o limite de 16 MiB.".into(),
-            ));
-        }
-        let mut bytes = Vec::new();
-        file.take(MAX_PROJECT_BYTES + 1).read_to_end(&mut bytes)?;
-        if bytes.len() as u64 > MAX_PROJECT_BYTES {
-            return Err(AppError::InvalidProject(
-                "Arquivo maior que o limite de 16 MiB.".into(),
-            ));
-        }
-        let value: serde_json::Value = serde_json::from_slice(&bytes)?;
-        if let Some(version) = value
-            .get("schema_version")
-            .and_then(serde_json::Value::as_u64)
-            && version != 1
-            && version != u64::from(PROJECT_SCHEMA_VERSION)
-        {
-            return Err(AppError::UnsupportedSchema { found: version });
-        }
-        let legacy = value
-            .get("schema_version")
-            .and_then(serde_json::Value::as_u64)
-            == Some(1);
-        let project = prumo_domain::model::decode_project(value)
-            .map_err(|error| AppError::InvalidProject(error.to_string()))?;
-        Ok((project, legacy.then_some(bytes)))
-    }
-
-    fn preserve_legacy(&self, bytes: &[u8]) -> Result<(), AppError> {
-        let destination = self.path.with_file_name(format!(
-            "prumo-v1-{}.backup",
-            prumo_domain::canonical::hash_bytes(bytes)
-        ));
-        reject_non_regular(&destination)?;
-        let parent = destination
-            .parent()
-            .ok_or_else(|| AppError::InvalidInput("Pasta do projeto ausente.".into()))?;
-        let mut temporary = tempfile::NamedTempFile::new_in(parent)?;
-        temporary.write_all(bytes)?;
-        temporary.as_file().sync_all()?;
-        match temporary.persist_noclobber(&destination) {
-            Ok(_) => {}
-            Err(error) if error.error.kind() == std::io::ErrorKind::AlreadyExists => {
-                reject_non_regular(&destination)?;
-                let file = File::open(&destination)?;
-                if file.metadata()?.len() != bytes.len() as u64 {
-                    return Err(AppError::InvalidProject(
-                        "O backup de migração existente diverge do original.".into(),
-                    ));
-                }
-                let mut existing = Vec::new();
-                file.take(bytes.len() as u64 + 1)
-                    .read_to_end(&mut existing)?;
-                if existing != bytes {
-                    return Err(AppError::InvalidProject(
-                        "O backup de migração existente diverge do original.".into(),
-                    ));
-                }
-            }
-            Err(error) => return Err(error.error.into()),
-        }
-        #[cfg(unix)]
-        File::open(parent)?.sync_all()?;
-        Ok(())
-    }
-
-    fn save_locked(&self, project: &Project) -> Result<(), AppError> {
-        project.validate().map_err(invalid_input)?;
-        reject_non_regular(&self.path)?;
-        let bytes = serde_json::to_vec_pretty(project)?;
-        if bytes.len() as u64 > MAX_PROJECT_BYTES {
-            return Err(AppError::InvalidInput(
-                "O projeto excede o limite de 16 MiB desta versão.".into(),
-            ));
-        }
-        let parent = self
-            .path
-            .parent()
-            .ok_or_else(|| AppError::InvalidInput("Pasta do projeto ausente.".into()))?;
-        let mut temporary = tempfile::NamedTempFile::new_in(parent)?;
-        temporary.write_all(&bytes)?;
-        temporary.as_file().sync_all()?;
-        temporary
-            .persist(&self.path)
-            .map_err(|error| AppError::Io(error.error))?;
-        #[cfg(unix)]
-        File::open(parent)?.sync_all()?;
-        Ok(())
+        Ok(self.load_primary()?.project)
     }
 }
 
@@ -709,6 +681,14 @@ fn catalog_for(project: &Project) -> Result<RegistryCatalog, AppError> {
 #[derive(Debug, Error)]
 pub enum AppError {
     #[error("{0}")]
+    Storage(#[from] prumo_storage::StorageError),
+    #[error("O diagnóstico do arquivo mudou. Atualize a consulta antes de confirmar.")]
+    StorageConflict,
+    #[error(
+        "Há dados de trabalho pendentes ou incompatíveis. Confira o diagnóstico e escolha a revisão a recuperar."
+    )]
+    RecoveryRequired,
+    #[error("{0}")]
     Component(#[from] prumo_components::process::ProcessError),
     #[error("O pacote normativo mudou. Atualize a consulta e confira a versão antes de confirmar.")]
     PackageConflict,
@@ -732,6 +712,10 @@ pub enum AppError {
     InvalidInput(String),
     #[error("A versão {found} do projeto não é suportada. O arquivo foi preservado.")]
     UnsupportedSchema { found: u64 },
+    #[error("A versão declarada do projeto ({value}) não é suportada. O arquivo foi preservado.")]
+    UnsupportedSchemaValue { value: String },
+    #[error("Formato JSON incompatível: {0}")]
+    UnsupportedRepresentation(String),
     #[error("Projeto inválido: {0}")]
     InvalidProject(String),
     #[error("Não foi possível acessar o arquivo de projeto: {0}")]
@@ -743,6 +727,15 @@ pub enum AppError {
 impl AppError {
     pub const fn code(&self) -> &'static str {
         match self {
+            Self::Storage(
+                prumo_storage::StorageError::UnsupportedVersion { .. }
+                | prumo_storage::StorageError::UnsupportedVersionValue { .. }
+                | prumo_storage::StorageError::UnsupportedRepresentation(_),
+            )
+            | Self::UnsupportedRepresentation(_) => "unsupported_storage",
+            Self::Storage(_) => "invalid_storage",
+            Self::StorageConflict => "storage_conflict",
+            Self::RecoveryRequired => "recovery_required",
             Self::Component(_) => "component_qualification_failed",
             Self::PackageConflict => "package_conflict",
             Self::PackageAlreadyPinned => "package_already_pinned",
@@ -754,7 +747,9 @@ impl AppError {
             Self::NotFound => "project_not_found",
             Self::Conflict { .. } => "revision_conflict",
             Self::InvalidInput(_) => "invalid_input",
-            Self::UnsupportedSchema { .. } => "unsupported_schema",
+            Self::UnsupportedSchema { .. } | Self::UnsupportedSchemaValue { .. } => {
+                "unsupported_schema"
+            }
             Self::InvalidProject(_) | Self::Serialization(_) => "invalid_project",
             Self::Io(_) => "io_error",
         }

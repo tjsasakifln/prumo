@@ -10,6 +10,8 @@ pub use components::ComponentView;
 mod model;
 mod numeric;
 pub use model::{ModelTab, SemanticView};
+mod storage;
+pub use storage::StorageView;
 
 #[derive(Debug)]
 pub enum UiAction {
@@ -17,10 +19,12 @@ pub enum UiAction {
     Refresh,
     RefreshRegistry,
     RefreshModel,
+    RefreshStorage,
     AssessCapability(String),
     RunQualification,
     CancelQualification,
     Command(Box<Command>),
+    Storage(Box<prumo_domain::storage::StorageAction>),
 }
 
 impl UiAction {
@@ -30,6 +34,7 @@ impl UiAction {
 }
 
 pub struct ProjectView {
+    pub storage: StorageView,
     pub model: SemanticView,
     pub components: ComponentView,
     pub registry: RegistryView,
@@ -49,6 +54,7 @@ pub struct ProjectView {
 impl Default for ProjectView {
     fn default() -> Self {
         Self {
+            storage: StorageView::default(),
             model: SemanticView::default(),
             components: ComponentView::default(),
             registry: RegistryView::default(),
@@ -88,13 +94,21 @@ impl ProjectView {
         ui.separator();
         ui.horizontal(|ui| {
             let label = ui.label("Arquivo local");
-            ui.add(egui::TextEdit::singleline(&mut self.path).desired_width(480.0))
-                .labelled_by(label.id);
+            if ui
+                .add(egui::TextEdit::singleline(&mut self.path).desired_width(480.0))
+                .labelled_by(label.id)
+                .changed()
+            {
+                self.storage.clear_confirmations();
+            }
             if ui.button("Abrir arquivo").clicked() {
                 actions.push(UiAction::Open(self.path.clone()));
             }
             if ui
-                .add_enabled(project.is_some(), egui::Button::new("Reabrir / atualizar"))
+                .add_enabled(
+                    !self.selected_path.is_empty(),
+                    egui::Button::new("Reabrir / atualizar"),
+                )
                 .clicked()
             {
                 actions.push(UiAction::Refresh);
@@ -112,7 +126,7 @@ impl ProjectView {
             teal
         };
         ui.label(RichText::new(&self.notice).color(color));
-        let selected = project.is_none() || self.path == self.selected_path;
+        let selected = self.path == self.selected_path;
         if !selected {
             ui.colored_label(Color32::YELLOW, "O caminho foi alterado. Clique em Abrir arquivo para selecioná-lo antes de editar.");
             ui.label(format!("Projeto carregado: {}", self.selected_path));
@@ -120,6 +134,8 @@ impl ProjectView {
         ui.separator();
 
         egui::ScrollArea::vertical().show(ui, |ui| {
+            ui.add_enabled_ui(selected, |ui| self.storage.show(ui,&mut actions));
+            ui.separator();
             if let Some(project) = project {
                 ui.add_enabled_ui(selected, |ui| self.components.show(ui,&mut actions));
                 ui.separator();
@@ -153,7 +169,7 @@ impl ProjectView {
                     ui.label(format!("Revisão: {} | Unidade: {:?}", project.revision, project.units));
                     for change in &project.history { ui.label(format!("{change:?}")); }
                 });
-            } else {
+            } else if self.storage.can_create() {
                 ui.add_space(20.0);
                 ui.heading("Comece pelo seu projeto");
                 ui.label("Defina o nome e a unidade. As alterações são salvas a cada operação.");
@@ -163,6 +179,12 @@ impl ProjectView {
                 if ui.button("Criar projeto").clicked() {
                     actions.push(UiAction::command(Command::Create { name: self.project_name.clone(), units: self.units }));
                 }
+            } else if self.storage.status.as_ref().is_some_and(|status| matches!(status.state,prumo_domain::storage::StorageState::Ready|prumo_domain::storage::StorageState::Legacy)) {
+                ui.heading("Reabra o projeto para continuar");
+                ui.label("O diagnóstico corresponde ao arquivo atual. Use Reabrir / atualizar para carregar seu modelo antes de editar.");
+            } else {
+                ui.heading("O arquivo selecionado não pode ser aberto");
+                ui.label("Confira o diagnóstico e as cópias disponíveis acima. Para iniciar outro projeto, selecione outro arquivo local.");
             }
         });
         actions

@@ -13,6 +13,7 @@ use std::{
 use prumo_app::{AccessMode, AppError, Command, ProjectService};
 use prumo_domain::model::ModelEdit;
 use prumo_domain::registry::NormReferenceInput;
+use prumo_domain::storage::StorageAction;
 use prumo_domain::{LengthUnit, MAX_NAME_CHARACTERS, Project};
 use rmcp::{
     ErrorData, RoleServer, ServerHandler,
@@ -27,7 +28,10 @@ use serde::{Deserialize, de::DeserializeOwned};
 use serde_json::{Value, json};
 use tokio::sync::Semaphore;
 
+mod input;
 mod model_schema;
+
+pub use input::{GuardedInput, guarded_input};
 
 pub const MAX_REQUEST_BYTES: usize = 64 * 1024;
 pub const SUPPORTED_PROTOCOL: &str = "2026-07-28";
@@ -104,6 +108,29 @@ struct EditModel {
 
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
+struct StorageMigration {
+    expected_revision: u64,
+    inspection_sha256: String,
+    confirm: bool,
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct StorageBackup {
+    expected_revision: u64,
+    inspection_sha256: String,
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct StorageRecovery {
+    candidate_id: String,
+    inspection_sha256: String,
+    confirm: bool,
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
 struct RegisterNorm {
     expected_revision: u64,
     reference: NormReferenceInput,
@@ -144,6 +171,8 @@ enum Operation {
     DependencyTrace,
     InspectModel(InspectModel),
     EditModel(Box<EditModel>),
+    StorageStatus,
+    Storage(Box<StorageAction>),
 }
 
 fn decode<T: DeserializeOwned>(arguments: Value) -> Result<T, ErrorData> {
@@ -209,6 +238,33 @@ impl Operation {
             }
             "prumo.model.inspect" => decode(args).map(Self::InspectModel),
             "prumo.model.edit" => decode(args).map(|params| Self::EditModel(Box::new(params))),
+            "prumo.storage.status" => {
+                decode::<Empty>(args)?;
+                Ok(Self::StorageStatus)
+            }
+            "prumo.storage.migrate" => {
+                let params: StorageMigration = decode(args)?;
+                Ok(Self::Storage(Box::new(StorageAction::Migrate {
+                    expected_revision: params.expected_revision,
+                    inspection_sha256: params.inspection_sha256,
+                    confirm: params.confirm,
+                })))
+            }
+            "prumo.storage.backup" => {
+                let params: StorageBackup = decode(args)?;
+                Ok(Self::Storage(Box::new(StorageAction::Backup {
+                    expected_revision: params.expected_revision,
+                    inspection_sha256: params.inspection_sha256,
+                })))
+            }
+            "prumo.storage.recover" => {
+                let params: StorageRecovery = decode(args)?;
+                Ok(Self::Storage(Box::new(StorageAction::Recover {
+                    candidate_id: params.candidate_id,
+                    inspection_sha256: params.inspection_sha256,
+                    confirm: params.confirm,
+                })))
+            }
             _ => Err(ErrorData::invalid_params(
                 "Ferramenta inexistente.",
                 Some(json!({"code":"unknown_tool"})),
@@ -272,6 +328,19 @@ impl Operation {
                 expected_revision: params.expected_revision,
                 edit: params.edit,
             }),
+            Self::StorageStatus => {
+                return service
+                    .storage_status()
+                    .map(|status| json!({"storage":status}));
+            }
+            Self::Storage(action) => {
+                return service.execute_storage(*action).map(|result| {
+                    json!({
+                        "project":result.project,"storage":result.status,"changed":result.changed,
+                        "message":result.message,"calculation_available":false
+                    })
+                });
+            }
             Self::RegisterNorm(params) => service.execute(Command::RegisterNormReference {
                 expected_revision: params.expected_revision,
                 reference: params.reference,
@@ -344,6 +413,7 @@ pub fn tool_catalog(writable: bool) -> Vec<Tool> {
         definition("prumo.components.qualify","Executa a bateria fixa de qualificação em processo isolado, com prazo e recursos limitados. Retorna medidas e artefato de ensaio; não altera o projeto nem libera cálculo.",json!({}),&[],true),
         definition("prumo.model.snapshot","Consulta o snapshot canônico completo dos dados de entrada, sua revisão, SHA-256 e fontes. Não altera o modelo.",json!({}),&[],true),
         definition("prumo.results.trace","Consulta dependências, medidas geométricas e causas de invalidação. Nenhuma inspeção equivale a dimensionamento.",json!({}),&[],true),
+        definition("prumo.storage.status","Inspeciona o arquivo selecionado, formato, integridade, revisão e candidatos de recuperação, inclusive quando o projeto não abre. Não altera arquivos ou cria backups.",json!({}),&[],true),
     ]);
     if writable {
         tools.push(definition(
@@ -404,6 +474,25 @@ pub fn tool_catalog(writable: bool) -> Vec<Tool> {
             json!({"expected_revision":revision,"edit":model_schema::edit_schema()}),
             &["expected_revision","edit"],
             false,
+        ));
+        let inspection = json!({"type":"string","pattern":"^[a-f0-9]{64}$"});
+        tools.push(definition(
+            "prumo.storage.migrate",
+            "Migra o arquivo legado para o pacote Prumo, preservando o original. Exige revisão, identidade do diagnóstico atual e confirmação explícita.",
+            json!({"expected_revision":revision,"inspection_sha256":inspection,"confirm":{"type":"boolean"}}),
+            &["expected_revision","inspection_sha256","confirm"],false,
+        ));
+        tools.push(definition(
+            "prumo.storage.backup",
+            "Cria backup verificado do projeto no destino controlado pelo serviço. Exige revisão e identidade do diagnóstico atual; não aceita caminho de saída.",
+            json!({"expected_revision":revision,"inspection_sha256":inspection}),
+            &["expected_revision","inspection_sha256"],false,
+        ));
+        tools.push(definition(
+            "prumo.storage.recover",
+            "Recupera o candidato exibido no diagnóstico do arquivo selecionado, preservando a origem conforme a política de armazenamento. Exige candidato, identidade do diagnóstico e confirmação; recusa estado alterado ou incompatível.",
+            json!({"candidate_id":{"type":"string","minLength":1,"maxLength":160},"inspection_sha256":inspection,"confirm":{"type":"boolean"}}),
+            &["candidate_id","inspection_sha256","confirm"],false,
         ));
     }
     tools

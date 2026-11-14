@@ -1,6 +1,6 @@
 # MCP e operação do Prumo por agentes
 
-**Estado:** servidor Rust implementado com transporte local stdio, cliente real e projeto persistente. **Data da referência:** 14/11/2026. A seção seguinte descreve o catálogo efetivo até a implementação da PRU-004. Os demais requisitos deste documento orientam a evolução sequencial e só estão disponíveis quando anunciados pelo servidor. Evidências de integração e limites constam das entregas de cada issue.
+**Estado:** servidor Rust implementado com transporte local stdio, cliente real e projeto persistente. **Data da referência:** 14/11/2026. A seção seguinte descreve o catálogo efetivo até a implementação da PRU-005. Os demais requisitos deste documento orientam a evolução sequencial e só estão disponíveis quando anunciados pelo servidor. Evidências de integração e limites constam das entregas de cada issue.
 
 ## Catálogo implementado
 
@@ -11,7 +11,7 @@ cargo run -p prumo-mcp-server -- --project meu-projeto.prumo
 cargo run -p prumo-mcp-server -- --project meu-projeto.prumo --allow-write
 ```
 
-O catálogo contém 9 consultas e, quando autorizadas, 9 ferramentas de escrita. Usa MCP `2026-07-28`, `server/discover`, rmcp `3.10.0` fixado e metadados de versão por requisição. O servidor recusa versões desconhecidas. HTTP e o perfil legado não estão habilitados.
+O catálogo contém 10 consultas e, quando autorizadas, 12 ferramentas de escrita. Usa MCP `2026-07-28`, `server/discover`, rmcp `3.10.0` fixado e metadados de versão por requisição. O servidor recusa versões desconhecidas. HTTP e o perfil legado não estão habilitados.
 
 | Ferramentas atuais | Dados e comportamento |
 | --- | --- |
@@ -22,11 +22,34 @@ O catálogo contém 9 consultas e, quando autorizadas, 9 ferramentas de escrita.
 | `prumo.components.list`, `prumo.components.qualify` | Inventário e bateria fixa de qualificação em processo separado; não calculam o projeto |
 | `prumo.model.snapshot` | Snapshot canônico completo de entradas, versão própria, revisão, SHA-256 e fontes; sem argumentos |
 | `prumo.results.trace` | Medidas geométricas salvas, bases preservadas, dependências, estados atuais ou obsoletos e causas de invalidação; sem argumentos |
+| `prumo.storage.status` | Formato, integridade, revisão, manifesto e candidatos de recuperação, inclusive quando o projeto não abre; sem argumentos e sem gravar arquivos |
 | `prumo.project.create`, `prumo.project.rename` | Criação sem substituir arquivo existente e alteração do nome com revisão esperada |
 | `prumo.model.add_member`, `prumo.model.add_environment` | Criação rápida de peça com barra analítica vinculada, ou de ambiente |
 | `prumo.norms.register`, `prumo.norms.pin`, `prumo.norms.migrate` | Cadastro de metadados públicos, fixação e migração explícita de pacote; nenhuma aprovação é inventada |
 | `prumo.model.edit` | Uma das 25 variantes fechadas de `ModelEdit`, com unidades e referências explícitas |
 | `prumo.model.inspect` | Atualiza comprimentos e resumo geométrico vinculados ao snapshot. Exige escrita e revisão esperada |
+| `prumo.storage.migrate`, `prumo.storage.backup`, `prumo.storage.recover` | Migração de legado com original preservado, backup verificado e recuperação de candidato selecionado; exigem escrita e identidade atual do diagnóstico |
+
+### Arquivo, migração e recuperação
+
+`prumo.storage.status` retorna o objeto `storage`, com estado, formato, identidade e revisão do projeto quando legíveis, hash do arquivo principal, resumo do manifesto, candidatos e diagnósticos. A consulta funciona para arquivo ausente, legado, corrompido ou de versão futura. Ela não cria banco de trabalho, autosave, backup ou qualquer arquivo auxiliar. A operação continua vinculada ao único caminho escolhido pelo host no lançamento.
+
+O estado e o formato têm funções distintas. `format` descreve o arquivo principal; `state` resume também as fontes de recuperação. Por isso, um principal ausente ou legível pode apresentar `state: "unsupported"` se uma cópia ou o banco de trabalho tiver versão futura. Nesse caso, o serviço preserva o conteúdo e bloqueia escrita. `recovery_available` também pode indicar um banco de trabalho com revisão mais recente que o principal publicado. O cliente deve apresentar o diagnóstico e as opções anunciadas, sem supor que um arquivo legível é a revisão mais recente.
+
+| Ferramenta | Argumentos obrigatórios | Efeito |
+| --- | --- | --- |
+| `prumo.storage.status` | Nenhum | Diagnóstico e candidatos com `id`, tipo, nome, projeto, revisão, SHA-256 e `recoverable` |
+| `prumo.storage.migrate` | `expected_revision`, `inspection_sha256`, `confirm` | Com `confirm: true`, publica o pacote nativo e preserva os bytes do legado |
+| `prumo.storage.backup` | `expected_revision`, `inspection_sha256` | Cria uma cópia verificada da revisão publicada |
+| `prumo.storage.recover` | `candidate_id`, `inspection_sha256`, `confirm` | Com `confirm: true`, restaura o candidato permitido e preserva o arquivo substituído |
+
+O `inspection_sha256` retornado pela consulta é uma identidade de 64 caracteres hexadecimais, vinculada ao principal, inclusive sua ausência, e às fontes inspecionadas. O serviço consulta novamente esses dados sob exclusão de escrita antes de executar a ação. Um token antigo produz `storage_conflict`; não autoriza operar sobre um arquivo ou candidato alterado. `candidate_id` é o identificador opaco retornado pela consulta, nunca um caminho. Todos os schemas recusam propriedades extras. A confirmação não concede escrita a uma sessão de leitura.
+
+Em leitura, `can_migrate`, `can_backup`, `can_recover` e `recoverable` permanecem falsos. As cópias ainda podem ser identificadas no diagnóstico. Ao mudar a autorização de lançamento, consulte o estado novamente, pois o contexto de permissão participa do diagnóstico. Uma recuperação incompatível com a identidade conhecida do projeto é recusada. Versões futuras no principal ou nas fontes conhecidas bloqueiam a substituição por uma versão antiga.
+
+As três mutações retornam `project`, `storage`, `changed`, `message` e `calculation_available: false`. Os códigos de negócio incluem `storage_conflict`, `recovery_required`, `invalid_storage` e `unsupported_storage`, além dos erros de permissão, entrada e revisão. A recusa não vira sucesso textual. Quando uma gravação interrompida deixa uma revisão pendente recuperável, o diagnóstico orienta a escolha explícita antes de outra edição.
+
+Criação e edições válidas usam o banco transacional e publicam o pacote `.prumo`, com autosave e cópia anterior quando aplicáveis. A leitura de JSON legado não o modifica. A primeira edição válida também pode migrá-lo automaticamente, preservando o original, sem exigir que o cliente faça uma migração manual prévia. A migração explícita acima oferece o mesmo serviço para quem deseja conferir essa mudança antes de editar. Evidências dos fluxos reais por interface e processo MCP estão em [PRU-005-ui-mcp.md](evidencias/PRU-005-ui-mcp.md).
 
 ### Edição física, analítica e de redes
 
@@ -58,7 +81,9 @@ Uma mutação válida retorna o projeto e a nova revisão. Edições sem permiss
 
 `prumo.model.inspect` mede a geometria efetiva e salva suas dependências. Seus registros mantêm `engineering_release: false`, e as respostas continuam declarando `calculation_available: false`. Uma alteração relevante conserva os valores históricos, marca os registros afetados como obsoletos e registra revisão, ator, fontes alteradas e resultados dependentes. O mapa completo entre variantes, controles da interface e ensaios está em [PRU-004-ui-mcp.md](evidencias/PRU-004-ui-mcp.md).
 
-As mensagens de entrada permanecem limitadas a 64 KiB. Somente protocolo sai em stdout. Os testes usam o SDK oficial em processo filho e um cliente independente de JSON/stdio, além de criar pela interface, modificar por MCP e reabrir o mesmo projeto. Referências: [PRU-001](evidencias/PRU-001-mcp.md), [PRU-002](evidencias/PRU-002-cobertura.md) e [PRU-003](evidencias/PRU-003.md).
+As mensagens de entrada permanecem limitadas a 64 KiB. Antes da desserialização do SDK, a guarda compartilhada recusa chaves de objeto no namespace interno `$serde_json::private::`, inclusive quando escritas com escapes Unicode. Isso impede que a biblioteca interprete um objeto como se fosse um número. O SDK responde erro JSON-RPC `-32600` com ID nulo, o motivo fica em stderr e a próxima linha pode ser processada. O mesmo texto como valor de uma string continua permitido. Erros de sintaxe seguem intactos ao SDK; o transporte rmcp 3.10.0 descarta a linha malformada sem resposta e continua na seguinte. Uma linha excessiva é descartada até a próxima quebra de linha, sem crescer o buffer indefinidamente.
+
+Somente protocolo sai em stdout. Os testes usam o SDK oficial em processo filho e um cliente independente de JSON/stdio, além de criar pela interface, modificar por MCP e reabrir o mesmo projeto. Referências: [PRU-001](evidencias/PRU-001-mcp.md), [PRU-002](evidencias/PRU-002-cobertura.md), [PRU-003](evidencias/PRU-003.md) e [PRU-005](evidencias/PRU-005-ui-mcp.md).
 
 ## 1. Princípios
 

@@ -4,7 +4,7 @@ This file preserves license texts and attributions for the normal/build dependen
 
 The Prumo product license is not defined by these third-party licenses. No dependency has been patched in this release. The original texts below govern the respective components; SPDX metadata alone is not a replacement for their conditions.
 
-Cargo.lock SHA-256: `6755d05eb0c48f083291ab04d7417ed231606465e8c07672b4d3838a15daf35d`
+Cargo.lock SHA-256: `149f51de3ed35dc6861c00479abc8f16e65414fdbdc1f8ee313ffee041f8ec23`
 
 ## Component inventory
 
@@ -55,6 +55,7 @@ Cargo.lock SHA-256: `6755d05eb0c48f083291ab04d7417ed231606465e8c07672b4d3838a15d
 | [color 0.3.3](https://crates.io/crates/color/0.3.3) | Apache-2.0 OR MIT | [508a77d2e7b5](#license-508a77d2e7b5), [bb28c48e3e07](#license-bb28c48e3e07) |
 | [concurrent-queue 2.5.0](https://crates.io/crates/concurrent-queue/2.5.0) | Apache-2.0 OR MIT | [143368af9701](#license-143368af9701), [23f18e03dc49](#license-23f18e03dc49) |
 | [const-oid 0.10.3](https://crates.io/crates/const-oid/0.10.3) | Apache-2.0 OR MIT | [6aed14a79871](#license-6aed14a79871), [73b9dc2e79c7](#license-73b9dc2e79c7) |
+| [constant_time_eq 0.6.1](https://crates.io/crates/constant_time_eq/0.6.1) | CC0-1.0 OR MIT-0 OR Apache-2.0 | [9a3aeb3f6365](#license-9a3aeb3f6365), [a2010f343487](#license-a2010f343487), [b30df9a48463](#license-b30df9a48463) |
 | [convert_case 0.4.0](https://crates.io/crates/convert_case/0.4.0) | MIT | [797087750c41](#license-797087750c41) |
 | [cpufeatures 0.3.1](https://crates.io/crates/cpufeatures/0.3.1) | MIT OR Apache-2.0 | [6aed14a79871](#license-6aed14a79871), [73b9dc2e79c7](#license-73b9dc2e79c7) |
 | [crc32fast 1.5.5](https://crates.io/crates/crc32fast/1.5.5) | MIT OR Apache-2.0 | [61d383b05b87](#license-61d383b05b87), [a8ad31b1c3f4](#license-a8ad31b1c3f4) |
@@ -86,6 +87,8 @@ Cargo.lock SHA-256: `6755d05eb0c48f083291ab04d7417ed231606465e8c07672b4d3838a15d
 | [euclid 0.22.14](https://crates.io/crates/euclid/0.22.14) | MIT OR Apache-2.0 | [143368af9701](#license-143368af9701), [62065228e42c](#license-62065228e42c), [ec82b96487e9](#license-ec82b96487e9) |
 | [event-listener 5.4.2](https://crates.io/crates/event-listener/5.4.2) | Apache-2.0 OR MIT | [143368af9701](#license-143368af9701), [23f18e03dc49](#license-23f18e03dc49) |
 | [event-listener-strategy 0.5.4](https://crates.io/crates/event-listener-strategy/0.5.4) | Apache-2.0 OR MIT | [143368af9701](#license-143368af9701), [23f18e03dc49](#license-23f18e03dc49) |
+| [fallible-iterator 0.3.0](https://crates.io/crates/fallible-iterator/0.3.0) | MIT/Apache-2.0 | [0816e154b159](#license-0816e154b159), [a8ad31b1c3f4](#license-a8ad31b1c3f4) |
+| [fallible-streaming-iterator 0.1.9](https://crates.io/crates/fallible-streaming-iterator/0.1.9) | MIT/Apache-2.0 | [8dcec5569a9b](#license-8dcec5569a9b), [a8ad31b1c3f4](#license-a8ad31b1c3f4) |
 | [fastrand 2.5.0](https://crates.io/crates/fastrand/2.5.0) | Apache-2.0 OR MIT | [143368af9701](#license-143368af9701), [23f18e03dc49](#license-23f18e03dc49) |
 | [fdeflate 0.3.7](https://crates.io/crates/fdeflate/0.3.7) | MIT OR Apache-2.0 | [bb28c48e3e07](#license-bb28c48e3e07), [c77a4cf9da72](#license-c77a4cf9da72) |
 | [fearless_simd 0.4.1](https://crates.io/crates/fearless_simd/0.4.1) | Apache-2.0 OR MIT | [23c23145f6ea](#license-23c23145f6ea), [bb28c48e3e07](#license-bb28c48e3e07) |
@@ -140,6 +143,7 @@ Cargo.lock SHA-256: `6755d05eb0c48f083291ab04d7417ed231606465e8c07672b4d3838a15d
 | [libc 0.2.191](https://crates.io/crates/libc/0.2.191) | MIT OR Apache-2.0 | [123a331b5dbf](#license-123a331b5dbf), [b30df9a48463](#license-b30df9a48463) |
 | [libloading 0.8.9](https://crates.io/crates/libloading/0.8.9) | ISC | [b29f8b014523](#license-b29f8b014523) |
 | [libm 0.2.16](https://crates.io/crates/libm/0.2.16) | MIT | [3823dda7cf04](#license-3823dda7cf04) |
+| [libsqlite3-sys 0.40.0](https://crates.io/crates/libsqlite3-sys/0.40.0) | MIT | [85806d613cfd](#license-85806d613cfd), [c10c1f273375](#license-c10c1f273375) |
 | [linebender_resource_handle 0.1.1](https://crates.io/crates/linebender_resource_handle/0.1.1) | Apache-2.0 OR MIT | [508a77d2e7b5](#license-508a77d2e7b5), [bb28c48e3e07](#license-bb28c48e3e07) |
 | [linux-raw-sys 0.12.1](https://crates.io/crates/linux-raw-sys/0.12.1) | Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT | [143368af9701](#license-143368af9701), [23f18e03dc49](#license-23f18e03dc49), [3290ae0fbc9d](#license-3290ae0fbc9d), [ae6e99144a73](#license-ae6e99144a73) |
 | [linux-raw-sys 0.4.15](https://crates.io/crates/linux-raw-sys/0.4.15) | Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT | [143368af9701](#license-143368af9701), [23f18e03dc49](#license-23f18e03dc49), [3290ae0fbc9d](#license-3290ae0fbc9d), [ae6e99144a73](#license-ae6e99144a73) |
@@ -202,11 +206,13 @@ Cargo.lock SHA-256: `6755d05eb0c48f083291ab04d7417ed231606465e8c07672b4d3838a15d
 | [rmcp 3.10.0](https://crates.io/crates/rmcp/3.10.0) | Apache-2.0 | [0382b0057770](#license-0382b0057770) |
 | [robust 1.2.0](https://crates.io/crates/robust/1.2.0) | MIT OR Apache-2.0 | [143368af9701](#license-143368af9701), [c5513e8d7641](#license-c5513e8d7641), [ddb606a42266](#license-ddb606a42266) |
 | [rstar 0.12.2](https://crates.io/crates/rstar/0.12.2) | MIT OR Apache-2.0 | [143368af9701](#license-143368af9701), [9b3a76c27bac](#license-9b3a76c27bac) |
+| [rusqlite 0.42.0](https://crates.io/crates/rusqlite/0.42.0) | MIT | [c10c1f273375](#license-c10c1f273375) |
 | [rustc_version 0.4.1](https://crates.io/crates/rustc_version/0.4.1) | MIT OR Apache-2.0 | [143368af9701](#license-143368af9701), [c9a75f18b9ab](#license-c9a75f18b9ab) |
 | [rustix 0.38.44](https://crates.io/crates/rustix/0.38.44) | Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT | [143368af9701](#license-143368af9701), [23f18e03dc49](#license-23f18e03dc49), [377c2e7c5325](#license-377c2e7c5325), [ae6e99144a73](#license-ae6e99144a73) |
 | [rustix 1.1.6](https://crates.io/crates/rustix/1.1.6) | Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT | [143368af9701](#license-143368af9701), [23f18e03dc49](#license-23f18e03dc49), [377c2e7c5325](#license-377c2e7c5325), [ae6e99144a73](#license-ae6e99144a73) |
 | [ruststep 0.4.0](https://crates.io/crates/ruststep/0.4.0) | Apache-2.0 | [b07ae3da5c43](#license-b07ae3da5c43) |
 | [ruststep-derive 0.4.0](https://crates.io/crates/ruststep-derive/0.4.0) | Apache-2.0 | [b07ae3da5c43](#license-b07ae3da5c43) |
+| [rustversion 1.0.23](https://crates.io/crates/rustversion/1.0.23) | MIT OR Apache-2.0 | [23f18e03dc49](#license-23f18e03dc49), [b30df9a48463](#license-b30df9a48463) |
 | [safe_arch 1.2.0](https://crates.io/crates/safe_arch/1.2.0) | Zlib OR Apache-2.0 OR MIT | [c43b9a9b1387](#license-c43b9a9b1387), [e3ba223bb142](#license-e3ba223bb142), [e57011537d23](#license-e57011537d23) |
 | [schemars 1.2.3](https://crates.io/crates/schemars/1.2.3) | MIT | [1954992a2b32](#license-1954992a2b32) |
 | [schemars_derive 1.2.3](https://crates.io/crates/schemars_derive/1.2.3) | MIT | [1954992a2b32](#license-1954992a2b32) |
@@ -256,6 +262,7 @@ Cargo.lock SHA-256: `6755d05eb0c48f083291ab04d7417ed231606465e8c07672b4d3838a15d
 | [tracing 0.1.44](https://crates.io/crates/tracing/0.1.44) | MIT | [898b1ae9821e](#license-898b1ae9821e) |
 | [tracing-attributes 0.1.31](https://crates.io/crates/tracing-attributes/0.1.31) | MIT | [898b1ae9821e](#license-898b1ae9821e) |
 | [tracing-core 0.1.36](https://crates.io/crates/tracing-core/0.1.36) | MIT | [58545fed1565](#license-58545fed1565), [898b1ae9821e](#license-898b1ae9821e) |
+| [typed-path 0.13.0](https://crates.io/crates/typed-path/0.13.0) | MIT OR Apache-2.0 | [23f18e03dc49](#license-23f18e03dc49), [b30df9a48463](#license-b30df9a48463) |
 | [typenum 1.20.1](https://crates.io/crates/typenum/1.20.1) | MIT OR Apache-2.0 | [36bb253818ac](#license-36bb253818ac), [a825bd853ab7](#license-a825bd853ab7), [adb48f9ee5be](#license-adb48f9ee5be) |
 | [unicode-general-category 1.1.0](https://crates.io/crates/unicode-general-category/1.1.0) | Apache-2.0 | [a8ad31b1c3f4](#license-a8ad31b1c3f4) |
 | [unicode-ident 1.0.27](https://crates.io/crates/unicode-ident/1.0.27) | (MIT OR Apache-2.0) AND Unicode-3.0 | [23f18e03dc49](#license-23f18e03dc49), [b30df9a48463](#license-b30df9a48463), [f7db81051789](#license-f7db81051789) |
@@ -263,6 +270,7 @@ Cargo.lock SHA-256: `6755d05eb0c48f083291ab04d7417ed231606465e8c07672b4d3838a15d
 | [unicode-segmentation 1.13.3](https://crates.io/crates/unicode-segmentation/1.13.3) | MIT OR Apache-2.0 | [143368af9701](#license-143368af9701), [23860c2a7b5d](#license-23860c2a7b5d), [7b63ecd5f190](#license-7b63ecd5f190) |
 | [uom 0.38.0](https://crates.io/crates/uom/0.38.0) | Apache-2.0 OR MIT | [7539598540b8](#license-7539598540b8), [8ad46ef9138e](#license-8ad46ef9138e) |
 | [uuid 1.29.2](https://crates.io/crates/uuid/1.29.2) | Apache-2.0 OR MIT | [143368af9701](#license-143368af9701), [436bc5a105d8](#license-436bc5a105d8) |
+| [vcpkg 0.2.15](https://crates.io/crates/vcpkg/0.2.15) | MIT/Apache-2.0 | [143368af9701](#license-143368af9701), [88dd8bac6070](#license-88dd8bac6070) |
 | [vello_common 0.2.0](https://crates.io/crates/vello_common/0.2.0) | Apache-2.0 OR MIT | [adf157330f72](#license-adf157330f72), [bb28c48e3e07](#license-bb28c48e3e07) |
 | [vello_cpu 0.2.0](https://crates.io/crates/vello_cpu/0.2.0) | Apache-2.0 OR MIT | [adf157330f72](#license-adf157330f72), [bb28c48e3e07](#license-bb28c48e3e07) |
 | [version_check 0.9.5](https://crates.io/crates/version_check/0.9.5) | MIT/Apache-2.0 | [143368af9701](#license-143368af9701), [b7e650f3fce5](#license-b7e650f3fce5) |
@@ -315,6 +323,10 @@ Cargo.lock SHA-256: `6755d05eb0c48f083291ab04d7417ed231606465e8c07672b4d3838a15d
 | [zbus_xml 5.2.1](https://crates.io/crates/zbus_xml/5.2.1) | MIT | [260e4ff3fc49](#license-260e4ff3fc49) |
 | [zcheapstr 1.2.0](https://crates.io/crates/zcheapstr/1.2.0) | MIT | [59871bb1612f](#license-59871bb1612f) |
 | [zerocopy 0.8.63](https://crates.io/crates/zerocopy/0.8.63) | BSD-2-Clause OR Apache-2.0 OR MIT | [24fa231567ac](#license-24fa231567ac), [83c1763356e8](#license-83c1763356e8), [cb84f28c8b26](#license-cb84f28c8b26) |
+| [zeroize 1.9.1](https://crates.io/crates/zeroize/1.9.1) | Apache-2.0 OR MIT | [50e6751797c5](#license-50e6751797c5), [8c7516d4b27b](#license-8c7516d4b27b) |
+| [zeroize_derive 1.5.0](https://crates.io/crates/zeroize_derive/1.5.0) | Apache-2.0 OR MIT | [50e6751797c5](#license-50e6751797c5), [b8c6939380a4](#license-b8c6939380a4) |
+| [zip 9.5.1](https://crates.io/crates/zip/9.5.1) | MIT | [58545fed1565](#license-58545fed1565) |
+| [zlib-rs 0.6.8](https://crates.io/crates/zlib-rs/0.6.8) | Zlib | [ae078f5c300d](#license-ae078f5c300d) |
 | [zmij 1.0.23](https://crates.io/crates/zmij/1.0.23) | MIT | [23f18e03dc49](#license-23f18e03dc49) |
 | [zvariant 5.15.1](https://crates.io/crates/zvariant/5.15.1) | MIT | [260e4ff3fc49](#license-260e4ff3fc49) |
 | [zvariant_derive 5.15.1](https://crates.io/crates/zvariant_derive/5.15.1) | MIT | [260e4ff3fc49](#license-260e4ff3fc49) |
@@ -322,7 +334,7 @@ Cargo.lock SHA-256: `6755d05eb0c48f083291ab04d7417ed231606465e8c07672b4d3838a15d
 
 ## Preserved license texts
 
-Font notices include the OFL, Ubuntu Font Licence, Bitstream Vera clauses, and copyright/permission notices bundled with the actual font files. SDK notices retain both Apache and MIT transition terms. Khronos registry and ANGLE notices are included with generated graphics bindings.
+Font notices include the OFL, Ubuntu Font Licence, Bitstream Vera clauses, and copyright/permission notices bundled with the actual font files. SDK notices retain both Apache and MIT transition terms. Khronos registry and ANGLE notices are included with generated graphics bindings. The bundled SQLite core retains its public-domain dedication separately from the MIT license of its Rust binding.
 
 ### License 00daa8198f67
 
@@ -947,6 +959,34 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ````
 
+### License 0816e154b159
+
+Sources:
+
+- crate:fallible-iterator@0.3.0/LICENSE-MIT
+
+````text
+Copyright (c) 2015 The rust-openssl-verify Developers
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+````
+
 ### License 08b4e449f10f
 
 Sources:
@@ -1351,6 +1391,7 @@ Sources:
 - crate:unicode-properties@0.1.5/LICENSE-APACHE
 - crate:unicode-segmentation@1.13.3/LICENSE-APACHE
 - crate:uuid@1.29.2/LICENSE-APACHE
+- crate:vcpkg@0.2.15/LICENSE-APACHE
 - crate:version_check@0.9.5/LICENSE-APACHE
 - https://github.com/bytecodealliance/wasm-tools/blob/e66235859a6ec0502bf6f9dcc358953eda4cafcc/LICENSE-APACHE
 - https://github.com/georust/geo/blob/5ab50b072e34a915a33eaa46c80763d51d61295e/LICENSE-APACHE
@@ -2393,6 +2434,7 @@ Sources:
 - crate:ref-cast@1.0.27/LICENSE-MIT
 - crate:rustix@0.38.44/LICENSE-MIT
 - crate:rustix@1.1.6/LICENSE-MIT
+- crate:rustversion@1.0.23/LICENSE-MIT
 - crate:semver@1.0.28/LICENSE-MIT
 - crate:serde@1.0.229/LICENSE-MIT
 - crate:serde_core@1.0.229/LICENSE-MIT
@@ -2408,6 +2450,7 @@ Sources:
 - crate:thiserror-impl@2.0.21/LICENSE-MIT
 - crate:thiserror@1.0.69/LICENSE-MIT
 - crate:thiserror@2.0.21/LICENSE-MIT
+- crate:typed-path@0.13.0/LICENSE-MIT
 - crate:unicode-ident@1.0.27/LICENSE-MIT
 - crate:x11-dl@2.21.0/LICENSE-MIT
 - crate:zbus-lockstep-macros@0.5.2/LICENSE-MIT
@@ -4786,6 +4829,8 @@ Sources:
 - crate:static_assertions@1.1.0/LICENSE-APACHE
 - crate:x11rb-protocol@0.13.2/LICENSE-APACHE
 - crate:x11rb@0.13.2/LICENSE-APACHE
+- crate:zeroize@1.9.1/LICENSE-APACHE
+- crate:zeroize_derive@1.5.0/LICENSE-APACHE
 
 ````text
 Apache License
@@ -5601,6 +5646,7 @@ Sources:
 
 - crate:spin@0.9.9/LICENSE
 - crate:tracing-core@0.1.36/src/spin/LICENSE
+- crate:zip@9.5.1/LICENSE
 
 ````text
 The MIT License (MIT)
@@ -8920,6 +8966,47 @@ Sources:
 // except according to those terms.
 ````
 
+### License 85806d613cfd
+
+Sources:
+
+- crate:libsqlite3-sys@0.40.0/sqlite3/sqlite3.h (public-domain dedication)
+
+````text
+/*
+** 2001-09-15
+**
+** The author disclaims copyright to this source code.  In place of
+** a legal notice, here is a blessing:
+**
+**    May you do good and not evil.
+**    May you find forgiveness for yourself and forgive others.
+**    May you share freely, never taking more than you give.
+**
+*************************************************************************
+** This header file defines the interface that the SQLite library
+** presents to client programs.  If a C-function, structure, datatype,
+** or constant definition does not appear in this file, then it is
+** not a published API of SQLite, is subject to change without
+** notice, and should not be referenced by programs that use SQLite.
+**
+** Some of the definitions that are in this file are marked as
+** "experimental".  Experimental interfaces are normally new
+** features recently added to SQLite.  We do not anticipate changes
+** to experimental interfaces but reserve the right to make minor changes
+** if experience from use "in the wild" suggest such changes are prudent.
+**
+** The official C-language API documentation for SQLite is derived
+** from comments in this file.  This file is the authoritative source
+** on how SQLite interfaces are supposed to operate.
+**
+** The name of this file under configuration management is "sqlite.h.in".
+** The makefile makes some minor changes to this file (such as inserting
+** the version number) and changes its name to "sqlite3.h" as
+** part of the build process.
+*/
+````
+
 ### License 861399f8c21c
 
 Sources:
@@ -8977,6 +9064,40 @@ Sources:
 
 ````text
 Copyright (c) 2014 Chris Wong
+
+Permission is hereby granted, free of charge, to any
+person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the
+Software without restriction, including without
+limitation the rights to use, copy, modify, merge,
+publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software
+is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice
+shall be included in all copies or substantial portions
+of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
+ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT
+SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
+IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+````
+
+### License 88dd8bac6070
+
+Sources:
+
+- crate:vcpkg@0.2.15/LICENSE-MIT
+
+````text
+Copyright (c) 2017 Jim McGrath
 
 Permission is hereby granted, free of charge, to any
 person obtaining a copy of this software and associated
@@ -9365,6 +9486,40 @@ IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ````
 
+### License 8c7516d4b27b
+
+Sources:
+
+- crate:zeroize@1.9.1/LICENSE-MIT
+
+````text
+Copyright (c) 2018-2026 The RustCrypto Project Developers
+
+Permission is hereby granted, free of charge, to any
+person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the
+Software without restriction, including without
+limitation the rights to use, copy, modify, merge,
+publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software
+is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice
+shall be included in all copies or substantial portions
+of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
+ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT
+SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
+IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+````
+
 ### License 8ce0830173fd
 
 Sources:
@@ -9397,6 +9552,34 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
+````
+
+### License 8dcec5569a9b
+
+Sources:
+
+- crate:fallible-streaming-iterator@0.1.9/LICENSE-MIT
+
+````text
+Copyright (c) 2016 The fallible-streaming-iterator Developers
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 ````
 
 ### License 8de2a4a1f74d
@@ -9710,6 +9893,29 @@ Sources:
 //! except according to those terms.
 ````
 
+### License 9a3aeb3f6365
+
+Sources:
+
+- crate:constant_time_eq@0.6.1/LICENSE-MIT0
+
+````text
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+````
+
 ### License 9a6d7a3c1b8e
 
 Sources:
@@ -9933,6 +10139,136 @@ version of the registry, together with documentation, schema, and Python
 generator scripts used to generate C header files for OpenGL and OpenGL ES,
 can always be found in the Khronos Registry at
         https://github.com/KhronosGroup/OpenGL-Registry
+````
+
+### License a2010f343487
+
+Sources:
+
+- crate:constant_time_eq@0.6.1/LICENSE-CC0
+
+````text
+Creative Commons Legal Code
+
+CC0 1.0 Universal
+
+    CREATIVE COMMONS CORPORATION IS NOT A LAW FIRM AND DOES NOT PROVIDE
+    LEGAL SERVICES. DISTRIBUTION OF THIS DOCUMENT DOES NOT CREATE AN
+    ATTORNEY-CLIENT RELATIONSHIP. CREATIVE COMMONS PROVIDES THIS
+    INFORMATION ON AN "AS-IS" BASIS. CREATIVE COMMONS MAKES NO WARRANTIES
+    REGARDING THE USE OF THIS DOCUMENT OR THE INFORMATION OR WORKS
+    PROVIDED HEREUNDER, AND DISCLAIMS LIABILITY FOR DAMAGES RESULTING FROM
+    THE USE OF THIS DOCUMENT OR THE INFORMATION OR WORKS PROVIDED
+    HEREUNDER.
+
+Statement of Purpose
+
+The laws of most jurisdictions throughout the world automatically confer
+exclusive Copyright and Related Rights (defined below) upon the creator
+and subsequent owner(s) (each and all, an "owner") of an original work of
+authorship and/or a database (each, a "Work").
+
+Certain owners wish to permanently relinquish those rights to a Work for
+the purpose of contributing to a commons of creative, cultural and
+scientific works ("Commons") that the public can reliably and without fear
+of later claims of infringement build upon, modify, incorporate in other
+works, reuse and redistribute as freely as possible in any form whatsoever
+and for any purposes, including without limitation commercial purposes.
+These owners may contribute to the Commons to promote the ideal of a free
+culture and the further production of creative, cultural and scientific
+works, or to gain reputation or greater distribution for their Work in
+part through the use and efforts of others.
+
+For these and/or other purposes and motivations, and without any
+expectation of additional consideration or compensation, the person
+associating CC0 with a Work (the "Affirmer"), to the extent that he or she
+is an owner of Copyright and Related Rights in the Work, voluntarily
+elects to apply CC0 to the Work and publicly distribute the Work under its
+terms, with knowledge of his or her Copyright and Related Rights in the
+Work and the meaning and intended legal effect of CC0 on those rights.
+
+1. Copyright and Related Rights. A Work made available under CC0 may be
+protected by copyright and related or neighboring rights ("Copyright and
+Related Rights"). Copyright and Related Rights include, but are not
+limited to, the following:
+
+  i. the right to reproduce, adapt, distribute, perform, display,
+     communicate, and translate a Work;
+ ii. moral rights retained by the original author(s) and/or performer(s);
+iii. publicity and privacy rights pertaining to a person's image or
+     likeness depicted in a Work;
+ iv. rights protecting against unfair competition in regards to a Work,
+     subject to the limitations in paragraph 4(a), below;
+  v. rights protecting the extraction, dissemination, use and reuse of data
+     in a Work;
+ vi. database rights (such as those arising under Directive 96/9/EC of the
+     European Parliament and of the Council of 11 March 1996 on the legal
+     protection of databases, and under any national implementation
+     thereof, including any amended or successor version of such
+     directive); and
+vii. other similar, equivalent or corresponding rights throughout the
+     world based on applicable law or treaty, and any national
+     implementations thereof.
+
+2. Waiver. To the greatest extent permitted by, but not in contravention
+of, applicable law, Affirmer hereby overtly, fully, permanently,
+irrevocably and unconditionally waives, abandons, and surrenders all of
+Affirmer's Copyright and Related Rights and associated claims and causes
+of action, whether now known or unknown (including existing as well as
+future claims and causes of action), in the Work (i) in all territories
+worldwide, (ii) for the maximum duration provided by applicable law or
+treaty (including future time extensions), (iii) in any current or future
+medium and for any number of copies, and (iv) for any purpose whatsoever,
+including without limitation commercial, advertising or promotional
+purposes (the "Waiver"). Affirmer makes the Waiver for the benefit of each
+member of the public at large and to the detriment of Affirmer's heirs and
+successors, fully intending that such Waiver shall not be subject to
+revocation, rescission, cancellation, termination, or any other legal or
+equitable action to disrupt the quiet enjoyment of the Work by the public
+as contemplated by Affirmer's express Statement of Purpose.
+
+3. Public License Fallback. Should any part of the Waiver for any reason
+be judged legally invalid or ineffective under applicable law, then the
+Waiver shall be preserved to the maximum extent permitted taking into
+account Affirmer's express Statement of Purpose. In addition, to the
+extent the Waiver is so judged Affirmer hereby grants to each affected
+person a royalty-free, non transferable, non sublicensable, non exclusive,
+irrevocable and unconditional license to exercise Affirmer's Copyright and
+Related Rights in the Work (i) in all territories worldwide, (ii) for the
+maximum duration provided by applicable law or treaty (including future
+time extensions), (iii) in any current or future medium and for any number
+of copies, and (iv) for any purpose whatsoever, including without
+limitation commercial, advertising or promotional purposes (the
+"License"). The License shall be deemed effective as of the date CC0 was
+applied by Affirmer to the Work. Should any part of the License for any
+reason be judged legally invalid or ineffective under applicable law, such
+partial invalidity or ineffectiveness shall not invalidate the remainder
+of the License, and in such case Affirmer hereby affirms that he or she
+will not (i) exercise any of his or her remaining Copyright and Related
+Rights in the Work or (ii) assert any associated claims and causes of
+action with respect to the Work, in either case contrary to Affirmer's
+express Statement of Purpose.
+
+4. Limitations and Disclaimers.
+
+ a. No trademark or patent rights held by Affirmer are waived, abandoned,
+    surrendered, licensed or otherwise affected by this document.
+ b. Affirmer offers the Work as-is and makes no representations or
+    warranties of any kind concerning the Work, express, implied,
+    statutory or otherwise, including without limitation warranties of
+    title, merchantability, fitness for a particular purpose, non
+    infringement, or the absence of latent or other defects, accuracy, or
+    the present or absence of errors, whether or not discoverable, all to
+    the greatest extent permissible under applicable law.
+ c. Affirmer disclaims responsibility for clearing rights of other persons
+    that may apply to the Work or any use thereof, including without
+    limitation any person's Copyright and Related Rights in the Work.
+    Further, Affirmer disclaims responsibility for obtaining any necessary
+    consents, permissions or other rights required for any use of the
+    Work.
+ d. Affirmer understands and acknowledges that Creative Commons is not a
+    party to this document and has no duty or obligation with respect to
+    this CC0 or use of the Work.
 ````
 
 ### License a44454274400
@@ -10234,6 +10570,8 @@ Sources:
 
 - crate:crc32fast@1.5.5/LICENSE-APACHE
 - crate:dpi@0.1.2/LICENSE
+- crate:fallible-iterator@0.3.0/LICENSE-APACHE
+- crate:fallible-streaming-iterator@0.1.9/LICENSE-APACHE
 - crate:hex@0.4.3/LICENSE-APACHE
 - crate:toml_datetime@0.6.11/LICENSE-APACHE
 - crate:toml_edit@0.19.15/LICENSE-APACHE
@@ -10892,6 +11230,34 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
+````
+
+### License ae078f5c300d
+
+Sources:
+
+- crate:zlib-rs@0.6.8/LICENSE
+
+````text
+(C) 2024 Trifecta Tech Foundation
+
+This software is provided 'as-is', without any express or implied
+warranty. In no event will the authors be held liable for any damages
+arising from the use of this software.
+
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute it
+freely, subject to the following restrictions:
+
+1. The origin of this software must not be misrepresented; you must not
+   claim that you wrote the original software. If you use this software
+   in a product, an acknowledgment in the product documentation would be
+   appreciated but is not required.
+
+2. Altered source versions must be plainly marked as such, and must not be
+   misrepresented as being the original software.
+
+3. This notice may not be removed or altered from any source distribution.
 ````
 
 ### License ae6e99144a73
@@ -11669,6 +12035,7 @@ Sources:
 Sources:
 
 - crate:async-trait@0.1.92/LICENSE-APACHE
+- crate:constant_time_eq@0.6.1/LICENSE-APACHE
 - crate:dyn-clone@1.0.20/LICENSE-APACHE
 - crate:itoa@1.0.19/LICENSE-APACHE
 - crate:libc@0.2.191/LICENSE-APACHE
@@ -11678,6 +12045,7 @@ Sources:
 - crate:quote@1.0.47/LICENSE-APACHE
 - crate:ref-cast-impl@1.0.27/LICENSE-APACHE
 - crate:ref-cast@1.0.27/LICENSE-APACHE
+- crate:rustversion@1.0.23/LICENSE-APACHE
 - crate:semver@1.0.28/LICENSE-APACHE
 - crate:serde@1.0.229/LICENSE-APACHE
 - crate:serde_core@1.0.229/LICENSE-APACHE
@@ -11692,6 +12060,7 @@ Sources:
 - crate:thiserror-impl@2.0.21/LICENSE-APACHE
 - crate:thiserror@1.0.69/LICENSE-APACHE
 - crate:thiserror@2.0.21/LICENSE-APACHE
+- crate:typed-path@0.13.0/LICENSE-APACHE
 - crate:unicode-ident@1.0.27/LICENSE-APACHE
 - https://raw.githubusercontent.com/AccessKit/accesskit/f3026222559c7f5f46d8f25cb7404de68eb149f0/LICENSE-APACHE
 
@@ -11984,6 +12353,40 @@ FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+````
+
+### License b8c6939380a4
+
+Sources:
+
+- crate:zeroize_derive@1.5.0/LICENSE-MIT
+
+````text
+Copyright (c) 2019-2026 The RustCrypto Project Developers
+
+Permission is hereby granted, free of charge, to any
+person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the
+Software without restriction, including without
+limitation the rights to use, copy, modify, merge,
+publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software
+is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice
+shall be included in all copies or substantial portions
+of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
+ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT
+SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
+IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
 ````
 
 ### License b8c8d843c95d
@@ -12863,6 +13266,35 @@ Sources:
 // <LICENSE-MIT or http://opensource.org/licenses/MIT>, at your
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
+````
+
+### License c10c1f273375
+
+Sources:
+
+- crate:libsqlite3-sys@0.40.0/LICENSE
+- crate:rusqlite@0.42.0/LICENSE
+
+````text
+Copyright (c) 2014 The rusqlite developers
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 ````
 
 ### License c138726a726a

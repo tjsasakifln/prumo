@@ -1,0 +1,394 @@
+{
+  "scope": "Observação local durante implementação; uma amostra por etapa, em debug. Os tempos não são uma comparação estatística nem um compromisso de desempenho da distribuição.",
+  "profile": "debug",
+  "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "platform": "linux",
+  "scenario": {
+    "catalog_norm_references": 171,
+    "catalog_capabilities": 368,
+    "edition": "fixture-next",
+    "edition_is_published": false,
+    "source_url": "https://example.invalid/fixture",
+    "project_revision_after_register": 3,
+    "project_revision_after_migrate": 4
+  },
+  "source": "PRU-005-latencia.rs",
+  "observations": [
+    {
+      "stage": "registration_before_snapshot_api",
+      "operations": [
+        {
+          "elapsed_ms": 13.471974,
+          "operation": "create"
+        },
+        {
+          "elapsed_ms": 97.10489199999999,
+          "operation": "norms.package.before_pin"
+        },
+        {
+          "elapsed_ms": 2846.992327,
+          "operation": "norms.pin"
+        },
+        {
+          "elapsed_ms": 858.058249,
+          "operation": "project.read.pinned"
+        },
+        {
+          "elapsed_ms": 2625.7399389999996,
+          "operation": "storage.status.pinned"
+        },
+        {
+          "elapsed_ms": 8763.975897,
+          "operation": "norms.register"
+        },
+        {
+          "elapsed_ms": 944.316724,
+          "operation": "project.read.updated"
+        },
+        {
+          "elapsed_ms": 4374.324617,
+          "operation": "storage.status.updated"
+        },
+        {
+          "package_bytes": 7463086,
+          "project_revision": 3
+        },
+        {
+          "elapsed_ms": 998.1908430000001,
+          "operation": "decode_package.updated"
+        },
+        {
+          "elapsed_ms": 632.786079,
+          "operation": "open_read_only.updated"
+        },
+        {
+          "elapsed_ms": 638.538018,
+          "operation": "load.after_open.updated"
+        },
+        {
+          "elapsed_ms": 3.711503,
+          "operation": "backup_bytes.updated"
+        },
+        {
+          "elapsed_ms": 1121.38737,
+          "operation": "encode_package.updated"
+        }
+      ]
+    },
+    {
+      "stage": "registration_after_snapshot_api",
+      "operations": [
+        {
+          "elapsed_ms": 12.34458,
+          "operation": "create"
+        },
+        {
+          "elapsed_ms": 98.07073600000001,
+          "operation": "norms.package.before_pin"
+        },
+        {
+          "elapsed_ms": 2774.5069139999996,
+          "operation": "norms.pin"
+        },
+        {
+          "elapsed_ms": 768.239545,
+          "operation": "project.read.pinned"
+        },
+        {
+          "elapsed_ms": 1989.771119,
+          "operation": "storage.status.pinned"
+        },
+        {
+          "elapsed_ms": 7402.301338,
+          "operation": "norms.register"
+        },
+        {
+          "elapsed_ms": 964.844623,
+          "operation": "project.read.updated"
+        },
+        {
+          "elapsed_ms": 3792.976105,
+          "operation": "storage.status.updated"
+        },
+        {
+          "package_bytes": 7463086,
+          "project_revision": 3
+        },
+        {
+          "elapsed_ms": 1062.9868410000001,
+          "operation": "decode_package.updated"
+        },
+        {
+          "elapsed_ms": 671.349199,
+          "operation": "open_read_only.updated"
+        },
+        {
+          "elapsed_ms": 638.0524810000001,
+          "operation": "load.after_open.updated"
+        },
+        {
+          "elapsed_ms": 855.249715,
+          "operation": "open_with_project.updated"
+        },
+        {
+          "elapsed_ms": 663.262735,
+          "operation": "snapshot_read_only.updated"
+        },
+        {
+          "elapsed_ms": 4.982804000000001,
+          "operation": "backup_bytes.updated"
+        },
+        {
+          "elapsed_ms": 1013.782108,
+          "operation": "encode_package.updated"
+        }
+      ],
+      "probe_sha256": "a07b4413df6df3d7f1425ffa94b965481164669487d4854f9887a438ac619eab"
+    },
+    {
+      "stage": "migration_after_single_normative_validation",
+      "operations": [
+        {
+          "elapsed_ms": 12.202127,
+          "operation": "create"
+        },
+        {
+          "elapsed_ms": 95.74557899999999,
+          "operation": "norms.package.before_pin"
+        },
+        {
+          "elapsed_ms": 2855.7479780000003,
+          "operation": "norms.pin"
+        },
+        {
+          "elapsed_ms": 727.74174,
+          "operation": "project.read.pinned"
+        },
+        {
+          "elapsed_ms": 2061.871287,
+          "operation": "storage.status.pinned"
+        },
+        {
+          "elapsed_ms": 7450.901105,
+          "operation": "norms.register"
+        },
+        {
+          "elapsed_ms": 1157.257079,
+          "operation": "norms.package.before_migrate"
+        },
+        {
+          "elapsed_ms": 11681.033024,
+          "operation": "norms.migrate"
+        },
+        {
+          "elapsed_ms": 1670.921527,
+          "operation": "project.read.updated"
+        },
+        {
+          "elapsed_ms": 5816.303777,
+          "operation": "storage.status.updated"
+        },
+        {
+          "package_bytes": 12660812,
+          "project_revision": 4
+        },
+        {
+          "elapsed_ms": 1648.195616,
+          "operation": "decode_package.updated"
+        },
+        {
+          "elapsed_ms": 1048.1743,
+          "operation": "open_read_only.updated"
+        },
+        {
+          "elapsed_ms": 1014.986241,
+          "operation": "load.after_open.updated"
+        },
+        {
+          "elapsed_ms": 1118.620266,
+          "operation": "open_with_project.updated"
+        },
+        {
+          "elapsed_ms": 1006.387205,
+          "operation": "snapshot_read_only.updated"
+        },
+        {
+          "elapsed_ms": 5.721532,
+          "operation": "backup_bytes.updated"
+        },
+        {
+          "elapsed_ms": 1656.983761,
+          "operation": "encode_package.updated"
+        }
+      ]
+    },
+    {
+      "stage": "migration_after_owned_encoder_and_exact_commit_reuse",
+      "operations": [
+        {
+          "elapsed_ms": 39.191003,
+          "operation": "create"
+        },
+        {
+          "elapsed_ms": 112.73062,
+          "operation": "norms.package.before_pin"
+        },
+        {
+          "elapsed_ms": 2505.796117,
+          "operation": "norms.pin"
+        },
+        {
+          "elapsed_ms": 729.9089,
+          "operation": "project.read.pinned"
+        },
+        {
+          "elapsed_ms": 1941.8979090000003,
+          "operation": "storage.status.pinned"
+        },
+        {
+          "elapsed_ms": 7294.787655,
+          "operation": "norms.register"
+        },
+        {
+          "elapsed_ms": 1239.4483730000002,
+          "operation": "norms.package.before_migrate"
+        },
+        {
+          "elapsed_ms": 11015.012265,
+          "operation": "norms.migrate"
+        },
+        {
+          "elapsed_ms": 1572.677706,
+          "operation": "project.read.updated"
+        },
+        {
+          "elapsed_ms": 5627.23596,
+          "operation": "storage.status.updated"
+        },
+        {
+          "package_bytes": 12660812,
+          "project_revision": 4
+        },
+        {
+          "elapsed_ms": 1596.7369869999998,
+          "operation": "decode_package.updated"
+        },
+        {
+          "elapsed_ms": 1048.901169,
+          "operation": "open_read_only.updated"
+        },
+        {
+          "elapsed_ms": 998.221594,
+          "operation": "load.after_open.updated"
+        },
+        {
+          "elapsed_ms": 1051.8754219999998,
+          "operation": "open_with_project.updated"
+        },
+        {
+          "elapsed_ms": 988.8074260000001,
+          "operation": "snapshot_read_only.updated"
+        },
+        {
+          "elapsed_ms": 4.815412,
+          "operation": "backup_bytes.updated"
+        },
+        {
+          "elapsed_ms": 1584.6329030000002,
+          "operation": "encode_package.updated"
+        }
+      ],
+      "probe_sha256": "8a04713fcc0be6602fe4c48c6cb7092a38cb204e560c055355953f81ce1f18e0"
+    },
+    {
+      "stage": "migration_after_exact_consistent_backup_comparison",
+      "operations": [
+        {
+          "elapsed_ms": 13.727599,
+          "operation": "create"
+        },
+        {
+          "elapsed_ms": 96.205663,
+          "operation": "norms.package.before_pin"
+        },
+        {
+          "elapsed_ms": 2480.699837,
+          "operation": "norms.pin"
+        },
+        {
+          "elapsed_ms": 771.3754729999999,
+          "operation": "project.read.pinned"
+        },
+        {
+          "elapsed_ms": 1374.2845029999999,
+          "operation": "storage.status.pinned"
+        },
+        {
+          "elapsed_ms": 6793.980878,
+          "operation": "norms.register"
+        },
+        {
+          "elapsed_ms": 1204.7820490000001,
+          "operation": "norms.package.before_migrate"
+        },
+        {
+          "elapsed_ms": 10867.406211000001,
+          "operation": "norms.migrate"
+        },
+        {
+          "elapsed_ms": 1576.585125,
+          "operation": "project.read.updated"
+        },
+        {
+          "elapsed_ms": 4662.430313,
+          "operation": "storage.status.updated"
+        },
+        {
+          "package_bytes": 12660812,
+          "project_revision": 4
+        },
+        {
+          "elapsed_ms": 1567.0449529999999,
+          "operation": "decode_package.updated"
+        },
+        {
+          "elapsed_ms": 1058.3738899999998,
+          "operation": "open_read_only.updated"
+        },
+        {
+          "elapsed_ms": 1005.309078,
+          "operation": "load.after_open.updated"
+        },
+        {
+          "elapsed_ms": 1035.855075,
+          "operation": "open_with_project.updated"
+        },
+        {
+          "elapsed_ms": 994.665649,
+          "operation": "snapshot_read_only.updated"
+        },
+        {
+          "elapsed_ms": 5.24519,
+          "operation": "backup_bytes.updated"
+        },
+        {
+          "elapsed_ms": 1540.548745,
+          "operation": "encode_package.updated"
+        }
+      ],
+      "probe_sha256": "5355d90b3c605ab31a958c2b991d589fcfe9b7cfda3e6262f4e5f07ecdb7cd0f"
+    }
+  ],
+  "limits": [
+    "O orçamento genérico anterior de 10 s do harness foi excedido pela migração validada. A prova normativa completa usa agora 30 s somente em pin/register/migrate, preservando o helper comum e discovery em 10 s, todas as asserções e os prazos do produto. A execução MCP passou com 2,812 s / 7,187 s / 11,319 s; tempos completos e escopo constam de PRU-005-ui-mcp.md. Trata-se de orçamento funcional em debug, não de qualificação de desempenho.",
+    "IDs e datas sintéticos variam por execução. As entradas da referência normativa e o catálogo permanecem iguais.",
+    "As duas primeiras etapas terminaram no cadastro da referência, revisão 3; as seguintes incluem migração explícita e terminam na revisão 4. A diferença de tamanho entre revisões não é uma perda de conteúdo.",
+    "As observações acima incluem falhas de atingir o prazo, preservadas como evidência de diagnóstico. Não representam aprovação do gate."
+  ],
+  "rejected_experiment": {
+    "proposal": "Desserializar Project diretamente do JSON composto a partir dos campos ordenados, após validar cada fragmento.",
+    "observed_failure": "A prova offline_catalog_snapshot_and_linked_measurements_survive_package_roundtrip falhou no commit de inspeção: invalid type: map, expected f64.",
+    "cause": "O transporte interno de arbitrary_precision no buffer de enum internamente tagueado não é aceito como f64 por InspectionPayload na desserialização direta.",
+    "decision": "Reconstrução por Value restaurada; prova real preservada e novamente aprovada. Nenhuma medição com o caminho recusado foi tratada como válida."
+  }
+}
