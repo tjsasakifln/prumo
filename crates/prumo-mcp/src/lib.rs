@@ -3,7 +3,8 @@
 
 use std::{borrow::Cow, path::PathBuf, sync::Arc};
 
-use prumo_app::{AccessMode, AppError, ProjectService};
+use prumo_app::{AccessMode, AppError, Command, ProjectService};
+use prumo_domain::registry::NormReferenceInput;
 use prumo_domain::{LengthUnit, MAX_NAME_CHARACTERS, Project};
 use rmcp::{
     ErrorData, RoleServer, ServerHandler,
@@ -72,12 +73,48 @@ struct Rename {
     name: String,
 }
 
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct Gate {
+    capability_id: String,
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct RegisterNorm {
+    expected_revision: u64,
+    reference: NormReferenceInput,
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct PinNorms {
+    expected_revision: u64,
+    package_hash: String,
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct MigrateNorms {
+    expected_revision: u64,
+    from_package_hash: String,
+    to_package_hash: String,
+    confirm: bool,
+}
+
 enum Operation {
     Read,
     Create(Create),
     AddMember(AddMember),
     Rename(Rename),
     AddEnvironment(Rename),
+    Registry,
+    Coverage,
+    NormativePackage,
+    Gate(Gate),
+    RegisterNorm(Box<RegisterNorm>),
+    PinNorms(PinNorms),
+    MigrateNorms(MigrateNorms),
 }
 
 fn decode<T: DeserializeOwned>(arguments: Value) -> Result<T, ErrorData> {
@@ -107,6 +144,24 @@ impl Operation {
             "prumo.model.add_member" => decode(args).map(Self::AddMember),
             "prumo.project.rename" => decode(args).map(Self::Rename),
             "prumo.model.add_environment" => decode(args).map(Self::AddEnvironment),
+            "prumo.registry.read" => {
+                decode::<Empty>(args)?;
+                Ok(Self::Registry)
+            }
+            "prumo.registry.audit" => {
+                decode::<Empty>(args)?;
+                Ok(Self::Coverage)
+            }
+            "prumo.norms.package" => {
+                decode::<Empty>(args)?;
+                Ok(Self::NormativePackage)
+            }
+            "prumo.results.gate" => decode(args).map(Self::Gate),
+            "prumo.norms.register" => {
+                decode(args).map(|params| Self::RegisterNorm(Box::new(params)))
+            }
+            "prumo.norms.pin" => decode(args).map(Self::PinNorms),
+            "prumo.norms.migrate" => decode(args).map(Self::MigrateNorms),
             _ => Err(ErrorData::invalid_params(
                 "Ferramenta inexistente.",
                 Some(json!({"code":"unknown_tool"})),
@@ -114,8 +169,8 @@ impl Operation {
         }
     }
 
-    fn run(self, service: &ProjectService) -> Result<Project, AppError> {
-        match self {
+    fn run(self, service: &ProjectService) -> Result<Value, AppError> {
+        let project = match self {
             Self::Read => service.read(),
             Self::Create(params) => service.create(params.name, params.units),
             Self::AddMember(params) => service.add_member(
@@ -128,8 +183,48 @@ impl Operation {
             Self::AddEnvironment(params) => {
                 service.add_environment(params.expected_revision, params.name)
             }
-        }
+            Self::Registry => {
+                return service
+                    .registry_catalog()
+                    .map(|catalog| json!({"catalog":catalog}));
+            }
+            Self::Coverage => return service.coverage_audit().map(|audit| json!({"audit":audit})),
+            Self::NormativePackage => {
+                return service.normative_package_preview().map(|preview| {
+                    json!({
+                        "package":preview.candidate,
+                        "project_revision":preview.project_revision,
+                        "active_hash":preview.active_hash,
+                        "impact":preview.impact
+                    })
+                });
+            }
+            Self::Gate(params) => {
+                return service
+                    .final_result_gate(&params.capability_id)
+                    .map(|gate| json!({"gate":gate}));
+            }
+            Self::RegisterNorm(params) => service.execute(Command::RegisterNormReference {
+                expected_revision: params.expected_revision,
+                reference: params.reference,
+            }),
+            Self::PinNorms(params) => service.execute(Command::PinNormativePackage {
+                expected_revision: params.expected_revision,
+                package_hash: params.package_hash,
+            }),
+            Self::MigrateNorms(params) => service.execute(Command::MigrateNormativePackage {
+                expected_revision: params.expected_revision,
+                from_package_hash: params.from_package_hash,
+                to_package_hash: params.to_package_hash,
+                confirm: params.confirm,
+            }),
+        }?;
+        Ok(project_response(project))
     }
+}
+
+fn project_response(project: Project) -> Value {
+    json!({"project":project,"calculation_available":false})
 }
 
 fn definition(
@@ -172,6 +267,12 @@ pub fn tool_catalog(writable: bool) -> Vec<Tool> {
         &[],
         true,
     )];
+    tools.extend([
+        definition("prumo.registry.read","Consulta as capacidades, fontes e referências normativas do projeto. Metadados públicos não equivalem a texto licenciado.",json!({}),&[],true),
+        definition("prumo.registry.audit","Audita vínculos com as 72 famílias, issues, fontes e normas, separando erros de cobertura e pendências técnicas.",json!({}),&[],true),
+        definition("prumo.norms.package","Consulta o pacote candidato, revisão atual, hash ativo e impacto previsto da migração. Preserva o projeto; confira o impacto antes de confirmar.",json!({}),&[],true),
+        definition("prumo.results.gate","Explica por que uma capacidade pode ou não emitir resultado final no pacote fixado do projeto. Não calcula nem concede aprovação.",json!({"capability_id":text}),&["capability_id"],true),
+    ]);
     if writable {
         tools.push(definition(
             "prumo.project.create",
@@ -192,6 +293,25 @@ pub fn tool_catalog(writable: bool) -> Vec<Tool> {
             &["expected_revision", "name"],
             false,
         ));
+        let nullable_text = json!({"type":["string","null"],"maxLength":MAX_NAME_CHARACTERS});
+        let long_text = json!({"type":"string","minLength":1,"maxLength":1000});
+        let identifier =
+            json!({"type":"string","minLength":1,"maxLength":160,"pattern":"^[A-Za-z0-9._:-]+$"});
+        let texts = json!({"type":"array","items":long_text});
+        let hash = json!({"type":"string","pattern":"^[a-f0-9]{64}$"});
+        let reference = json!({
+            "type":"object","additionalProperties":false,
+            "properties":{
+                "id":identifier,"designation":long_text,"part":nullable_text,"edition":nullable_text,
+                "amendments":texts,"errata":texts,"title":long_text,"publisher":long_text,
+                "source_url":{"type":"string","format":"uri","pattern":"^https?://","maxLength":2048},
+                "domain":text,"interpretation_owner_role":long_text
+            },
+            "required":["id","designation","part","edition","amendments","errata","title","publisher","source_url","domain","interpretation_owner_role"]
+        });
+        tools.push(definition("prumo.norms.register","Registra referência pública no catálogo candidato, sempre sem licença ou aprovação técnica. Preserva o pacote ativo até migração explícita.",json!({"expected_revision":revision,"reference":reference}),&["expected_revision","reference"],false));
+        tools.push(definition("prumo.norms.pin","Fixa pela primeira vez o pacote candidato identificado pelo hash exibido. Não aprova capacidades nem substitui pacote já fixado.",json!({"expected_revision":revision,"package_hash":hash}),&["expected_revision","package_hash"],false));
+        tools.push(definition("prumo.norms.migrate","Migra explicitamente entre os hashes exibidos, registra impactos e exige recálculo. Revisão, origem, destino e confirmação devem coincidir.",json!({"expected_revision":revision,"from_package_hash":hash,"to_package_hash":hash,"confirm":{"type":"boolean"}}),&["expected_revision","from_package_hash","to_package_hash","confirm"],false));
         tools.push(definition(
             "prumo.model.add_environment",
             "Adiciona um ambiente ao projeto na revisão atual, sem cálculo de instalações.",
@@ -252,9 +372,7 @@ impl ServerHandler for PrumoMcp {
         .await
         .map_err(|_| ErrorData::internal_error("Falha ao executar o comando local.", None))?;
         let response = match result {
-            Ok(project) => {
-                CallToolResult::structured(json!({"project":project,"calculation_available":false}))
-            }
+            Ok(value) => CallToolResult::structured(value),
             Err(error) => CallToolResult::structured_error(
                 json!({"code":error.code(),"message":error.to_string()}),
             ),

@@ -19,6 +19,8 @@ serde_json = "=1.0.154"
 uuid = { version = "=1.29.2", features = ["v4", "serde", "js"] }
 thiserror = "=2.0.21"
 tempfile = "=3.27.0"
+sha2 = "=0.11.1"
+prumo-registry = { path = "crates/prumo-registry" }
 eframe = { version = "=0.37.0", default-features = false, features = ["accesskit", "default_fonts", "glow", "x11", "wayland"] }
 egui = { version = "=0.37.0", default-features = false, features = ["default_fonts"] }
 rmcp = { version = "=3.10.0", default-features = false, features = ["server", "transport-io"] }

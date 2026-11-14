@@ -4,7 +4,7 @@ This file preserves license texts and attributions for the normal/build dependen
 
 The Prumo product license is not defined by these third-party licenses. No dependency has been patched in this release. The original texts below govern the respective components; SPDX metadata alone is not a replacement for their conditions.
 
-Cargo.lock SHA-256: `dc4ab3842e3651d78cf2ff6f3bf8393a9bbd207921d441163dea980e16a38fdd`
+Cargo.lock SHA-256: `67a712357b956076d3ed92bc9f401bf05249172318ff2b17348bd16e01c82da7`
 
 ## Component inventory
 

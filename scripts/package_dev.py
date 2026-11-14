@@ -28,6 +28,7 @@ def main():
         'compiler': subprocess.check_output(['rustc', '--version', '--verbose'], text=True),
         'platform': platform.platform(),
         'source': subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(),
+        'source_dirty': bool(subprocess.check_output(['git', 'status', '--porcelain'], text=True).strip()),
         'files': {name: hashlib.sha256(path.read_bytes()).hexdigest() for name,path in files.items()},
     }
     instructions = (

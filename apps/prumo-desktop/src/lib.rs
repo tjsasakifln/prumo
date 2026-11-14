@@ -26,6 +26,7 @@ impl Desktop {
     }
 
     fn select(&mut self, path: PathBuf, report_missing: bool) {
+        self.view.registry = Default::default();
         let selected_path = path.to_string_lossy().into_owned();
         match ProjectService::open(path, AccessMode::ReadWrite, "interface-local") {
             Ok(service) => {
@@ -47,6 +48,9 @@ impl Desktop {
                 }
                 self.service = Some(service);
                 self.view.selected_path = selected_path;
+                if self.project.is_some() {
+                    self.refresh_registry();
+                }
             }
             Err(error) => {
                 self.service = None;
@@ -64,6 +68,15 @@ impl Desktop {
 
     pub fn dispatch(&mut self, action: UiAction) {
         match action {
+            UiAction::RefreshRegistry => self.refresh_registry(),
+            UiAction::AssessCapability(id) => {
+                if let Some(service) = &self.service {
+                    match service.final_result_gate(&id) {
+                        Ok(report) => self.view.registry.gate = Some(report),
+                        Err(error) => self.view.report(error.to_string(), true),
+                    }
+                }
+            }
             UiAction::Open(path) => self.select(PathBuf::from(path), true),
             UiAction::Refresh => {
                 if let Some(service) = &self.service {
@@ -72,6 +85,7 @@ impl Desktop {
                             self.view.project_name = project.name.clone();
                             self.project = Some(project);
                             self.view.report("Projeto reaberto do disco.", false);
+                            self.refresh_registry();
                         }
                         Err(error) => self.view.report(error.to_string(), true),
                     }
@@ -89,17 +103,41 @@ impl Desktop {
                     self.select(PathBuf::from(&self.view.path), false);
                 }
                 if let Some(service) = &self.service {
-                    match service.execute(command) {
+                    match service.execute(*command) {
                         Ok(project) => {
                             self.view.report(
                                 format!("Alteração salva. Revisão {}.", project.revision),
                                 false,
                             );
                             self.project = Some(project);
+                            self.refresh_registry();
                         }
                         Err(error) => self.view.report(error.to_string(), true),
                     }
                 }
+            }
+        }
+    }
+
+    fn refresh_registry(&mut self) {
+        if let Some(service) = &self.service {
+            match (
+                service.normative_package_preview(),
+                service.coverage_audit(),
+            ) {
+                (Ok(preview), Ok(audit)) => {
+                    if self.project.as_ref().map(|project| project.revision)
+                        != preview.project_revision
+                    {
+                        self.view.report("O projeto mudou em outra instância. Reabra para conferir a revisão atual.",true);
+                        return;
+                    }
+                    self.view.registry.gate = None;
+                    self.view.registry.catalog = Some(preview.candidate.catalog.clone());
+                    self.view.registry.audit = Some(audit);
+                    self.view.registry.candidate = Some(preview.candidate);
+                }
+                (Err(error), _) | (_, Err(error)) => self.view.report(error.to_string(), true),
             }
         }
     }

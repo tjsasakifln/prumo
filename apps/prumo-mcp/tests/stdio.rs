@@ -68,7 +68,7 @@ async fn sdk_creates_modifies_and_reopens_real_project() {
     let info = client.peer_info().unwrap();
     assert_eq!(info.protocol_version, ProtocolVersion::V_2026_07_28);
     let tools = client.list_tools(None).await.unwrap();
-    assert_eq!(tools.tools.len(), 5);
+    assert_eq!(tools.tools.len(), 12);
     assert!(
         tools
             .tools
@@ -178,7 +178,7 @@ async fn readonly_is_enforced_for_unadvertised_mutations_and_creation() {
     let path = directory.path().join("protected.prumo");
     let client = sdk(&path, false).await;
     let tools = client.list_tools(None).await.unwrap();
-    assert_eq!(tools.tools.len(), 1);
+    assert_eq!(tools.tools.len(), 5);
     assert_eq!(tools.tools[0].name, "prumo.project.read");
     let denied = client
         .call_tool(
@@ -381,7 +381,7 @@ async fn unknown_version_and_missing_request_metadata_are_rejected() {
     let missing = client.receive().await;
     assert_eq!(missing["error"]["code"], -32602);
     let recovered = client.request("tools/list", json!({})).await;
-    assert_eq!(recovered["result"]["tools"].as_array().unwrap().len(), 1);
+    assert_eq!(recovered["result"]["tools"].as_array().unwrap().len(), 5);
     client.stop().await;
 }
 
@@ -406,4 +406,238 @@ async fn cli_requires_selected_project_and_does_not_print_human_text_to_stdout()
         assert!(!output.stderr.is_empty());
         assert_eq!(output.status.success(), args == ["--help"]);
     }
+}
+
+#[tokio::test]
+async fn registry_inventory_exposes_all_families_without_normative_approval() {
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path().join("registry.prumo");
+    let client = sdk(&path, true).await;
+    call(
+        &client,
+        "prumo.project.create",
+        json!({"name":"Registro normativo","units":"metre"}),
+    )
+    .await;
+    let registry = call(&client, "prumo.registry.read", json!({})).await;
+    let capabilities = registry["catalog"]["capabilities"].as_array().unwrap();
+    let families: std::collections::BTreeSet<_> = capabilities
+        .iter()
+        .map(|capability| capability["family"].as_str().unwrap())
+        .collect();
+    assert_eq!(families.len(), 72);
+    assert!(capabilities.len() > families.len());
+    assert!(capabilities.iter().all(
+        |capability| capability["state"] == "planned" && capability["qualification"].is_null()
+    ));
+    assert!(
+        registry["catalog"]["norms"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .all(|norm| norm["access"] == "public_metadata_only"
+                && norm["licensed_evidence"].is_null())
+    );
+    let audit = call(&client, "prumo.registry.audit", json!({})).await;
+    assert_eq!(audit["audit"]["present_families"], 72);
+    assert!(
+        audit["audit"]["errors"].as_array().unwrap().is_empty(),
+        "{audit}"
+    );
+    assert!(!audit["audit"]["pending"].as_array().unwrap().is_empty());
+    let gate = call(
+        &client,
+        "prumo.results.gate",
+        json!({"capability_id":"PAR-06-calculate"}),
+    )
+    .await;
+    assert_eq!(gate["gate"]["allowed"], false);
+    client.cancel().await.unwrap();
+}
+
+fn reference_fixture() -> Value {
+    json!({
+        "id":"nbr-6118","designation":"ABNT NBR 6118","part":null,
+        "edition":"fixture-next","amendments":[],"errata":[],
+        "title":"Metadado sintético para ensaio de migração; não é edição publicada",
+        "publisher":"Fonte de teste","source_url":"https://example.invalid/fixture",
+        "domain":"structure","interpretation_owner_role":"Papel de teste sem aprovação profissional"
+    })
+}
+
+#[tokio::test]
+async fn normative_change_preserves_active_snapshot_until_explicit_migration() {
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path().join("migration.prumo");
+    let client = sdk(&path, true).await;
+    let created = call(
+        &client,
+        "prumo.project.create",
+        json!({"name":"Migração de teste","units":"metre"}),
+    )
+    .await;
+    let candidate = call(&client, "prumo.norms.package", json!({})).await;
+    assert_eq!(
+        candidate["project_revision"],
+        created["project"]["revision"]
+    );
+    assert!(candidate["active_hash"].is_null());
+    assert!(candidate["impact"].is_null());
+    let old_hash = candidate["package"]["hash"].clone();
+    let pinned = call(
+        &client,
+        "prumo.norms.pin",
+        json!({"expected_revision":created["project"]["revision"],"package_hash":old_hash}),
+    )
+    .await;
+    assert_eq!(pinned["project"]["normative"]["active"]["hash"], old_hash);
+    let before_active = pinned["project"]["normative"]["active"].clone();
+    let updated = call(
+        &client,
+        "prumo.norms.register",
+        json!({"expected_revision":pinned["project"]["revision"],"reference":reference_fixture()}),
+    )
+    .await;
+    assert_eq!(updated["project"]["normative"]["active"], before_active);
+    let candidate = call(&client, "prumo.norms.package", json!({})).await;
+    let new_hash = candidate["package"]["hash"].clone();
+    assert_ne!(new_hash, old_hash);
+    let revision = updated["project"]["revision"].clone();
+    assert_eq!(candidate["project_revision"], revision);
+    assert_eq!(candidate["active_hash"], old_hash);
+    assert_eq!(candidate["impact"]["from_hash"], old_hash);
+    assert_eq!(candidate["impact"]["to_hash"], new_hash);
+    assert_eq!(
+        candidate["impact"]["revision"].as_u64(),
+        revision.as_u64().map(|revision| revision + 1)
+    );
+    assert!(
+        candidate["impact"]["changed_norm_ids"]
+            .as_array()
+            .unwrap()
+            .contains(&json!("nbr-6118"))
+    );
+    assert!(
+        candidate["impact"]["affected_capability_ids"]
+            .as_array()
+            .unwrap()
+            .contains(&json!("PAR-06-calculate"))
+    );
+    let after_preview = call(&client, "prumo.project.read", json!({})).await;
+    assert_eq!(
+        after_preview, updated,
+        "preview must not mutate the project"
+    );
+    let denied = client.call_tool(CallToolRequestParams::new("prumo.norms.migrate").with_arguments(json!({"expected_revision":revision,"from_package_hash":old_hash,"to_package_hash":new_hash,"confirm":false}).as_object().unwrap().clone())).await.unwrap();
+    assert_eq!(denied.is_error, Some(true));
+    let after_refusal = call(&client, "prumo.project.read", json!({})).await;
+    assert_eq!(after_refusal, updated);
+    client.cancel().await.unwrap();
+    let old_desktop = Desktop::new(path.clone());
+    let old_project = old_desktop
+        .project
+        .as_ref()
+        .expect("UI opens the old package before migration");
+    assert_eq!(
+        serde_json::to_value(old_project).unwrap(),
+        updated["project"]
+    );
+    assert_eq!(
+        serde_json::to_value(old_project.normative.active.as_ref().unwrap()).unwrap(),
+        before_active
+    );
+    drop(old_desktop);
+    let client = sdk(&path, true).await;
+    let after_restart = call(&client, "prumo.project.read", json!({})).await;
+    assert_eq!(after_restart, updated);
+    let migrated = call(&client,"prumo.norms.migrate",json!({"expected_revision":revision,"from_package_hash":old_hash,"to_package_hash":new_hash,"confirm":true})).await;
+    let state = &migrated["project"]["normative"];
+    assert_eq!(state["migrations"][0], candidate["impact"]);
+    assert_eq!(state["active"]["hash"], new_hash);
+    assert_eq!(state["previous"][0], before_active);
+    assert_eq!(state["recalculation_required"], true);
+    assert!(
+        state["migrations"][0]["changed_norm_ids"]
+            .as_array()
+            .unwrap()
+            .contains(&json!("nbr-6118"))
+    );
+    assert!(
+        state["migrations"][0]["affected_capability_ids"]
+            .as_array()
+            .unwrap()
+            .contains(&json!("PAR-06-calculate"))
+    );
+    let gate = call(
+        &client,
+        "prumo.results.gate",
+        json!({"capability_id":"PAR-06-calculate"}),
+    )
+    .await;
+    assert_eq!(gate["gate"]["allowed"], false);
+    client.cancel().await.unwrap();
+
+    let desktop = Desktop::new(path);
+    let project = desktop.project.expect("UI reopens normative history");
+    assert_eq!(serde_json::to_value(&project).unwrap(), migrated["project"]);
+    assert_eq!(project.normative.previous.len(), 1);
+    assert_eq!(
+        project.normative.active.unwrap().hash,
+        new_hash.as_str().unwrap()
+    );
+}
+
+#[tokio::test]
+async fn registry_mutations_require_write_and_cannot_forge_license_or_approval() {
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path().join("registry-security.prumo");
+    let host = ProjectService::open(&path, AccessMode::ReadWrite, "host").unwrap();
+    let before = host.create("Protegido", LengthUnit::Metre).unwrap();
+    let client = sdk(&path, false).await;
+    let package = call(&client, "prumo.norms.package", json!({})).await;
+    let hash = package["package"]["hash"].clone();
+    for (tool, args) in [
+        (
+            "prumo.norms.register",
+            json!({"expected_revision":before.revision,"reference":reference_fixture()}),
+        ),
+        (
+            "prumo.norms.pin",
+            json!({"expected_revision":before.revision,"package_hash":hash}),
+        ),
+        (
+            "prumo.norms.migrate",
+            json!({"expected_revision":before.revision,"from_package_hash":hash,"to_package_hash":hash,"confirm":true}),
+        ),
+    ] {
+        let denied = client
+            .call_tool(
+                CallToolRequestParams::new(tool).with_arguments(args.as_object().unwrap().clone()),
+            )
+            .await
+            .unwrap();
+        assert_eq!(denied.is_error, Some(true));
+        assert_eq!(
+            denied.structured_content.unwrap()["code"],
+            "permission_denied"
+        );
+    }
+    client.cancel().await.unwrap();
+    let client = sdk(&path, true).await;
+    let mut forged = reference_fixture();
+    forged["access"] = json!("licensed_text_consulted");
+    forged["qualification"] = json!({"approved":true});
+    let result = client
+        .call_tool(
+            CallToolRequestParams::new("prumo.norms.register").with_arguments(
+                json!({"expected_revision":before.revision,"reference":forged})
+                    .as_object()
+                    .unwrap()
+                    .clone(),
+            ),
+        )
+        .await;
+    assert!(result.is_err());
+    assert_eq!(host.read().unwrap(), before);
+    client.cancel().await.unwrap();
 }

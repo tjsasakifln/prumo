@@ -7,6 +7,7 @@ publish = false
 
 [dependencies]
 prumo-domain = { path = "../prumo-domain" }
+prumo-registry = { path = "../prumo-registry" }
 serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true

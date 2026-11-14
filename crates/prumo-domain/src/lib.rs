@@ -8,6 +8,8 @@ use std::collections::{BTreeMap, BTreeSet};
 use thiserror::Error;
 use uuid::Uuid;
 
+pub mod registry;
+
 pub const PROJECT_SCHEMA_VERSION: u32 = 1;
 pub const MAX_NAME_CHARACTERS: usize = 160;
 pub const MAX_OBJECTS: usize = 10_000;
@@ -34,6 +36,20 @@ pub enum Command {
     AddEnvironment {
         expected_revision: u64,
         name: String,
+    },
+    RegisterNormReference {
+        expected_revision: u64,
+        reference: registry::NormReferenceInput,
+    },
+    PinNormativePackage {
+        expected_revision: u64,
+        package_hash: String,
+    },
+    MigrateNormativePackage {
+        expected_revision: u64,
+        from_package_hash: String,
+        to_package_hash: String,
+        confirm: bool,
     },
 }
 
@@ -216,6 +232,8 @@ pub struct Project {
     pub connections: Vec<Connection>,
     pub history: Vec<ChangeRecord>,
     #[serde(default)]
+    pub normative: registry::NormativeState,
+    #[serde(default)]
     pub extensions: BTreeMap<String, Value>,
 }
 
@@ -225,6 +243,9 @@ impl Project {
             return Err(DomainError::UnsupportedSchema(self.schema_version));
         }
         validate_name(&self.name)?;
+        self.normative
+            .validate(self.revision)
+            .map_err(|error| DomainError::InvalidNormative(error.to_string()))?;
         if self.revision == 0 || self.history.len() as u64 != self.revision {
             return Err(DomainError::InvalidHistory);
         }
@@ -353,6 +374,8 @@ fn insert_id(ids: &mut BTreeSet<Uuid>, id: Uuid) -> Result<(), DomainError> {
 
 #[derive(Debug, Error)]
 pub enum DomainError {
+    #[error("Registro normativo inválido: {0}")]
+    InvalidNormative(String),
     #[error("O nome deve conter de 1 a 160 caracteres, sem caracteres de controle.")]
     InvalidName,
     #[error("Informe coordenadas finitas entre -1e9 e 1e9 metros.")]
