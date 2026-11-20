@@ -134,7 +134,7 @@ impl GeometryView {
             if self.preview.as_ref().is_some_and(|p|repair.as_ref().is_none_or(|r|p.repairs.as_slice()!=std::slice::from_ref(r))){self.preview=None;}
             if ui.add_enabled(tolerances_saved&&repair.is_some()&&numeric::errors(ui).is_empty(),egui::Button::new("Conferir correção")).clicked()&&let Some(repair)=repair{actions.push(UiAction::PreviewGeometry(vec![repair]));}
             if let Some(preview)=&self.preview{
-                for d in &preview.dimensions_changed{ui.label(format!("Comprimento: {:.9} → {:.9} m",d.before_m,d.after_m));}
+                for d in &preview.dimensions_changed{ui.label(format!("Comprimento: de {:.9} m para {:.9} m",d.before_m,d.after_m));}
                 ui.label(format!("Novas conexões explícitas: {}",preview.explicit_connections_added));
                 if ui.add_enabled(preview.project_id==project.id&&preview.revision==project.revision&&numeric::errors(ui).is_empty(),egui::Button::new("Aplicar correção conferida")).clicked(){actions.push(UiAction::command(Command::EditModel{expected_revision:project.revision,edit:ModelEdit::ApplyGeometryRepair{plan_hash:preview.plan_hash.clone(),repairs:preview.repairs.clone()}}));}
             }
