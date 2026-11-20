@@ -80,6 +80,7 @@ async function until(callback, description, timeout = 20000) {
 }
 
 let socket;
+let importActivation;
 const checks = [], screenshots = {};
 const diagnostics = [];
 const locations = trace => (trace?.callFrames ?? []).slice(0, 3).map(frame => ({
@@ -118,7 +119,11 @@ try {
     return result.result.value;
   };
   const key = async (keyName, code, windowsVirtualKeyCode) => {
-    await call('Input.dispatchKeyEvent', { type: 'keyDown', key: keyName, code, windowsVirtualKeyCode });
+    const text = keyName === 'Enter' ? '\r' : '';
+    await call('Input.dispatchKeyEvent', {
+      type: text ? 'keyDown' : 'rawKeyDown', key: keyName, code, windowsVirtualKeyCode,
+      text, unmodifiedText: text,
+    });
     await call('Input.dispatchKeyEvent', { type: 'keyUp', key: keyName, code, windowsVirtualKeyCode });
   };
   const enter = () => key('Enter', 'Enter', 13);
@@ -130,8 +135,38 @@ try {
   await call('Page.navigate', { url: `${origin}/index.html` });
   await until(() => evaluate('document.body?.getAttribute("data-prumo-ready")==="true"'), 'Rust WebRunner initialized', 120000);
   await evaluate('(async () => { window.prumoTestModule = await import("./pkg/prumo_web.js"); return true; })()');
+  await evaluate(`(() => {
+    const button = document.getElementById('load-project');
+    window.prumoImportProbe = { keydown: 0, keypress: 0, keyup: 0, clicks: 0, trusted_clicks: 0, focused_on_keydown: null };
+    for (const type of ['keydown', 'keypress', 'keyup']) {
+      button.addEventListener(type, event => {
+        if (event.key !== 'Enter') return;
+        window.prumoImportProbe[type]++;
+        if (type === 'keydown') window.prumoImportProbe.focused_on_keydown = document.activeElement === button;
+      }, { passive: true });
+    }
+    button.addEventListener('click', event => {
+      window.prumoImportProbe.clicks++;
+      if (event.isTrusted) window.prumoImportProbe.trusted_clicks++;
+    }, { passive: true });
+    return true;
+  })()`);
   await evaluate(`document.getElementById('project-json').value=${JSON.stringify(fixtureText)};document.getElementById('load-project').focus();true`);
+  importActivation = { focused_before: await evaluate('document.activeElement === document.getElementById("load-project")') };
+  assert.equal(importActivation.focused_before, true, 'Import button must have focus before Enter');
   await enter();
+  Object.assign(importActivation, await evaluate(`(() => {
+    const status = document.getElementById('project-status').textContent;
+    return {
+      ...window.prumoImportProbe,
+      focused_after: document.activeElement === document.getElementById('load-project'),
+      input_present: document.getElementById('project-json').value.length > 0,
+      status_kind: status === 'Projeto aberto. Consulta de modelagem, sem cálculo.' ? 'success' : status ? 'message' : 'empty',
+    };
+  })()`));
+  console.log(JSON.stringify({ suite: 'PRU-011-web', phase: 'import-activation', import_activation: importActivation }, null, 2));
+  assert.equal(importActivation.clicks, 1, 'Enter must activate the import button exactly once');
+  assert.equal(importActivation.trusted_clicks, 1, 'Import activation must come from browser keyboard input');
   const imported = await until(async () => { const r = await report(); return r.project_id === fixture.id ? r : false; }, 'native project imported');
   assert.equal(imported.source_revision, fixture.revision);
   assert.equal(imported.snapshot_sha256, nativeSnapshot.sha256);
@@ -234,7 +269,7 @@ try {
 } catch (error) {
   const error_locations = [...String(error.stack ?? '').matchAll(/verify_web\.mjs:(\d+):(\d+)/g)]
     .slice(0, 3).map(match => ({ line: Number(match[1]), column: Number(match[2]) }));
-  console.error(JSON.stringify({ suite: 'PRU-011-web', passed: false, checks, diagnostics, error_locations }, null, 2));
+  console.error(JSON.stringify({ suite: 'PRU-011-web', passed: false, checks, diagnostics, import_activation: importActivation, error_locations }, null, 2));
   await writeFile(join(evidence, 'failure.json'), JSON.stringify({ suite: 'PRU-011-web', passed: false, error: String(error), checks, stderr }, null, 2) + '\n');
   throw error;
 } finally {

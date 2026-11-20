@@ -54,8 +54,6 @@ jobs:
         run: cargo build --workspace --locked
       - name: Clippy
         run: cargo clippy --workspace --all-targets --locked -- -D warnings
-      - name: Testes de domínio, interface e cliente MCP real
-        run: cargo test --workspace --locked
       - name: Interface reutilizável em WASM
         run: cargo check -p prumo-ui --target wasm32-unknown-unknown --locked
       - name: Módulo WASM derivado do Rust fixado
@@ -89,6 +87,8 @@ jobs:
         run: |
           node --version
           node --experimental-websocket scripts/verify_web.mjs dist/prumo-web dist/view-project.json dist/web-evidence dist/native-evidence/native-100.json
+      - name: Testes de domínio, interface e cliente MCP real
+        run: cargo test --workspace --locked
       - name: Dependências efetivas
         run: cargo tree --locked
       - name: Conferir inventário e avisos de terceiros
