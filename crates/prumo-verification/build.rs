@@ -41,6 +41,14 @@ fn main() {
             env::var("PROFILE").unwrap_or_default(),
         ),
         (
+            "PRUMO_VERIFY_DEBUG",
+            env::var("DEBUG").expect("Cargo provides the debug-information setting"),
+        ),
+        (
+            "PRUMO_VERIFY_OPT_LEVEL",
+            env::var("OPT_LEVEL").expect("Cargo provides the optimization level"),
+        ),
+        (
             "PRUMO_VERIFY_FEATURES",
             env::var("CARGO_CFG_TARGET_FEATURE").unwrap_or_default(),
         ),

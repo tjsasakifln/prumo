@@ -41,6 +41,10 @@ impl BuildProvenance {
                     env!("PRUMO_VERIFY_FEATURES").into(),
                 ),
                 ("rustflags".into(), env!("PRUMO_VERIFY_FLAGS").into()),
+                // Cargo DEBUG reports whether any debug information is emitted,
+                // not its detail level or whether debug assertions are enabled.
+                ("debug_info".into(), env!("PRUMO_VERIFY_DEBUG").into()),
+                ("opt_level".into(), env!("PRUMO_VERIFY_OPT_LEVEL").into()),
                 (
                     "float_model".into(),
                     "IEEE-754 binary64; no fast-math requested by this crate".into(),

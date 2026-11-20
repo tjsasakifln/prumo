@@ -9,6 +9,9 @@ env:
   PYTHONUTF8: "1"
   CARGO_BUILD_JOBS: "2"
   CARGO_INCREMENTAL: "0"
+  # Preserve dev/test assertions and optimization; omit bulky debug symbols.
+  CARGO_PROFILE_DEV_DEBUG: "0"
+  CARGO_PROFILE_TEST_DEBUG: "0"
 jobs:
   verify:
     name: Rust (${{ matrix.os }})
@@ -41,9 +44,9 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             target
-          key: rust-ci2-${{ runner.os }}-1.99.1-${{ hashFiles('Cargo.lock') }}
+          key: rust-ci3-${{ runner.os }}-1.99.1-debug0-${{ hashFiles('Cargo.lock') }}
           restore-keys: |
-            rust-ci2-${{ runner.os }}-1.99.1-
+            rust-ci3-${{ runner.os }}-1.99.1-debug0-
       - name: Remover artefatos próprios de versões anteriores
         run: |
           python -c "import shutil, subprocess; print({'free_bytes_before': shutil.disk_usage('.').free}, flush=True); subprocess.run(['cargo', 'clean', '--workspace', '--locked'], check=True); print({'free_bytes_after': shutil.disk_usage('.').free})"
