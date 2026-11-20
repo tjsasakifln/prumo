@@ -316,6 +316,16 @@ impl Desktop {
                             self.refresh_storage();
                             self.refresh_transactions();
                         }
+                        Err(prumo_app::AppError::PermissionDenied) => {
+                            // Reopening is an explicit host action. A replaced
+                            // file needs a new session, never a relaxed grant on
+                            // the session that was bound to the previous UUID.
+                            let storage_expanded = self.view.storage.expanded;
+                            self.select(PathBuf::from(&self.view.selected_path), true);
+                            // Preserve navigation only. The new session and
+                            // storage view discard every old confirmation.
+                            self.view.storage.expanded |= storage_expanded;
+                        }
                         Err(error) => {
                             self.clear_editor();
                             self.refresh_storage();
@@ -522,7 +532,26 @@ impl Desktop {
         let Some(service) = &self.service else {
             return;
         };
-        match service.storage_status() {
+        let inspection = match service.storage_status() {
+            Err(prumo_app::AppError::PermissionDenied) => {
+                // The trusted desktop may inspect the selected path again,
+                // using a separate read-only session. Keep the editing session
+                // bound to its original project until the user reopens it.
+                self.clear_editor();
+                self.view.report(
+                    "O arquivo contém outro projeto. Reabra para conferir seu conteúdo antes de editar.",
+                    true,
+                );
+                ProjectService::open(
+                    PathBuf::from(&self.view.selected_path),
+                    prumo_app::AccessMode::ReadOnly,
+                    "interface-diagnostico",
+                )
+                .and_then(|diagnostic| diagnostic.storage_status())
+            }
+            result => result,
+        };
+        match inspection {
             Ok(status) => {
                 let loaded_identity = self
                     .project
