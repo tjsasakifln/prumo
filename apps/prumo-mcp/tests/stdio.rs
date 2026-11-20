@@ -84,6 +84,67 @@ async fn call_with_budget(
     result.structured_content.expect("structured content")
 }
 
+fn assert_default_tool_catalog(value: &Value, writable: bool) {
+    use std::collections::BTreeSet;
+
+    let tools = value.as_array().expect("tools/list must return an array");
+    let names: BTreeSet<_> = tools
+        .iter()
+        .map(|tool| tool["name"].as_str().expect("tool name must be a string"))
+        .collect();
+    assert_eq!(names.len(), tools.len(), "tool names must be unique");
+    let mut expected = BTreeSet::from([
+        "prumo.access.read",
+        "prumo.catalogue.material",
+        "prumo.catalogue.read",
+        "prumo.components.list",
+        "prumo.components.qualify",
+        "prumo.geometry.audit",
+        "prumo.geometry.face",
+        "prumo.model.history",
+        "prumo.model.query",
+        "prumo.model.snapshot",
+        "prumo.norms.package",
+        "prumo.project.read",
+        "prumo.registry.audit",
+        "prumo.registry.read",
+        "prumo.results.gate",
+        "prumo.results.trace",
+        "prumo.storage.status",
+        "prumo.verification.protocols",
+    ]);
+    if writable {
+        expected.extend([
+            "prumo.geometry.preview",
+            "prumo.model.add_environment",
+            "prumo.model.add_member",
+            "prumo.model.apply_change",
+            "prumo.model.edit",
+            "prumo.model.inspect",
+            "prumo.model.preview_change",
+            "prumo.model.redo",
+            "prumo.model.undo",
+            "prumo.norms.migrate",
+            "prumo.norms.pin",
+            "prumo.norms.register",
+            "prumo.project.create",
+            "prumo.project.rename",
+            "prumo.storage.backup",
+            "prumo.storage.migrate",
+            "prumo.storage.recover",
+        ]);
+    }
+    // Assert the named Read/Model contract independently of list order or size.
+    // Calculation and Documents operations must not appear in either grant.
+    assert_eq!(names, expected, "catalogue must match the launch grant");
+    for tool in tools {
+        assert_eq!(tool["inputSchema"]["additionalProperties"], false);
+        if !writable {
+            assert_eq!(tool["annotations"]["readOnlyHint"], true);
+        }
+    }
+}
+
 #[tokio::test]
 async fn sdk_creates_modifies_and_reopens_real_project() {
     let directory = tempfile::tempdir().unwrap();
@@ -211,19 +272,7 @@ async fn readonly_is_enforced_for_unadvertised_mutations_and_creation() {
     let path = directory.path().join("protected.prumo");
     let client = sdk(&path, false).await;
     let tools = client.list_tools(None).await.unwrap();
-    assert!(
-        tools
-            .tools
-            .iter()
-            .any(|tool| tool.name == "prumo.project.read")
-    );
-    assert!(
-        !tools
-            .tools
-            .iter()
-            .any(|tool| tool.name == "prumo.project.create")
-    );
-    assert_eq!(tools.tools[0].name, "prumo.project.read");
+    assert_default_tool_catalog(&serde_json::to_value(&tools.tools).unwrap(), false);
     let denied = client
         .call_tool(
             CallToolRequestParams::new("prumo.project.create").with_arguments(
@@ -414,6 +463,8 @@ async fn unknown_version_and_missing_request_metadata_are_rejected() {
     let path = directory.path().join("version.prumo");
     let mut client = WireClient::new(&path, false);
     client.request("server/discover", json!({})).await;
+    let initial = client.request("tools/list", json!({})).await;
+    assert_default_tool_catalog(&initial["result"]["tools"], false);
     let unknown = client
         .request_version("tools/list", json!({}), "2099-01-01")
         .await;
@@ -425,7 +476,8 @@ async fn unknown_version_and_missing_request_metadata_are_rejected() {
     let missing = client.receive().await;
     assert_eq!(missing["error"]["code"], -32602);
     let recovered = client.request("tools/list", json!({})).await;
-    assert_eq!(recovered["result"]["tools"].as_array().unwrap().len(), 10);
+    assert_eq!(recovered["result"]["tools"], initial["result"]["tools"]);
+    assert!(!path.exists());
     client.stop().await;
 }
 
@@ -453,6 +505,8 @@ async fn reserved_json_number_objects_are_rejected_before_sdk_conversion_and_nex
     let bytes = std::fs::read(&path).unwrap();
     let mut client = WireClient::new(&path, true);
     client.request("server/discover", json!({})).await;
+    let initial = client.request("tools/list", json!({})).await;
+    assert_default_tool_catalog(&initial["result"]["tools"], true);
 
     for key in [
         "$serde_json::private::Number",
@@ -476,7 +530,7 @@ async fn reserved_json_number_objects_are_rejected_before_sdk_conversion_and_nex
         assert_eq!(std::fs::read(&path).unwrap(), bytes);
         assert_eq!(host.read().unwrap(), before);
         let resumed = client.request("tools/list", json!({})).await;
-        assert_eq!(resumed["result"]["tools"].as_array().unwrap().len(), 22);
+        assert_eq!(resumed["result"]["tools"], initial["result"]["tools"]);
     }
 
     for malformed in [
@@ -490,7 +544,7 @@ async fn reserved_json_number_objects_are_rejected_before_sdk_conversion_and_nex
         // rmcp 3.10 ignores JSON syntax errors and resumes with the next line.
         // The representation guard must not turn them into Invalid Request.
         let resumed = client.request("tools/list", json!({})).await;
-        assert_eq!(resumed["result"]["tools"].as_array().unwrap().len(), 22);
+        assert_eq!(resumed["result"]["tools"], initial["result"]["tools"]);
         assert_eq!(std::fs::read(&path).unwrap(), bytes);
     }
 

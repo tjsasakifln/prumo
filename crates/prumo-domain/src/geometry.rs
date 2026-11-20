@@ -140,6 +140,54 @@ pub struct GeometryReport {
 fn distance(a: [f64; 3], b: [f64; 3]) -> f64 {
     (a[0] - b[0]).hypot(a[1] - b[1]).hypot(a[2] - b[2])
 }
+
+/// Metric proximity to a finite segment, separate from exact intersection.
+/// Coordinates are bounded by validate_point, so differences and determinants
+/// fit binary64. Adaptive determinants use the original coordinates: subtracting
+/// a remote origin before a cross product could erase the very gap being tested.
+fn point_segment_distance(point: [f64; 3], segment: [[f64; 3]; 2]) -> f64 {
+    let endpoint_distances = [distance(point, segment[0]), distance(point, segment[1])];
+    let nearest = usize::from(endpoint_distances[1] < endpoint_distances[0]);
+    let endpoint_distance = endpoint_distances[nearest];
+    let origin = segment[nearest];
+    let other = segment[1 - nearest];
+    let length = distance(origin, other);
+    if length == 0.0 {
+        return endpoint_distance;
+    }
+    // The nearest endpoint minimizes cancellation in the projection test. This
+    // projection only clamps to the finite segment, never classifies collinearity.
+    let direction = std::array::from_fn::<_, 3, _>(|i| (other[i] - origin[i]) / length);
+    let delta = std::array::from_fn::<_, 3, _>(|i| point[i] - origin[i]);
+    let projection = direction[0].mul_add(
+        delta[0],
+        direction[1].mul_add(delta[1], direction[2] * delta[2]),
+    );
+    if projection <= 0.0 || projection >= length {
+        return endpoint_distance;
+    }
+    let projected_area = |u: usize, v: usize| {
+        let coord = |p: [f64; 3]| robust::Coord { x: p[u], y: p[v] };
+        robust::orient2d(coord(segment[0]), coord(segment[1]), coord(point))
+    };
+    let perpendicular_distance = projected_area(1, 2)
+        .hypot(projected_area(2, 0))
+        .hypot(projected_area(0, 1))
+        / length;
+    perpendicular_distance.min(endpoint_distance)
+}
+
+fn endpoint_segment_gap(a: [[f64; 3]; 2], b: [[f64; 3]; 2]) -> f64 {
+    [
+        point_segment_distance(a[0], b),
+        point_segment_distance(a[1], b),
+        point_segment_distance(b[0], a),
+        point_segment_distance(b[1], a),
+    ]
+    .into_iter()
+    .fold(f64::INFINITY, f64::min)
+}
+
 fn connected(project: &Project, a: Uuid, b: Uuid) -> bool {
     project.connections.iter().any(|connection| {
         let from = project.ports.iter().find(|p| p.id == connection.from_port);
@@ -218,18 +266,6 @@ pub fn audit_project(
                     second_id: b.id,
                 });
             } else {
-                let gap = ap
-                    .iter()
-                    .flat_map(|p| bp.iter().map(move |q| distance(*p, *q)))
-                    .fold(f64::INFINITY, f64::min);
-                if gap <= tolerances.topology_m {
-                    findings.push(GeometryFinding::NearContact {
-                        first_id: a.id,
-                        second_id: b.id,
-                        distance_m: gap,
-                        explicitly_connected: connected(project, a.id, b.id),
-                    });
-                }
                 match intersect_segments_3d(ap, bp)? {
                     SpatialIntersection::Point {
                         point_m,
@@ -239,9 +275,7 @@ pub fn audit_project(
                         second_id: b.id,
                         position_m: point_m,
                     }),
-                    SpatialIntersection::Point { proper: false, .. }
-                        if gap > tolerances.topology_m =>
-                    {
+                    SpatialIntersection::Point { proper: false, .. } => {
                         findings.push(GeometryFinding::NearContact {
                             first_id: a.id,
                             second_id: b.id,
@@ -257,7 +291,17 @@ pub fn audit_project(
                             end_m,
                         })
                     }
-                    _ => {}
+                    SpatialIntersection::None => {
+                        let gap = endpoint_segment_gap(ap, bp);
+                        if gap <= tolerances.topology_m {
+                            findings.push(GeometryFinding::NearContact {
+                                first_id: a.id,
+                                second_id: b.id,
+                                distance_m: gap,
+                                explicitly_connected: connected(project, a.id, b.id),
+                            });
+                        }
+                    }
                 }
             }
             if findings.len() > MAX_FINDINGS {

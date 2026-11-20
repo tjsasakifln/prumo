@@ -23,7 +23,63 @@ fn closed_objects(value: &Value) {
     match value {
         Value::Object(object) => {
             if object.get("type") == Some(&json!("object")) {
-                assert_eq!(object.get("additionalProperties"), Some(&json!(false)));
+                if let Some(Value::Object(value_schema)) = object.get("additionalProperties") {
+                    // Catalogue dictionaries allow named physical properties, but
+                    // every value must remain a bounded, closed PhysicalValue.
+                    assert_eq!(
+                        object
+                            .keys()
+                            .map(String::as_str)
+                            .collect::<std::collections::BTreeSet<_>>(),
+                        std::collections::BTreeSet::from([
+                            "type",
+                            "maxProperties",
+                            "additionalProperties"
+                        ])
+                    );
+                    assert_eq!(object["maxProperties"], 256);
+                    assert_eq!(value_schema["type"], "object");
+                    assert_eq!(value_schema["additionalProperties"], false);
+                    let properties = value_schema["properties"].as_object().unwrap();
+                    assert_eq!(
+                        properties
+                            .keys()
+                            .map(String::as_str)
+                            .collect::<std::collections::BTreeSet<_>>(),
+                        std::collections::BTreeSet::from([
+                            "quantity",
+                            "decimal",
+                            "unit",
+                            "basis",
+                            "design_basis"
+                        ])
+                    );
+                    assert_eq!(
+                        value_schema["required"]
+                            .as_array()
+                            .unwrap()
+                            .iter()
+                            .map(|name| name.as_str().unwrap())
+                            .collect::<std::collections::BTreeSet<_>>(),
+                        std::collections::BTreeSet::from(["quantity", "decimal", "unit", "basis"])
+                    );
+                    for field in ["quantity", "unit", "basis"] {
+                        assert_eq!(properties[field]["type"], "string");
+                        let variants = properties[field]["enum"].as_array().unwrap();
+                        assert!(!variants.is_empty());
+                        assert!(variants.iter().all(Value::is_string));
+                    }
+                    assert_eq!(
+                        properties["decimal"],
+                        json!({"type":"string","minLength":1,"maxLength":128})
+                    );
+                    assert_eq!(
+                        properties["design_basis"],
+                        json!({"type":["string","null"]})
+                    );
+                } else {
+                    assert_eq!(object.get("additionalProperties"), Some(&json!(false)));
+                }
             }
             for value in object.values() {
                 closed_objects(value);
@@ -110,14 +166,46 @@ async fn ui_visual_object_then_real_mcp_typed_model_links_actions_and_restart() 
     let variants = tool.input_schema["properties"]["edit"]["oneOf"]
         .as_array()
         .unwrap();
-    assert_eq!(variants.len(), 25);
     let names: std::collections::BTreeSet<_> = variants
         .iter()
         .map(|variant| variant["properties"]["edit"]["const"].as_str().unwrap())
         .collect();
-    assert_eq!(names.len(), 25);
-    assert!(names.contains("set_nodal_action"));
-    assert!(names.contains("change_engineering_frame"));
+    assert_eq!(names.len(), variants.len(), "edit tags must be unique");
+    assert_eq!(
+        names,
+        std::collections::BTreeSet::from([
+            "add_analytical_member",
+            "add_analytical_node",
+            "add_material",
+            "add_network",
+            "add_nodal_action",
+            "add_physical",
+            "add_port",
+            "apply_geometry_repair",
+            "assign_catalog_entry",
+            "assign_port",
+            "change_engineering_frame",
+            "clear_catalog_assignment",
+            "connect_ports",
+            "copy_physical",
+            "disconnect_ports",
+            "link_physical_analytical",
+            "merge_physical",
+            "put_catalog_entry",
+            "rigid_move",
+            "set_display_unit",
+            "set_geometry_tolerances",
+            "set_georeference",
+            "set_material",
+            "set_nodal_action",
+            "set_physical_geometry",
+            "set_physical_material",
+            "set_physical_role",
+            "set_source_origin",
+            "split_physical",
+            "unlink_physical_analytical",
+        ])
+    );
     for (variant, field) in [
         ("set_physical_material", "material_id"),
         ("set_georeference", "georeference"),

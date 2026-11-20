@@ -52,6 +52,11 @@ impl ProjectService {
         let expected_revision = command_revision(&command)?;
         let _lock = self.lock()?;
         let original = self.load_editor_basis()?;
+        // Single-command callers already have a revision contract. Authorize
+        // first, then report a stale basis before validating the batch envelope
+        // that wraps this command (which requires a nonzero base revision).
+        self.grant.check_command(&original.project, &command)?;
+        check_basis(&original.project, original.project.id, expected_revision)?;
         let request = TransactionRequest {
             project_id: original.project.id,
             expected_revision,
