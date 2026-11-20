@@ -45,6 +45,7 @@ pub struct AnalyticalMember {
     pub name: String,
     pub start_node_id: Uuid,
     pub end_node_id: Uuid,
+    #[serde(deserialize_with = "crate::numeric::vector3")]
     pub local_y: [f64; 3],
 }
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
@@ -62,6 +63,7 @@ pub struct Material {
     pub family: MaterialFamily,
     pub elastic_modulus: Pressure,
     pub density: Density,
+    #[serde(deserialize_with = "crate::numeric::scalar")]
     pub poisson_ratio: f64,
 }
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
@@ -71,6 +73,7 @@ pub struct MaterialInput {
     pub family: MaterialFamily,
     pub elastic_modulus: PressureInput,
     pub density: DensityInput,
+    #[serde(deserialize_with = "crate::numeric::scalar")]
     pub poisson_ratio: f64,
 }
 
@@ -105,6 +108,7 @@ pub struct NodalActionInput {
 pub struct EngineeringFrame {
     pub origin_world_m: Point3,
     /// Row-major proper rotation mapping engineering coordinates to an abstract world.
+    #[serde(deserialize_with = "crate::numeric::matrix3")]
     pub rotation_to_world: [[f64; 3]; 3],
 }
 impl Default for EngineeringFrame {
@@ -121,6 +125,7 @@ pub struct Georeference {
     pub crs_identifier: String,
     pub map_origin_m: Point3,
     pub rotation_radians: crate::units::Angle,
+    #[serde(deserialize_with = "crate::numeric::scalar")]
     pub scale: f64,
 }
 
@@ -161,6 +166,24 @@ pub struct SemanticModel {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(tag = "edit", rename_all = "snake_case", deny_unknown_fields)]
 pub enum ModelEdit {
+    PutCatalogEntry {
+        entry: crate::catalogue::CatalogEntry,
+    },
+    AssignCatalogEntry {
+        object_id: Uuid,
+        entry_id: Uuid,
+    },
+    ClearCatalogAssignment {
+        object_id: Uuid,
+        kind: crate::catalogue::CatalogKind,
+    },
+    SetGeometryTolerances {
+        tolerances: crate::geometry::TolerancePolicy,
+    },
+    ApplyGeometryRepair {
+        plan_hash: String,
+        repairs: Vec<crate::geometry::GeometryRepair>,
+    },
     AddPhysical {
         name: String,
         discipline: Discipline,
@@ -195,6 +218,7 @@ pub enum ModelEdit {
         name: String,
         start_node_id: Uuid,
         end_node_id: Uuid,
+        #[serde(deserialize_with = "crate::numeric::vector3")]
         local_y: [f64; 3],
     },
     LinkPhysicalAnalytical {
@@ -253,11 +277,13 @@ pub enum ModelEdit {
     },
     SplitPhysical {
         object_id: Uuid,
+        #[serde(deserialize_with = "crate::numeric::scalar")]
         fraction: f64,
         names: [String; 2],
     },
     RigidMove {
         object_ids: Vec<Uuid>,
+        #[serde(deserialize_with = "crate::numeric::matrix3")]
         rotation: [[f64; 3]; 3],
         translation: PointInput,
     },

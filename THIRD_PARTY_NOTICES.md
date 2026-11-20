@@ -4,7 +4,7 @@ This file preserves license texts and attributions for the normal/build dependen
 
 The Prumo product license is not defined by these third-party licenses. No dependency has been patched in this release. The original texts below govern the respective components; SPDX metadata alone is not a replacement for their conditions.
 
-Cargo.lock SHA-256: `149f51de3ed35dc6861c00479abc8f16e65414fdbdc1f8ee313ffee041f8ec23`
+Cargo.lock SHA-256: `06dff64da067dd52b837939d1678b42679a491c6483972df708fe07ef576f81f`
 
 ## Component inventory
 
@@ -70,6 +70,7 @@ Cargo.lock SHA-256: `149f51de3ed35dc6861c00479abc8f16e65414fdbdc1f8ee313ffee041f
 | [downcast-rs 1.2.1](https://crates.io/crates/downcast-rs/1.2.1) | MIT/Apache-2.0 | [af975c9737b3](#license-af975c9737b3), [fb252fecf98d](#license-fb252fecf98d) |
 | [dpi 0.1.2](https://crates.io/crates/dpi/0.1.2) | Apache-2.0 AND MIT | [9eff396a99ba](#license-9eff396a99ba), [a8ad31b1c3f4](#license-a8ad31b1c3f4) |
 | [dyn-clone 1.0.20](https://crates.io/crates/dyn-clone/1.0.20) | MIT OR Apache-2.0 | [23f18e03dc49](#license-23f18e03dc49), [b30df9a48463](#license-b30df9a48463) |
+| [earcut 0.4.5](https://crates.io/crates/earcut/0.4.5) | ISC | [1b5fd56a3c78](#license-1b5fd56a3c78) |
 | [ecolor 0.37.0](https://crates.io/crates/ecolor/0.37.0) | MIT OR Apache-2.0 | [95ca92f5f8ea](#license-95ca92f5f8ea), [af975c9737b3](#license-af975c9737b3) |
 | [eframe 0.37.0](https://crates.io/crates/eframe/0.37.0) | MIT OR Apache-2.0 | [95ca92f5f8ea](#license-95ca92f5f8ea), [af975c9737b3](#license-af975c9737b3) |
 | [egui 0.37.0](https://crates.io/crates/egui/0.37.0) | MIT OR Apache-2.0 | [95ca92f5f8ea](#license-95ca92f5f8ea), [af975c9737b3](#license-af975c9737b3) |
@@ -1707,6 +1708,31 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+````
+
+### License 1b5fd56a3c78
+
+Sources:
+
+- crate:earcut@0.4.5/LICENSE.txt
+
+````text
+ISC License
+
+Copyright (c) 2016, Mapbox
+Copyright (c) 2023, Taku Fukada
+
+Permission to use, copy, modify, and/or distribute this software for any purpose
+with or without fee is hereby granted, provided that the above copyright notice
+and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS
+OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF
+THIS SOFTWARE.
 ````
 
 ### License 1cb6f4dee8c6

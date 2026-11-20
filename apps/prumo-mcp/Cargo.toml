@@ -11,6 +11,8 @@ name = "prumo-mcp"
 path = "src/main.rs"
 
 [dependencies]
+prumo-domain = { path = "../../crates/prumo-domain" }
+uuid.workspace = true
 prumo-app = { path = "../../crates/prumo-app" }
 prumo-mcp = { path = "../../crates/prumo-mcp" }
 rmcp.workspace = true

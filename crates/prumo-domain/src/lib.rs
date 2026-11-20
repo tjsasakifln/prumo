@@ -9,12 +9,16 @@ use thiserror::Error;
 use uuid::Uuid;
 
 pub mod canonical;
+pub mod catalogue;
 pub mod components;
 pub mod dependencies;
+pub mod geometry;
 pub mod identity;
 pub mod model;
+mod numeric;
 pub mod registry;
 pub mod storage;
+pub mod transactions;
 pub mod units;
 
 pub const PROJECT_SCHEMA_VERSION: u32 = 2;
@@ -33,7 +37,9 @@ pub enum Command {
     AddMember {
         expected_revision: u64,
         name: String,
+        #[serde(deserialize_with = "numeric::vector3")]
         start: [f64; 3],
+        #[serde(deserialize_with = "numeric::vector3")]
         end: [f64; 3],
     },
     RenameProject {
@@ -284,6 +290,7 @@ impl Project {
 
     /// Model edits validate their next-revision metadata before the service stamps history.
     pub fn validate_model_contents(&self, metadata_revision: u64) -> Result<(), DomainError> {
+        geometry::project_tolerances(self)?.validate()?;
         let mut all_ids = BTreeSet::new();
         insert_id(&mut all_ids, self.id)?;
         if self.objects.len() > MAX_OBJECTS
@@ -386,7 +393,8 @@ impl Project {
                 return Err(DomainError::InvalidConnection);
             }
         }
-        model::validate_semantics(self, metadata_revision, &mut all_ids)
+        model::validate_semantics(self, metadata_revision, &mut all_ids)?;
+        catalogue::validate_catalogue(self, metadata_revision, &mut all_ids)
     }
 }
 

@@ -105,6 +105,15 @@ fn active_values(project: &Project) -> Result<BTreeMap<Uuid, serde_json::Value>,
     collect!(&project.model.links);
     collect!(&project.model.materials);
     collect!(&project.model.actions);
+    for (id, versions) in crate::catalogue::project_catalogue(project)?.entries {
+        if let Some(version) = versions.last() {
+            values.insert(
+                id,
+                serde_json::to_value(&version.entry)
+                    .map_err(|error| DomainError::InvalidModel(error.to_string()))?,
+            );
+        }
+    }
     Ok(values)
 }
 
@@ -153,6 +162,29 @@ fn edit_inner(
     revision: u64,
 ) -> Result<(), DomainError> {
     match edit {
+        ModelEdit::PutCatalogEntry { entry } => {
+            crate::catalogue::put_entry(project, entry, actor, revision)?;
+        }
+        ModelEdit::AssignCatalogEntry {
+            object_id,
+            entry_id,
+        } => {
+            crate::catalogue::assign_entry(project, object_id, entry_id)?;
+        }
+        ModelEdit::ClearCatalogAssignment { object_id, kind } => {
+            crate::catalogue::clear_assignment(project, object_id, kind)?;
+        }
+        ModelEdit::SetGeometryTolerances { tolerances } => {
+            tolerances.validate()?;
+            project.extensions.insert(
+                crate::geometry::TOLERANCES_KEY.into(),
+                serde_json::to_value(tolerances)
+                    .map_err(|e| DomainError::InvalidModel(e.to_string()))?,
+            );
+        }
+        ModelEdit::ApplyGeometryRepair { plan_hash, repairs } => {
+            crate::geometry::apply_repairs(project, &repairs, &plan_hash, actor)?
+        }
         ModelEdit::AddPhysical {
             name,
             discipline,
@@ -192,7 +224,15 @@ fn edit_inner(
         ModelEdit::SetPhysicalMaterial {
             object_id,
             material_id,
-        } => physical_mut(project, object_id)?.material_id = material_id,
+        } => {
+            if material_id.is_some()
+                && crate::catalogue::assignments(physical(project, object_id)?)?
+                    .contains_key(&crate::catalogue::CatalogKind::Material)
+            {
+                return Err(DomainError::InvalidModel("Remova explicitamente o material do catálogo antes de atribuir material do modelo.".into()));
+            }
+            physical_mut(project, object_id)?.material_id = material_id;
+        }
         ModelEdit::SetDisplayUnit { unit } => project.units = unit,
         ModelEdit::AddAnalyticalNode { name, position } => {
             let id = Uuid::new_v4();

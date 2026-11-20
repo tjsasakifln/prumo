@@ -58,7 +58,7 @@ struct StoredProject {
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 #[serde(deny_unknown_fields)]
-pub(crate) struct JournalEntry {
+pub struct JournalEntry {
     pub base_revision: Option<u64>,
     pub revision: u64,
     pub previous_root_sha256: Option<String>,
@@ -74,6 +74,25 @@ pub(crate) struct StoreContents {
     pub objects: BTreeMap<String, Vec<u8>>,
     pub journal: Vec<JournalEntry>,
     pub extensions: BTreeMap<String, OpaqueEntry>,
+}
+
+/// Bounded, validated command history from the immutable database in a package.
+/// No SQL or filesystem path is accepted from an external command.
+pub fn database_journal(bytes: &[u8]) -> Result<Vec<JournalEntry>> {
+    Ok(read_database_contents(bytes)?.journal)
+}
+
+/// Recover a historical project for an audited undo/redo operation.
+pub fn database_revision(bytes: &[u8], revision: u64) -> Result<Project> {
+    let contents = read_database_contents(bytes)?;
+    let entry = contents
+        .journal
+        .iter()
+        .find(|entry| entry.revision == revision)
+        .ok_or_else(|| StorageError::Integrity("Revisão histórica não encontrada.".into()))?;
+    let project = reconstruct(&entry.root_sha256, &contents.objects)?;
+    project.validate()?;
+    Ok(project)
 }
 
 impl SQLiteWorkingStore {

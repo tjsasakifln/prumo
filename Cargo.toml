@@ -23,6 +23,7 @@ sha2 = "=0.11.1"
 prumo-registry = { path = "crates/prumo-registry" }
 prumo-components = { path = "crates/prumo-components" }
 prumo-storage = { path = "crates/prumo-storage" }
+prumo-verification = { path = "crates/prumo-verification" }
 rusqlite = { version = "=0.42.0", default-features = false, features = ["bundled", "backup", "limits", "hooks"] }
 zip = { version = "=9.5.1", default-features = false, features = ["deflate-flate2-zlib-rs"] }
 nalgebra = { version = "=0.35.0", default-features = false, features = ["std"] }

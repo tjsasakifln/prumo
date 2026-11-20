@@ -118,7 +118,7 @@ def main():
         'Não é necessário editar configuração. No Linux, marque os binários como executáveis se o extrator não conservar a permissão.\n\n'
         'O servidor MCP usa: prumo-mcp --project seu-arquivo.prumo\n'
         'A leitura é o padrão. Acrescente --allow-write apenas quando quiser autorizar alterações.\n\n'
-        'Cálculo, dimensionamento e emissão técnica ainda não estão disponíveis. '
+        'Cálculo do projeto, dimensionamento e emissão técnica ainda não estão disponíveis. '
         'Leia THIRD_PARTY_NOTICES.md para os direitos dos componentes incorporados.\n'
     )
     with zipfile.ZipFile(destination,'w',zipfile.ZIP_DEFLATED) as package:

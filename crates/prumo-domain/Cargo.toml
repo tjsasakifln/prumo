@@ -13,6 +13,8 @@ uuid.workspace = true
 sha2.workspace = true
 uom.workspace = true
 nalgebra.workspace = true
+geo = { workspace = true, features = ["earcut"] }
+robust = "=1.2.0"
 
 [lints]
 workspace = true

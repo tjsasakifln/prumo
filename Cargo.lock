@@ -826,6 +826,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d0881ea181b1df73ff77ffaaf9c7544ecc11e82fba9b5f27b262a3c73a332555"
 
 [[package]]
+name = "earcut"
+version = "0.4.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "88459a2a8e3a514b6e6de38cf3aaa9250a894cb098f74a932db77fcc8341b6d0"
+dependencies = [
+ "num-traits",
+]
+
+[[package]]
 name = "ecolor"
 version = "0.37.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1308,6 +1317,7 @@ version = "0.33.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "30eb1fdc57c1e5cfd11826fe0caec4b9dc7901f3758263bb506228d88c8d9e9a"
 dependencies = [
+ "earcut",
  "float_next_after",
  "geo-types",
  "geographiclib-rs",
@@ -2795,6 +2805,7 @@ dependencies = [
  "prumo-domain",
  "prumo-registry",
  "prumo-storage",
+ "prumo-verification",
  "serde",
  "serde_json",
  "sha2",
@@ -2849,7 +2860,9 @@ dependencies = [
 name = "prumo-domain"
 version = "0.1.0"
 dependencies = [
+ "geo",
  "nalgebra",
+ "robust",
  "serde",
  "serde_json",
  "sha2",
@@ -2868,6 +2881,7 @@ dependencies = [
  "serde",
  "serde_json",
  "tokio",
+ "uuid",
 ]
 
 [[package]]
@@ -2884,6 +2898,7 @@ dependencies = [
  "serde_json",
  "tempfile",
  "tokio",
+ "uuid",
 ]
 
 [[package]]
@@ -2915,6 +2930,19 @@ version = "0.1.0"
 dependencies = [
  "egui",
  "prumo-domain",
+ "serde_json",
+ "uuid",
+]
+
+[[package]]
+name = "prumo-verification"
+version = "0.1.0"
+dependencies = [
+ "prumo-components",
+ "prumo-domain",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.21",
 ]
 
 [[package]]

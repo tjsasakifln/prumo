@@ -31,6 +31,8 @@ pub enum SourceKind {
     Coordinates,
     Georeference,
     Normative,
+    GeometrySettings,
+    CatalogEntry,
 }
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]

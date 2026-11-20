@@ -8,6 +8,8 @@ publish.workspace = true
 [dependencies]
 prumo-domain.workspace = true
 egui.workspace = true
+serde_json.workspace = true
+uuid.workspace = true
 
 [lints]
 workspace = true

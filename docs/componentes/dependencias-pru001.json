@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "scope": "Full Cargo.lock metadata; notices cover normal/build graph of distributed native targets, not only directly declared crates.",
-  "lock_sha256": "149f51de3ed35dc6861c00479abc8f16e65414fdbdc1f8ee313ffee041f8ec23",
+  "lock_sha256": "06dff64da067dd52b837939d1678b42679a491c6483972df708fe07ef576f81f",
   "native_targets": [
     "x86_64-unknown-linux-gnu",
     "x86_64-pc-windows-msvc"
@@ -1416,6 +1416,24 @@
       "license_text_sha256": [
         "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
         "b30df9a48463d1c99c6a66cdee623b1b0832c3811d58a80b338268d71cea190e"
+      ]
+    },
+    {
+      "name": "earcut",
+      "version": "0.4.5",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "checksum": "88459a2a8e3a514b6e6de38cf3aaa9250a894cb098f74a932db77fcc8341b6d0",
+      "repository": "https://github.com/ciscorn/earcut-rs",
+      "license_expression": "ISC",
+      "authors": [
+        "Taku Fukada <naninunenor@gmail.com>"
+      ],
+      "native_build_or_runtime_targets": [
+        "x86_64-pc-windows-msvc",
+        "x86_64-unknown-linux-gnu"
+      ],
+      "license_text_sha256": [
+        "1b5fd56a3c78a302a4bfe304cfcbce912938361f627c69a321220615c2d6b08d"
       ]
     },
     {
@@ -8408,6 +8426,15 @@
       "source_text_sha256": {
         "crate:schemars@1.2.3/LICENSE": "1954992a2b32e8a2af24a4c11b726902e344c1934b947a77f04d404908f8db30",
         "crate:schemars_derive@1.2.3/LICENSE": "1954992a2b32e8a2af24a4c11b726902e344c1934b947a77f04d404908f8db30"
+      }
+    },
+    {
+      "sha256": "1b5fd56a3c78a302a4bfe304cfcbce912938361f627c69a321220615c2d6b08d",
+      "origins": [
+        "crate:earcut@0.4.5/LICENSE.txt"
+      ],
+      "source_text_sha256": {
+        "crate:earcut@0.4.5/LICENSE.txt": "1b5fd56a3c78a302a4bfe304cfcbce912938361f627c69a321220615c2d6b08d"
       }
     },
     {

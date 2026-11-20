@@ -12,9 +12,32 @@ mod numeric;
 pub use model::{ModelTab, SemanticView};
 mod storage;
 pub use storage::StorageView;
+mod transactions;
+pub use transactions::TransactionView;
+mod geometry;
+pub use geometry::GeometryView;
+mod catalogue;
+pub use catalogue::CatalogueView;
 
 #[derive(Debug)]
 pub enum UiAction {
+    RefreshTransactions,
+    PreviewTransaction(Box<prumo_domain::transactions::TransactionRequest>),
+    ApplyTransaction(String),
+    UndoTransaction(Box<prumo_domain::transactions::TransactionHistoryRequest>),
+    RedoTransaction(Box<prumo_domain::transactions::TransactionHistoryRequest>),
+    InspectGeometry(prumo_domain::geometry::GeometryFilter),
+    PreviewGeometry(Vec<prumo_domain::geometry::GeometryRepair>),
+    InspectFace(prumo_domain::geometry::FaceInput),
+    RunVerification,
+    AnalyseCatalogueSection(uuid::Uuid),
+    InspectCatalogueMaterial(
+        uuid::Uuid,
+        std::collections::BTreeMap<
+            prumo_domain::catalogue::PhysicalQuantity,
+            prumo_domain::catalogue::PhysicalValue,
+        >,
+    ),
     Open(String),
     Refresh,
     RefreshRegistry,
@@ -34,6 +57,9 @@ impl UiAction {
 }
 
 pub struct ProjectView {
+    pub transactions: TransactionView,
+    pub geometry: GeometryView,
+    pub catalogue: CatalogueView,
     pub storage: StorageView,
     pub model: SemanticView,
     pub components: ComponentView,
@@ -54,6 +80,9 @@ pub struct ProjectView {
 impl Default for ProjectView {
     fn default() -> Self {
         Self {
+            transactions: TransactionView::default(),
+            geometry: GeometryView::default(),
+            catalogue: CatalogueView::default(),
             storage: StorageView::default(),
             model: SemanticView::default(),
             components: ComponentView::default(),
@@ -137,6 +166,9 @@ impl ProjectView {
             ui.add_enabled_ui(selected, |ui| self.storage.show(ui,&mut actions));
             ui.separator();
             if let Some(project) = project {
+                ui.add_enabled_ui(selected, |ui| self.transactions.show(ui,project,&mut actions));
+                ui.add_enabled_ui(selected, |ui| self.geometry.show(ui,project,&mut actions));
+                ui.add_enabled_ui(selected, |ui| self.catalogue.show(ui,project,&mut actions));
                 ui.add_enabled_ui(selected, |ui| self.components.show(ui,&mut actions));
                 ui.separator();
                 ui.add_enabled_ui(selected, |ui| self.registry.show(ui, project, &mut actions));
