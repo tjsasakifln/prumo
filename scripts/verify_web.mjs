@@ -48,9 +48,13 @@ const server = createServer(async (request, response) => {
     const path = resolve(directory, '.' + decodeURIComponent(new URL(request.url, 'http://localhost').pathname));
     assert(path === directory || path.startsWith(directory + sep), 'Invalid path');
     const file = path === directory ? join(path, 'index.html') : path;
+    const bytes = await readFile(file);
     response.writeHead(200, { 'Content-Type': mime[extname(file)] ?? 'application/octet-stream', 'Cache-Control': 'no-store' });
-    response.end(await readFile(file));
-  } catch { response.writeHead(404); response.end('Not found'); }
+    response.end(bytes);
+  } catch {
+    if (response.headersSent) { response.destroy(); return; }
+    response.writeHead(404); response.end('Not found');
+  }
 });
 await new Promise((ok, fail) => { server.once('error', fail); server.listen(0, '127.0.0.1', ok); });
 const origin = `http://127.0.0.1:${server.address().port}`;
@@ -77,6 +81,10 @@ async function until(callback, description, timeout = 20000) {
 
 let socket;
 const checks = [], screenshots = {};
+const diagnostics = [];
+const locations = trace => (trace?.callFrames ?? []).slice(0, 3).map(frame => ({
+  line: frame.lineNumber, column: frame.columnNumber,
+}));
 try {
   const port = await until(async () => (await readFile(join(temporary, 'DevToolsActivePort'), 'utf8')).split('\n')[0], 'CDP port');
   const targets = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();
@@ -88,6 +96,13 @@ try {
   const pending = new Map();
   socket.addEventListener('message', event => {
     const message = JSON.parse(event.data);
+    if (message.method === 'Runtime.exceptionThrown') {
+      const details = message.params.exceptionDetails;
+      diagnostics.push({ kind: 'exception', line: details.lineNumber, column: details.columnNumber, locations: locations(details.stackTrace) });
+    } else if (message.method === 'Runtime.consoleAPICalled' && message.params.type === 'error') {
+      diagnostics.push({ kind: 'console.error', argument_count: message.params.args.length, locations: locations(message.params.stackTrace) });
+    }
+    if (diagnostics.length > 8) diagnostics.shift();
     const item = pending.get(message.id);
     if (item) { clearTimeout(item.timer); pending.delete(message.id); message.error ? item.fail(new Error(JSON.stringify(message.error))) : item.ok(message.result); }
   });
@@ -207,6 +222,9 @@ try {
   await writeFile(join(evidence, 'report.json'), JSON.stringify(result, null, 2) + '\n');
   console.log(JSON.stringify(result, null, 2));
 } catch (error) {
+  const error_locations = [...String(error.stack ?? '').matchAll(/verify_web\.mjs:(\d+):(\d+)/g)]
+    .slice(0, 3).map(match => ({ line: Number(match[1]), column: Number(match[2]) }));
+  console.error(JSON.stringify({ suite: 'PRU-011-web', passed: false, checks, diagnostics, error_locations }, null, 2));
   await writeFile(join(evidence, 'failure.json'), JSON.stringify({ suite: 'PRU-011-web', passed: false, error: String(error), checks, stderr }, null, 2) + '\n');
   throw error;
 } finally {
