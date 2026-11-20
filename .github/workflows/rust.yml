@@ -28,8 +28,8 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libxkbcommon-dev libwayland-dev libx11-dev libxi-dev libxrandr-dev libxcursor-dev libgl1-mesa-dev
-          dpkg-query -W libxkbcommon-dev libwayland-dev libx11-dev libxi-dev libxrandr-dev libxcursor-dev libgl1-mesa-dev
+          sudo apt-get install -y libxkbcommon-dev libwayland-dev libx11-dev libxi-dev libxrandr-dev libxcursor-dev libgl1-mesa-dev xvfb xauth mesa-utils
+          dpkg-query -W libxkbcommon-dev libwayland-dev libx11-dev libxi-dev libxrandr-dev libxcursor-dev libgl1-mesa-dev xvfb xauth mesa-utils
       - name: Compilador e ambiente efetivos
         run: |
           rustup show
@@ -60,6 +60,35 @@ jobs:
         run: cargo check -p prumo-ui --target wasm32-unknown-unknown --locked
       - name: Módulo WASM derivado do Rust fixado
         run: python scripts/build_wasm_probe.py --check
+      - name: Capturas do backend nativo distribuído, 100% e 150%
+        if: runner.os == 'Linux'
+        run: |
+          mkdir -p dist/native-evidence
+          cargo build -p prumo-desktop --example viewport_gallery --locked
+          xvfb-run -a -s "-screen 0 3200x3200x24" env LIBGL_ALWAYS_SOFTWARE=1 glxinfo -B > dist/native-evidence/glxinfo.txt
+          timeout 45s xvfb-run -a -s "-screen 0 3200x3200x24" env LIBGL_ALWAYS_SOFTWARE=1 PRUMO_VIEW_SCREENSHOT=dist/native-evidence/native-100.png target/debug/examples/viewport_gallery dist/view-project.json
+          timeout 45s xvfb-run -a -s "-screen 0 3200x3200x24" env LIBGL_ALWAYS_SOFTWARE=1 PRUMO_VIEW_CONTRAST=1 PRUMO_VIEW_SCREENSHOT=dist/native-evidence/native-150.png target/debug/examples/viewport_gallery dist/view-project-150.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          print(Path('dist/native-evidence/glxinfo.txt').read_text())
+          for name in ('native-100', 'native-150'):
+              record = json.loads(Path(f'dist/native-evidence/{name}.json').read_text())
+              summary = {key: record[key] for key in ('native_backend_executed', 'platform', 'renderer', 'width', 'height', 'image_sha256', 'executable_sha256')}
+              summary.update(capture=name, snapshot_sha256=record['view_report']['snapshot_sha256'])
+              print(json.dumps(summary, ensure_ascii=False))
+          PY
+      - name: Compilar e empacotar visualizador Rust web
+        if: runner.os == 'Linux'
+        run: |
+          cargo install wasm-bindgen-cli --version 0.2.130 --locked --root "$RUNNER_TEMP/prumo-wasm-tools"
+          cargo clippy -p prumo-web --target wasm32-unknown-unknown --locked -- -D warnings
+          python scripts/package_web.py --wasm-bindgen "$RUNNER_TEMP/prumo-wasm-tools/bin/wasm-bindgen"
+      - name: Mesmo projeto nativo no navegador, teclado e recuperação gráfica
+        if: runner.os == 'Linux'
+        run: |
+          node --version
+          node --experimental-websocket scripts/verify_web.mjs dist/prumo-web dist/view-project.json dist/web-evidence dist/native-evidence/native-100.json
       - name: Dependências efetivas
         run: cargo tree --locked
       - name: Conferir inventário e avisos de terceiros
@@ -73,4 +102,12 @@ jobs:
         with:
           name: prumo-${{ matrix.os }}
           path: dist/*.zip
+          if-no-files-found: error
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always() && runner.os == 'Linux'
+        with:
+          name: prumo-graphical-evidence
+          path: |
+            dist/web-evidence/
+            dist/native-evidence/
           if-no-files-found: error

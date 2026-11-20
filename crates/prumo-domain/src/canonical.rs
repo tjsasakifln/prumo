@@ -242,6 +242,13 @@ pub fn source_index_unchecked(
     }
     let mut metadata_extensions = project.extensions.clone();
     metadata_extensions.remove(crate::catalogue::CATALOGUE_KEY);
+    metadata_extensions.remove(crate::layout::LAYOUT_KEY);
+    for (id, value) in crate::layout::active_values(project)? {
+        add(&mut index, SourceKind::Layout, id, &value)?;
+    }
+    for (id, value) in crate::surfaces::active_values(project)? {
+        add(&mut index, SourceKind::AnalyticalRegion, id, &value)?;
+    }
     if project
         .extensions
         .contains_key(crate::geometry::TOLERANCES_KEY)
@@ -322,6 +329,16 @@ pub fn source_index_unchecked(
     }
     network_ids.sort_unstable();
     membership.insert("networks", network_ids);
+    let layout_ids: Vec<_> = crate::layout::active_values(project)?.into_keys().collect();
+    if !layout_ids.is_empty() {
+        membership.insert("layout", layout_ids);
+    }
+    let region_ids: Vec<_> = crate::surfaces::analytical_region_ids(project)?
+        .into_iter()
+        .collect();
+    if !region_ids.is_empty() {
+        membership.insert("analytical_regions", region_ids);
+    }
     let roles: BTreeMap<_, _> = project
         .objects
         .iter()
@@ -334,11 +351,19 @@ pub fn source_index_unchecked(
         &json!({"ids":membership,"roles":roles}),
     )?;
     for object in &project.objects {
+        let mut geometry = json!({"start_m":object.start_m,"end_m":object.end_m});
+        // Keep the legacy digest for simple segments; parametric shapes include
+        // their actual contours/path, so openings and landings invalidate geometry.
+        for key in ["prumo.framing.v1", "prumo.surface.v1", "prumo.assembly.v1"] {
+            if let Some(value) = object.extensions.get(key) {
+                geometry[key] = value.clone();
+            }
+        }
         add(
             &mut index,
             SourceKind::PhysicalGeometry,
             object.id,
-            &json!({"start_m":object.start_m,"end_m":object.end_m}),
+            &geometry,
         )?;
     }
     Ok(index)

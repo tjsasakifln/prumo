@@ -4,6 +4,8 @@
 
 pub use prumo_domain::Command;
 pub mod access;
+mod authoring;
+pub use authoring::WebViewExport;
 mod modeling;
 mod storage;
 mod transactions;
@@ -26,7 +28,7 @@ use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
 use std::fs::{self, File, OpenOptions};
 use std::path::{Path, PathBuf};
-use std::sync::{Arc, OnceLock, atomic::AtomicBool};
+use std::sync::{Arc, Mutex, OnceLock, atomic::AtomicBool};
 use std::time::{SystemTime, UNIX_EPOCH};
 use thiserror::Error;
 use uuid::Uuid;
@@ -48,6 +50,7 @@ pub struct ProjectService {
     grant: ProjectGrant,
     project_binding: Arc<OnceLock<Uuid>>,
     write_basis: Option<(Uuid, String)>,
+    view_state: Arc<Mutex<prumo_domain::view::ViewState>>,
     #[cfg(test)]
     fault: Option<storage::SavePhase>,
 }
@@ -160,6 +163,7 @@ impl ProjectService {
             grant,
             project_binding: Arc::new(OnceLock::new()),
             write_basis: None,
+            view_state: Arc::new(Mutex::new(prumo_domain::view::ViewState::default())),
             #[cfg(test)]
             fault: None,
         })
@@ -202,6 +206,7 @@ impl ProjectService {
     /// Bind an editor's displayed basis without trusting a fresh on-disk revision
     /// to represent the content that the person actually reviewed. The check is
     /// performed inside the same project lock as the eventual model mutation.
+    /// Navigation and web export also check it against their immutable file read.
     pub fn with_write_basis(
         &self,
         project_id: Uuid,

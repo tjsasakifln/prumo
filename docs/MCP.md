@@ -1,6 +1,6 @@
 # MCP e operação do Prumo por agentes
 
-**Estado:** servidor Rust implementado com transporte local stdio, cliente real e projeto persistente. **Data da referência:** 14/11/2026. A seção seguinte descreve o catálogo efetivo até a implementação das PRU-006 e PRU-007; as entregas seguintes ampliam o mesmo serviço. Os demais requisitos deste documento orientam a evolução sequencial e só estão disponíveis quando anunciados pelo servidor. Evidências de integração e limites constam das entregas de cada issue.
+**Estado:** servidor Rust implementado com transporte local stdio, cliente real e projeto persistente. **Data da referência:** 19/11/2026. A seção seguinte descreve o catálogo desta branch, incluindo as PRU-011 a PRU-015; as entregas seguintes ampliam o mesmo serviço. Os demais requisitos deste documento orientam a evolução sequencial e só estão disponíveis quando anunciados pelo servidor. Evidências de integração e limites constam das entregas de cada issue.
 
 ## Catálogo implementado
 
@@ -29,6 +29,50 @@ O catálogo é filtrado pelos escopos e disciplinas concedidos no lançamento e 
 | `prumo.model.edit` | Uma das variantes tipadas fechadas de `ModelEdit`, com unidades e referências explícitas |
 | `prumo.model.inspect` | Atualiza comprimentos e resumo geométrico vinculados ao snapshot. Exige escrita e revisão esperada |
 | `prumo.storage.migrate`, `prumo.storage.backup`, `prumo.storage.recover` | Migração de legado com original preservado, backup verificado e recuperação de candidato selecionado; exigem escrita e identidade atual do diagnóstico |
+| `prumo.view.read`, `prumo.view.command` | Navegação e seleção da sessão, mesma identidade em árvore, planta, corte e 3D, sem alterar revisão técnica |
+| `prumo.view.export` | Cópia JSON para o visualizador web, ao lado do arquivo escolhido pelo host; exige `model`, sem argumento de caminho |
+| `prumo.layout.read`, `prumo.layout.measure`, `prumo.layout.snap` | Eixos, níveis, medidas com unidade e propostas de encaixe sem conexão resistente automática |
+| `prumo.framing.inspect` | Material, seções versionadas, linha física/analítica, comprimento, comportamento e fontes da peça paramétrica |
+| `prumo.surfaces.preview`, `prumo.surfaces.inspect` | Contornos, aberturas, regiões, bordas, apoios candidatos e quantidades por componente |
+| `prumo.assemblies.preview`, `prumo.assemblies.inspect` | Partes, regiões, apoios e continuidade declarada de paredes, núcleos, escadas e rampas |
+
+### Vistas e autoria das PRU-011 a PRU-015
+
+As consultas acima exigem leitura completa das disciplinas, pois os relatórios podem referenciar materiais e entidades compartilhadas. `prumo.view.command` muda somente o estado da sessão; continua disponível em leitura. Seleção, ocultação, isolamento, recorte, enquadramento, vista ativa, deslocamento, zoom, rotação e preferências usam `command.action`. `set_view` recebe `plan`, `section` ou `three_d`. Um objeto oculto pode ser localizado por UUID. A reconexão inicia outra sessão de navegação, preservando o projeto.
+
+`prumo.view.export` exige `model` e produz `project_id`, `revision`, `file_name`, `content_sha256` e `snapshot_sha256`. O serviço escolhe um nome derivado do projeto, revisão e conteúdo. Repetir a exportação reutiliza a cópia idêntica; um arquivo com conteúdo diferente é preservado e a operação é recusada. O arquivo principal e sua revisão permanecem intactos.
+
+As mutações paramétricas são variantes de `prumo.model.edit`, também aceitas nos lotes de prévia e aplicação:
+
+| `edit` | Discriminador interno | Operações |
+|---|---|---|
+| `edit_layout` | `command.operation` | `put_level`, `put_axis`, `put_frame`, `bind_object`, `unbind_object` |
+| `edit_framing` | `command.operation` | `put_member`, `create_truss` |
+| `edit_surfaces` | `command.action` | `create`, `update`, `set_openings`, `set_supports` |
+| `edit_assemblies` | `command.action` | `create`, `update`, `adopt`, `promote`, `set_supports`, `set_continuities` |
+
+Exemplo de argumentos para cadastrar ou revisar um nível. O cliente deve substituir o UUID pelo identificador escolhido e informar a revisão atual:
+
+```json
+{
+  "expected_revision": 3,
+  "edit": {
+    "edit": "edit_layout",
+    "command": {
+      "operation": "put_level",
+      "id": "b11694bb-c48b-4ec6-8545-811dbeb1b2db",
+      "name": "Pavimento 1",
+      "elevation": "3 m + 25 cm"
+    }
+  }
+}
+```
+
+Em `edit_framing`, cada ponto declara sua origem: coordenadas, referencial local, posição em eixo, interseção de eixos ou nó. Compartilhar um nó resistente exige nomeá-lo em `connections`. O arco conserva os três pontos, a quantidade de segmentos e o erro máximo da aproximação analítica. Seções por estações conservam todas as dependências de catálogo. Treliças declaram comportamento axial; a geometria não habilita flexão por omissão.
+
+Superfícies e conjuntos usam metros nos campos com sufixo `_m`, dimensões locais para contornos e eixos `u` e `v` explícitos. Aberturas retiram material. Bordas omitidas são livres; uma borda apoiada nomeia o candidato. As prévias não gravam o modelo e retornam a revisão e o snapshot usados. Regiões analíticas candidatas têm identidade própria; alterações entram na invalidação das fontes `physical_geometry` e `analytical_region`. Eixos, níveis e vínculos dimensionais usam a fonte `layout`. Resultados e documentos futuros devem declarar essas fontes e as dependências materiais e de apoio.
+
+Todos os objetos de entrada têm schema fechado. Consulte `tools/list` para os campos completos, limites e variantes; o domínio Rust repete as validações de geometria, unidades, identidade e autorização. Cálculo estrutural, reconstrução de malha definitiva, verificação de punção e emissão técnica permanecem indisponíveis.
 
 ### Escopos, disciplinas e recursos
 

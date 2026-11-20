@@ -6,6 +6,7 @@ use prumo_app::{
 };
 use prumo_domain::catalogue::{PhysicalQuantity, PhysicalValue};
 use prumo_domain::geometry::{FaceInput, GeometryFilter, GeometryRepair};
+use prumo_domain::{layout::SnapRequest, view::ViewCommand};
 use rmcp::{ErrorData, model::Tool};
 use serde::Deserialize;
 use serde_json::{Value, json};
@@ -43,8 +44,49 @@ struct MaterialArgs {
     entry_id: Uuid,
     conditions: BTreeMap<PhysicalQuantity, PhysicalValue>,
 }
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct ViewArgs {
+    command: ViewCommand,
+}
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct MeasureArgs {
+    expression: String,
+}
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct SnapArgs {
+    request: SnapRequest,
+}
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct ObjectArgs {
+    object_id: Uuid,
+}
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct SurfaceArgs {
+    surface: prumo_domain::surfaces::SurfaceSpec,
+}
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct AssemblyArgs {
+    assembly: prumo_domain::assemblies::AssemblySpec,
+}
 
 pub(super) enum Operation {
+    ViewRead,
+    ViewExport,
+    View(ViewCommand),
+    Layout,
+    Measure(String),
+    Snap(SnapRequest),
+    Framing(Uuid),
+    Surface(Uuid),
+    SurfacePreview(Box<prumo_domain::surfaces::SurfaceSpec>),
+    Assembly(Uuid),
+    AssemblyPreview(Box<prumo_domain::assemblies::AssemblySpec>),
     Audit(GeometryFilter),
     Preview(Vec<GeometryRepair>),
     Face(FaceInput),
@@ -57,6 +99,29 @@ pub(super) enum Operation {
 impl Operation {
     pub(super) fn parse(name: &str, args: Value) -> Option<Result<Self, ErrorData>> {
         Some(match name {
+            "prumo.view.export" => decode::<Empty>(args).map(|_| Self::ViewExport),
+            "prumo.surfaces.preview" => {
+                decode::<SurfaceArgs>(args).map(|a| Self::SurfacePreview(Box::new(a.surface)))
+            }
+            "prumo.assemblies.inspect" => {
+                decode::<ObjectArgs>(args).map(|a| Self::Assembly(a.object_id))
+            }
+            "prumo.assemblies.preview" => {
+                decode::<AssemblyArgs>(args).map(|a| Self::AssemblyPreview(Box::new(a.assembly)))
+            }
+            "prumo.framing.inspect" => {
+                decode::<ObjectArgs>(args).map(|a| Self::Framing(a.object_id))
+            }
+            "prumo.surfaces.inspect" => {
+                decode::<ObjectArgs>(args).map(|a| Self::Surface(a.object_id))
+            }
+            "prumo.view.read" => decode::<Empty>(args).map(|_| Self::ViewRead),
+            "prumo.view.command" => decode::<ViewArgs>(args).map(|a| Self::View(a.command)),
+            "prumo.layout.read" => decode::<Empty>(args).map(|_| Self::Layout),
+            "prumo.layout.measure" => {
+                decode::<MeasureArgs>(args).map(|a| Self::Measure(a.expression))
+            }
+            "prumo.layout.snap" => decode::<SnapArgs>(args).map(|a| Self::Snap(a.request)),
             "prumo.geometry.audit" => decode::<AuditArgs>(args).map(|a| Self::Audit(a.filter)),
             "prumo.geometry.preview" => {
                 decode::<RepairArgs>(args).map(|a| Self::Preview(a.repairs))
@@ -76,6 +141,7 @@ impl Operation {
     }
     pub(super) fn required_scope(&self) -> AccessScope {
         match self {
+            Self::ViewExport => AccessScope::Model,
             Self::Preview(_) => AccessScope::Model,
             Self::Verify | Self::Section(_) => AccessScope::Calculation,
             _ => AccessScope::Read,
@@ -95,6 +161,17 @@ impl Operation {
             ));
         }
         Ok(match self {
+            Self::ViewExport => serde_json::to_value(service.export_web_view()?)?,
+            Self::SurfacePreview(spec) => service.surface_preview(&spec)?,
+            Self::Assembly(id) => service.assembly_inspection(id)?,
+            Self::AssemblyPreview(spec) => service.assembly_preview(&spec)?,
+            Self::Framing(id) => serde_json::to_value(service.framing_inspection(id)?)?,
+            Self::Surface(id) => serde_json::to_value(service.surface_inspection(id)?)?,
+            Self::ViewRead => serde_json::to_value(service.view_report()?)?,
+            Self::View(command) => serde_json::to_value(service.view_command(command)?)?,
+            Self::Layout => service.layout_view()?,
+            Self::Measure(expression) => service.layout_measure(&expression)?,
+            Self::Snap(request) => serde_json::to_value(service.layout_snap(&request)?)?,
             Self::Audit(filter) => serde_json::to_value(service.geometry_report(&filter)?)?,
             Self::Preview(repairs) => {
                 serde_json::to_value(service.geometry_repair_preview(&repairs)?)?
@@ -125,6 +202,76 @@ pub(super) fn tool_catalog(grant: &ProjectGrant) -> Vec<Tool> {
         "vertices_m":{"type":"array","minItems":3,"maxItems":512,"items":point},"expected_normal":point
     }});
     let mut result = vec![
+        definition(
+            "prumo.surfaces.preview",
+            "Confere contorno, aberturas, espessuras, nervuras, área material e quantidade por componente antes de salvar. Não produz malha ou cálculo de engenharia.",
+            json!({"surface":super::surface_assembly_schema::surface_spec()}),
+            &["surface"],
+            true,
+        ),
+        definition(
+            "prumo.assemblies.inspect",
+            "Consulta partes, apoios e continuidade explicitamente declarados de parede, núcleo, escada ou rampa. Referência visual e elemento estrutural permanecem distintos.",
+            json!({"object_id":id}),
+            &["object_id"],
+            true,
+        ),
+        definition(
+            "prumo.assemblies.preview",
+            "Prepara as partes físicas e regiões candidatas de parede, núcleo, escada ou rampa. Preserva orientação e apoios explícitos; não calcula transferência de cargas.",
+            json!({"assembly":super::surface_assembly_schema::assembly_spec()}),
+            &["assembly"],
+            true,
+        ),
+        definition(
+            "prumo.framing.inspect",
+            "Inspeciona material, seções, traçado, comprimento, excentricidade, identidades e comportamento analítico explícito de uma peça paramétrica. Não calcula esforços ou resistência.",
+            json!({"object_id":id}),
+            &["object_id"],
+            true,
+        ),
+        definition(
+            "prumo.surfaces.inspect",
+            "Inspeciona contornos, aberturas, regiões candidatas, apoios e peso próprio por componente físico. Não calcula esforços, malha definitiva ou punção.",
+            json!({"object_id":id}),
+            &["object_id"],
+            true,
+        ),
+        definition(
+            "prumo.view.read",
+            "Consulta seleção, ocultação, corte, câmera e identidades sincronizadas das vistas. Estado de sessão, sem alterar o projeto.",
+            json!({}),
+            &[],
+            true,
+        ),
+        definition(
+            "prumo.view.command",
+            "Navega, seleciona, localiza, oculta e isola objetos com os mesmos comandos da interface. Não muda revisão, ligações ou resultados técnicos.",
+            json!({"command":super::authoring_schema::view_command()}),
+            &["command"],
+            true,
+        ),
+        definition(
+            "prumo.layout.read",
+            "Consulta eixos, níveis, sistemas locais e vínculos dimensionais com unidade em metros e identidade da revisão.",
+            json!({}),
+            &[],
+            true,
+        ),
+        definition(
+            "prumo.layout.measure",
+            "Interpreta uma medida com unidade explícita, vírgula ou ponto e operações aritméticas dimensionais controladas. Não modifica o projeto.",
+            json!({"expression":super::authoring_schema::measure()}),
+            &["expression"],
+            true,
+        ),
+        definition(
+            "prumo.layout.snap",
+            "Propõe extremidade, alinhamento, interseção ou distância com fontes e unidade explícitas. O encaixe nunca cria conexão resistente por aparência.",
+            json!({"request":super::authoring_schema::snap_request()}),
+            &["request"],
+            true,
+        ),
         definition(
             "prumo.geometry.audit",
             "Inspeciona duplicidades, vãos curtos, contatos e cruzamentos da seleção, mantendo conexões explícitas. Retorna revisão e tolerâncias em metros.",
@@ -162,6 +309,7 @@ pub(super) fn tool_catalog(grant: &ProjectGrant) -> Vec<Tool> {
         ),
     ];
     if grant.allows(AccessScope::Model) {
+        result.push(definition("prumo.view.export","Exporta o modelo JSON completo para o visualizador web Rust, ao lado do arquivo do projeto, com revisão e SHA no nome. Não recebe caminhos nem substitui arquivo existente diferente.",json!({}),&[],false));
         result.push(definition("prumo.geometry.preview","Prepara correções explícitas e mostra alteração de dimensões e conexões. Para aplicar use model.edit apply_geometry_repair com o mesmo hash, na mesma revisão e ator.",json!({"repairs":super::model_schema::repairs_schema()}),&["repairs"],true));
     }
     if grant.allows(AccessScope::Calculation) {

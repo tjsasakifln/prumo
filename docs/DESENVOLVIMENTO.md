@@ -47,6 +47,20 @@ Em **Alterações em lote e histórico**, marque **Preparar alterações em lote
 
 **Desfazer última alteração** e **Refazer alteração** gravam revisões auditadas. O histórico não é apagado nem resultados antigos são revalidados por terem voltado os mesmos valores. Os recibos idempotentes sobrevivem à reabertura. A interface e o MCP utilizam o mesmo serviço transacional.
 
+## Vistas e modelagem paramétrica
+
+O painel de vistas compartilha a seleção entre árvore, propriedades, planta, corte e 3D pelo UUID do objeto. Use os botões para enquadrar, localizar, ocultar, isolar, escolher vista e recortar por faixa. Os comandos também admitem teclado, escala de interface e alto contraste. A navegação conserva a revisão técnica; falha gráfica mantém a árvore textual disponível. Um recorte visual não altera a geometria salva.
+
+Em **Eixos, níveis e encaixes**, cadastre cotas, eixos inclinados e referenciais locais. Medidas aceitam `3 m + 25 cm`, `(2,5 m + 50 cm) / 2` e deslocamentos negativos. A unidade é obrigatória; separadores de milhares ambíguos são recusados. A edição de um nível prepara o impacto no painel de alterações antes de mover suas dependências. Encaixes mostram o ponto proposto e não criam uma ligação estrutural.
+
+Em **Pilares, vigas, barras e treliças**, escolha pontos por coordenadas, eixos, níveis, interseções ou nós; selecione material e seções do catálogo. A peça pode ter alinhamento, excentricidade, rotação, seção constante ou variável e, para viga curva, arco por três pontos. A prévia mostra a geometria física e analítica, comprimento e erro de aproximação do arco. Conexões compartilhadas exigem a escolha explícita dos nós. Barras de treliça carregam comportamento somente axial.
+
+Os formulários de superfícies admitem contorno, aberturas, espessuras locais, rebaixos, planos inclinados, nervuras e grelhas. A prévia discrimina componentes, área, volume e peso próprio usando a densidade cadastrada. Aberturas são retiradas das regiões trianguladas. Apoios e condições de borda identificam os objetos candidatos e conservam a necessidade de análise posterior.
+
+Os conjuntos paramétricos reúnem paredes, núcleos abertos ou fechados, vigas de acoplamento, escadas, rampas e patamares. Cada parte conserva identidade e região analítica própria. Continuidade e apoios são declarados, sem ligação automática pela proximidade visual. Peças arquitetônicas podem ser promovidas explicitamente; a alteração de um conjunto não transforma silenciosamente a sua referência de engenharia.
+
+**Exportar projeto para vista web** salva uma cópia `.view.json` ao lado do projeto; a tela informa o nome. O visualizador WASM importa essa cópia e reutiliza o domínio de seleção e projeção em Rust. Não edita o pacote `.prumo`, não acessa o banco local e não altera a revisão. Consulte [PRU-011](evidencias/PRU-011.md) para construção, execução e limites verificados.
+
 ## Geometria, materiais e seções
 
 Em **Geometria e conexões**, as tolerâncias de seleção, união topológica, malha e análise são independentes. Inspecione por disciplina, ambiente ou rede. O programa distingue duplicidade, vão curto, aproximação, cruzamento e conexão explícita. Para corrigir uma extremidade ou conectar portas, prepare a alteração, leia o impacto e aplique a prévia. Uma geometria semelhante não cria ligação resistente.
@@ -96,11 +110,12 @@ cargo build --workspace --locked
 cargo clippy --workspace --all-targets --locked -- -D warnings
 cargo test --workspace --locked
 cargo check -p prumo-ui --target wasm32-unknown-unknown --locked
+cargo build -p prumo-web --target wasm32-unknown-unknown --locked
 python3 scripts/build_wasm_probe.py --check
 python3 scripts/package_dev.py
 ```
 
-Os testes de interface usam os widgets e a árvore de acessibilidade reais. Os testes de MCP iniciam um processo separado e utilizam o cliente do SDK oficial. O reaproveitamento WASM compila a camada de interface e domínio; um aplicativo web com acesso ao armazenamento não é distribuído nesta etapa.
+Os testes de interface usam os widgets e a árvore de acessibilidade reais. Os testes de MCP iniciam um processo separado e utilizam o cliente do SDK oficial e um cliente de mensagens independente. O visualizador WASM reutiliza o domínio e a interface; sua entrada é uma cópia exportada, sem acesso ao armazenamento nativo.
 
 ## Matriz distribuída
 
@@ -108,7 +123,7 @@ Os testes de interface usam os widgets e a árvore de acessibilidade reais. Os t
 |---|---|---|---|
 | x86_64-pc-windows-msvc | Rust 1.99.1, edition 2024 | eframe, OpenGL e AccessKit | SQLite local e pacote `.prumo` |
 | x86_64-unknown-linux-gnu | Rust 1.99.1, edition 2024 | eframe, X11/Wayland, OpenGL e AccessKit | SQLite local e pacote `.prumo` |
-| wasm32-unknown-unknown | Rust 1.99.1 | Componente UI reutilizável, experimental | Sem aplicativo web distribuído |
+| wasm32-unknown-unknown | Rust 1.99.1 | Visualizador eframe com projeção e seleção comuns | Importação de cópia `.view.json`; sem escrita no projeto |
 
 Features, dependências exatas e resolução transitiva são registradas em Cargo.toml e Cargo.lock. A primeira etapa distribui executáveis de desenvolvimento; instaladores e atualização pertencem às entregas posteriores.
 

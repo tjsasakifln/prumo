@@ -1,0 +1,21 @@
+[package]
+name = "prumo-web"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+prumo-domain.workspace = true
+prumo-ui.workspace = true
+serde_json.workspace = true
+eframe = { workspace = true, features = ["web_screen_reader"] }
+wasm-bindgen = "=0.2.130"
+wasm-bindgen-futures = "=0.4.80"
+web-sys = { version = "=0.3.107", features = ["console", "CssStyleDeclaration", "Window", "Document", "HtmlCanvasElement", "HtmlTextAreaElement", "HtmlInputElement", "File", "FileList", "Blob", "HtmlSelectElement", "HtmlButtonElement", "Event", "EventTarget", "HtmlElement", "Node", "Element"] }
+
+[lints]
+workspace = true

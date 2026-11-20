@@ -465,7 +465,7 @@ fn actual_numeric_widgets_accept_decimal_comma_and_block_ambiguous_input() {
     );
     let before = ui.state().project.as_ref().unwrap().clone();
     let bytes = std::fs::read(&path).unwrap();
-    for invalid in ["1 2", "1.234,56", "NaN", "1e999"] {
+    for invalid in ["1 2", "1.234,56", "NaN", "1e999", "1e-9999"] {
         text(&mut ui, "Fim físico X", invalid);
         click(&mut ui, "Criar objeto físico");
         assert_eq!(ui.state().project.as_ref().unwrap(), &before);

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prumo | Vista web de desenvolvimento</title>
+  <style>
+    :root{font-family:system-ui,sans-serif;color:#edf5f3;background:#10202b;color-scheme:dark}
+    body{margin:0} header{padding:1rem 1.25rem;border-bottom:1px solid #8299a5}
+    h1{font-size:1.25rem;margin:0 0 .4rem}p{margin:.4rem 0}
+    main{display:grid;grid-template-columns:minmax(240px,320px) 1fr;min-height:calc(100vh - 110px)}
+    aside{padding:1rem;display:flex;flex-direction:column;gap:.65rem;border-right:1px solid #8299a5}
+    textarea,select,button{font:inherit;padding:.65rem;border:1px solid #8299a5;border-radius:.35rem}
+    textarea{min-height:8rem;resize:vertical}button{cursor:pointer;background:#204956;color:white}
+    button:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid #ffd84c;outline-offset:3px}
+    #prumo-canvas{width:100%;height:calc(100vh - 110px);min-height:500px;display:block}
+    #prumo-canvas:focus-visible{outline:3px solid #ffd84c!important;outline-offset:-3px}
+    body[data-high-contrast="true"]{color:white;background:black}
+    body[data-high-contrast="true"] button{color:white;background:black;border:2px solid white}
+    #object-details{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.9rem;line-height:1.45}
+    #graphics-status{font-weight:700;color:#ffe19a} .row{display:flex;flex-wrap:wrap;gap:.4rem}.row button{flex:1}
+    @media(max-width:760px){main{display:block}aside{border-right:none;border-bottom:1px solid #8299a5}#prumo-canvas{height:650px}}
+    @media(forced-colors:active){button{border:2px solid ButtonText}canvas{border:1px solid CanvasText}}
+  </style>
+</head>
+<body>
+<header><h1>PRUMO · Vista web</h1><p>Versão de desenvolvimento. Consulta do mesmo projeto, sem cálculo ou alteração do arquivo.</p></header>
+<main>
+<aside aria-label="Navegação acessível do projeto">
+  <label for="project-file">Arquivo de vista web (.json)</label>
+  <input id="project-file" type="file" accept=".json,application/json">
+  <label for="project-json">Projeto JSON copiado do Prumo</label>
+  <textarea id="project-json" spellcheck="false" placeholder="Ou cole aqui o projeto JSON obtido pelo MCP."></textarea>
+  <button id="load-project">Abrir projeto JSON</button>
+  <div id="project-status" role="status" aria-live="polite">Nenhum projeto aberto.</div>
+  <label for="object-list">Objetos, inclusive ocultos</label>
+  <select id="object-list"><option value="">Abra um projeto</option></select>
+  <button id="select-object">Selecionar e localizar</button>
+  <div class="row"><button id="previous-object">Anterior</button><button id="next-object">Próximo</button></div>
+  <div class="row"><button id="hide-object">Ocultar seleção</button><button id="isolate-object">Isolar seleção</button></div>
+  <div class="row"><button id="show-all">Mostrar tudo</button><button id="fit">Enquadrar tudo</button></div>
+  <pre id="object-details" aria-label="Propriedades do objeto selecionado">Nenhuma seleção.</pre>
+  <div id="graphics-status" role="alert"></div>
+  <button id="restore-graphics">Restaurar vista gráfica</button>
+  <p>Todos os comandos de navegação preservam o modelo. Os dados ficam nesta aba e não são enviados a um servidor.</p>
+</aside>
+<canvas id="prumo-canvas" aria-label="Vistas do modelo. Use os controles textuais para navegar com leitor de tela."></canvas>
+</main>
+<script type="module">import init from "./pkg/prumo_web.js"; init();</script>
+</body>
+</html>

@@ -33,6 +33,8 @@ pub enum SourceKind {
     Normative,
     GeometrySettings,
     CatalogEntry,
+    Layout,
+    AnalyticalRegion,
 }
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]

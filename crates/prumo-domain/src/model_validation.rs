@@ -93,6 +93,7 @@ pub fn validate_semantics(
         }
         member_axes(project, member)?;
     }
+    let analytical_regions = crate::surfaces::analytical_region_ids(project)?;
     let mut pairs = BTreeSet::new();
     for link in &model.links {
         insert_id(ids, link.id)?;
@@ -110,6 +111,7 @@ pub fn validate_semantics(
             .analytical_members
             .iter()
             .any(|x| x.id == link.analytical_id)
+            && !analytical_regions.contains(&link.analytical_id)
         {
             return Err(DomainError::UnknownReference(link.analytical_id));
         }
