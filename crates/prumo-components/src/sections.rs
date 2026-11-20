@@ -1,179 +1,32 @@
-//! Geometric properties of one simple polygon without holes, in metres.
-//! geo provides topology validation, area and centroid. Central area moments are a
-//! small, explicit Green integral; this is not a material or resistance calculation.
+//! Qualified adapter for simple polygon sections. The shared catalogue kernel owns geometry.
+//! The legacy adapter retains its original no-hole qualification boundary.
 
-use geo::{Area, Centroid, Coord, LineString, Polygon, Validation};
+pub use prumo_domain::catalogue::sections::{
+    MAX_COORDINATE_M, MAX_SPAN_M, MAX_VERTICES, MIN_EDGE_M, MIN_RELATIVE_AREA, SectionError,
+    SectionGeometry as SectionProperties, SectionInput,
+};
 use prumo_domain::components::{ComponentDescriptor, ExperimentReport, QualificationCheck};
-use serde::{Deserialize, Serialize};
 use std::hint::black_box;
 use std::time::Instant;
-use thiserror::Error;
 
-pub const MAX_VERTICES: usize = 512;
-pub const MAX_COORDINATE_M: f64 = 1.0e9;
-pub const MAX_SPAN_M: f64 = 1.0e6;
-pub const MIN_EDGE_M: f64 = 1.0e-9;
-pub const MIN_RELATIVE_AREA: f64 = 1.0e-12;
 const RELATIVE_TOLERANCE: f64 = 1.0e-10;
 const AREA_ABSOLUTE_TOLERANCE_M2: f64 = 1.0e-20;
 const CENTROID_ABSOLUTE_TOLERANCE_M: f64 = 1.0e-12;
 const MOMENT_ABSOLUTE_TOLERANCE_M4: f64 = 1.0e-28;
 const ITERATIONS: u32 = 64;
 
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
-#[serde(deny_unknown_fields)]
-pub struct SectionInput {
-    /// Either orientation is accepted. A repeated closing point is optional.
-    pub exterior_m: Vec<[f64; 2]>,
-    /// Represented explicitly so that unsupported holes cannot disappear silently.
-    pub holes_m: Vec<Vec<[f64; 2]>>,
-}
-
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
-#[serde(deny_unknown_fields)]
-pub struct SectionProperties {
-    pub area_m2: f64,
-    pub centroid_m: [f64; 2],
-    /// Integral of (y-yc)^2 dA, about the centroidal horizontal axis.
-    pub ixx_m4: f64,
-    /// Integral of (x-xc)^2 dA, about the centroidal vertical axis.
-    pub iyy_m4: f64,
-    /// Integral of (x-xc)(y-yc) dA; signed product of area, not a negated tensor entry.
-    pub ixy_m4: f64,
-}
-
 pub trait SectionAdapter {
     fn properties(&self, input: &SectionInput) -> Result<SectionProperties, SectionError>;
 }
-
 #[derive(Clone, Copy, Debug, Default)]
 pub struct GeoSection;
-
 impl SectionAdapter for GeoSection {
     fn properties(&self, input: &SectionInput) -> Result<SectionProperties, SectionError> {
         if !input.holes_m.is_empty() {
             return Err(SectionError::HolesUnsupported);
         }
-        // Permit one optional closing vertex without increasing the supported unique count.
-        if input.exterior_m.len() < 3 || input.exterior_m.len() > MAX_VERTICES + 1 {
-            return Err(SectionError::VertexCount);
-        }
-        if input
-            .exterior_m
-            .iter()
-            .flatten()
-            .any(|value| !value.is_finite() || value.abs() > MAX_COORDINATE_M)
-        {
-            return Err(SectionError::InvalidCoordinate);
-        }
-        let mut vertices = input.exterior_m.clone();
-        if vertices.first() == vertices.last() {
-            vertices.pop();
-        }
-        if vertices.len() < 3 || vertices.len() > MAX_VERTICES {
-            return Err(SectionError::VertexCount);
-        }
-        let origin = vertices[0];
-        for point in &mut vertices {
-            point[0] -= origin[0];
-            point[1] -= origin[1];
-        }
-        let minimum = vertices.iter().fold([f64::INFINITY; 2], |value, point| {
-            [value[0].min(point[0]), value[1].min(point[1])]
-        });
-        let maximum = vertices
-            .iter()
-            .fold([f64::NEG_INFINITY; 2], |value, point| {
-                [value[0].max(point[0]), value[1].max(point[1])]
-            });
-        let span = (maximum[0] - minimum[0]).max(maximum[1] - minimum[1]);
-        if span > MAX_SPAN_M {
-            return Err(SectionError::SpanExceeded);
-        }
-        for index in 0..vertices.len() {
-            let next = vertices[(index + 1) % vertices.len()];
-            if (next[0] - vertices[index][0]).hypot(next[1] - vertices[index][1]) < MIN_EDGE_M {
-                return Err(SectionError::ShortEdge);
-            }
-        }
-        let polygon = Polygon::new(
-            LineString::new(
-                vertices
-                    .iter()
-                    .map(|point| Coord {
-                        x: point[0],
-                        y: point[1],
-                    })
-                    .collect(),
-            ),
-            vec![],
-        );
-        polygon
-            .check_validation()
-            .map_err(|error| SectionError::InvalidPolygon(error.to_string()))?;
-        let area_m2 = polygon.unsigned_area();
-        if !area_m2.is_finite() || area_m2 <= MIN_RELATIVE_AREA * span * span {
-            return Err(SectionError::Degenerate);
-        }
-        let centroid = polygon.centroid().ok_or(SectionError::Degenerate)?;
-        let local_centroid = [centroid.x(), centroid.y()];
-        let central: Vec<_> = vertices
-            .iter()
-            .map(|point| [point[0] - local_centroid[0], point[1] - local_centroid[1]])
-            .collect();
-        // Integrate about the centroid directly. Subtracting A*yc^2 from a global
-        // moment would lose local inertia at large project coordinates.
-        let mut ixx = 0.0;
-        let mut iyy = 0.0;
-        let mut ixy = 0.0;
-        for index in 0..central.len() {
-            let [x, y] = central[index];
-            let [next_x, next_y] = central[(index + 1) % central.len()];
-            let cross = x * next_y - next_x * y;
-            ixx += cross * (y * y + y * next_y + next_y * next_y) / 12.0;
-            iyy += cross * (x * x + x * next_x + next_x * next_x) / 12.0;
-            ixy += cross * (2.0 * x * y + x * next_y + next_x * y + 2.0 * next_x * next_y) / 24.0;
-        }
-        let orientation = polygon.signed_area().signum();
-        let properties = SectionProperties {
-            area_m2,
-            centroid_m: [origin[0] + local_centroid[0], origin[1] + local_centroid[1]],
-            ixx_m4: orientation * ixx,
-            iyy_m4: orientation * iyy,
-            ixy_m4: orientation * ixy,
-        };
-        if !properties.ixx_m4.is_finite()
-            || !properties.iyy_m4.is_finite()
-            || !properties.ixy_m4.is_finite()
-            || properties.centroid_m.iter().any(|value| !value.is_finite())
-            || properties.ixx_m4 <= 0.0
-            || properties.iyy_m4 <= 0.0
-            || properties.ixx_m4 * properties.iyy_m4 <= properties.ixy_m4 * properties.ixy_m4
-        {
-            return Err(SectionError::Degenerate);
-        }
-        Ok(properties)
+        prumo_domain::catalogue::sections::polygon_properties(input)
     }
-}
-
-#[derive(Debug, Error)]
-pub enum SectionError {
-    #[error("Este adaptador não qualifica seções com furos.")]
-    HolesUnsupported,
-    #[error("O polígono deve ter de 3 a 512 vértices, mais fechamento opcional.")]
-    VertexCount,
-    #[error("Coordenadas devem ser finitas e ter módulo até 1e9 m.")]
-    InvalidCoordinate,
-    #[error("A dimensão máxima da seção excede 1e6 m.")]
-    SpanExceeded,
-    #[error("Aresta menor que 1e-9 m ou vértice consecutivo repetido.")]
-    ShortEdge,
-    #[error("Polígono inválido: {0}.")]
-    InvalidPolygon(String),
-    #[error(
-        "Seção degenerada, numericamente indefinida ou com área relativa menor ou igual a 1e-12."
-    )]
-    Degenerate,
 }
 
 pub fn descriptor() -> ComponentDescriptor {

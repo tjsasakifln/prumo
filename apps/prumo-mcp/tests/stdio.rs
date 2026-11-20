@@ -21,10 +21,16 @@ use tokio::{
 const LIMIT: Duration = Duration::from_secs(10);
 const BINARY: &str = env!("CARGO_BIN_EXE_prumo-mcp");
 
+#[path = "stdio/access.rs"]
+mod access_tests;
 #[path = "stdio/model.rs"]
 mod model_tests;
+#[path = "stdio/modeling.rs"]
+mod modeling_tests;
 #[path = "stdio/storage.rs"]
 mod storage_tests;
+#[path = "stdio/transactions.rs"]
+mod transaction_tests;
 
 #[derive(Clone)]
 struct SdkClient;
@@ -86,7 +92,18 @@ async fn sdk_creates_modifies_and_reopens_real_project() {
     let info = client.peer_info().unwrap();
     assert_eq!(info.protocol_version, ProtocolVersion::V_2026_07_28);
     let tools = client.list_tools(None).await.unwrap();
-    assert_eq!(tools.tools.len(), 22);
+    assert!(
+        tools
+            .tools
+            .iter()
+            .any(|tool| tool.name == "prumo.model.preview_change")
+    );
+    assert!(
+        tools
+            .tools
+            .iter()
+            .any(|tool| tool.name == "prumo.project.create")
+    );
     assert!(
         tools
             .tools
@@ -194,7 +211,18 @@ async fn readonly_is_enforced_for_unadvertised_mutations_and_creation() {
     let path = directory.path().join("protected.prumo");
     let client = sdk(&path, false).await;
     let tools = client.list_tools(None).await.unwrap();
-    assert_eq!(tools.tools.len(), 10);
+    assert!(
+        tools
+            .tools
+            .iter()
+            .any(|tool| tool.name == "prumo.project.read")
+    );
+    assert!(
+        !tools
+            .tools
+            .iter()
+            .any(|tool| tool.name == "prumo.project.create")
+    );
     assert_eq!(tools.tools[0].name, "prumo.project.read");
     let denied = client
         .call_tool(

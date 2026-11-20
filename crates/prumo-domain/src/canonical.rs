@@ -234,11 +234,30 @@ pub fn source_index_unchecked(
     project: &Project,
 ) -> Result<BTreeMap<SourceKey, String>, DomainError> {
     let mut index = BTreeMap::new();
+    let catalogue = crate::catalogue::project_catalogue(project)?;
+    for (id, versions) in &catalogue.entries {
+        if let Some(version) = versions.last() {
+            add(&mut index, SourceKind::CatalogEntry, *id, &version.entry)?;
+        }
+    }
+    let mut metadata_extensions = project.extensions.clone();
+    metadata_extensions.remove(crate::catalogue::CATALOGUE_KEY);
+    if project
+        .extensions
+        .contains_key(crate::geometry::TOLERANCES_KEY)
+    {
+        add(
+            &mut index,
+            SourceKind::GeometrySettings,
+            project.id,
+            &crate::geometry::project_tolerances(project)?,
+        )?;
+    }
     add(
         &mut index,
         SourceKind::ProjectMetadata,
         project.id,
-        &json!({"name":project.name,"display_unit":project.units,"extensions":project.extensions}),
+        &json!({"name":project.name,"display_unit":project.units,"extensions":metadata_extensions}),
     )?;
     add(
         &mut index,

@@ -7,6 +7,7 @@ publish.workspace = true
 repository.workspace = true
 
 [dependencies]
+uuid.workspace = true
 prumo-app = { path = "../prumo-app" }
 prumo-domain = { path = "../prumo-domain" }
 rmcp.workspace = true

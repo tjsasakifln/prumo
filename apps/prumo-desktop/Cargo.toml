@@ -10,11 +10,11 @@ prumo-domain.workspace = true
 prumo-app.workspace = true
 prumo-ui.workspace = true
 eframe.workspace = true
+serde_json.workspace = true
 
 [dev-dependencies]
 egui_kittest = "=0.37.0"
 tempfile.workspace = true
-serde_json.workspace = true
 
 [lints]
 workspace = true

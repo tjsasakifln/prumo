@@ -1,6 +1,8 @@
 //! Host-owned persistence paths and recovery policy. Frontends only receive IDs.
 
-use super::{AccessMode, AppError, MAX_PROJECT_BYTES, ProjectService, reject_non_regular};
+use super::{
+    AccessMode, AccessScope, AppError, MAX_PROJECT_BYTES, ProjectService, reject_non_regular,
+};
 use prumo_domain::storage::{
     CandidateKind, PackageEntrySummary, PackageSummary, StorageAction, StorageActionResult,
     StorageCandidate, StorageDiagnostic, StorageFormat, StorageState, StorageStatus,
@@ -26,7 +28,7 @@ const MAX_ORIGINALS: usize = 32;
 pub(super) struct LoadedFile {
     pub project: Project,
     raw: Vec<u8>,
-    package: Option<DecodedPackage>,
+    pub(super) package: Option<DecodedPackage>,
 }
 
 impl LoadedFile {
@@ -72,13 +74,36 @@ struct Inspection {
 
 impl ProjectService {
     pub fn storage_status(&self) -> Result<StorageStatus, AppError> {
-        Ok(self.inspect_storage()?.status)
+        self.grant.check_scope(AccessScope::Read)?;
+        self.grant.check_all_disciplines()?;
+        let status = self.inspect_storage()?.status;
+        if let Some(id) = status.project_id {
+            self.check_bound_id(id)?;
+        }
+        Ok(status)
     }
 
     pub fn execute_storage(&self, action: StorageAction) -> Result<StorageActionResult, AppError> {
         self.require_write()?;
+        self.grant.check_all_disciplines()?;
         let _lock = self.lock()?;
         let inspection = self.inspect_storage()?;
+        if let Some(id) = inspection.status.project_id {
+            self.check_bound_id(id)?;
+        }
+        for candidate in &inspection.status.candidates {
+            if self
+                .grant
+                .project_id
+                .is_some_and(|id| id != candidate.project_id)
+                || self
+                    .project_binding
+                    .get()
+                    .is_some_and(|id| *id != candidate.project_id)
+            {
+                return Err(AppError::PermissionDenied);
+            }
+        }
         let supplied = match &action {
             StorageAction::Migrate {
                 inspection_sha256, ..
@@ -246,7 +271,37 @@ impl ProjectService {
     }
 
     pub(super) fn load_primary(&self) -> Result<LoadedFile, AppError> {
-        load_file(&self.path)
+        let file = load_file(&self.path)?;
+        self.check_bound_project(&file.project)?;
+        Ok(file)
+    }
+
+    pub(super) fn load_editor_basis(&self) -> Result<LoadedFile, AppError> {
+        let file = load_file(&self.path)?;
+        // The displayed basis distinguishes replacement from a revision conflict.
+        // No model is returned to the command until authorization also succeeds.
+        self.check_write_basis(&file)?;
+        self.check_bound_project(&file.project)?;
+        Ok(file)
+    }
+
+    pub(super) fn prepared_root(&self, create: bool) -> Result<PathBuf, AppError> {
+        let paths = self.work_paths();
+        check_directory(&paths.root)?;
+        let root = paths.root.join("prepared-transactions");
+        check_directory(&root)?;
+        if create {
+            self.ensure_work_paths()?;
+            if !root.try_exists()? {
+                fs::create_dir(&root)?;
+                sync_parent(&root)?;
+            }
+        }
+        Ok(root)
+    }
+
+    pub(super) fn write_prepared(&self, path: &Path, bytes: &[u8]) -> Result<(), AppError> {
+        immutable_write(path, bytes)
     }
 
     pub(super) fn check_write_basis(&self, original: &LoadedFile) -> Result<(), AppError> {
@@ -268,6 +323,7 @@ impl ProjectService {
         if !status.candidates.is_empty() || status.state == StorageState::Unsupported {
             return Err(AppError::RecoveryRequired);
         }
+        self.check_bound_project(project)?;
         let paths = self.ensure_work_paths()?;
         self.quarantine_database()?;
         let mut store = SQLiteWorkingStore::open(&paths.database)?;
@@ -277,11 +333,11 @@ impl ProjectService {
         self.publish_save(&bytes, None)
     }
 
-    pub(super) fn save_changed_locked(
+    pub(super) fn save_changed_record_locked(
         &self,
         original: &LoadedFile,
         project: &Project,
-        command: Value,
+        record: CommitRecord,
     ) -> Result<(), AppError> {
         check_project_size(project)?;
         let status = self.inspect_storage_with_primary(Some(original))?.status;
@@ -325,12 +381,7 @@ impl ProjectService {
             self.preserve_original(&original.raw)?;
             self.rebuild_from(original)?
         };
-        self.commit(
-            &mut store,
-            Some(original.project.revision),
-            project,
-            command,
-        )?;
+        self.commit_record(&mut store, Some(original.project.revision), project, record)?;
         let bytes = encode(&store)?;
         drop(store);
         self.publish_save(&bytes, Some(&original.raw))
@@ -343,18 +394,36 @@ impl ProjectService {
         project: &Project,
         command: Value,
     ) -> Result<(), AppError> {
+        self.commit_record(
+            store,
+            expected,
+            project,
+            self.command_record(project, command)?,
+        )
+    }
+
+    fn command_record(&self, project: &Project, command: Value) -> Result<CommitRecord, AppError> {
         let last = project
             .history
             .last()
             .ok_or_else(|| AppError::InvalidProject("Histórico ausente.".into()))?;
-        let record = CommitRecord {
+        Ok(CommitRecord {
             command_id: Uuid::new_v4(),
             actor: self.actor.clone(),
             operation: last.operation.clone(),
             reason: None,
             timestamp_unix_ms: last.timestamp_unix_ms,
             command: Some(command),
-        };
+        })
+    }
+
+    fn commit_record(
+        &self,
+        store: &mut SQLiteWorkingStore,
+        expected: Option<u64>,
+        project: &Project,
+        record: CommitRecord,
+    ) -> Result<(), AppError> {
         store.commit_with_hook(expected, project, record, |phase| {
             self.checkpoint(match phase {
                 CommitPhase::ObjectsInserted => SavePhase::ObjectsInserted,

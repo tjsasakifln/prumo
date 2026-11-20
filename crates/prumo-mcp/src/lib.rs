@@ -10,17 +10,22 @@ use std::{
     },
 };
 
+use prumo_app::access::{AccessScope, ProjectGrant};
 use prumo_app::{AccessMode, AppError, Command, ProjectService};
 use prumo_domain::model::ModelEdit;
 use prumo_domain::registry::NormReferenceInput;
 use prumo_domain::storage::StorageAction;
+use prumo_domain::transactions::{
+    TransactionHistoryRequest, TransactionRequest, TransactionResult,
+};
 use prumo_domain::{LengthUnit, MAX_NAME_CHARACTERS, Project};
 use rmcp::{
     ErrorData, RoleServer, ServerHandler,
     model::{
-        CallToolRequestParams, CallToolResponse, CallToolResult, Implementation, ListToolsResult,
-        PaginatedRequestParams, ProtocolVersion, ServerCapabilities, ServerConfig, Tool,
-        ToolAnnotations,
+        CacheScope, CallToolRequestParams, CallToolResponse, CallToolResult, Implementation,
+        ListResourcesResult, ListToolsResult, PaginatedRequestParams, ProtocolVersion,
+        ReadResourceRequestParams, ReadResourceResponse, ReadResourceResult, Resource,
+        ResourceContents, ServerCapabilities, ServerConfig, Tool, ToolAnnotations,
     },
     service::RequestContext,
 };
@@ -28,8 +33,14 @@ use serde::{Deserialize, de::DeserializeOwned};
 use serde_json::{Value, json};
 use tokio::sync::Semaphore;
 
+mod catalogue_schema;
+mod extensions;
 mod input;
+mod legacy;
 mod model_schema;
+mod resources;
+mod transaction_schema;
+pub use legacy::{LEGACY_PROTOCOL, LegacyPrumoMcp};
 
 pub use input::{GuardedInput, guarded_input};
 
@@ -41,7 +52,6 @@ pub const SUPPORTED_PROTOCOL: &str = "2026-07-28";
 #[derive(Clone)]
 pub struct PrumoMcp {
     service: Arc<ProjectService>,
-    writable: bool,
     available: Arc<Semaphore>,
 }
 
@@ -51,10 +61,16 @@ impl PrumoMcp {
         access: AccessMode,
         actor: impl Into<String>,
     ) -> Result<Self, AppError> {
-        let writable = matches!(access, AccessMode::ReadWrite);
+        Self::open_scoped(path, ProjectGrant::for_access(access), actor)
+    }
+
+    pub fn open_scoped(
+        path: impl Into<PathBuf>,
+        grant: ProjectGrant,
+        actor: impl Into<String>,
+    ) -> Result<Self, AppError> {
         Ok(Self {
-            service: Arc::new(ProjectService::open(path, access, actor)?),
-            writable,
+            service: Arc::new(ProjectService::open_scoped(path, grant, actor)?),
             available: Arc::new(Semaphore::new(4)),
         })
     }
@@ -152,8 +168,23 @@ struct MigrateNorms {
     confirm: bool,
 }
 
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct ApplyTransaction {
+    plan_sha256: String,
+}
+
 enum Operation {
     Read,
+    ModelQuery,
+    AccessInfo,
+    TransactionPreview(Box<TransactionRequest>),
+    TransactionApply(ApplyTransaction),
+    TransactionHistory,
+    TransactionUndo(TransactionHistoryRequest),
+    TransactionRedo(TransactionHistoryRequest),
+    Unavailable(AccessScope),
+    Extension(extensions::Operation),
     Create(Create),
     AddMember(AddMember),
     Rename(Rename),
@@ -175,7 +206,7 @@ enum Operation {
     Storage(Box<StorageAction>),
 }
 
-fn decode<T: DeserializeOwned>(arguments: Value) -> Result<T, ErrorData> {
+pub(crate) fn decode<T: DeserializeOwned>(arguments: Value) -> Result<T, ErrorData> {
     serde_json::from_value(arguments).map_err(|error| {
         ErrorData::invalid_params(
             format!("Entrada inválida: {error}"),
@@ -194,6 +225,26 @@ impl Operation {
         }
         let args = Value::Object(request.arguments.unwrap_or_default());
         match request.name.as_ref() {
+            "prumo.model.query" => {
+                decode::<Empty>(args)?;
+                Ok(Self::ModelQuery)
+            }
+            "prumo.access.read" => {
+                decode::<Empty>(args)?;
+                Ok(Self::AccessInfo)
+            }
+            "prumo.model.preview_change" => {
+                decode(args).map(|request| Self::TransactionPreview(Box::new(request)))
+            }
+            "prumo.model.apply_change" => decode(args).map(Self::TransactionApply),
+            "prumo.model.history" => {
+                decode::<Empty>(args)?;
+                Ok(Self::TransactionHistory)
+            }
+            "prumo.model.undo" => decode(args).map(Self::TransactionUndo),
+            "prumo.model.redo" => decode(args).map(Self::TransactionRedo),
+            "prumo.analysis.submit" => Ok(Self::Unavailable(AccessScope::Calculation)),
+            "prumo.documents.issue" => Ok(Self::Unavailable(AccessScope::Documents)),
             "prumo.project.read" => {
                 decode::<Empty>(args)?;
                 Ok(Self::Read)
@@ -265,15 +316,62 @@ impl Operation {
                     confirm: params.confirm,
                 })))
             }
-            _ => Err(ErrorData::invalid_params(
-                "Ferramenta inexistente.",
-                Some(json!({"code":"unknown_tool"})),
-            )),
+            name => match extensions::Operation::parse(name, args) {
+                Some(result) => result.map(Self::Extension),
+                None => Err(ErrorData::invalid_params(
+                    "Ferramenta inexistente.",
+                    Some(json!({"code":"unknown_tool"})),
+                )),
+            },
+        }
+    }
+
+    fn required_scope(&self) -> AccessScope {
+        match self {
+            Self::Create(_)
+            | Self::AddMember(_)
+            | Self::Rename(_)
+            | Self::AddEnvironment(_)
+            | Self::RegisterNorm(_)
+            | Self::PinNorms(_)
+            | Self::MigrateNorms(_)
+            | Self::InspectModel(_)
+            | Self::EditModel(_)
+            | Self::Storage(_)
+            | Self::TransactionPreview(_)
+            | Self::TransactionApply(_)
+            | Self::TransactionUndo(_)
+            | Self::TransactionRedo(_) => AccessScope::Model,
+            Self::Unavailable(scope) => *scope,
+            Self::Extension(operation) => operation.required_scope(),
+            _ => AccessScope::Read,
+        }
+    }
+
+    fn needs_all_disciplines(&self) -> bool {
+        match self {
+            Self::ModelQuery | Self::AccessInfo | Self::AddMember(_) | Self::EditModel(_) => false,
+            Self::Extension(operation) => operation.needs_all_disciplines(),
+            _ => true,
         }
     }
 
     fn run(self, service: &ProjectService, cancel: &AtomicBool) -> Result<Value, AppError> {
+        service.grant().check_scope(self.required_scope())?;
+        service.grant().check_scope(AccessScope::Read)?;
+        if self.needs_all_disciplines() {
+            service.grant().check_all_disciplines()?;
+        }
         let project = match self {
+            Self::ModelQuery => return service.read_scoped_model().map(|model| json!({"model":model,"calculation_available":false})),
+            Self::AccessInfo => return Ok(json!({"grant":service.grant(),"calculation_available":false,"document_issue_available":false})),
+            Self::TransactionPreview(request) => return service.preview_transaction(*request).map(|preview| json!({"preview":preview,"calculation_available":false})),
+            Self::TransactionApply(request) => return transaction_response(service.apply_transaction(&request.plan_sha256)?, service),
+            Self::TransactionHistory => return service.transaction_history().map(|history| json!({"history":history})),
+            Self::TransactionUndo(request) => return transaction_response(service.undo_transaction(request)?, service),
+            Self::TransactionRedo(request) => return transaction_response(service.redo_transaction(request)?, service),
+            Self::Unavailable(_) => return Err(AppError::CapabilityUnavailable("Capacidade ainda não implementada; a concessão de acesso não libera cálculo ou emissão.".into())),
+            Self::Extension(operation) => return operation.run(service, cancel),
             Self::Read => service.read(),
             Self::Create(params) => service.create(params.name, params.units),
             Self::AddMember(params) => service.add_member(
@@ -356,15 +454,29 @@ impl Operation {
                 confirm: params.confirm,
             }),
         }?;
-        Ok(project_response(project))
+        project_response(project, service)
     }
 }
 
-fn project_response(project: Project) -> Value {
-    json!({"project":project,"calculation_available":false})
+fn project_response(project: Project, service: &ProjectService) -> Result<Value, AppError> {
+    if service.grant().all_disciplines() {
+        Ok(json!({"project":project,"calculation_available":false}))
+    } else {
+        Ok(json!({"model":service.grant().project_view(&project)?,"calculation_available":false}))
+    }
 }
 
-fn definition(
+fn transaction_response(
+    result: TransactionResult,
+    service: &ProjectService,
+) -> Result<Value, AppError> {
+    let mut response = project_response(result.project, service)?;
+    response["receipt"] = serde_json::to_value(result.receipt)?;
+    response["replayed"] = json!(result.replayed);
+    Ok(response)
+}
+
+pub(crate) fn definition(
     name: &'static str,
     description: &'static str,
     properties: Value,
@@ -393,13 +505,13 @@ fn definition(
 }
 
 /// Exact public operation catalogue. Schemas and deserializers both reject extra fields.
-pub fn tool_catalog(writable: bool) -> Vec<Tool> {
+fn base_tool_catalog(writable: bool) -> Vec<Tool> {
     let text = json!({"type":"string", "minLength":1, "maxLength":MAX_NAME_CHARACTERS});
     let revision = json!({"type":"integer", "minimum":1});
     let point = json!({"type":"array", "items":{"type":"number"}, "minItems":3, "maxItems":3});
     let mut tools = vec![definition(
         "prumo.project.read",
-        "Lê o projeto selecionado, sua revisão, unidades e identidades. Nenhum cálculo está disponível.",
+        "Lê o projeto selecionado, sua revisão, unidades e identidades. Não calcula o projeto nem libera emissão técnica.",
         json!({}),
         &[],
         true,
@@ -498,16 +610,49 @@ pub fn tool_catalog(writable: bool) -> Vec<Tool> {
     tools
 }
 
+pub fn tool_catalog(writable: bool) -> Vec<Tool> {
+    let mut tools = base_tool_catalog(writable);
+    tools.extend(transaction_schema::tools(writable));
+    tools.push(definition("prumo.model.query", "Consulta somente peças, redes e conexões das disciplinas autorizadas, em metros, sem histórico ou extensões externas.", json!({}), &[], true));
+    tools.push(definition(
+        "prumo.access.read",
+        "Consulta a autorização selecionada pelo host. Dados do projeto nunca ampliam os escopos.",
+        json!({}),
+        &[],
+        true,
+    ));
+    tools
+}
+
+fn scoped_tool_catalog(grant: &ProjectGrant) -> Vec<Tool> {
+    if !grant.allows(AccessScope::Read) {
+        return Vec::new();
+    }
+    let mut tools = tool_catalog(grant.allows(AccessScope::Model));
+    if !grant.all_disciplines() {
+        tools.retain(|tool| {
+            matches!(
+                tool.name.as_ref(),
+                "prumo.model.query" | "prumo.access.read" | "prumo.model.edit"
+            ) || (tool.name == "prumo.model.add_member"
+                && grant.allows_discipline(prumo_domain::Discipline::Structure))
+        });
+    }
+    tools.extend(extensions::tool_catalog(grant));
+    tools.sort_by(|a, b| a.name.cmp(&b.name));
+    tools
+}
+
 impl ServerHandler for PrumoMcp {
     fn supported_protocol_versions(&self) -> Cow<'static, [ProtocolVersion]> {
         Cow::Borrowed(&[ProtocolVersion::V_2026_07_28])
     }
 
     fn get_info(&self) -> ServerConfig {
-        ServerConfig::new(ServerCapabilities::builder().enable_tools().build())
+        ServerConfig::new(ServerCapabilities::builder().enable_tools().enable_resources().build())
             .with_protocol_version(ProtocolVersion::V_2026_07_28)
             .with_server_info(Implementation::new("prumo", env!("CARGO_PKG_VERSION")))
-            .with_instructions("Operação local limitada ao projeto selecionado. Alterações exigem autorização de escrita no lançamento e revisão atual. Modelagem inicial, sem cálculo ou emissão técnica.")
+            .with_instructions("Operação local limitada ao projeto selecionado. Alterações exigem autorização de escrita no lançamento e revisão atual. Modelagem, inspeções, propriedades e casos de referência seguem os escopos concedidos. Não há dimensionamento de projeto nem emissão técnica.")
     }
 
     async fn list_tools(
@@ -521,13 +666,33 @@ impl ServerHandler for PrumoMcp {
                 None,
             ));
         }
-        Ok(ListToolsResult::with_all_items(tool_catalog(self.writable)))
+        Ok(
+            ListToolsResult::with_all_items(scoped_tool_catalog(self.service.grant()))
+                .with_ttl_ms(0)
+                .with_cache_scope(CacheScope::Private),
+        )
     }
 
     fn get_tool(&self, name: &str) -> Option<Tool> {
-        tool_catalog(true)
+        scoped_tool_catalog(self.service.grant())
             .into_iter()
             .find(|tool| tool.name == name)
+    }
+
+    async fn list_resources(
+        &self,
+        request: Option<PaginatedRequestParams>,
+        _context: RequestContext<RoleServer>,
+    ) -> Result<ListResourcesResult, ErrorData> {
+        resources::list(self, request).await
+    }
+
+    async fn read_resource(
+        &self,
+        request: ReadResourceRequestParams,
+        _context: RequestContext<RoleServer>,
+    ) -> Result<ReadResourceResponse, ErrorData> {
+        resources::read(self, request).await
     }
 
     async fn call_tool(

@@ -3,27 +3,30 @@
 //! Project-scoped command service shared by desktop, CLI, and MCP.
 
 pub use prumo_domain::Command;
+pub mod access;
+mod modeling;
 mod storage;
+mod transactions;
+pub use access::{AccessScope, ProjectGrant, ScopedModelView};
 #[cfg(test)]
 mod storage_fault_tests;
-use prumo_domain::canonical::{ModelSnapshot, source_index_unchecked};
+use prumo_domain::canonical::ModelSnapshot;
 use prumo_domain::components::{ComponentDescriptor, ExperimentBasis, QualificationReport};
-use prumo_domain::dependencies::{DependencyGraph, SourceKind};
-use prumo_domain::model::{ModelEdit, PhysicalRole, PointInput, SemanticModel};
+use prumo_domain::dependencies::DependencyGraph;
+use prumo_domain::model::{ModelEdit, SemanticModel};
 use prumo_domain::{
-    ChangeRecord, Discipline, DomainError, Environment, LengthUnit, ModelState,
-    PROJECT_SCHEMA_VERSION, PhysicalObject, Project, validate_name,
+    ChangeRecord, DomainError, LengthUnit, PROJECT_SCHEMA_VERSION, Project, validate_name,
 };
 use prumo_registry::{
     CoverageAudit, FinalResultContext, GateReport, NormReferenceInput, NormativePackage,
     NormativePackagePreview, NormativeState, RegistryCatalog, RegistryError, audit_coverage,
-    bundled_catalog, compare_packages, evaluate_final_result, reason, register_reference,
+    bundled_catalog, compare_packages, evaluate_final_result, reason,
 };
 use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
 use std::fs::{self, File, OpenOptions};
 use std::path::{Path, PathBuf};
-use std::sync::atomic::AtomicBool;
+use std::sync::{Arc, OnceLock, atomic::AtomicBool};
 use std::time::{SystemTime, UNIX_EPOCH};
 use thiserror::Error;
 use uuid::Uuid;
@@ -42,6 +45,8 @@ pub struct ProjectService {
     lock_path: PathBuf,
     access: AccessMode,
     actor: String,
+    grant: ProjectGrant,
+    project_binding: Arc<OnceLock<Uuid>>,
     write_basis: Option<(Uuid, String)>,
     #[cfg(test)]
     fault: Option<storage::SavePhase>,
@@ -57,31 +62,14 @@ impl ProjectService {
     }
 
     pub fn edit_model(&self, expected_revision: u64, edit: ModelEdit) -> Result<Project, AppError> {
-        self.require_write()?;
-        let tag = serde_json::to_value(&edit)?
-            .get("edit")
-            .and_then(serde_json::Value::as_str)
-            .ok_or_else(|| AppError::InvalidInput("Edição sem operação declarada.".into()))?
-            .to_owned();
-        self.mutate(
+        self.execute_single(Command::EditModel {
             expected_revision,
-            &format!("model.{tag}"),
-            serde_json::to_value(&edit)?,
-            |project| {
-                prumo_domain::model::apply_model_edit(project, edit, &self.actor)
-                    .map_err(invalid_input)?;
-                Ok(())
-            },
-        )
+            edit,
+        })
     }
 
     pub fn inspect_model(&self, expected_revision: u64) -> Result<Project, AppError> {
-        self.mutate(
-            expected_revision,
-            "inspect_model",
-            serde_json::json!({"operation":"inspect_model"}),
-            |project| prumo_domain::dependencies::inspect_model(project).map_err(invalid_input),
-        )
+        self.execute_single(Command::InspectModel { expected_revision })
     }
 
     /// Read-only inventory. This does not change capability release states.
@@ -125,6 +113,20 @@ impl ProjectService {
         access: AccessMode,
         actor: impl Into<String>,
     ) -> Result<Self, AppError> {
+        Self::open_scoped(path, ProjectGrant::for_access(access), actor)
+    }
+
+    pub fn open_scoped(
+        path: impl Into<PathBuf>,
+        grant: ProjectGrant,
+        actor: impl Into<String>,
+    ) -> Result<Self, AppError> {
+        grant.validate()?;
+        let access = if grant.allows(AccessScope::Model) {
+            AccessMode::ReadWrite
+        } else {
+            AccessMode::ReadOnly
+        };
         let path = path.into();
         let actor = actor.into();
         validate_name(&actor).map_err(invalid_input)?;
@@ -155,10 +157,38 @@ impl ProjectService {
             lock_path,
             access,
             actor,
+            grant,
+            project_binding: Arc::new(OnceLock::new()),
             write_basis: None,
             #[cfg(test)]
             fault: None,
         })
+    }
+
+    pub fn grant(&self) -> &ProjectGrant {
+        &self.grant
+    }
+
+    pub fn read_scoped_model(&self) -> Result<ScopedModelView, AppError> {
+        self.grant.check_scope(AccessScope::Read)?;
+        self.grant.project_view(&self.load_primary()?.project)
+    }
+
+    fn check_bound_project(&self, project: &Project) -> Result<(), AppError> {
+        self.grant.check_project(project)?;
+        self.check_bound_id(project.id)
+    }
+
+    fn check_bound_id(&self, project_id: Uuid) -> Result<(), AppError> {
+        if self.grant.project_id.is_some_and(|id| id != project_id) {
+            return Err(AppError::PermissionDenied);
+        }
+        let bound = self.project_binding.get_or_init(|| project_id);
+        if *bound == project_id {
+            Ok(())
+        } else {
+            Err(AppError::PermissionDenied)
+        }
     }
 
     pub fn project_path(&self) -> &Path {
@@ -238,6 +268,7 @@ impl ProjectService {
 
     pub fn create(&self, name: impl Into<String>, units: LengthUnit) -> Result<Project, AppError> {
         self.require_write()?;
+        self.grant.check_all_disciplines()?;
         let name = name.into();
         validate_name(&name).map_err(invalid_input)?;
         let _lock = self.lock()?;
@@ -272,13 +303,18 @@ impl ProjectService {
         // Writers publish a complete immutable file with an atomic replacement.
         // Opening that file gives one complete snapshot, including during a save.
         // A query must also work when the project directory is not writable.
-        self.read_snapshot()
+        self.grant.check_scope(AccessScope::Read)?;
+        let project = self.load_primary()?.project;
+        self.grant.check_full_read(&project)?;
+        Ok(project)
     }
 
     /// A native editor must associate its model with the bytes from that exact
     /// read, rather than borrowing a hash from a later, independent diagnosis.
     pub fn read_with_basis(&self) -> Result<(Project, String), AppError> {
+        self.grant.check_scope(AccessScope::Read)?;
         let file = self.load_primary()?;
+        self.grant.check_full_read(&file.project)?;
         let hash = file.sha256();
         Ok((file.project, hash))
     }
@@ -291,54 +327,12 @@ impl ProjectService {
         start: [f64; 3],
         end: [f64; 3],
     ) -> Result<Project, AppError> {
-        self.require_write()?;
-        let name = name.into();
-        validate_name(&name).map_err(invalid_input)?;
-        self.mutate(
+        self.execute_single(Command::AddMember {
             expected_revision,
-            "add_member",
-            serde_json::json!({"operation":"add_member", "name":name, "start":start, "end":end}),
-            |project| {
-                let object = PhysicalObject {
-                    id: Uuid::new_v4(),
-                    name,
-                    discipline: Discipline::Structure,
-                    start_m: PointInput {
-                        values: start,
-                        unit: project.units,
-                    }
-                    .to_si()
-                    .map_err(invalid_input)?,
-                    end_m: PointInput {
-                        values: end,
-                        unit: project.units,
-                    }
-                    .to_si()
-                    .map_err(invalid_input)?,
-                    state: ModelState::Modelled,
-                    role: PhysicalRole::AnalyticalSource,
-                    material_id: None,
-                    environment_id: None,
-                    extensions: BTreeMap::new(),
-                };
-                if object.length_m() <= prumo_domain::MIN_MEMBER_LENGTH_M {
-                    return Err(invalid_input(DomainError::DegenerateMember));
-                }
-                let physical_id = object.id;
-                project.objects.push(object);
-                prumo_domain::model::initialize_legacy_member(
-                    project,
-                    physical_id,
-                    None,
-                    &self.actor,
-                    project.revision.checked_add(1).ok_or_else(|| {
-                        AppError::InvalidInput("Limite de revisões atingido.".into())
-                    })?,
-                )
-                .map_err(invalid_input)?;
-                Ok(())
-            },
-        )
+            name: name.into(),
+            start,
+            end,
+        })
     }
 
     pub fn rename_project(
@@ -346,18 +340,10 @@ impl ProjectService {
         expected_revision: u64,
         name: impl Into<String>,
     ) -> Result<Project, AppError> {
-        self.require_write()?;
-        let name = name.into();
-        validate_name(&name).map_err(invalid_input)?;
-        self.mutate(
+        self.execute_single(Command::RenameProject {
             expected_revision,
-            "rename_project",
-            serde_json::json!({"operation":"rename_project", "name":name}),
-            |project| {
-                project.name = name;
-                Ok(())
-            },
-        )
+            name: name.into(),
+        })
     }
 
     pub fn add_environment(
@@ -365,33 +351,10 @@ impl ProjectService {
         expected_revision: u64,
         name: impl Into<String>,
     ) -> Result<Project, AppError> {
-        self.require_write()?;
-        let name = name.into();
-        validate_name(&name).map_err(invalid_input)?;
-        self.mutate(
+        self.execute_single(Command::AddEnvironment {
             expected_revision,
-            "add_environment",
-            serde_json::json!({"operation":"add_environment", "name":name}),
-            |project| {
-                let id = Uuid::new_v4();
-                project.environments.push(Environment {
-                    id,
-                    name,
-                    extensions: BTreeMap::new(),
-                });
-                prumo_domain::model::record_identity(
-                    project,
-                    id,
-                    &self.actor,
-                    project.revision.checked_add(1).ok_or_else(|| {
-                        AppError::InvalidInput("Limite de revisões atingido.".into())
-                    })?,
-                    true,
-                )
-                .map_err(invalid_input)?;
-                Ok(())
-            },
-        )
+            name: name.into(),
+        })
     }
 
     pub fn registry_catalog(&self) -> Result<RegistryCatalog, AppError> {
@@ -448,28 +411,10 @@ impl ProjectService {
         expected_revision: u64,
         reference: NormReferenceInput,
     ) -> Result<Project, AppError> {
-        self.require_write()?;
-        self.mutate(
+        self.execute_single(Command::RegisterNormReference {
             expected_revision,
-            "register_norm_reference",
-            serde_json::json!({"operation":"register_norm_reference", "reference":reference}),
-            |project| {
-                let catalog = catalog_for(project)?;
-                let next_revision = project
-                    .revision
-                    .checked_add(1)
-                    .ok_or_else(|| AppError::InvalidInput("Limite de revisões atingido.".into()))?;
-                let version = format!("project:{}:revision:{next_revision}", project.id);
-                let (updated, change) =
-                    register_reference(&catalog, reference, version, next_revision)?;
-                project.normative.catalog = Some(updated);
-                project.normative.registry_changes.push(change);
-                if project.normative.active.is_some() {
-                    project.normative.recalculation_required = true;
-                }
-                Ok(())
-            },
-        )
+            reference,
+        })
     }
 
     pub fn pin_normative_package(
@@ -477,25 +422,10 @@ impl ProjectService {
         expected_revision: u64,
         package_hash: &str,
     ) -> Result<Project, AppError> {
-        self.require_write()?;
-        self.mutate(
+        self.execute_single(Command::PinNormativePackage {
             expected_revision,
-            "pin_normative_package",
-            serde_json::json!({"operation":"pin_normative_package", "package_hash":package_hash}),
-            |project| {
-                if project.normative.active.is_some() {
-                    return Err(AppError::PackageAlreadyPinned);
-                }
-                let candidate = NormativePackage::from_catalog(&catalog_for(project)?)?;
-                if candidate.hash != package_hash {
-                    return Err(AppError::PackageConflict);
-                }
-                project.normative.catalog = Some(candidate.catalog.clone());
-                project.normative.active = Some(candidate);
-                project.normative.recalculation_required = true;
-                Ok(())
-            },
-        )
+            package_hash: package_hash.into(),
+        })
     }
 
     pub fn migrate_normative_package(
@@ -505,33 +435,11 @@ impl ProjectService {
         to_package_hash: &str,
         confirm: bool,
     ) -> Result<Project, AppError> {
-        self.require_write()?;
-        if !confirm {
-            return Err(AppError::ConfirmationRequired);
-        }
-        self.mutate(expected_revision, "migrate_normative_package", serde_json::json!({"operation":"migrate_normative_package", "from_package_hash":from_package_hash, "to_package_hash":to_package_hash, "confirm":confirm}), |project| {
-            let original = project
-                .normative
-                .active
-                .as_ref()
-                .ok_or(AppError::PackageNotPinned)?;
-            let candidate = NormativePackage::from_catalog(&catalog_for(project)?)?;
-            if original.hash != from_package_hash
-                || candidate.hash != to_package_hash
-                || original.hash == candidate.hash
-            {
-                return Err(AppError::PackageConflict);
-            }
-            let next_revision = project
-                .revision
-                .checked_add(1)
-                .ok_or_else(|| AppError::InvalidInput("Limite de revisões atingido.".into()))?;
-            let impact = compare_packages(original, &candidate, next_revision)?;
-            project.normative.previous.push(original.clone());
-            project.normative.migrations.push(impact);
-            project.normative.active = Some(candidate);
-            project.normative.recalculation_required = true;
-            Ok(())
+        self.execute_single(Command::MigrateNormativePackage {
+            expected_revision,
+            from_package_hash: from_package_hash.into(),
+            to_package_hash: to_package_hash.into(),
+            confirm,
         })
     }
 
@@ -569,52 +477,9 @@ impl ProjectService {
         Ok(gate)
     }
 
-    fn mutate(
-        &self,
-        expected_revision: u64,
-        operation: &str,
-        command: serde_json::Value,
-        mutation: impl FnOnce(&mut Project) -> Result<(), AppError>,
-    ) -> Result<Project, AppError> {
-        self.require_write()?;
-        let _lock = self.lock()?;
-        let original = self.load_primary()?;
-        self.check_write_basis(&original)?;
-        let mut project = original.project.clone();
-        if project.revision != expected_revision {
-            return Err(AppError::Conflict {
-                expected: expected_revision,
-                actual: project.revision,
-            });
-        }
-        let before = source_index_unchecked(&project).map_err(invalid_input)?;
-        let next_revision = project
-            .revision
-            .checked_add(1)
-            .ok_or_else(|| AppError::InvalidInput("Limite de revisões atingido.".into()))?;
-        mutation(&mut project)?;
-        let after = source_index_unchecked(&project).map_err(invalid_input)?;
-        project
-            .dependencies
-            .invalidate_changes(&before, &after, next_revision, &self.actor, operation)
-            .map_err(invalid_input)?;
-        if project.normative.active.is_some()
-            && before.keys().chain(after.keys()).any(|key| {
-                key.kind != SourceKind::ProjectMetadata && before.get(key) != after.get(key)
-            })
-        {
-            project.normative.recalculation_required = true;
-        }
-        project.revision = next_revision;
-        project
-            .history
-            .push(self.change(project.revision, operation)?);
-        project.validate().map_err(invalid_input)?;
-        self.save_changed_locked(&original, &project, command)?;
-        Ok(project)
-    }
-
     fn require_write(&self) -> Result<(), AppError> {
+        self.grant.check_scope(AccessScope::Read)?;
+        self.grant.check_scope(AccessScope::Model)?;
         if self.access == AccessMode::ReadOnly {
             Err(AppError::PermissionDenied)
         } else {
@@ -649,10 +514,6 @@ impl ProjectService {
             .open(&self.lock_path)?;
         file.lock()?;
         Ok(file)
-    }
-
-    fn read_snapshot(&self) -> Result<Project, AppError> {
-        Ok(self.load_primary()?.project)
     }
 }
 
@@ -700,14 +561,26 @@ pub enum AppError {
     ConfirmationRequired,
     #[error("{0}")]
     Registry(#[from] RegistryError),
-    #[error("A sessão permite apenas consultar o projeto.")]
+    #[error("A sessão não tem autorização para esta operação, projeto ou disciplina.")]
     PermissionDenied,
+    #[error("A capacidade ainda não está disponível: {0}")]
+    CapabilityUnavailable(String),
     #[error("Já existe um projeto no arquivo selecionado. Abra-o ou selecione outro arquivo.")]
     AlreadyExists,
     #[error("O projeto selecionado ainda não existe.")]
     NotFound,
     #[error("A revisão mudou de {expected} para {actual}. Atualize o projeto antes de alterar.")]
     Conflict { expected: u64, actual: u64 },
+    #[error("A chave de idempotência já identifica outro pedido ou ator.")]
+    IdempotencyConflict,
+    #[error("O plano de alteração não corresponde à prévia autorizada. Gere uma nova prévia.")]
+    PlanConflict,
+    #[error("A pré-condição do elemento mudou. Atualize o modelo antes de alterar.")]
+    PreconditionFailed,
+    #[error(
+        "O histórico mudou; somente a última operação disponível pode ser desfeita ou refeita."
+    )]
+    HistoryConflict,
     #[error("{0}")]
     InvalidInput(String),
     #[error("A versão {found} do projeto não é suportada. O arquivo foi preservado.")]
@@ -743,9 +616,14 @@ impl AppError {
             Self::ConfirmationRequired => "confirmation_required",
             Self::Registry(_) => "invalid_normative_registry",
             Self::PermissionDenied => "permission_denied",
+            Self::CapabilityUnavailable(_) => "unsupported_capability",
             Self::AlreadyExists => "project_exists",
             Self::NotFound => "project_not_found",
             Self::Conflict { .. } => "revision_conflict",
+            Self::IdempotencyConflict => "idempotency_conflict",
+            Self::PlanConflict => "plan_conflict",
+            Self::PreconditionFailed => "precondition_failed",
+            Self::HistoryConflict => "history_conflict",
             Self::InvalidInput(_) => "invalid_input",
             Self::UnsupportedSchema { .. } | Self::UnsupportedSchemaValue { .. } => {
                 "unsupported_schema"

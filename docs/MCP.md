@@ -1,6 +1,6 @@
 # MCP e operação do Prumo por agentes
 
-**Estado:** servidor Rust implementado com transporte local stdio, cliente real e projeto persistente. **Data da referência:** 14/11/2026. A seção seguinte descreve o catálogo efetivo até a implementação da PRU-005. Os demais requisitos deste documento orientam a evolução sequencial e só estão disponíveis quando anunciados pelo servidor. Evidências de integração e limites constam das entregas de cada issue.
+**Estado:** servidor Rust implementado com transporte local stdio, cliente real e projeto persistente. **Data da referência:** 14/11/2026. A seção seguinte descreve o catálogo efetivo até a implementação das PRU-006 e PRU-007; as entregas seguintes ampliam o mesmo serviço. Os demais requisitos deste documento orientam a evolução sequencial e só estão disponíveis quando anunciados pelo servidor. Evidências de integração e limites constam das entregas de cada issue.
 
 ## Catálogo implementado
 
@@ -11,7 +11,7 @@ cargo run -p prumo-mcp-server -- --project meu-projeto.prumo
 cargo run -p prumo-mcp-server -- --project meu-projeto.prumo --allow-write
 ```
 
-O catálogo contém 10 consultas e, quando autorizadas, 12 ferramentas de escrita. Usa MCP `2026-07-28`, `server/discover`, rmcp `3.10.0` fixado e metadados de versão por requisição. O servidor recusa versões desconhecidas. HTTP e o perfil legado não estão habilitados.
+O catálogo é filtrado pelos escopos e disciplinas concedidos no lançamento e pode ser consultado por `tools/list`. Usa MCP `2026-07-28`, `server/discover`, rmcp `3.10.0` fixado e metadados de versão por requisição. A opção `--protocol 2025-11-25` seleciona o adaptador legado separado, com `initialize` e `notifications/initialized`. O servidor recusa revisões incompatíveis com o perfil escolhido. HTTP permanece desabilitado.
 
 | Ferramentas atuais | Dados e comportamento |
 | --- | --- |
@@ -26,9 +26,44 @@ O catálogo contém 10 consultas e, quando autorizadas, 12 ferramentas de escrit
 | `prumo.project.create`, `prumo.project.rename` | Criação sem substituir arquivo existente e alteração do nome com revisão esperada |
 | `prumo.model.add_member`, `prumo.model.add_environment` | Criação rápida de peça com barra analítica vinculada, ou de ambiente |
 | `prumo.norms.register`, `prumo.norms.pin`, `prumo.norms.migrate` | Cadastro de metadados públicos, fixação e migração explícita de pacote; nenhuma aprovação é inventada |
-| `prumo.model.edit` | Uma das 25 variantes fechadas de `ModelEdit`, com unidades e referências explícitas |
+| `prumo.model.edit` | Uma das variantes tipadas fechadas de `ModelEdit`, com unidades e referências explícitas |
 | `prumo.model.inspect` | Atualiza comprimentos e resumo geométrico vinculados ao snapshot. Exige escrita e revisão esperada |
 | `prumo.storage.migrate`, `prumo.storage.backup`, `prumo.storage.recover` | Migração de legado com original preservado, backup verificado e recuperação de candidato selecionado; exigem escrita e identidade atual do diagnóstico |
+
+### Escopos, disciplinas e recursos
+
+O host pode conceder `read`, `model`, `calculation` e `documents` por `--scopes`. As operações exigem leitura; `--scopes none` concede nenhum acesso. `--allow-write` mantém a compatibilidade e equivale a `--scopes read,model`. A opção de escrita não autoriza cálculo nem emissão. Os respectivos escopos não tornam uma capacidade futura disponível.
+
+```sh
+prumo-mcp --project meu-projeto.prumo --scopes read,model --disciplines structure
+prumo-mcp --project meu-projeto.prumo --scopes read --project-id UUID_DO_PROJETO
+prumo-mcp --project meu-projeto.prumo --protocol 2025-11-25
+```
+
+O UUID opcional é escolhido pelo host. O serviço também fixa a identidade do projeto na primeira leitura e recusa outro projeto colocado no mesmo caminho durante a sessão. O ator é `mcp-local` por padrão, ou o valor de `--actor` informado no lançamento. Nenhuma ferramenta recebe caminho, ator, escopo ou disciplina de autorização como argumento. Dados importados, nomes, metadados e extensões não concedem permissões.
+
+`prumo.access.read` mostra a concessão ativa. `prumo.model.query` retorna somente peças, redes, portas e conexões autorizadas, com UUID do projeto, revisão e coordenadas em metros. Essa representação não é um arquivo completo de projeto: omite histórico, catálogo, identidades de origem e extensões genéricas para evitar referências a outras disciplinas. Uma concessão parcial pode editar as entidades permitidas, mas não alterar configurações globais, materiais compartilhados, normas ou arquivos. Consultas completas e transações que exibem histórico global exigem todas as disciplinas.
+
+| Recurso | Conteúdo | Exigência |
+| --- | --- | --- |
+| `prumo://project/{UUID}/model` | Mesmo modelo filtrado de `prumo.model.query` | Leitura nas disciplinas concedidas |
+| `prumo://project/{UUID}/snapshot` | Entradas canônicas, fontes e SHA-256 | Leitura de todas as disciplinas |
+| `prumo://project/{UUID}/results` | Revisão, medidas em metros, dependências e invalidações | Leitura de todas as disciplinas |
+
+`resources/list` anuncia somente recursos autorizados e `resources/read` verifica novamente a identidade. URI de outro projeto, URI de arquivo, caminho arbitrário ou recurso não anunciado não oferece acesso. No perfil moderno, consultas e recursos têm `ttlMs: 0` e `cacheScope: "private"`; o adaptador legado não mistura esses campos com seu formato de resposta.
+
+### Prévia, aplicação e histórico de lotes
+
+| Ferramenta | Entrada | Comportamento |
+| --- | --- | --- |
+| `prumo.model.preview_change` | `project_id`, `expected_revision`, `idempotency_key`, `operations`; `preconditions` opcional | Valida e prepara um lote sem alterar a revisão do modelo; retorna efeitos, invalidações e `plan_sha256` |
+| `prumo.model.apply_change` | `plan_sha256` | Aplica exatamente o plano preparado, com os mesmos identificadores e base |
+| `prumo.model.history` | Nenhuma | Recibos auditados e comando atualmente disponível para desfazer/refazer |
+| `prumo.model.undo`, `prumo.model.redo` | `project_id`, `expected_revision`, `idempotency_key`, `target_command_id` | Nova transação compensatória, preservando autoria, identidade e histórico |
+
+Cada operação do lote usa o discriminador `operation` do contrato Rust `Command`, com `expected_revision` igual à revisão base. `edit_model` contém a variante tipada `edit` já usada pela edição imediata. Criação de projeto fica fora do lote. Pré-condições identificam uma fonte por `kind` e `id`; `sha256: null` exige sua ausência. Os schemas recusam campos extras e limitam o número de operações.
+
+Reenviar o mesmo plano ou comando idempotente recupera seu recibo, sem duplicar efeitos. Uma chave reutilizada com conteúdo diferente é recusada. O recibo conserva a revisão original; a resposta também traz o projeto atual, para que um reenvio não substitua na tela trabalho posterior. Revisão antiga, pré-condição alterada ou permissão insuficiente não produz gravação parcial. Desfazer/refazer conserva o histórico e não transforma resultados obsoletos em evidência atual.
 
 ### Arquivo, migração e recuperação
 
@@ -77,13 +112,36 @@ A criação acima não cria barra analítica nem libera dimensionamento. Nós, b
 
 Força aceita `newton` ou `kilonewton`. Momento aceita `newton_metre` ou `kilonewton_metre`. Enviar `newton` no campo de momento é erro de entrada. Coordenadas aceitam `metre`, `centimetre` e `millimetre`; o armazenamento usa tipos em SI. Os campos `origin_world_m`, `map_origin_m` e `rotation_radians` declaram SI no próprio nome. A origem de engenharia e o georreferenciamento são separados.
 
-Uma mutação válida retorna o projeto e a nova revisão. Edições sem permissão, revisão desatualizada, grandeza inválida ou referência órfã não alteram o arquivo. Os códigos de negócio atuais incluem `permission_denied`, `revision_conflict` e `invalid_input`; falhas no formato dos argumentos usam erro JSON-RPC `-32602`. Uma chamada repetida com a revisão anterior falha por conflito, evitando uma segunda alteração. Chaves duráveis de idempotência e prévia genérica continuam no contrato de evolução abaixo.
+Uma mutação válida retorna o projeto e a nova revisão. Edições sem permissão, revisão desatualizada, grandeza inválida ou referência órfã não alteram o arquivo. Os códigos de negócio atuais incluem `permission_denied`, `revision_conflict` e `invalid_input`; falhas no formato dos argumentos usam erro JSON-RPC `-32602`. Uma chamada repetida com a revisão anterior falha por conflito, evitando uma segunda alteração. Para lotes com chave durável de idempotência, prévia e aplicação exata por hash, use o contrato de transações abaixo. As operações imediatas preservam seu contrato de revisão esperada.
 
 `prumo.model.inspect` mede a geometria efetiva e salva suas dependências. Seus registros mantêm `engineering_release: false`, e as respostas continuam declarando `calculation_available: false`. Uma alteração relevante conserva os valores históricos, marca os registros afetados como obsoletos e registra revisão, ator, fontes alteradas e resultados dependentes. O mapa completo entre variantes, controles da interface e ensaios está em [PRU-004-ui-mcp.md](evidencias/PRU-004-ui-mcp.md).
 
 As mensagens de entrada permanecem limitadas a 64 KiB. Antes da desserialização do SDK, a guarda compartilhada recusa chaves de objeto no namespace interno `$serde_json::private::`, inclusive quando escritas com escapes Unicode. Isso impede que a biblioteca interprete um objeto como se fosse um número. O SDK responde erro JSON-RPC `-32600` com ID nulo, o motivo fica em stderr e a próxima linha pode ser processada. O mesmo texto como valor de uma string continua permitido. Erros de sintaxe seguem intactos ao SDK; o transporte rmcp 3.10.0 descarta a linha malformada sem resposta e continua na seguinte. Uma linha excessiva é descartada até a próxima quebra de linha, sem crescer o buffer indefinidamente.
 
 Somente protocolo sai em stdout. Os testes usam o SDK oficial em processo filho e um cliente independente de JSON/stdio, além de criar pela interface, modificar por MCP e reabrir o mesmo projeto. Referências: [PRU-001](evidencias/PRU-001-mcp.md), [PRU-002](evidencias/PRU-002-cobertura.md), [PRU-003](evidencias/PRU-003.md) e [PRU-005](evidencias/PRU-005-ui-mcp.md).
+
+### Geometria, verificação e catálogos
+
+| Ferramenta | Escopo | Retorno e efeito |
+|---|---|---|
+| `prumo.geometry.audit` | leitura | Diagnósticos geométricos por filtro, revisão, snapshot e tolerâncias, sem alteração |
+| `prumo.geometry.face` | leitura | Área, normal, validade e problemas de uma face fornecida em metros |
+| `prumo.geometry.preview` | modelagem | Plano de correções, hash, dimensões antes/depois e conexões explícitas propostas |
+| `prumo.verification.protocols` | leitura | Casos e tolerâncias registrados antes de executar |
+| `prumo.verification.run` | cálculo | Bateria analítica e relatório com identidade SHA, commit, build, plataforma e dependências |
+| `prumo.catalogue.read` | leitura | Entradas atuais e histórico do catálogo, com revisão e snapshot do projeto |
+| `prumo.catalogue.material` | leitura | Estado único do material nas condições declaradas, fonte e valores preservados |
+| `prumo.catalogue.section` | cálculo | Área, centroide, inércias e torção da seção, método e estado de convergência |
+
+Essas operações exigem concessão para todas as disciplinas, pois retornam entradas ou evidências comuns ao projeto. O escopo `calculation` habilita somente os ensaios e propriedades implementados; ele não libera solver do projeto, dimensionamento ou emissão técnica.
+
+`geometry.audit` recebe `filter` opcional com `discipline`, `network_id` e `environment_id`. `geometry.face` recebe `face`, com `vertices_m` e `expected_normal`. `geometry.preview` recebe uma lista `repairs`: `snap_endpoint` declara `object_id`, `endpoint` (`start`/`end`), `target_m` e `reason`; `connect_ports` declara `network_id`, `from_port`, `to_port` e `reason`. Aplicar usa a variante `apply_geometry_repair` de `model.edit`, com `plan_hash` e a mesma lista. Mudanças no projeto, no ator ou na lista invalidam a prévia. Contato visual nunca cria uma ligação.
+
+`catalogue.section` recebe `entry_id`. `catalogue.material` recebe `entry_id` e `conditions`, mapa de grandeza para valor físico. Um valor é representado, por exemplo, por `{"quantity":"absolute_temperature","decimal":"20.000","unit":"degree_celsius","basis":"measured","design_basis":null}`. A representação decimal original e a unidade permanecem no registro; a conversão para SI é explícita. Falta de condição, ambiguidade, unidade incompatível e valor fisicamente impossível são erros.
+
+As novas variantes de `model.edit` incluem `put_catalog_entry`, `assign_catalog_entry` e `clear_catalog_assignment`. A entrada declara identidade, revisão consecutiva, nome, fonte, aplicação, customização opcional e um conteúdo de material, seção ou propriedades. `tools/list` fornece o schema completo. Uma customização usa nova identidade e identifica a versão e o SHA da base. Não se pode substituir silenciosamente uma versão nem associar dois materiais de autoridades distintas à mesma peça.
+
+A torção retorna `j_m4` somente para solução analítica ou convergência demonstrada. Se o cálculo limitado não convergir, o relatório conserva estimativa e diagnóstico, com `j_m4: null`. Esses relatórios de consulta identificam a versão exata da entrada; não são resultados de dimensionamento persistidos. A infraestrutura de dependências exige que um resultado derivado declare as entradas usadas para obter invalidação seletiva.
 
 ## 1. Princípios
 

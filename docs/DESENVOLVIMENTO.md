@@ -41,6 +41,22 @@ Em **Medidas e dependências**, **Atualizar medidas do modelo** salva compriment
 
 As ferramentas MCP equivalentes são `prumo.model.edit`, `prumo.model.inspect`, `prumo.model.snapshot` e `prumo.results.trace`. As duas primeiras exigem escrita e revisão atual. As consultas funcionam em leitura. Consulte [MCP](MCP.md) para o contrato e [evidências da PRU-004](evidencias/PRU-004.md) para invariantes e limites.
 
+## Lotes, revisão e desfazer
+
+Em **Alterações em lote e histórico**, marque **Preparar alterações em lote antes de salvar** e use os formulários usuais. As operações ficam pendentes até **Conferir prévia do lote**. Confira efeitos e invalidações antes de **Aplicar lote conferido**. A aplicação usa o mesmo plano e os mesmos identificadores preparados. Se outro cliente alterar o projeto, reabra e prepare novamente.
+
+**Desfazer última alteração** e **Refazer alteração** gravam revisões auditadas. O histórico não é apagado nem resultados antigos são revalidados por terem voltado os mesmos valores. Os recibos idempotentes sobrevivem à reabertura. A interface e o MCP utilizam o mesmo serviço transacional.
+
+## Geometria, materiais e seções
+
+Em **Geometria e conexões**, as tolerâncias de seleção, união topológica, malha e análise são independentes. Inspecione por disciplina, ambiente ou rede. O programa distingue duplicidade, vão curto, aproximação, cruzamento e conexão explícita. Para corrigir uma extremidade ou conectar portas, prepare a alteração, leia o impacto e aplique a prévia. Uma geometria semelhante não cria ligação resistente.
+
+Em **Catálogos de materiais e seções**, crie uma seção retangular, circular, I ou caixão informando dimensões e fonte. Selecione uma entrada para calcular propriedades, consultar versões ou associá-la a uma peça. O editor de entrada completa admite polígonos, seções compostas, materiais isotrópicos e ortotrópicos, estados por condição e propriedades com unidades. O exemplo de material é explicitamente ilustrativo e deve ser preenchido com os dados e a origem usados no projeto.
+
+**Preparar próxima versão** conserva a identidade e avança a revisão. **Preparar customização** cria uma identidade diferente e exige motivo, mantendo a versão e o SHA da base. Salvar passa pelas validações comuns. Valores nominais, medidos, característicos e de projeto permanecem distintos; um valor de projeto exige sua base declarada. A torção apresenta método e convergência; estimativa sem convergência não é apresentada como propriedade liberada.
+
+Em **Verificação com casos de referência**, execute os casos analíticos de viga, treliça, pórtico e rejeição de mecanismo. A bateria tem referências e tolerâncias fixadas antes da execução e conserva relatório por SHA. Ela verifica o software e não calcula o projeto aberto. Mudar a revisão limpa a evidência exibida.
+
 ## Referências normativas e capacidades
 
 Abra **Normas e capacidades** no projeto. A tela mostra a cobertura do inventário, as pendências técnicas e o pacote de referências disponível. **Fixar pacote de referências** preserva o conteúdo e sua identidade SHA-256 no arquivo do projeto.
@@ -63,11 +79,11 @@ As mesmas operações estão disponíveis em MCP por `prumo.components.list` e `
 cargo run -p prumo-mcp-server --locked -- --project exemplo.prumo
 ```
 
-O nome exato do pacote e os argumentos do servidor também aparecem em `cargo run -p prumo-mcp-server -- --help`. O lançamento seleciona um único arquivo. Escrita exige `--allow-write`; o padrão permite somente leitura. O cliente não escolhe caminhos nem executa comandos do sistema. O protocolo usa stdio e a revisão MCP 2026-07-28. A documentação específica em `docs/evidencias/PRU-001-mcp.md` descreve descoberta, ferramentas e testes.
+O nome exato do pacote e os argumentos do servidor também aparecem em `cargo run -p prumo-mcp-server -- --help`. O lançamento seleciona um único arquivo. O padrão permite somente leitura. `--allow-write` mantém compatibilidade para modelagem; use `--scopes read,model,calculation` para modelagem, casos de referência e propriedades de seção. `--disciplines` limita o modelo por disciplina e `--project-id` fixa a identidade esperada. O ator é definido no lançamento, nunca pelo conteúdo importado. O cliente não escolhe caminhos nem executa comandos do sistema. O protocolo usa stdio e a revisão MCP 2026-07-28. O perfil legado é explícito: `--protocol 2025-11-25`. A descoberta moderna e a inicialização legada são ensaiadas separadamente; dados de cache modernos não são enviados no perfil legado. A documentação específica em `docs/evidencias/PRU-001-mcp.md` descreve descoberta, ferramentas e testes.
 
 As ferramentas `prumo.registry.read`, `prumo.registry.audit`, `prumo.norms.package` e `prumo.results.gate` consultam o registro. `prumo.norms.register`, `prumo.norms.pin` e `prumo.norms.migrate` usam o mesmo serviço da interface e exigem escrita autorizada e revisão atual. Fixação e migração também conferem os hashes do pacote.
 
-`prumo.storage.status` consulta o arquivo e as fontes de recuperação mesmo quando `prumo.project.read` falha. A consulta não cria arquivos auxiliares. `prumo.storage.migrate`, `prumo.storage.backup` e `prumo.storage.recover` recebem a identidade do diagnóstico obtida nessa mesma autorização de lançamento; migração e recuperação também exigem confirmação explícita. Os candidatos usam identificadores devolvidos pelo serviço. Não há ferramenta para escolher caminho, executar SQL ou gravar diretamente no banco. O catálogo atual anuncia 10 consultas em leitura e 22 ferramentas quando a escrita está autorizada.
+`prumo.storage.status` consulta o arquivo e as fontes de recuperação mesmo quando `prumo.project.read` falha. A consulta não cria arquivos auxiliares. `prumo.storage.migrate`, `prumo.storage.backup` e `prumo.storage.recover` recebem a identidade do diagnóstico obtida nessa mesma autorização de lançamento; migração e recuperação também exigem confirmação explícita. Os candidatos usam identificadores devolvidos pelo serviço. Não há ferramenta para escolher caminho, executar SQL ou gravar diretamente no banco. O catálogo anunciado depende dos escopos e disciplinas concedidos pelo host; consulte `tools/list` para as funções permitidas.
 
 Uma segunda instância deve reabrir o projeto para ver a última revisão. Uma alteração com revisão antiga é recusada e pede atualização, preservando a alteração já salva pela outra instância.
 

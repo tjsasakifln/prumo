@@ -94,6 +94,31 @@ pub(super) fn edit_schema() -> Value {
     );
     let variants = vec![
         edit(
+            "put_catalog_entry",
+            json!({"entry":super::catalogue_schema::entry()}),
+            &["entry"],
+        ),
+        edit(
+            "assign_catalog_entry",
+            json!({"object_id":id,"entry_id":id}),
+            &["object_id", "entry_id"],
+        ),
+        edit(
+            "clear_catalog_assignment",
+            json!({"object_id":id,"kind":{"type":"string","enum":["material","section","properties"]}}),
+            &["object_id", "kind"],
+        ),
+        edit(
+            "set_geometry_tolerances",
+            json!({"tolerances":tolerances_schema()}),
+            &["tolerances"],
+        ),
+        edit(
+            "apply_geometry_repair",
+            json!({"plan_hash":{"type":"string","pattern":"^[a-f0-9]{64}$"},"repairs":repairs_schema()}),
+            &["plan_hash", "repairs"],
+        ),
+        edit(
             "add_physical",
             json!({"name":name,"discipline":discipline,"start":point,"end":point,"role":role,"material_id":optional(&id),"environment_id":optional(&id)}),
             &["name", "discipline", "start", "end", "role"],
@@ -208,4 +233,21 @@ pub(super) fn edit_schema() -> Value {
         ),
     ];
     json!({"oneOf":variants})
+}
+
+pub(super) fn tolerances_schema() -> Value {
+    let length = json!({"type":"number","minimum":1e-12,"maximum":10});
+    object(
+        json!({"selection_m":length,"topology_m":length,"mesh_m":length,"analysis_m":length}),
+        &["selection_m", "topology_m", "mesh_m", "analysis_m"],
+    )
+}
+pub(super) fn repairs_schema() -> Value {
+    let id = json!({"type":"string","format":"uuid"});
+    let reason = json!({"type":"string","minLength":1,"maxLength":160});
+    let point = json!({"type":"array","minItems":3,"maxItems":3,"items":{"type":"number"}});
+    json!({"type":"array","minItems":1,"maxItems":128,"items":{"oneOf":[
+        tagged("repair","snap_endpoint",json!({"object_id":id,"endpoint":{"type":"string","enum":["start","end"]},"target_m":point,"reason":reason}),&["object_id","endpoint","target_m","reason"]),
+        tagged("repair","connect_ports",json!({"network_id":id,"from_port":id,"to_port":id,"reason":reason}),&["network_id","from_port","to_port","reason"])
+    ]}})
 }

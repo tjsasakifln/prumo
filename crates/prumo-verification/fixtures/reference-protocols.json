@@ -1,0 +1,299 @@
+[
+  {
+    "schema_version": 1,
+    "id": "beam-cantilever-v1",
+    "title": "Viga em balanço com força na ponta",
+    "domain": "structural_mechanics_fixture",
+    "requirements": [
+      "PRU-008",
+      "REQ-07",
+      "REQ-15"
+    ],
+    "critical": true,
+    "inputs": {
+      "length": {
+        "value": 2,
+        "unit": "metre"
+      },
+      "young_modulus": {
+        "value": 200000000000,
+        "unit": "pascal"
+      },
+      "inertia": {
+        "value": 8e-06,
+        "unit": "metre_to_fourth"
+      },
+      "tip_force_down": {
+        "value": 1000,
+        "unit": "newton"
+      }
+    },
+    "assumptions": [
+      "Euler-Bernoulli linear, EI constante, pequenas rotações, encastre perfeito.",
+      "Força positiva para baixo; rotação positiva horária; deformação por corte não incluída.",
+      "Fixture para verificar infraestrutura e álgebra; não executa projeto do usuário."
+    ],
+    "reference": {
+      "title": "Derivação própria por equilíbrio e energia elástica",
+      "citation": "https://ocw.mit.edu/courses/2-080j-structural-mechanics-fall-2013/resources/mit2_080jf13_lecture8/",
+      "method": "Integração fechada/força unitária; valores gravados previamente em arquivo de protocolo",
+      "derivation": "EI=1600000 N*m². Integração da curvatura: v=P*L³/(3EI)=1/600 m; theta=P*L²/(2EI)=1/800 rad. Valores positivos para baixo e rotação horária.",
+      "data_license": "Dados e derivação originais do Prumo; fonte externa citada apenas como referência bibliográfica, sem copiar notas ou base de terceiros.",
+      "implementation_lineage": [
+        "closed-form-manual-derivation-v1"
+      ],
+      "independence_assessment": "Valores de referência são literais derivados por integração/energia e não chamam nalgebra, o adaptador linear nem a montagem de matriz de fixtures. Compartilham hipóteses físicas declaradas, não o código numérico."
+    },
+    "expected": {
+      "kind": "results",
+      "targets": {
+        "tip_down": {
+          "quantity": "length",
+          "expected": {
+            "value": 0.0016666666666666668,
+            "unit": "metre"
+          },
+          "tolerance": {
+            "absolute": 1e-12,
+            "relative": 1e-09,
+            "reference_scale": 0.01,
+            "rationale": "Limite de software fixado antes da execução: 1e-12 na unidade declarada + 1e-9 vezes escala fixa. Caso linear elementar de solução fechada, sem erro de discretização do alvo; não é tolerância normativa."
+          }
+        },
+        "tip_clockwise_rotation": {
+          "quantity": "angle",
+          "expected": {
+            "value": 0.00125,
+            "unit": "radian"
+          },
+          "tolerance": {
+            "absolute": 1e-12,
+            "relative": 1e-09,
+            "reference_scale": 0.01,
+            "rationale": "Limite de software fixado antes da execução: 1e-12 na unidade declarada + 1e-9 vezes escala fixa. Caso linear elementar de solução fechada, sem erro de discretização do alvo; não é tolerância normativa."
+          }
+        }
+      },
+      "classifications": {}
+    }
+  },
+  {
+    "schema_version": 1,
+    "id": "truss-v-v1",
+    "title": "Treliça simétrica com duas barras 3-4-5",
+    "domain": "structural_mechanics_fixture",
+    "requirements": [
+      "PRU-008",
+      "REQ-07",
+      "REQ-15"
+    ],
+    "critical": true,
+    "inputs": {
+      "half_span": {
+        "value": 3,
+        "unit": "metre"
+      },
+      "height": {
+        "value": 4,
+        "unit": "metre"
+      },
+      "young_modulus": {
+        "value": 200000000000,
+        "unit": "pascal"
+      },
+      "area": {
+        "value": 0.001,
+        "unit": "square_metre"
+      },
+      "apex_force_down": {
+        "value": 1000,
+        "unit": "newton"
+      }
+    },
+    "assumptions": [
+      "Duas barras articuladas, apoios fixos em (-3,0) e (3,0), nó carregado em (0,4).",
+      "Apenas deformação axial linear, força vertical para baixo, sem flexão nem segunda ordem.",
+      "Fixture para verificar infraestrutura e álgebra; não executa projeto do usuário."
+    ],
+    "reference": {
+      "title": "Derivação própria por equilíbrio e energia elástica",
+      "citation": "https://ocw.mit.edu/courses/2-080j-structural-mechanics-fall-2013/resources/mit2_080jf13_lecture8/",
+      "method": "Integração fechada/força unitária; valores gravados previamente em arquivo de protocolo",
+      "derivation": "L=5m; sin=4/5; EA=200000000N. Equilíbrio N=P/(2*sin)=625N de compressão em cada barra; trabalho virtual v=P*L/(2EA*sin²)=1/51200 m; deslocamento horizontal zero por simetria.",
+      "data_license": "Dados e derivação originais do Prumo; fonte externa citada apenas como referência bibliográfica, sem copiar notas ou base de terceiros.",
+      "implementation_lineage": [
+        "closed-form-manual-derivation-v1"
+      ],
+      "independence_assessment": "Valores de referência são literais derivados por integração/energia e não chamam nalgebra, o adaptador linear nem a montagem de matriz de fixtures. Compartilham hipóteses físicas declaradas, não o código numérico."
+    },
+    "expected": {
+      "kind": "results",
+      "targets": {
+        "apex_horizontal": {
+          "quantity": "length",
+          "expected": {
+            "value": 0,
+            "unit": "metre"
+          },
+          "tolerance": {
+            "absolute": 1e-12,
+            "relative": 1e-09,
+            "reference_scale": 0.001,
+            "rationale": "Limite de software fixado antes da execução: 1e-12 na unidade declarada + 1e-9 vezes escala fixa. Caso linear elementar de solução fechada, sem erro de discretização do alvo; não é tolerância normativa."
+          }
+        },
+        "apex_down": {
+          "quantity": "length",
+          "expected": {
+            "value": 1.953125e-05,
+            "unit": "metre"
+          },
+          "tolerance": {
+            "absolute": 1e-12,
+            "relative": 1e-09,
+            "reference_scale": 0.001,
+            "rationale": "Limite de software fixado antes da execução: 1e-12 na unidade declarada + 1e-9 vezes escala fixa. Caso linear elementar de solução fechada, sem erro de discretização do alvo; não é tolerância normativa."
+          }
+        }
+      },
+      "classifications": {}
+    }
+  },
+  {
+    "schema_version": 1,
+    "id": "frame-l-v1",
+    "title": "Pórtico plano em L com encastre na base",
+    "domain": "structural_mechanics_fixture",
+    "requirements": [
+      "PRU-008",
+      "REQ-07",
+      "REQ-15"
+    ],
+    "critical": true,
+    "inputs": {
+      "column_height": {
+        "value": 3,
+        "unit": "metre"
+      },
+      "beam_span": {
+        "value": 4,
+        "unit": "metre"
+      },
+      "young_modulus": {
+        "value": 200000000000,
+        "unit": "pascal"
+      },
+      "area": {
+        "value": 0.001,
+        "unit": "square_metre"
+      },
+      "inertia": {
+        "value": 8e-06,
+        "unit": "metre_to_fourth"
+      },
+      "tip_force_y": {
+        "value": -1000,
+        "unit": "newton"
+      }
+    },
+    "assumptions": [
+      "Coluna vertical (0,0)-(0,3), viga horizontal (0,3)-(4,3), ligação rígida, base encastrada.",
+      "Euler-Bernoulli linear, EA e EI constantes, deformação axial incluída, deformação por corte e segunda ordem excluídas.",
+      "Eixo x para direita, y para cima, rotação anti-horária positiva; força Fy=-1000N.",
+      "Fixture de seis graus de liberdade livres; rotações escaladas por comprimento de referência de 1 m."
+    ],
+    "reference": {
+      "title": "Derivação própria por equilíbrio e energia elástica",
+      "citation": "https://ocw.mit.edu/courses/2-080j-structural-mechanics-fall-2013/resources/mit2_080jf13_lecture8/",
+      "method": "Integração fechada/força unitária; valores gravados previamente em arquivo de protocolo",
+      "derivation": "H=3m; L=4m; P=1000N para baixo; EI=1600000Nm²; EA=200000000N. Trabalho virtual: ux=P*L*H²/(2EI)=0.01125m. uy=-P*(L³/(3EI)+L²*H/EI+H/EA)=-0.043348333333333333m. theta=-P*(L²/(2EI)+L*H/EI)=-0.0125rad. Inclui encurtamento axial da coluna.",
+      "data_license": "Dados e derivação originais do Prumo; fonte externa citada apenas como referência bibliográfica, sem copiar notas ou base de terceiros.",
+      "implementation_lineage": [
+        "closed-form-manual-derivation-v1"
+      ],
+      "independence_assessment": "Valores de referência são literais derivados por integração/energia e não chamam nalgebra, o adaptador linear nem a montagem de matriz de fixtures. Compartilham hipóteses físicas declaradas, não o código numérico."
+    },
+    "expected": {
+      "kind": "results",
+      "targets": {
+        "tip_x": {
+          "quantity": "length",
+          "expected": {
+            "value": 0.01125,
+            "unit": "metre"
+          },
+          "tolerance": {
+            "absolute": 1e-12,
+            "relative": 1e-09,
+            "reference_scale": 0.1,
+            "rationale": "Limite de software fixado antes da execução: 1e-12 na unidade declarada + 1e-9 vezes escala fixa. Caso linear elementar de solução fechada, sem erro de discretização do alvo; não é tolerância normativa."
+          }
+        },
+        "tip_y": {
+          "quantity": "length",
+          "expected": {
+            "value": -0.04334833333333333,
+            "unit": "metre"
+          },
+          "tolerance": {
+            "absolute": 1e-12,
+            "relative": 1e-09,
+            "reference_scale": 0.1,
+            "rationale": "Limite de software fixado antes da execução: 1e-12 na unidade declarada + 1e-9 vezes escala fixa. Caso linear elementar de solução fechada, sem erro de discretização do alvo; não é tolerância normativa."
+          }
+        },
+        "tip_rotation": {
+          "quantity": "angle",
+          "expected": {
+            "value": -0.0125,
+            "unit": "radian"
+          },
+          "tolerance": {
+            "absolute": 1e-12,
+            "relative": 1e-09,
+            "reference_scale": 0.1,
+            "rationale": "Limite de software fixado antes da execução: 1e-12 na unidade declarada + 1e-9 vezes escala fixa. Caso linear elementar de solução fechada, sem erro de discretização do alvo; não é tolerância normativa."
+          }
+        }
+      },
+      "classifications": {}
+    }
+  },
+  {
+    "schema_version": 1,
+    "id": "mechanism-v1",
+    "title": "Mecanismo singular deve ser recusado",
+    "domain": "structural_mechanics_fixture",
+    "requirements": [
+      "PRU-008",
+      "REQ-07",
+      "REQ-15"
+    ],
+    "critical": true,
+    "inputs": {
+      "dimensionless_coefficient": {
+        "value": 1,
+        "unit": "one"
+      }
+    },
+    "assumptions": [
+      "Ensaio algébrico independente com matriz simétrica singular em N/m e carga [1,0]N.",
+      "O diagnóstico de mecanismo é negativo esperado; sua rejeição correta não libera cálculo."
+    ],
+    "reference": {
+      "title": "Derivação própria por equilíbrio e energia elástica",
+      "citation": "https://ocw.mit.edu/courses/2-080j-structural-mechanics-fall-2013/resources/mit2_080jf13_lecture8/",
+      "method": "Integração fechada/força unitária; valores gravados previamente em arquivo de protocolo",
+      "derivation": "Matriz [[1,1],[1,1]] tem determinante zero e vetor nulo [1,-1]. Não há solução única para os deslocamentos. Rejeição obrigatória, sem estabilização artificial.",
+      "data_license": "Dados e derivação originais do Prumo; fonte externa citada apenas como referência bibliográfica, sem copiar notas ou base de terceiros.",
+      "implementation_lineage": [
+        "closed-form-manual-derivation-v1"
+      ],
+      "independence_assessment": "Valores de referência são literais derivados por integração/energia e não chamam nalgebra, o adaptador linear nem a montagem de matriz de fixtures. Compartilham hipóteses físicas declaradas, não o código numérico."
+    },
+    "expected": {
+      "kind": "rejection",
+      "code": "not_positive_definite"
+    }
+  }
+]

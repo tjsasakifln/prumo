@@ -15,7 +15,9 @@ mod package;
 mod store;
 
 pub use package::{decode_package, encode_package, encode_validated_package};
-pub use store::{SQLiteWorkingStore, restore_database};
+pub use store::{
+    JournalEntry, SQLiteWorkingStore, database_journal, database_revision, restore_database,
+};
 
 pub const CONTAINER_VERSION: u32 = 1;
 pub const DATABASE_VERSION: u32 = 1;

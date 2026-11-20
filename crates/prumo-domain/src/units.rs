@@ -11,9 +11,14 @@ use uom::si::{
     torque::{kilonewton_meter, newton_meter},
 };
 
-#[derive(Clone, Copy, Debug, Deserialize, PartialEq, Serialize)]
-#[serde(try_from = "[f64; 3]", into = "[f64; 3]")]
+#[derive(Clone, Copy, Debug, PartialEq, Serialize)]
+#[serde(into = "[f64; 3]")]
 pub struct Point3([f64; 3]);
+impl<'de> Deserialize<'de> for Point3 {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        Self::try_from(crate::numeric::vector3(deserializer)?).map_err(serde::de::Error::custom)
+    }
+}
 impl Point3 {
     pub const ORIGIN: Self = Self([0.0; 3]);
     pub const fn as_array(self) -> [f64; 3] {
@@ -50,6 +55,7 @@ impl Index<usize> for Point3 {
 #[derive(Clone, Copy, Debug, Deserialize, PartialEq, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct PointInput {
+    #[serde(deserialize_with = "crate::numeric::vector3")]
     pub values: [f64; 3],
     pub unit: LengthUnit,
 }
@@ -96,24 +102,28 @@ pub enum DensityUnit {
 #[derive(Clone, Copy, Debug, Deserialize, PartialEq, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct ForceInput {
+    #[serde(deserialize_with = "crate::numeric::vector3")]
     pub values: [f64; 3],
     pub unit: ForceUnit,
 }
 #[derive(Clone, Copy, Debug, Deserialize, PartialEq, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct MomentInput {
+    #[serde(deserialize_with = "crate::numeric::vector3")]
     pub values: [f64; 3],
     pub unit: MomentUnit,
 }
 #[derive(Clone, Copy, Debug, Deserialize, PartialEq, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct PressureInput {
+    #[serde(deserialize_with = "crate::numeric::scalar")]
     pub value: f64,
     pub unit: PressureUnit,
 }
 #[derive(Clone, Copy, Debug, Deserialize, PartialEq, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct DensityInput {
+    #[serde(deserialize_with = "crate::numeric::scalar")]
     pub value: f64,
     pub unit: DensityUnit,
 }
@@ -273,9 +283,15 @@ fn clean_zero(value: f64) -> f64 {
 // explicitly name SI (as rotation_radians does); user conversion uses new(value,unit).
 macro_rules! scalar_si {
     ($name:ident,$minimum:expr,$maximum:expr) => {
-        #[derive(Clone, Copy, Debug, Deserialize, PartialEq, Serialize)]
-        #[serde(try_from = "f64", into = "f64")]
+        #[derive(Clone, Copy, Debug, PartialEq, Serialize)]
+        #[serde(into = "f64")]
         pub struct $name(f64);
+        impl<'de> Deserialize<'de> for $name {
+            fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+                Self::try_from(crate::numeric::scalar(deserializer)?)
+                    .map_err(serde::de::Error::custom)
+            }
+        }
         impl $name {
             pub const fn si(self) -> f64 {
                 self.0

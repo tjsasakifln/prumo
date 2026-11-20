@@ -1,5 +1,8 @@
 #![forbid(unsafe_code)]
-use prumo_app::{AccessMode, ProjectService};
+use prumo_app::{
+    ProjectService,
+    access::{AccessScope, ProjectGrant},
+};
 use prumo_domain::Project;
 use prumo_domain::components::QualificationReport;
 use prumo_domain::storage::{StorageAction, StorageState};
@@ -53,6 +56,9 @@ impl Desktop {
     }
 
     fn select(&mut self, path: PathBuf, report_missing: bool) {
+        self.view.transactions = Default::default();
+        self.view.geometry = Default::default();
+        self.view.catalogue = Default::default();
         self.qualification = None;
         self.view.components = Default::default();
         self.view.registry = Default::default();
@@ -62,7 +68,19 @@ impl Desktop {
         let selected_path = path.to_string_lossy().into_owned();
         self.view.path = selected_path.clone();
         self.view.selected_path.clear();
-        match ProjectService::open(path, AccessMode::ReadWrite, "interface-local") {
+        match ProjectService::open_scoped(
+            path,
+            ProjectGrant {
+                project_id: None,
+                scopes: vec![
+                    AccessScope::Read,
+                    AccessScope::Model,
+                    AccessScope::Calculation,
+                ],
+                disciplines: None,
+            },
+            "interface-local",
+        ) {
             Ok(service) => {
                 match service.read_with_basis() {
                     Ok((project, hash)) => {
@@ -91,6 +109,7 @@ impl Desktop {
                 self.refresh_storage();
                 if self.project.is_some() {
                     self.refresh_registry();
+                    self.refresh_transactions();
                 }
             }
             Err(error) => {
@@ -119,7 +138,136 @@ impl Desktop {
 
     pub fn dispatch(&mut self, action: UiAction) {
         match action {
+            UiAction::RefreshTransactions => self.refresh_transactions(),
+            UiAction::PreviewTransaction(request) => {
+                match self
+                    .editor_service()
+                    .and_then(|s| s.preview_transaction(*request))
+                {
+                    Ok(preview) => {
+                        self.view.transactions.preview = Some(preview);
+                        self.view.report(
+                            "Prévia do lote pronta. Confira as alterações antes de aplicar.",
+                            false,
+                        );
+                    }
+                    Err(error) => self.view.report(error.to_string(), true),
+                }
+            }
+            UiAction::ApplyTransaction(hash) => {
+                let result = self
+                    .editor_service()
+                    .and_then(|s| s.apply_transaction(&hash));
+                self.finish_transaction(result);
+            }
+            UiAction::UndoTransaction(request) => {
+                let result = self
+                    .editor_service()
+                    .and_then(|s| s.undo_transaction(*request));
+                self.finish_transaction(result);
+            }
+            UiAction::RedoTransaction(request) => {
+                let result = self
+                    .editor_service()
+                    .and_then(|s| s.redo_transaction(*request));
+                self.finish_transaction(result);
+            }
+            UiAction::InspectGeometry(filter) => {
+                self.view.geometry.report = None;
+                match self
+                    .editor_service()
+                    .and_then(|s| s.geometry_report(&filter))
+                {
+                    Ok(report) => {
+                        self.view.geometry.report = Some(report);
+                        self.view.report("Inspeção geométrica concluída.", false);
+                    }
+                    Err(error) => self.view.report(error.to_string(), true),
+                }
+            }
+            UiAction::PreviewGeometry(repairs) => {
+                self.view.geometry.preview = None;
+                match self
+                    .editor_service()
+                    .and_then(|s| s.geometry_repair_preview(&repairs))
+                {
+                    Ok(preview) => {
+                        self.view.geometry.preview = Some(preview);
+                        self.view.report(
+                            "Confira dimensões e conexões antes de aplicar a correção.",
+                            false,
+                        );
+                    }
+                    Err(error) => self.view.report(error.to_string(), true),
+                }
+            }
+            UiAction::InspectFace(face) => {
+                self.view.geometry.face_report = None;
+                match self
+                    .editor_service()
+                    .and_then(|s| s.inspect_geometry_face(&face))
+                {
+                    Ok(report) => {
+                        self.view.geometry.face_report = Some(report);
+                        self.view.report("Conferência da face concluída.", false);
+                    }
+                    Err(error) => self.view.report(error.to_string(), true),
+                }
+            }
+            UiAction::RunVerification => {
+                self.view.geometry.verification = None;
+                match self
+                    .editor_service()
+                    .and_then(|s| s.run_verification_suite())
+                {
+                    Ok(report) => {
+                        let passed = report.passed();
+                        match serde_json::to_value(report) {
+                            Ok(value) => {
+                                self.view.geometry.verification = Some(value);
+                                self.view.report(if passed {"Casos de referência aprovados. Não houve cálculo do projeto."}else{"A bateria encontrou falhas. Confira os casos."},!passed);
+                            }
+                            Err(error) => self.view.report(error.to_string(), true),
+                        }
+                    }
+                    Err(error) => self.view.report(error.to_string(), true),
+                }
+            }
             UiAction::RunQualification => self.start_qualification(),
+            UiAction::AnalyseCatalogueSection(id) => {
+                self.view.catalogue.section_report = None;
+                match self.editor_service().and_then(|s| s.catalogue_section(id)) {
+                    Ok(report) => {
+                        match serde_json::to_value(report) {
+                            Ok(value) => {
+                                self.view.catalogue.section_report = Some(value);
+                                self.view.report("Propriedades calculadas. Confira método e convergência da torção.",false);
+                            }
+                            Err(error) => self.view.report(error.to_string(), true),
+                        }
+                    }
+                    Err(error) => self.view.report(error.to_string(), true),
+                }
+            }
+            UiAction::InspectCatalogueMaterial(id, conditions) => {
+                self.view.catalogue.material_report = None;
+                match self
+                    .editor_service()
+                    .and_then(|s| s.catalogue_material(id, &conditions))
+                {
+                    Ok(report) => match serde_json::to_value(report) {
+                        Ok(value) => {
+                            self.view.catalogue.material_report = Some(value);
+                            self.view.report(
+                                "Estado do material consultado nas condições informadas.",
+                                false,
+                            );
+                        }
+                        Err(error) => self.view.report(error.to_string(), true),
+                    },
+                    Err(error) => self.view.report(error.to_string(), true),
+                }
+            }
             UiAction::CancelQualification => {
                 if let Some(job) = &self.qualification {
                     job.cancel.store(true, Ordering::Release);
@@ -161,9 +309,12 @@ impl Desktop {
                             self.project = Some(project);
                             self.project_basis_sha256 = Some(hash);
                             self.view.model.trace.snapshot = None;
+                            self.view.geometry.clear_evidence();
+                            self.view.catalogue.clear_evidence();
                             self.view.report("Projeto reaberto do disco.", false);
                             self.refresh_registry();
                             self.refresh_storage();
+                            self.refresh_transactions();
                         }
                         Err(error) => {
                             self.clear_editor();
@@ -189,6 +340,18 @@ impl Desktop {
                 }
                 if creating && self.project.is_none() {
                     self.select(PathBuf::from(&self.view.path), false);
+                }
+                if self.view.transactions.should_stage(&command)
+                    && let Some(project) = &self.project
+                {
+                    match self.view.transactions.stage(project, *command) {
+                        Ok(()) => self.view.report(
+                            "Alteração adicionada ao lote. Confira a prévia antes de aplicar.",
+                            false,
+                        ),
+                        Err(error) => self.view.report(error, true),
+                    }
+                    return;
                 }
                 if let Some(service) = &self.service {
                     let service = if creating {
@@ -238,6 +401,9 @@ impl Desktop {
     }
 
     fn clear_editor(&mut self) {
+        self.view.transactions = Default::default();
+        self.view.geometry = Default::default();
+        self.view.catalogue = Default::default();
         self.clear_qualification();
         self.project = None;
         self.project_basis_sha256 = None;
@@ -251,6 +417,9 @@ impl Desktop {
                 self.view.project_name = project.name.clone();
                 self.project = Some(project);
                 self.project_basis_sha256 = Some(hash);
+                self.view.geometry.clear_evidence();
+                self.view.catalogue.clear_evidence();
+                self.refresh_transactions();
                 return true;
             }
             Some(Ok(_)) => "O arquivo mudou depois da operação. Reabra para conferir o projeto atual antes de editar.".into(),
@@ -261,6 +430,69 @@ impl Desktop {
         self.refresh_storage();
         self.view.report(message, true);
         false
+    }
+
+    fn editor_service(&self) -> Result<ProjectService, prumo_app::AppError> {
+        if self.view.path != self.view.selected_path {
+            return Err(prumo_app::AppError::InvalidInput(
+                "Abra o arquivo selecionado antes de continuar.".into(),
+            ));
+        }
+        let (project, hash) = self
+            .project
+            .as_ref()
+            .zip(self.project_basis_sha256.as_ref())
+            .ok_or_else(|| {
+                prumo_app::AppError::InvalidInput("Abra um projeto antes de continuar.".into())
+            })?;
+        self.service
+            .as_ref()
+            .ok_or(prumo_app::AppError::NotFound)?
+            .with_write_basis(project.id, hash.clone())
+    }
+
+    fn refresh_transactions(&mut self) {
+        if self.project.is_none() {
+            self.view.transactions.history = None;
+            return;
+        }
+        match self.editor_service().and_then(|s| s.transaction_history()) {
+            Ok(history) => self.view.transactions.history = Some(history),
+            Err(error) => {
+                self.view.transactions.history = None;
+                self.view.report(error.to_string(), true);
+            }
+        }
+    }
+
+    fn finish_transaction(
+        &mut self,
+        result: Result<prumo_domain::transactions::TransactionResult, prumo_app::AppError>,
+    ) {
+        match result {
+            Ok(result) => {
+                self.clear_qualification();
+                if !self.accept_saved_project(result.project) {
+                    return;
+                }
+                self.view.transactions.clear_pending();
+                self.refresh_registry();
+                self.refresh_storage();
+                self.refresh_transactions();
+                self.view.report(
+                    if result.replayed {
+                        "Operação já registrada. O projeto atual foi preservado."
+                    } else {
+                        "Operação salva com histórico e revisão atualizados."
+                    },
+                    false,
+                );
+            }
+            Err(error) => {
+                self.refresh_storage();
+                self.view.report(error.to_string(), true);
+            }
+        }
     }
 
     fn refresh_registry(&mut self) {
