@@ -19,6 +19,7 @@ mod browser {
         notice: String,
         graphics_error: Option<String>,
         rendered_revision: Option<(String, u64)>,
+        rendered_selection: Option<String>,
     }
 
     impl Default for WebState {
@@ -32,6 +33,7 @@ mod browser {
                 notice: String::new(),
                 graphics_error: None,
                 rendered_revision: None,
+                rendered_selection: None,
             }
         }
     }
@@ -158,7 +160,8 @@ mod browser {
             }
             let key = (project.id.to_string(), project.revision);
             let list = element("object-list")?.dyn_into::<web_sys::HtmlSelectElement>()?;
-            if state.rendered_revision.as_ref() != Some(&key) {
+            let revision_changed = state.rendered_revision.as_ref() != Some(&key);
+            if revision_changed {
                 list.set_text_content(None);
                 for object in &report.objects {
                     let option = document()?.create_element("option")?;
@@ -172,8 +175,17 @@ mod browser {
                 }
                 state.rendered_revision = Some(key);
             }
+            let selected_id = report.state.selected_id.map(|id| id.to_string());
+            if revision_changed || state.rendered_selection != selected_id {
+                // Preserve an unconfirmed DOM choice between model changes.
+                if let Some(id) = &selected_id {
+                    list.set_value(id);
+                } else {
+                    list.set_selected_index(-1);
+                }
+                state.rendered_selection = selected_id;
+            }
             if let Some(selected) = report.objects.iter().find(|o| o.selected) {
-                list.set_value(&selected.id.to_string());
                 element("object-details")?.set_text_content(Some(&format!(
                     "Selecionado: {}\nIdentidade: {}\n{}\n{}\nInício: {:?} m\nFim: {:?} m\nRelações analíticas: {}",
                     selected.name,

@@ -129,7 +129,7 @@ try {
   await call('Emulation.setDeviceMetricsOverride', { width: 1600, height: 1800, deviceScaleFactor: 1, mobile: false });
   await call('Page.navigate', { url: `${origin}/index.html` });
   await until(() => evaluate('document.body?.getAttribute("data-prumo-ready")==="true"'), 'Rust WebRunner initialized', 120000);
-  await evaluate('window.prumoTestModule = await import("./pkg/prumo_web.js"); true');
+  await evaluate('(async () => { window.prumoTestModule = await import("./pkg/prumo_web.js"); return true; })()');
   await evaluate(`document.getElementById('project-json').value=${JSON.stringify(fixtureText)};document.getElementById('load-project').focus();true`);
   await enter();
   const imported = await until(async () => { const r = await report(); return r.project_id === fixture.id ? r : false; }, 'native project imported');
@@ -157,10 +157,19 @@ try {
   await command({ action: 'select', object_id: elevated.id, reveal: true });
   await command({ action: 'hide_selected' });
   await command({ action: 'set_cut', cut: { axis: 'z', min_m: -0.2, max_m: 1 } });
+  const other = fixture.objects.find(object => object.id !== elevated.id);
+  assert(other, 'Gallery must contain another object for pending DOM selection');
+  await command({ action: 'select', object_id: other.id, reveal: false });
   await evaluate(`document.getElementById('object-list').value=${JSON.stringify(elevated.id)};document.getElementById('select-object').focus();true`);
+  await delay(500);
+  assert.equal(await evaluate('document.getElementById("object-list").value'), elevated.id,
+    'Unconfirmed DOM choice must survive the 150 ms render refresh');
+  assert.equal((await report()).state.selected_id, other.id,
+    'Choosing an option must not select the object before confirmation');
   await enter();
   let current = await report();
   assert.equal(current.state.selected_id, elevated.id);
+  assert.equal(current.snapshot_sha256, nativeSnapshot.sha256);
   assert.equal(current.state.cut, null);
   assert(!current.state.hidden_ids.includes(elevated.id));
   for (const view of ['plan', 'section', 'three_d']) {
@@ -168,6 +177,7 @@ try {
     assert.equal(current.state.selected_id, elevated.id);
   }
   checks.push('Tab/Enter, visible focus, object iteration, hidden selection and another floor preserve the same UUID across views.');
+  checks.push('A different UUID chosen in the DOM survives 500 ms of render refresh and is selected by Enter without changing the model snapshot.');
   const accessibility = await call('Accessibility.getFullAXTree');
   for (const label of ['Abrir projeto JSON', 'Selecionar e localizar', 'Ocultar seleção', 'Restaurar vista gráfica']) {
     assert(accessibility.nodes.some(node => node.name?.value === label && !node.ignored), `Accessible label absent: ${label}`);
