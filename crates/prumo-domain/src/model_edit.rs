@@ -105,6 +105,9 @@ fn active_values(project: &Project) -> Result<BTreeMap<Uuid, serde_json::Value>,
     collect!(&project.model.links);
     collect!(&project.model.materials);
     collect!(&project.model.actions);
+    values.extend(crate::layout::active_values(project)?);
+    values.extend(crate::surfaces::active_values(project)?);
+    values.extend(crate::assemblies::active_values(project)?);
     for (id, versions) in crate::catalogue::project_catalogue(project)?.entries {
         if let Some(version) = versions.last() {
             values.insert(
@@ -162,8 +165,21 @@ fn edit_inner(
     revision: u64,
 ) -> Result<(), DomainError> {
     match edit {
+        ModelEdit::EditLayout { command } => {
+            crate::layout::apply(project, command, actor, revision)?;
+        }
+        ModelEdit::EditFraming { command } => {
+            crate::framing::apply(project, command, actor, revision)?;
+        }
+        ModelEdit::EditSurfaces { command } => {
+            crate::surfaces::apply(project, command, actor, revision)?;
+        }
+        ModelEdit::EditAssemblies { command } => {
+            crate::assemblies::apply(project, command, actor, revision)?;
+        }
         ModelEdit::PutCatalogEntry { entry } => {
             crate::catalogue::put_entry(project, entry, actor, revision)?;
+            crate::framing::regenerate_layout_dependents(project)?;
         }
         ModelEdit::AssignCatalogEntry {
             object_id,

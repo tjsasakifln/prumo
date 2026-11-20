@@ -158,6 +158,10 @@ impl ProjectGrant {
         self.check_scope(AccessScope::Model)?;
         self.check_project(project)?;
         match edit {
+            ModelEdit::EditLayout { .. } => self.check_all_disciplines(),
+            ModelEdit::EditFraming { .. }
+            | ModelEdit::EditSurfaces { .. }
+            | ModelEdit::EditAssemblies { .. } => self.check_discipline(Discipline::Structure),
             ModelEdit::AddPhysical { discipline, .. }
             | ModelEdit::AddNetwork { discipline, .. } => self.check_discipline(*discipline),
             ModelEdit::SetPhysicalGeometry { object_id, .. }
@@ -464,6 +468,9 @@ impl ProjectGrant {
                     .iter()
                     .any(|member| member.id == id)
                 || project.model.actions.iter().any(|action| action.id == id)
+                || prumo_domain::surfaces::analytical_region_ids(project)
+                    .map_err(crate::invalid_input)?
+                    .contains(&id)
             {
                 found = true;
                 self.check_discipline(Discipline::Structure)?;

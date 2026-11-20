@@ -15,6 +15,7 @@ serde_json.workspace = true
 [dev-dependencies]
 egui_kittest = "=0.37.0"
 tempfile.workspace = true
+image = { version = "=0.25.10", default-features = false, features = ["png"] }
 
 [lints]
 workspace = true

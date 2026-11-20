@@ -94,6 +94,26 @@ pub(super) fn edit_schema() -> Value {
     );
     let variants = vec![
         edit(
+            "edit_surfaces",
+            json!({"command":super::surface_assembly_schema::surface_edit()}),
+            &["command"],
+        ),
+        edit(
+            "edit_assemblies",
+            json!({"command":super::surface_assembly_schema::assembly_edit()}),
+            &["command"],
+        ),
+        edit(
+            "edit_framing",
+            json!({"command":super::authoring_schema::framing_edit()}),
+            &["command"],
+        ),
+        edit(
+            "edit_layout",
+            json!({"command":super::authoring_schema::layout_edit()}),
+            &["command"],
+        ),
+        edit(
             "put_catalog_entry",
             json!({"entry":super::catalogue_schema::entry()}),
             &["entry"],

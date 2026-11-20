@@ -1,10 +1,10 @@
 # Prumo: third-party notices
 
-This file preserves license texts and attributions for the normal/build dependency graph of the Windows and Linux development binaries. Build tools are included conservatively; a listed component is not necessarily linked into every executable. The complete locked inventory also identifies test and other-platform dependencies separately.
+This file preserves license texts and attributions for the normal/build dependency graphs of the Windows and Linux development binaries and the prumo-web WASM viewer. Build tools are included conservatively; a listed component is not necessarily linked into every executable. The complete locked inventory identifies each native or web target and test-only dependencies separately.
 
 The Prumo product license is not defined by these third-party licenses. No dependency has been patched in this release. The original texts below govern the respective components; SPDX metadata alone is not a replacement for their conditions.
 
-Cargo.lock SHA-256: `06dff64da067dd52b837939d1678b42679a491c6483972df708fe07ef576f81f`
+Cargo.lock SHA-256: `778f54ea7dcdb269a7c8d05af0c4e58878be4c450ab62859249aba1578c7cb5c`
 
 ## Component inventory
 
@@ -41,6 +41,7 @@ Cargo.lock SHA-256: `06dff64da067dd52b837939d1678b42679a491c6483972df708fe07ef57
 | [bitflags 2.13.2](https://crates.io/crates/bitflags/2.13.2) | MIT OR Apache-2.0 | [143368af9701](#license-143368af9701), [6485b8ed310d](#license-6485b8ed310d) |
 | [block-buffer 0.12.1](https://crates.io/crates/block-buffer/0.12.1) | MIT OR Apache-2.0 | [6aed14a79871](#license-6aed14a79871), [98181e7249d0](#license-98181e7249d0) |
 | [blocking 1.7.0](https://crates.io/crates/blocking/1.7.0) | Apache-2.0 OR MIT | [143368af9701](#license-143368af9701), [23f18e03dc49](#license-23f18e03dc49) |
+| [bumpalo 3.20.4](https://crates.io/crates/bumpalo/3.20.4) | MIT OR Apache-2.0 | [143368af9701](#license-143368af9701), [65f94e99ddaf](#license-65f94e99ddaf) |
 | [bytemuck 1.25.2](https://crates.io/crates/bytemuck/1.25.2) | Zlib OR Apache-2.0 OR MIT | [84b34dd7608f](#license-84b34dd7608f), [9df9ba60a11a](#license-9df9ba60a11a), [e3ba223bb142](#license-e3ba223bb142) |
 | [bytemuck_derive 1.12.1](https://crates.io/crates/bytemuck_derive/1.12.1) | Zlib OR Apache-2.0 OR MIT | [84b34dd7608f](#license-84b34dd7608f), [9df9ba60a11a](#license-9df9ba60a11a), [e3ba223bb142](#license-e3ba223bb142) |
 | [byteorder 1.5.0](https://crates.io/crates/byteorder/1.5.0) | Unlicense OR MIT | [01c266bced4a](#license-01c266bced4a), [0f96a83840e1](#license-0f96a83840e1), [7e12e5df4bae](#license-7e12e5df4bae) |
@@ -138,6 +139,7 @@ Cargo.lock SHA-256: `06dff64da067dd52b837939d1678b42679a491c6483972df708fe07ef57
 | [itertools 0.10.5](https://crates.io/crates/itertools/0.10.5) | MIT/Apache-2.0 | [0fe0711e6ea5](#license-0fe0711e6ea5), [143368af9701](#license-143368af9701), [7576269ea71f](#license-7576269ea71f), [997db1182c3e](#license-997db1182c3e) |
 | [itertools 0.15.0](https://crates.io/crates/itertools/0.15.0) | MIT OR Apache-2.0 | [0fe0711e6ea5](#license-0fe0711e6ea5), [143368af9701](#license-143368af9701), [7576269ea71f](#license-7576269ea71f), [997db1182c3e](#license-997db1182c3e) |
 | [itoa 1.0.19](https://crates.io/crates/itoa/1.0.19) | MIT OR Apache-2.0 | [23f18e03dc49](#license-23f18e03dc49), [b30df9a48463](#license-b30df9a48463) |
+| [js-sys 0.3.107](https://crates.io/crates/js-sys/0.3.107) | MIT OR Apache-2.0 | [143368af9701](#license-143368af9701), [378f5840b258](#license-378f5840b258) |
 | [khronos_api 3.1.0](https://crates.io/crates/khronos_api/3.1.0) | Apache-2.0 | [2a764db352cd](#license-2a764db352cd), [4ce88f0637f0](#license-4ce88f0637f0), [5edb419e1b27](#license-5edb419e1b27), [5f662e07664a](#license-5f662e07664a), [9212f132e266](#license-9212f132e266), [9cdac79785d2](#license-9cdac79785d2), [a09477db5410](#license-a09477db5410), [af975c9737b3](#license-af975c9737b3), [b75d99c54385](#license-b75d99c54385), [b8c8d843c95d](#license-b8c8d843c95d), [bf4da21bd20b](#license-bf4da21bd20b) |
 | [kurbo 0.13.1](https://crates.io/crates/kurbo/0.13.1) | Apache-2.0 OR MIT | [23c23145f6ea](#license-23c23145f6ea), [50e6751797c5](#license-50e6751797c5) |
 | [lazy_static 1.5.1](https://crates.io/crates/lazy_static/1.5.1) | MIT OR Apache-2.0 | [05f5185ee577](#license-05f5185ee577), [143368af9701](#license-143368af9701), [23f18e03dc49](#license-23f18e03dc49) |
@@ -221,6 +223,7 @@ Cargo.lock SHA-256: `06dff64da067dd52b837939d1678b42679a491c6483972df708fe07ef57
 | [scopeguard 1.2.0](https://crates.io/crates/scopeguard/1.2.0) | MIT OR Apache-2.0 | [143368af9701](#license-143368af9701), [fb77f0a9c53e](#license-fb77f0a9c53e) |
 | [self_cell 1.3.0](https://crates.io/crates/self_cell/1.3.0) | Apache-2.0 OR GPL-2.0-only | [50e6751797c5](#license-50e6751797c5), [b90ed8150a6d](#license-b90ed8150a6d) |
 | [semver 1.0.28](https://crates.io/crates/semver/1.0.28) | MIT OR Apache-2.0 | [23f18e03dc49](#license-23f18e03dc49), [b30df9a48463](#license-b30df9a48463) |
+| [send_wrapper 0.6.0](https://crates.io/crates/send_wrapper/0.6.0) | MIT/Apache-2.0 | [143368af9701](#license-143368af9701), [23f18e03dc49](#license-23f18e03dc49) |
 | [serde 1.0.229](https://crates.io/crates/serde/1.0.229) | MIT OR Apache-2.0 | [23f18e03dc49](#license-23f18e03dc49), [b30df9a48463](#license-b30df9a48463) |
 | [serde_core 1.0.229](https://crates.io/crates/serde_core/1.0.229) | MIT OR Apache-2.0 | [23f18e03dc49](#license-23f18e03dc49), [b30df9a48463](#license-b30df9a48463) |
 | [serde_derive 1.0.229](https://crates.io/crates/serde_derive/1.0.229) | MIT OR Apache-2.0 | [23f18e03dc49](#license-23f18e03dc49), [b30df9a48463](#license-b30df9a48463) |
@@ -236,6 +239,7 @@ Cargo.lock SHA-256: `06dff64da067dd52b837939d1678b42679a491c6483972df708fe07ef57
 | [siphasher 1.0.4](https://crates.io/crates/siphasher/1.0.4) | MIT OR Apache-2.0 | [50e6751797c5](#license-50e6751797c5), [c962ee4d1d05](#license-c962ee4d1d05), [f9c4c77baa38](#license-f9c4c77baa38) |
 | [skrifa 0.44.0](https://crates.io/crates/skrifa/0.44.0) | MIT OR Apache-2.0 | [7b4c9a3946df](#license-7b4c9a3946df), [eba684204073](#license-eba684204073) |
 | [slab 0.4.12](https://crates.io/crates/slab/0.4.12) | MIT | [8ce0830173fd](#license-8ce0830173fd) |
+| [slotmap 1.1.1](https://crates.io/crates/slotmap/1.1.1) | Zlib | [6cec81441b2a](#license-6cec81441b2a) |
 | [smallvec 1.16.5](https://crates.io/crates/smallvec/1.16.5) | MIT OR Apache-2.0 | [0b28172679e0](#license-0b28172679e0), [143368af9701](#license-143368af9701) |
 | [smithay-client-toolkit 0.19.2](https://crates.io/crates/smithay-client-toolkit/0.19.2) | MIT | [4b71658d3410](#license-4b71658d3410) |
 | [smol_str 0.2.2](https://crates.io/crates/smol_str/0.2.2) | MIT OR Apache-2.0 | [143368af9701](#license-143368af9701), [23f18e03dc49](#license-23f18e03dc49) |
@@ -275,6 +279,11 @@ Cargo.lock SHA-256: `06dff64da067dd52b837939d1678b42679a491c6483972df708fe07ef57
 | [vello_common 0.2.0](https://crates.io/crates/vello_common/0.2.0) | Apache-2.0 OR MIT | [adf157330f72](#license-adf157330f72), [bb28c48e3e07](#license-bb28c48e3e07) |
 | [vello_cpu 0.2.0](https://crates.io/crates/vello_cpu/0.2.0) | Apache-2.0 OR MIT | [adf157330f72](#license-adf157330f72), [bb28c48e3e07](#license-bb28c48e3e07) |
 | [version_check 0.9.5](https://crates.io/crates/version_check/0.9.5) | MIT/Apache-2.0 | [143368af9701](#license-143368af9701), [b7e650f3fce5](#license-b7e650f3fce5) |
+| [wasm-bindgen 0.2.130](https://crates.io/crates/wasm-bindgen/0.2.130) | MIT OR Apache-2.0 | [143368af9701](#license-143368af9701), [378f5840b258](#license-378f5840b258) |
+| [wasm-bindgen-futures 0.4.80](https://crates.io/crates/wasm-bindgen-futures/0.4.80) | MIT OR Apache-2.0 | [143368af9701](#license-143368af9701), [378f5840b258](#license-378f5840b258) |
+| [wasm-bindgen-macro 0.2.130](https://crates.io/crates/wasm-bindgen-macro/0.2.130) | MIT OR Apache-2.0 | [143368af9701](#license-143368af9701), [378f5840b258](#license-378f5840b258) |
+| [wasm-bindgen-macro-support 0.2.130](https://crates.io/crates/wasm-bindgen-macro-support/0.2.130) | MIT OR Apache-2.0 | [143368af9701](#license-143368af9701), [378f5840b258](#license-378f5840b258) |
+| [wasm-bindgen-shared 0.2.130](https://crates.io/crates/wasm-bindgen-shared/0.2.130) | MIT OR Apache-2.0 | [143368af9701](#license-143368af9701), [378f5840b258](#license-378f5840b258) |
 | [wasmi 2.0.0](https://crates.io/crates/wasmi/2.0.0) | MIT/Apache-2.0 | [172bc1497507](#license-172bc1497507), [bb6027ed60be](#license-bb6027ed60be) |
 | [wasmi_collections 2.0.0](https://crates.io/crates/wasmi_collections/2.0.0) | MIT/Apache-2.0 | [172bc1497507](#license-172bc1497507), [bb6027ed60be](#license-bb6027ed60be) |
 | [wasmi_core 2.0.0](https://crates.io/crates/wasmi_core/2.0.0) | MIT/Apache-2.0 | [172bc1497507](#license-172bc1497507), [bb6027ed60be](#license-bb6027ed60be) |
@@ -289,6 +298,7 @@ Cargo.lock SHA-256: `06dff64da067dd52b837939d1678b42679a491c6483972df708fe07ef57
 | [wayland-protocols-wlr 0.3.12](https://crates.io/crates/wayland-protocols-wlr/0.3.12) | MIT | [1cb6f4dee8c6](#license-1cb6f4dee8c6) |
 | [wayland-scanner 0.31.11](https://crates.io/crates/wayland-scanner/0.31.11) | MIT | [1cb6f4dee8c6](#license-1cb6f4dee8c6) |
 | [wayland-sys 0.31.11](https://crates.io/crates/wayland-sys/0.31.11) | MIT | [1cb6f4dee8c6](#license-1cb6f4dee8c6) |
+| [web-sys 0.3.107](https://crates.io/crates/web-sys/0.3.107) | MIT OR Apache-2.0 | [143368af9701](#license-143368af9701), [378f5840b258](#license-378f5840b258) |
 | [web-time 1.1.0](https://crates.io/crates/web-time/1.1.0) | MIT OR Apache-2.0 | [485215d5d940](#license-485215d5d940), [f428305bbf2e](#license-f428305bbf2e) |
 | [wide 1.7.1](https://crates.io/crates/wide/1.7.1) | Zlib OR Apache-2.0 OR MIT | [33e9b6beb7db](#license-33e9b6beb7db), [3c6921f3dfec](#license-3c6921f3dfec), [4fbbb7be3ace](#license-4fbbb7be3ace), [69c62cda6938](#license-69c62cda6938), [a45cb0379ffd](#license-a45cb0379ffd), [c9bff7573892](#license-c9bff7573892) |
 | [windows 0.62.2](https://crates.io/crates/windows/0.62.2) | MIT OR Apache-2.0 | [3d4ada4e04d1](#license-3d4ada4e04d1), [cb3b46a575dd](#license-cb3b46a575dd) |
@@ -1329,6 +1339,7 @@ Sources:
 - crate:autocfg@1.5.1/LICENSE-APACHE
 - crate:bitflags@2.13.2/LICENSE-APACHE
 - crate:blocking@1.7.0/LICENSE-APACHE
+- crate:bumpalo@3.20.4/LICENSE-APACHE
 - crate:cc@1.11.2/LICENSE-APACHE
 - crate:cfg-if@1.0.5/LICENSE-APACHE
 - crate:concurrent-queue@2.5.0/LICENSE-APACHE
@@ -1352,6 +1363,7 @@ Sources:
 - crate:indexmap@2.14.2/LICENSE-APACHE
 - crate:itertools@0.10.5/LICENSE-APACHE
 - crate:itertools@0.15.0/LICENSE-APACHE
+- crate:js-sys@0.3.107/LICENSE-APACHE
 - crate:lazy_static@1.5.1/LICENSE-APACHE
 - crate:linux-raw-sys@0.12.1/LICENSE-APACHE
 - crate:linux-raw-sys@0.4.15/LICENSE-APACHE
@@ -1382,6 +1394,7 @@ Sources:
 - crate:rustix@1.1.6/LICENSE-APACHE
 - crate:scoped-tls@1.0.1/LICENSE-APACHE
 - crate:scopeguard@1.2.0/LICENSE-APACHE
+- crate:send_wrapper@0.6.0/LICENSE-APACHE.txt
 - crate:signal-hook-registry@1.4.8/LICENSE-APACHE
 - crate:smallvec@1.16.5/LICENSE-APACHE
 - crate:smol_str@0.2.2/LICENSE-APACHE
@@ -1394,6 +1407,12 @@ Sources:
 - crate:uuid@1.29.2/LICENSE-APACHE
 - crate:vcpkg@0.2.15/LICENSE-APACHE
 - crate:version_check@0.9.5/LICENSE-APACHE
+- crate:wasm-bindgen-futures@0.4.80/LICENSE-APACHE
+- crate:wasm-bindgen-macro-support@0.2.130/LICENSE-APACHE
+- crate:wasm-bindgen-macro@0.2.130/LICENSE-APACHE
+- crate:wasm-bindgen-shared@0.2.130/LICENSE-APACHE
+- crate:wasm-bindgen@0.2.130/LICENSE-APACHE
+- crate:web-sys@0.3.107/LICENSE-APACHE
 - https://github.com/bytecodealliance/wasm-tools/blob/e66235859a6ec0502bf6f9dcc358953eda4cafcc/LICENSE-APACHE
 - https://github.com/georust/geo/blob/5ab50b072e34a915a33eaa46c80763d51d61295e/LICENSE-APACHE
 - https://github.com/georust/rstar/blob/c8c5bf9e41468281d030869d409e3f67f1aaf5b7/LICENSE-APACHE
@@ -2462,6 +2481,7 @@ Sources:
 - crate:rustix@1.1.6/LICENSE-MIT
 - crate:rustversion@1.0.23/LICENSE-MIT
 - crate:semver@1.0.28/LICENSE-MIT
+- crate:send_wrapper@0.6.0/LICENSE-MIT.txt
 - crate:serde@1.0.229/LICENSE-MIT
 - crate:serde_core@1.0.229/LICENSE-MIT
 - crate:serde_derive@1.0.229/LICENSE-MIT
@@ -3637,9 +3657,16 @@ Sources:
 - crate:cc@1.11.2/LICENSE-MIT
 - crate:cfg-if@1.0.5/LICENSE-MIT
 - crate:find-msvc-tools@0.1.15/LICENSE-MIT
+- crate:js-sys@0.3.107/LICENSE-MIT
 - crate:pkg-config@0.3.34/LICENSE-MIT
 - crate:scoped-tls@1.0.1/LICENSE-MIT
 - crate:socket2@0.6.5/LICENSE-MIT
+- crate:wasm-bindgen-futures@0.4.80/LICENSE-MIT
+- crate:wasm-bindgen-macro-support@0.2.130/LICENSE-MIT
+- crate:wasm-bindgen-macro@0.2.130/LICENSE-MIT
+- crate:wasm-bindgen-shared@0.2.130/LICENSE-MIT
+- crate:wasm-bindgen@0.2.130/LICENSE-MIT
+- crate:web-sys@0.3.107/LICENSE-MIT
 
 ````text
 Copyright (c) 2014 Alex Crichton
@@ -6302,6 +6329,40 @@ IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ````
 
+### License 65f94e99ddaf
+
+Sources:
+
+- crate:bumpalo@3.20.4/LICENSE-MIT
+
+````text
+Copyright (c) 2019 Nick Fitzgerald
+
+Permission is hereby granted, free of charge, to any
+person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the
+Software without restriction, including without
+limitation the rights to use, copy, modify, merge,
+publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software
+is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice
+shall be included in all copies or substantial portions
+of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
+ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT
+SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
+IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+````
+
 ### License 6652c868f35d
 
 Sources:
@@ -7099,6 +7160,34 @@ Apache License
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+````
+
+### License 6cec81441b2a
+
+Sources:
+
+- crate:slotmap@1.1.1/LICENSE
+
+````text
+Copyright (c) 2021 Orson Peters <orsonpeters@gmail.com>
+
+This software is provided 'as-is', without any express or implied warranty. In
+no event will the authors be held liable for any damages arising from the use of
+this software.
+
+Permission is granted to anyone to use this software for any purpose, including
+commercial applications, and to alter it and redistribute it freely, subject to
+the following restrictions:
+
+ 1. The origin of this software must not be misrepresented; you must not claim
+    that you wrote the original software. If you use this software in a product,
+    an acknowledgment in the product documentation would be appreciated but is
+    not required.
+
+ 2. Altered source versions must be plainly marked as such, and must not be
+    misrepresented as being the original software.
+
+ 3. This notice may not be removed or altered from any source distribution.
 ````
 
 ### License 6efb0476a1cc

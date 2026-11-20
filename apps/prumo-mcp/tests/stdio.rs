@@ -23,6 +23,8 @@ const BINARY: &str = env!("CARGO_BIN_EXE_prumo-mcp");
 
 #[path = "stdio/access.rs"]
 mod access_tests;
+#[path = "stdio/authoring.rs"]
+mod authoring_tests;
 #[path = "stdio/model.rs"]
 mod model_tests;
 #[path = "stdio/modeling.rs"]
@@ -94,6 +96,16 @@ fn assert_default_tool_catalog(value: &Value, writable: bool) {
         .collect();
     assert_eq!(names.len(), tools.len(), "tool names must be unique");
     let mut expected = BTreeSet::from([
+        "prumo.view.read",
+        "prumo.view.command",
+        "prumo.layout.read",
+        "prumo.layout.measure",
+        "prumo.layout.snap",
+        "prumo.framing.inspect",
+        "prumo.surfaces.inspect",
+        "prumo.surfaces.preview",
+        "prumo.assemblies.inspect",
+        "prumo.assemblies.preview",
         "prumo.access.read",
         "prumo.catalogue.material",
         "prumo.catalogue.read",
@@ -115,6 +127,7 @@ fn assert_default_tool_catalog(value: &Value, writable: bool) {
     ]);
     if writable {
         expected.extend([
+            "prumo.view.export",
             "prumo.geometry.preview",
             "prumo.model.add_environment",
             "prumo.model.add_member",

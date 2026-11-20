@@ -166,6 +166,18 @@ pub struct SemanticModel {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(tag = "edit", rename_all = "snake_case", deny_unknown_fields)]
 pub enum ModelEdit {
+    EditLayout {
+        command: crate::layout::LayoutEdit,
+    },
+    EditFraming {
+        command: crate::framing::FramingEdit,
+    },
+    EditSurfaces {
+        command: crate::surfaces::SurfaceEdit,
+    },
+    EditAssemblies {
+        command: crate::assemblies::AssemblyEdit,
+    },
     PutCatalogEntry {
         entry: crate::catalogue::CatalogEntry,
     },

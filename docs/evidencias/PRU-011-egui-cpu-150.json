@@ -1,0 +1,20 @@
+{
+  "evidence": "actual egui meshes and font atlas, CPU headless export",
+  "rasterization": "CPU bilinear approximation of exported meshes",
+  "native_backend_executed": false,
+  "web_browser_executed": false,
+  "mesh_sha256": "479dde3d04462b9cc898c828ace9a049bff75ea90b98b8a5e0ed1d00048f2a48",
+  "image_sha256": "b41471b4593a5ca58d0fe999bc56e7ef2624d1df9a58a8f7af5278fe7fc10aec",
+  "width": 2400,
+  "height": 2700,
+  "triangles": 5918,
+  "scale": 1.5,
+  "high_contrast": true,
+  "snapshot_sha256": "68c2b4483f0ae1c436198ba0561e61b4349288fd962176d87194b3cbaf5e11e3",
+  "tools": {
+    "python": "3.12.14",
+    "numpy": "2.3.5",
+    "pillow": "13.0.0"
+  },
+  "renderer_script_sha256": "835e126ecba5e47e7b68018570d7603464308b964ad5467e3927f869188e1da2"
+}

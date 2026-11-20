@@ -40,7 +40,7 @@ pub(super) fn tools(writable: bool) -> Vec<Tool> {
     }
     let source = json!({
         "type":"object","additionalProperties":false,
-        "properties":{"kind":{"type":"string","enum":["project_metadata","membership","physical","physical_geometry","analytical_node","analytical_member","link","material","action","environment","port","network","connection","coordinates","georeference","normative","geometry_settings","catalog_entry"]},"id":uuid},
+        "properties":{"kind":{"type":"string","enum":["project_metadata","membership","physical","physical_geometry","analytical_node","analytical_member","link","material","action","environment","port","network","connection","coordinates","georeference","normative","geometry_settings","catalog_entry","layout","analytical_region"]},"id":uuid},
         "required":["kind","id"]
     });
     let precondition = json!({

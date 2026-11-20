@@ -8,18 +8,23 @@ use std::collections::{BTreeMap, BTreeSet};
 use thiserror::Error;
 use uuid::Uuid;
 
+pub mod assemblies;
 pub mod canonical;
 pub mod catalogue;
 pub mod components;
 pub mod dependencies;
+pub mod framing;
 pub mod geometry;
 pub mod identity;
+pub mod layout;
 pub mod model;
 mod numeric;
 pub mod registry;
 pub mod storage;
+pub mod surfaces;
 pub mod transactions;
 pub mod units;
+pub mod view;
 
 pub const PROJECT_SCHEMA_VERSION: u32 = 2;
 pub const MAX_NAME_CHARACTERS: usize = 160;
@@ -147,6 +152,9 @@ pub struct PhysicalObject {
 
 impl PhysicalObject {
     pub fn length_m(&self) -> f64 {
+        if let Ok(Some(length)) = framing::object_length_m(self) {
+            return length;
+        }
         self.start_m.distance(self.end_m)
     }
 }
@@ -393,8 +401,15 @@ impl Project {
                 return Err(DomainError::InvalidConnection);
             }
         }
+        layout::register_ids(self, &mut all_ids)?;
+        surfaces::register_ids(self, &mut all_ids)?;
+        assemblies::register_ids(self, &mut all_ids)?;
         model::validate_semantics(self, metadata_revision, &mut all_ids)?;
-        catalogue::validate_catalogue(self, metadata_revision, &mut all_ids)
+        catalogue::validate_catalogue(self, metadata_revision, &mut all_ids)?;
+        layout::validate_project(self)?;
+        framing::validate_project(self)?;
+        surfaces::validate_project(self)?;
+        assemblies::validate_project(self)
     }
 }
 

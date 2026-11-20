@@ -56,6 +56,11 @@ impl Desktop {
     }
 
     fn select(&mut self, path: PathBuf, report_missing: bool) {
+        self.view.viewport = Default::default();
+        self.view.layout = Default::default();
+        self.view.framing = Default::default();
+        self.view.surfaces = Default::default();
+        self.view.assemblies = Default::default();
         self.view.transactions = Default::default();
         self.view.geometry = Default::default();
         self.view.catalogue = Default::default();
@@ -138,6 +143,36 @@ impl Desktop {
 
     pub fn dispatch(&mut self, action: UiAction) {
         match action {
+            UiAction::ExportWebProject => {
+                match self
+                    .editor_service()
+                    .and_then(|service| service.export_web_view())
+                {
+                    Ok(export) => self.view.report(
+                        format!(
+                            "Projeto exportado ao lado do arquivo atual: {}",
+                            export.file_name
+                        ),
+                        false,
+                    ),
+                    Err(error) => self.view.report(error.to_string(), true),
+                }
+            }
+            UiAction::View(command) => {
+                match self
+                    .editor_service()
+                    .and_then(|service| service.view_command(command))
+                {
+                    Ok(report) => {
+                        self.view.viewport.state = report.state;
+                        self.view.report(
+                            "Vista atualizada. O modelo permanece na mesma revisão.",
+                            false,
+                        );
+                    }
+                    Err(error) => self.view.report(error.to_string(), true),
+                }
+            }
             UiAction::RefreshTransactions => self.refresh_transactions(),
             UiAction::PreviewTransaction(request) => {
                 match self
@@ -411,6 +446,11 @@ impl Desktop {
     }
 
     fn clear_editor(&mut self) {
+        self.view.viewport = Default::default();
+        self.view.layout = Default::default();
+        self.view.framing = Default::default();
+        self.view.surfaces = Default::default();
+        self.view.assemblies = Default::default();
         self.view.transactions = Default::default();
         self.view.geometry = Default::default();
         self.view.catalogue = Default::default();

@@ -33,12 +33,14 @@ use serde::{Deserialize, de::DeserializeOwned};
 use serde_json::{Value, json};
 use tokio::sync::Semaphore;
 
+mod authoring_schema;
 mod catalogue_schema;
 mod extensions;
 mod input;
 mod legacy;
 mod model_schema;
 mod resources;
+mod surface_assembly_schema;
 mod transaction_schema;
 pub use legacy::{LEGACY_PROTOCOL, LegacyPrumoMcp};
 

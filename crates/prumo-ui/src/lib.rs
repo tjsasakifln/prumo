@@ -1,7 +1,7 @@
 //! Reusable Rust UI. It emits domain commands and never owns project persistence.
 #![forbid(unsafe_code)]
 
-use egui::{Color32, RichText, Stroke, Vec2};
+use egui::{Color32, RichText, Vec2};
 use prumo_domain::{Command, LengthUnit, Project};
 mod registry;
 pub use registry::RegistryView;
@@ -18,9 +18,21 @@ mod geometry;
 pub use geometry::GeometryView;
 mod catalogue;
 pub use catalogue::CatalogueView;
+mod viewport;
+pub use viewport::ViewportView;
+pub mod assemblies;
+pub mod framing;
+pub mod layout;
+pub mod surfaces;
+use assemblies::AssemblyPanel;
+use framing::FramingPanel;
+use layout::LayoutPanel;
+use surfaces::SurfacePanel;
 
 #[derive(Debug)]
 pub enum UiAction {
+    View(prumo_domain::view::ViewCommand),
+    ExportWebProject,
     RefreshTransactions,
     PreviewTransaction(Box<prumo_domain::transactions::TransactionRequest>),
     ApplyTransaction(String),
@@ -57,6 +69,11 @@ impl UiAction {
 }
 
 pub struct ProjectView {
+    pub viewport: ViewportView,
+    pub layout: LayoutPanel,
+    pub framing: FramingPanel,
+    pub surfaces: SurfacePanel,
+    pub assemblies: AssemblyPanel,
     pub transactions: TransactionView,
     pub geometry: GeometryView,
     pub catalogue: CatalogueView,
@@ -80,6 +97,11 @@ pub struct ProjectView {
 impl Default for ProjectView {
     fn default() -> Self {
         Self {
+            viewport: ViewportView::default(),
+            layout: LayoutPanel::default(),
+            framing: FramingPanel::default(),
+            surfaces: SurfacePanel::default(),
+            assemblies: AssemblyPanel::default(),
             transactions: TransactionView::default(),
             geometry: GeometryView::default(),
             catalogue: CatalogueView::default(),
@@ -109,6 +131,20 @@ impl ProjectView {
     }
 
     pub fn show(&mut self, ui: &mut egui::Ui, project: Option<&Project>) -> Vec<UiAction> {
+        ui.ctx().set_zoom_factor(self.viewport.state.scale as f32);
+        if self.viewport.state.high_contrast {
+            let mut visuals = egui::Visuals::dark();
+            visuals.override_text_color = Some(Color32::WHITE);
+            visuals.panel_fill = Color32::BLACK;
+            visuals.window_fill = Color32::BLACK;
+            visuals.widgets.noninteractive.bg_stroke = egui::Stroke::new(1.0, Color32::WHITE);
+            visuals.widgets.active.bg_stroke = egui::Stroke::new(3.0, Color32::YELLOW);
+            visuals.widgets.hovered.bg_stroke = egui::Stroke::new(2.0, Color32::WHITE);
+            visuals.selection.stroke = egui::Stroke::new(3.0, Color32::YELLOW);
+            ui.ctx().set_visuals(visuals);
+        } else {
+            ui.ctx().set_visuals(egui::Visuals::dark());
+        }
         let mut actions = Vec::new();
         let teal = Color32::from_rgb(33, 193, 164);
         ui.spacing_mut().item_spacing = Vec2::new(12.0, 10.0);
@@ -154,7 +190,14 @@ impl ProjectView {
         } else {
             teal
         };
-        ui.label(RichText::new(&self.notice).color(color));
+        ui.label(
+            RichText::new(if self.is_error {
+                format!("Erro: {}", self.notice)
+            } else {
+                self.notice.clone()
+            })
+            .color(color),
+        );
         let selected = self.path == self.selected_path;
         if !selected {
             ui.colored_label(Color32::YELLOW, "O caminho foi alterado. Clique em Abrir arquivo para selecioná-lo antes de editar.");
@@ -177,9 +220,14 @@ impl ProjectView {
                 ui.separator();
                 ui.columns(2, |columns| {
                     columns[0].add_enabled_ui(selected, |ui| self.member_form(ui, project, &mut actions));
-                    self.model_view(&mut columns[1], project);
+                    self.viewport.show(&mut columns[1], project, &mut actions);
+                    self.viewport.diagnostics(&mut columns[1], project, self.geometry.report.as_ref(), &mut actions);
                 });
                 ui.separator();
+                ui.add_enabled_ui(selected, |ui| self.layout.show(ui, project, &mut actions));
+                ui.add_enabled_ui(selected, |ui| self.framing.show(ui, project, &mut actions));
+                ui.add_enabled_ui(selected, |ui| self.surfaces.show(ui, project, &mut actions));
+                ui.add_enabled_ui(selected, |ui| self.assemblies.show(ui, project, &mut actions));
                 ui.add_enabled_ui(selected, |ui| self.model.show(ui, project, &mut actions));
                 ui.separator();
                 ui.heading("Objetos do projeto");
@@ -297,72 +345,6 @@ impl ProjectView {
             }));
         }
         ui.label("As coordenadas podem ser preenchidas pelo teclado. Um cruzamento no desenho não cria conexão de engenharia.");
-    }
-
-    fn model_view(&mut self, ui: &mut egui::Ui, project: &Project) {
-        ui.horizontal(|ui| {
-            ui.heading("Modelo");
-            ui.checkbox(&mut self.isometric, "Vista isométrica");
-        });
-        let (rect, _) = ui.allocate_exact_size(
-            Vec2::new(ui.available_width().max(120.0), 225.0),
-            egui::Sense::hover(),
-        );
-        let painter = ui.painter_at(rect);
-        painter.rect_filled(rect, 6.0, Color32::from_rgb(18, 29, 39));
-        let project_point = |p: [f64; 3]| -> [f64; 2] {
-            if self.isometric {
-                [(p[0] - p[1]) * 0.8660254038, (p[0] + p[1]) * 0.5 - p[2]]
-            } else {
-                [p[0], -p[1]]
-            }
-        };
-        let points: Vec<_> = project
-            .objects
-            .iter()
-            .flat_map(|o| {
-                [
-                    project_point(o.start_m.as_array()),
-                    project_point(o.end_m.as_array()),
-                ]
-            })
-            .collect();
-        let mut lo = [f64::INFINITY; 2];
-        let mut hi = [f64::NEG_INFINITY; 2];
-        for p in &points {
-            for i in 0..2 {
-                lo[i] = lo[i].min(p[i]);
-                hi[i] = hi[i].max(p[i]);
-            }
-        }
-        let width = (hi[0] - lo[0]).max(1.0);
-        let height = (hi[1] - lo[1]).max(1.0);
-        let scale =
-            ((rect.width() - 48.0) as f64 / width).min((rect.height() - 48.0) as f64 / height);
-        let to_screen = |p: [f64; 2]| {
-            rect.center()
-                + Vec2::new(
-                    ((p[0] - (lo[0] + hi[0]) * 0.5) * scale) as f32,
-                    ((p[1] - (lo[1] + hi[1]) * 0.5) * scale) as f32,
-                )
-        };
-        for pair in points.chunks(2) {
-            let a = to_screen(pair[0]);
-            let b = to_screen(pair[1]);
-            painter.line_segment([a, b], Stroke::new(4.0, Color32::from_rgb(33, 193, 164)));
-            painter.circle_filled(a, 4.0, Color32::WHITE);
-            painter.circle_filled(b, 4.0, Color32::WHITE);
-        }
-        if points.is_empty() {
-            painter.text(
-                rect.center(),
-                egui::Align2::CENTER_CENTER,
-                "Seu modelo aparecerá aqui",
-                egui::FontId::proportional(16.0),
-                Color32::GRAY,
-            );
-        }
-        ui.label("Vista de modelagem. As linhas representam os eixos das peças.");
     }
 }
 

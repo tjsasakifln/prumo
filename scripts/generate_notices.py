@@ -10,6 +10,7 @@ import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 TARGETS = ["x86_64-unknown-linux-gnu", "x86_64-pc-windows-msvc"]
+WEB_TARGETS = ["wasm32-unknown-unknown"]
 NOTICE = ROOT / "THIRD_PARTY_NOTICES.md"
 INVENTORY = ROOT / "docs/componentes/dependencias-pru001.json"
 UPSTREAM = ROOT / "docs/componentes/upstream-notices"
@@ -44,6 +45,16 @@ def generate():
             match = re.match(r"([^ ]+) v([^ ]+)", line)
             if match:
                 targets.setdefault((match[1], match[2]), []).append(target)
+    web_targets = {}
+    for target in WEB_TARGETS:
+        # Only the delivered web viewer is built for the browser. Native storage
+        # and worker dependencies are intentionally outside this graph.
+        tree = cargo("tree", "-p", "prumo-web", "--locked", "--target", target,
+                     "--edges", "normal,build", "--prefix", "none", "--format", "{p}")
+        for line in tree.splitlines():
+            match = re.match(r"([^ ]+) v([^ ]+)", line)
+            if match:
+                web_targets.setdefault((match[1], match[2]), []).append(target)
     index = json.loads((UPSTREAM / "index.json").read_text())
     texts = {}
     records = []
@@ -65,7 +76,7 @@ def generate():
             if digest not in notice_ids:
                 notice_ids.append(digest)
 
-        if key in targets:
+        if key in targets or key in web_targets:
             for path in sorted(base.rglob("*")):
                 if not path.is_file():
                     continue
@@ -129,24 +140,26 @@ def generate():
             "checksum": checksums[key], "repository": package.get("repository"),
             "license_expression": package.get("license"), "authors": package.get("authors", []),
             "native_build_or_runtime_targets": sorted(set(targets.get(key, []))),
+            "web_build_or_runtime_targets": sorted(set(web_targets.get(key, []))),
             "license_text_sha256": sorted(notice_ids),
         })
     inventory = {
         "schema_version": 1,
-        "scope": "Full Cargo.lock metadata; notices cover normal/build graph of distributed native targets, not only directly declared crates.",
+        "scope": "Full Cargo.lock metadata; notices cover normal/build graphs of distributed native targets and the prumo-web browser viewer, not only directly declared crates.",
         "lock_sha256": hashlib.sha256((ROOT / "Cargo.lock").read_bytes()).hexdigest(),
         "native_targets": TARGETS,
+        "web_targets": WEB_TARGETS,
         "packages": records,
         "license_text_normalization": "Displayed text strips trailing spaces/tabs and outer blank lines. source_text_sha256 retains the UTF-8 text received from each source before presentation normalization; preserved upstream files remain unchanged.",
         "license_texts": [{"sha256": digest, "origins": sorted(record["origins"]), "source_text_sha256": dict(sorted(record["source_text_sha256"].items()))} for digest, record in sorted(texts.items())],
     }
     lines = ["# Prumo: third-party notices", "",
-             "This file preserves license texts and attributions for the normal/build dependency graph of the Windows and Linux development binaries. Build tools are included conservatively; a listed component is not necessarily linked into every executable. The complete locked inventory also identifies test and other-platform dependencies separately.", "",
+             "This file preserves license texts and attributions for the normal/build dependency graphs of the Windows and Linux development binaries and the prumo-web WASM viewer. Build tools are included conservatively; a listed component is not necessarily linked into every executable. The complete locked inventory identifies each native or web target and test-only dependencies separately.", "",
              "The Prumo product license is not defined by these third-party licenses. No dependency has been patched in this release. The original texts below govern the respective components; SPDX metadata alone is not a replacement for their conditions.", "",
              "Cargo.lock SHA-256: `" + inventory["lock_sha256"] + "`", "",
              "## Component inventory", "", "| Package | Declared license | License text sections |", "|---|---|---|"]
     for record in records:
-        if record["native_build_or_runtime_targets"]:
+        if record["native_build_or_runtime_targets"] or record["web_build_or_runtime_targets"]:
             refs = ", ".join("[" + digest[:12] + "](#license-" + digest[:12] + ")" for digest in record["license_text_sha256"])
             name = record["name"] + " " + record["version"]
             lines.append(f"| [{name}](https://crates.io/crates/{record['name']}/{record['version']}) | {record['license_expression']} | {refs} |")
