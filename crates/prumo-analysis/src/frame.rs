@@ -185,7 +185,7 @@ pub fn solve(model:&Frame2D,cancelled:Option<&AtomicBool>)
         for line in model.line_loads.iter().filter(|load|load.member_id==member.id) {
             ensure(line.transverse_n_per_m.is_finite(),
                 "Carga distribuída não finita.")?;
-            ensure(matches!(member.formulation,Formulation::EulerBernoulli{..}),
+            ensure(matches!(&member.formulation,Formulation::EulerBernoulli{..}),
                 "Carga transversal Timoshenko requer vetor consistente próprio.")?;
             let q=line.transverse_n_per_m;
             equivalent[1]+=q*length/2.0;
