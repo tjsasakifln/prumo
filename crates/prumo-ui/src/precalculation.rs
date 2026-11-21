@@ -151,26 +151,24 @@ impl PrecalculationPanel {
                     if ui
                         .selectable_value(&mut self.node, Some(node.id), &node.name)
                         .changed()
+                        && let Some(existing) = saved.supports.iter().find(|s| s.node_id == node.id)
                     {
-                        if let Some(existing) = saved.supports.iter().find(|s| s.node_id == node.id)
-                        {
-                            for (i, value) in existing.freedoms.iter().enumerate() {
-                                let (mode, stiffness) = match value {
-                                    Freedom::Free {} => (0, 0.0),
-                                    Freedom::Fixed {} => (1, 0.0),
-                                    Freedom::Spring { stiffness_si } => (2, *stiffness_si),
-                                    Freedom::CompressionOnly { stiffness_si } => (3, *stiffness_si),
-                                };
-                                self.support_modes[i] = mode;
-                                if mode >= 2 {
-                                    self.support_stiffness[i] = stiffness;
-                                }
+                        for (i, value) in existing.freedoms.iter().enumerate() {
+                            let (mode, stiffness) = match value {
+                                Freedom::Free {} => (0, 0.0),
+                                Freedom::Fixed {} => (1, 0.0),
+                                Freedom::Spring { stiffness_si } => (2, *stiffness_si),
+                                Freedom::CompressionOnly { stiffness_si } => (3, *stiffness_si),
+                            };
+                            self.support_modes[i] = mode;
+                            if mode >= 2 {
+                                self.support_stiffness[i] = stiffness;
                             }
-                            self.support_rotation_deg = existing.rotation_to_engineering[1][0]
-                                .atan2(existing.rotation_to_engineering[0][0])
-                                .to_degrees();
-                            self.support_note = existing.justification.clone();
                         }
+                        self.support_rotation_deg = existing.rotation_to_engineering[1][0]
+                            .atan2(existing.rotation_to_engineering[0][0])
+                            .to_degrees();
+                        self.support_note = existing.justification.clone();
                     }
                 }
             });
