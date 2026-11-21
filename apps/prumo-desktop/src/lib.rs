@@ -251,8 +251,9 @@ impl Desktop {
             }
             UiAction::AnalysisTrial(input) => {
                 self.view.analysis.report = None;
-                match self.editor_service().and_then(|service|
-                    service.analysis_trial(input, None))
+                match self
+                    .editor_service()
+                    .and_then(|service| service.analysis_trial(input, None))
                 {
                     Ok(report) => {
                         self.view.analysis.report = Some(report);
