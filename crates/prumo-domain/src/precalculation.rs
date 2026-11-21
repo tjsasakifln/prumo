@@ -576,6 +576,53 @@ pub fn review(project: &Project) -> Result<Review, DomainError> {
             "Não é possível conferir a transferência de esforços entre as peças.",
             "Defina os nós, barras e vínculos analíticos correspondentes."));
     }
+    for obj in &project.objects {
+        if obj.discipline != Discipline::Structure || obj.role != PhysicalRole::AnalyticalSource {
+            continue;
+        }
+        if !project.model.links.iter().any(|link| link.physical_id == obj.id) {
+            findings.push(finding("geometria", "unlinked_physical", Severity::Blocker, Some(obj.id),
+                "Peça física sem vínculo explícito com elemento ou região analítica.",
+                "A transferência de esforços desta peça não está definida.",
+                "Associe a peça ao elemento analítico correspondente."));
+        }
+        if let Some(surface) = crate::surfaces::metadata(obj)?
+            && surface.surface.supports.is_empty()
+            && surface.surface.edge_conditions.iter().all(|edge|
+                matches!(edge.behavior, crate::surfaces::EdgeBehavior::Free {}))
+        {
+            findings.push(finding("vínculos", "unsupported_surface", Severity::Blocker, Some(obj.id),
+                "Laje ou painel sem apoio explícito registrado.",
+                "Não há caminho de cargas declarado para o contorno.",
+                "Cadastre apoios de superfície ou vínculos de borda com peças existentes."));
+        }
+    }
+    let mut adjacency: BTreeMap<Uuid, Vec<Uuid>> = BTreeMap::new();
+    for member in &project.model.analytical_members {
+        adjacency.entry(member.start_node_id).or_default().push(member.end_node_id);
+        adjacency.entry(member.end_node_id).or_default().push(member.start_node_id);
+    }
+    let mut reached = BTreeSet::new();
+    let supports: BTreeSet<_> = state.supports.iter().map(|item| item.node_id).collect();
+    for node in &project.model.analytical_nodes {
+        if !reached.insert(node.id) {
+            continue;
+        }
+        let mut pending = vec![node.id];
+        let mut anchored = false;
+        while let Some(current) = pending.pop() {
+            anchored |= supports.contains(&current);
+            for next in adjacency.get(&current).into_iter().flatten() {
+                if reached.insert(*next) { pending.push(*next); }
+            }
+        }
+        if !anchored {
+            findings.push(finding("vínculos", "unsupported_component", Severity::Blocker, Some(node.id),
+                "Conjunto de nós e barras sem apoio em sua componente conectada.",
+                "O subconjunto pode se deslocar sem resistência de contorno.",
+                "Defina os apoios físicos ou conexões analíticas faltantes."));
+        }
+    }
     let mut coordinates = BTreeMap::new();
     for node in &project.model.analytical_nodes {
         let pos = node.position_m.as_array();
