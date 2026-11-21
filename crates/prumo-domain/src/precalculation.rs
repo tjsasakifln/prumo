@@ -440,6 +440,9 @@ pub fn apply(project: &mut Project, command: PrecalculationEdit,
                 .ok_or(DomainError::UnknownReference(reference_id))?;
             let c = source.candidates.iter().find(|c| c.guid == guid)
                 .ok_or_else(|| invalid("GUID não encontrado no IFC importado."))?;
+            if !matches!(c.entity_type.as_str(), "IfcBeam" | "IfcColumn" | "IfcMember") {
+                return Err(invalid("O tipo IFC não representa uma barra estrutural suportada. Mantenha-o como referência."));
+            }
             if project.model.identities.values().any(|identity|
                 matches!(&identity.origin, SourceOrigin::Imported {reference,external_id,..}
                     if reference == &source.sha256 && external_id == &guid))
@@ -563,6 +566,15 @@ pub fn review(project: &Project) -> Result<Review, DomainError> {
                 "Rigidez e peso próprio não podem ser determinados.",
                 "Escolha um material do catálogo e registre sua origem."));
         }
+    }
+    if project.objects.iter().any(|o| o.discipline == Discipline::Structure
+        && o.role == PhysicalRole::AnalyticalSource)
+        && project.model.analytical_members.is_empty()
+    {
+        findings.push(finding("geometria", "no_analytical_members", Severity::Blocker,
+            None, "Peças estruturais físicas não possuem barras analíticas conectadas.",
+            "Não é possível conferir a transferência de esforços entre as peças.",
+            "Defina os nós, barras e vínculos analíticos correspondentes."));
     }
     let mut coordinates = BTreeMap::new();
     for node in &project.model.analytical_nodes {
