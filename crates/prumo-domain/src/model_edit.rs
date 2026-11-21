@@ -165,6 +165,9 @@ fn edit_inner(
     revision: u64,
 ) -> Result<(), DomainError> {
     match edit {
+        ModelEdit::EditPrecalculation { command } => {
+            crate::precalculation::apply(project, command, actor, revision)?;
+        }
         ModelEdit::EditLayout { command } => {
             crate::layout::apply(project, command, actor, revision)?;
         }
