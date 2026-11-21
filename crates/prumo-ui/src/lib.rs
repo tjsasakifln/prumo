@@ -8,6 +8,7 @@ pub use registry::RegistryView;
 mod components;
 pub use components::ComponentView;
 mod model;
+mod precalculation;
 mod numeric;
 pub use model::{ModelTab, SemanticView};
 mod storage;
@@ -79,6 +80,7 @@ pub struct ProjectView {
     pub catalogue: CatalogueView,
     pub storage: StorageView,
     pub model: SemanticView,
+    pub precalculation: precalculation::PrecalculationPanel,
     pub components: ComponentView,
     pub registry: RegistryView,
     pub path: String,
@@ -107,6 +109,7 @@ impl Default for ProjectView {
             catalogue: CatalogueView::default(),
             storage: StorageView::default(),
             model: SemanticView::default(),
+            precalculation: precalculation::PrecalculationPanel::default(),
             components: ComponentView::default(),
             registry: RegistryView::default(),
             path: "meu-projeto.prumo".into(),
@@ -229,6 +232,7 @@ impl ProjectView {
                 ui.add_enabled_ui(selected, |ui| self.surfaces.show(ui, project, &mut actions));
                 ui.add_enabled_ui(selected, |ui| self.assemblies.show(ui, project, &mut actions));
                 ui.add_enabled_ui(selected, |ui| self.model.show(ui, project, &mut actions));
+                ui.add_enabled_ui(selected, |ui| self.precalculation.show(ui, project, &mut actions));
                 ui.separator();
                 ui.heading("Objetos do projeto");
                 ui.label("Identidades físicas e analíticas são distintas e ligadas explicitamente. Nenhuma peça está dimensionada.");
