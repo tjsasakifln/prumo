@@ -3,6 +3,7 @@
 #![forbid(unsafe_code)]
 
 pub mod constraints;
+pub mod diaphragm;
 pub mod frame;
 pub mod loads;
 pub mod membrane;
@@ -48,6 +49,7 @@ pub enum TrialRequest {
     MeshRefine { mesh: mesh::Mesh },
     MeshConvergence { points: Vec<mesh::ConvergencePoint>, relative_tolerance: f64 },
     Multipoint { system: sparse::System, constraints: Vec<constraints::Constraint> },
+    RigidDiaphragm { diaphragm: diaphragm::Diaphragm },
     LoadLedger { input: loads::AppliedLoads },
     LoadEquilibrium { input: loads::AppliedLoads, reactions: Vec<loads::Reaction>, tolerance: f64 },
 }
@@ -68,6 +70,8 @@ pub fn trial(request:&TrialRequest,cancelled:Option<&AtomicBool>)->Result<Value,
             serde_json::to_value(mesh::refine(mesh)?),
         TrialRequest::MeshConvergence{points,relative_tolerance} =>
             serde_json::to_value(mesh::convergence(points,*relative_tolerance)?),
+        TrialRequest::RigidDiaphragm{diaphragm} =>
+            serde_json::to_value(diaphragm::propose(diaphragm)?),
         TrialRequest::Multipoint{system,constraints} => {
             let condensed=constraints::reduce(system,constraints)?;
             let solved=sparse::solve(&condensed.condensed,cancelled)?;
