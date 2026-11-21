@@ -95,20 +95,31 @@ impl PrecalculationPanel {
     fn freedoms(modes: [u8; 6], stiffness: [f64; 6]) -> [Freedom; 6] {
         std::array::from_fn(|i| match modes[i] {
             1 => Freedom::Fixed {},
-            2 => Freedom::Spring { stiffness_si: stiffness[i] },
-            3 => Freedom::CompressionOnly { stiffness_si: stiffness[i] },
+            2 => Freedom::Spring {
+                stiffness_si: stiffness[i],
+            },
+            3 => Freedom::CompressionOnly {
+                stiffness_si: stiffness[i],
+            },
             _ => Freedom::Free {},
         })
     }
 
-    fn degree_inputs(ui: &mut egui::Ui, modes: &mut [u8; 6], stiffness: &mut [f64; 6], prefix: &str) {
+    fn degree_inputs(
+        ui: &mut egui::Ui,
+        modes: &mut [u8; 6],
+        stiffness: &mut [f64; 6],
+        prefix: &str,
+    ) {
         for (i, label) in ["Ux", "Uy", "Uz", "Rx", "Ry", "Rz"].iter().enumerate() {
             ui.horizontal(|ui| {
                 ui.label(*label);
                 egui::ComboBox::from_id_salt(format!("{prefix}-{label}"))
                     .selected_text(["Livre", "Fixo", "Mola", "Unilateral"][modes[i] as usize])
                     .show_ui(ui, |ui| {
-                        for (choice, name) in ["Livre", "Fixo", "Mola", "Unilateral"].iter().enumerate() {
+                        for (choice, name) in
+                            ["Livre", "Fixo", "Mola", "Unilateral"].iter().enumerate()
+                        {
                             ui.selectable_value(&mut modes[i], choice as u8, *name);
                         }
                     });
@@ -126,14 +137,23 @@ impl PrecalculationPanel {
             return;
         };
         ui.heading("Apoios nodais");
-        ui.label("Os seis graus de liberdade e a orientação são explícitos. Os valores de mola são SI.");
+        ui.label(
+            "Os seis graus de liberdade e a orientação são explícitos. Os valores de mola são SI.",
+        );
         egui::ComboBox::from_label("Nó para apoio")
-            .selected_text(self.node.and_then(|id| project.model.analytical_nodes.iter()
-                .find(|n| n.id == id)).map_or("Selecione o nó", |n| n.name.as_str()))
+            .selected_text(
+                self.node
+                    .and_then(|id| project.model.analytical_nodes.iter().find(|n| n.id == id))
+                    .map_or("Selecione o nó", |n| n.name.as_str()),
+            )
             .show_ui(ui, |ui| {
                 for node in &project.model.analytical_nodes {
-                    if ui.selectable_value(&mut self.node, Some(node.id), &node.name).changed() {
-                        if let Some(existing) = saved.supports.iter().find(|s| s.node_id == node.id) {
+                    if ui
+                        .selectable_value(&mut self.node, Some(node.id), &node.name)
+                        .changed()
+                    {
+                        if let Some(existing) = saved.supports.iter().find(|s| s.node_id == node.id)
+                        {
                             for (i, value) in existing.freedoms.iter().enumerate() {
                                 let (mode, stiffness) = match value {
                                     Freedom::Free {} => (0, 0.0),
@@ -142,10 +162,13 @@ impl PrecalculationPanel {
                                     Freedom::CompressionOnly { stiffness_si } => (3, *stiffness_si),
                                 };
                                 self.support_modes[i] = mode;
-                                if mode >= 2 { self.support_stiffness[i] = stiffness; }
+                                if mode >= 2 {
+                                    self.support_stiffness[i] = stiffness;
+                                }
                             }
                             self.support_rotation_deg = existing.rotation_to_engineering[1][0]
-                                .atan2(existing.rotation_to_engineering[0][0]).to_degrees();
+                                .atan2(existing.rotation_to_engineering[0][0])
+                                .to_degrees();
                             self.support_note = existing.justification.clone();
                         }
                     }
@@ -155,39 +178,71 @@ impl PrecalculationPanel {
             ui.label("Rotação em torno de Z global (graus)");
             ui.add(egui::DragValue::new(&mut self.support_rotation_deg).speed(1.0));
         });
-        Self::degree_inputs(ui, &mut self.support_modes, &mut self.support_stiffness, "support");
+        Self::degree_inputs(
+            ui,
+            &mut self.support_modes,
+            &mut self.support_stiffness,
+            "support",
+        );
         ui.label("Justificativa da hipótese");
         ui.text_edit_singleline(&mut self.support_note);
-        if ui.add_enabled(self.node.is_some(), egui::Button::new("Gravar apoio")).clicked() {
+        if ui
+            .add_enabled(self.node.is_some(), egui::Button::new("Gravar apoio"))
+            .clicked()
+        {
             let node_id = self.node.expect("enabled");
-            let id = saved.supports.iter().find(|s| s.node_id == node_id)
+            let id = saved
+                .supports
+                .iter()
+                .find(|s| s.node_id == node_id)
                 .map_or_else(Uuid::new_v4, |s| s.id);
             let (sine, cosine) = self.support_rotation_deg.to_radians().sin_cos();
-            Self::edit(actions, project, PrecalculationEdit::PutSupport {
-                support: NodeSupport {
-                    id, node_id,
-                    rotation_to_engineering: [
-                        [cosine, -sine, 0.0], [sine, cosine, 0.0], [0.0, 0.0, 1.0],
-                    ],
-                    freedoms: Self::freedoms(self.support_modes, self.support_stiffness),
-                    justification: self.support_note.clone(),
+            Self::edit(
+                actions,
+                project,
+                PrecalculationEdit::PutSupport {
+                    support: NodeSupport {
+                        id,
+                        node_id,
+                        rotation_to_engineering: [
+                            [cosine, -sine, 0.0],
+                            [sine, cosine, 0.0],
+                            [0.0, 0.0, 1.0],
+                        ],
+                        freedoms: Self::freedoms(self.support_modes, self.support_stiffness),
+                        justification: self.support_note.clone(),
+                    },
                 },
-            });
+            );
         }
         for support in &saved.supports {
             ui.horizontal(|ui| {
-                ui.label(format!("Nó {}: {} restrições", support.node_id,
-                    support.freedoms.iter().filter(|f| !matches!(f, Freedom::Free {})).count()));
+                ui.label(format!(
+                    "Nó {}: {} restrições",
+                    support.node_id,
+                    support
+                        .freedoms
+                        .iter()
+                        .filter(|f| !matches!(f, Freedom::Free {}))
+                        .count()
+                ));
                 if ui.small_button("Excluir").clicked() {
-                    Self::edit(actions, project, PrecalculationEdit::RemoveSupport { id: support.id });
+                    Self::edit(
+                        actions,
+                        project,
+                        PrecalculationEdit::RemoveSupport { id: support.id },
+                    );
                 }
             });
         }
         ui.separator();
         ui.heading("Liberações de extremidade");
         egui::ComboBox::from_label("Barra")
-            .selected_text(self.member.and_then(|id| project.model.analytical_members.iter()
-                .find(|m| m.id == id)).map_or("Selecione uma barra", |m| m.name.as_str()))
+            .selected_text(
+                self.member
+                    .and_then(|id| project.model.analytical_members.iter().find(|m| m.id == id))
+                    .map_or("Selecione uma barra", |m| m.name.as_str()),
+            )
             .show_ui(ui, |ui| {
                 for member in &project.model.analytical_members {
                     ui.selectable_value(&mut self.member, Some(member.id), &member.name);
@@ -197,79 +252,144 @@ impl PrecalculationPanel {
             ui.selectable_value(&mut self.release_end, MemberEnd::Start, "Início");
             ui.selectable_value(&mut self.release_end, MemberEnd::End, "Fim");
         });
-        Self::degree_inputs(ui, &mut self.release_modes, &mut self.release_stiffness, "release");
+        Self::degree_inputs(
+            ui,
+            &mut self.release_modes,
+            &mut self.release_stiffness,
+            "release",
+        );
         ui.label("Justificativa");
         ui.text_edit_singleline(&mut self.release_note);
-        if ui.add_enabled(self.member.is_some(), egui::Button::new("Gravar liberação")).clicked() {
+        if ui
+            .add_enabled(self.member.is_some(), egui::Button::new("Gravar liberação"))
+            .clicked()
+        {
             let member_id = self.member.expect("enabled");
-            let id = saved.releases.iter().find(|r| r.member_id == member_id
-                && r.end == self.release_end).map_or_else(Uuid::new_v4, |r| r.id);
-            Self::edit(actions, project, PrecalculationEdit::PutRelease {
-                release: MemberRelease {
-                    id, member_id, end: self.release_end,
-                    freedoms: Self::freedoms(self.release_modes, self.release_stiffness),
-                    justification: self.release_note.clone(),
+            let id = saved
+                .releases
+                .iter()
+                .find(|r| r.member_id == member_id && r.end == self.release_end)
+                .map_or_else(Uuid::new_v4, |r| r.id);
+            Self::edit(
+                actions,
+                project,
+                PrecalculationEdit::PutRelease {
+                    release: MemberRelease {
+                        id,
+                        member_id,
+                        end: self.release_end,
+                        freedoms: Self::freedoms(self.release_modes, self.release_stiffness),
+                        justification: self.release_note.clone(),
+                    },
                 },
-            });
+            );
         }
         for release in &saved.releases {
             ui.horizontal(|ui| {
                 ui.label(format!("{}: {:?}", release.member_id, release.end));
                 if ui.small_button("Excluir").clicked() {
-                    Self::edit(actions, project, PrecalculationEdit::RemoveRelease { id: release.id });
+                    Self::edit(
+                        actions,
+                        project,
+                        PrecalculationEdit::RemoveRelease { id: release.id },
+                    );
                 }
             });
         }
     }
 
     fn references(&mut self, ui: &mut egui::Ui, project: &Project, actions: &mut Vec<UiAction>) {
-        let Ok(saved) = precalculation::state(project) else { return; };
+        let Ok(saved) = precalculation::state(project) else {
+            return;
+        };
         ui.heading("Referências de desenho e IFC");
         ui.checkbox(&mut self.confirm_promotion,
             "Conferi a geometria, as duas cotas, o posicionamento e a finalidade do elemento selecionado");
         ui.label("O cadastro informa SHA e geometria candidata fornecidos pelo usuário. O Prumo ainda não interpreta PDF, DXF ou IFC completo; confira duas medidas antes de promover.");
         for drawing in &saved.drawings {
-            let discrepancy = drawing.calibration.factors().map(|(_, _, d)| d).unwrap_or(f64::INFINITY);
-            ui.collapsing(format!("{} | {:?} | diferença {:.2}%", drawing.label,
-                drawing.format, discrepancy * 100.0), |ui| {
-                ui.label(format!("SHA: {}", drawing.sha256));
-                for trace in &drawing.traces {
-                    ui.horizontal(|ui| {
-                        ui.label(format!("Camada {} | traço {}", trace.layer, trace.id));
-                        ui.label(format!("Origem {:?} até {:?} nas unidades da referência",
-                            trace.a, trace.b));
-                        if ui.add_enabled(self.confirm_promotion && discrepancy <= 0.01 && trace.visible,
-                            egui::Button::new("Promover com dimensões conferidas")).clicked() {
-                            Self::preview_edit(actions, project, PrecalculationEdit::PromoteDrawing {
-                                reference_id: drawing.id, trace_id: trace.id,
-                                name: format!("Traço {}", trace.id), material_id: None,
-                                confirm_dimensions: true,
-                            });
-                            self.confirm_promotion = false;
-                        }
-                    });
-                }
-            });
+            let discrepancy = drawing
+                .calibration
+                .factors()
+                .map(|(_, _, d)| d)
+                .unwrap_or(f64::INFINITY);
+            ui.collapsing(
+                format!(
+                    "{} | {:?} | diferença {:.2}%",
+                    drawing.label,
+                    drawing.format,
+                    discrepancy * 100.0
+                ),
+                |ui| {
+                    ui.label(format!("SHA: {}", drawing.sha256));
+                    for trace in &drawing.traces {
+                        ui.horizontal(|ui| {
+                            ui.label(format!("Camada {} | traço {}", trace.layer, trace.id));
+                            ui.label(format!(
+                                "Origem {:?} até {:?} nas unidades da referência",
+                                trace.a, trace.b
+                            ));
+                            if ui
+                                .add_enabled(
+                                    self.confirm_promotion && discrepancy <= 0.01 && trace.visible,
+                                    egui::Button::new("Promover com dimensões conferidas"),
+                                )
+                                .clicked()
+                            {
+                                Self::preview_edit(
+                                    actions,
+                                    project,
+                                    PrecalculationEdit::PromoteDrawing {
+                                        reference_id: drawing.id,
+                                        trace_id: trace.id,
+                                        name: format!("Traço {}", trace.id),
+                                        material_id: None,
+                                        confirm_dimensions: true,
+                                    },
+                                );
+                                self.confirm_promotion = false;
+                            }
+                        });
+                    }
+                },
+            );
         }
         for source in &saved.ifc {
-            ui.collapsing(format!("IFC {:?}: {} | {} candidatos", source.schema, source.label,
-                source.candidates.len()), |ui| {
-                ui.label(format!("SHA da origem: {}", source.sha256));
-                ui.label("Geometria proposta, sem validação de conexão analítica.");
-                for candidate in &source.candidates {
-                    ui.horizontal(|ui| {
-                        ui.label(format!("{} | {}", candidate.name, candidate.guid));
-                        if ui.add_enabled(self.confirm_promotion,
-                            egui::Button::new("Promover após conferência")).clicked() {
-                            Self::preview_edit(actions, project, PrecalculationEdit::PromoteIfc {
-                                reference_id: source.id, guid: candidate.guid.clone(),
-                                material_id: None, confirm_hypotheses: true,
-                            });
-                            self.confirm_promotion = false;
-                        }
-                    });
-                }
-            });
+            ui.collapsing(
+                format!(
+                    "IFC {:?}: {} | {} candidatos",
+                    source.schema,
+                    source.label,
+                    source.candidates.len()
+                ),
+                |ui| {
+                    ui.label(format!("SHA da origem: {}", source.sha256));
+                    ui.label("Geometria proposta, sem validação de conexão analítica.");
+                    for candidate in &source.candidates {
+                        ui.horizontal(|ui| {
+                            ui.label(format!("{} | {}", candidate.name, candidate.guid));
+                            if ui
+                                .add_enabled(
+                                    self.confirm_promotion,
+                                    egui::Button::new("Promover após conferência"),
+                                )
+                                .clicked()
+                            {
+                                Self::preview_edit(
+                                    actions,
+                                    project,
+                                    PrecalculationEdit::PromoteIfc {
+                                        reference_id: source.id,
+                                        guid: candidate.guid.clone(),
+                                        material_id: None,
+                                        confirm_hypotheses: true,
+                                    },
+                                );
+                                self.confirm_promotion = false;
+                            }
+                        });
+                    }
+                },
+            );
         }
         if saved.drawings.is_empty() && saved.ifc.is_empty() {
             ui.label("Nenhuma referência registrada. Operações de registro disponíveis pelo MCP com SHA e geometria candidata explícitos.");
@@ -281,14 +401,23 @@ impl PrecalculationPanel {
         for obj in &project.objects {
             let mut checked = self.selected.contains(&obj.id);
             if ui.checkbox(&mut checked, &obj.name).changed() {
-                if checked { self.selected.insert(obj.id); }
-                else { self.selected.remove(&obj.id); }
+                if checked {
+                    self.selected.insert(obj.id);
+                } else {
+                    self.selected.remove(&obj.id);
+                }
             }
         }
-        ui.label(format!("{} selecionadas. Cópias de geradores complexos requerem o comando próprio.", self.selected.len()));
+        ui.label(format!(
+            "{} selecionadas. Cópias de geradores complexos requerem o comando próprio.",
+            self.selected.len()
+        ));
         egui::ComboBox::from_label("Aplicar material")
-            .selected_text(self.batch_material.and_then(|id| project.model.materials.iter()
-                .find(|m| m.id == id)).map_or("Sem material", |m| m.name.as_str()))
+            .selected_text(
+                self.batch_material
+                    .and_then(|id| project.model.materials.iter().find(|m| m.id == id))
+                    .map_or("Sem material", |m| m.name.as_str()),
+            )
             .show_ui(ui, |ui| {
                 ui.selectable_value(&mut self.batch_material, None, "Sem material");
                 for m in &project.model.materials {
@@ -301,24 +430,46 @@ impl PrecalculationPanel {
                 ui.add(egui::DragValue::new(&mut self.translation_m[i]).speed(0.1));
             }
         });
-        ui.checkbox(&mut self.linked, "Registrar vínculo paramétrico com a origem");
-        ui.checkbox(&mut self.confirm_batch, "Conferi as peças e a alteração proposta");
-        let enabled = self.confirm_batch && !self.selected.is_empty()
-            && self.selected.len() <= 500;
+        ui.checkbox(
+            &mut self.linked,
+            "Registrar vínculo paramétrico com a origem",
+        );
+        ui.checkbox(
+            &mut self.confirm_batch,
+            "Conferi as peças e a alteração proposta",
+        );
+        let enabled = self.confirm_batch && !self.selected.is_empty() && self.selected.len() <= 500;
         ui.horizontal(|ui| {
-            if ui.add_enabled(enabled, egui::Button::new("Conferir alteração de material")).clicked() {
-                Self::preview_edit(actions, project, PrecalculationEdit::SetMaterialBatch {
-                    object_ids: self.selected.iter().copied().collect(),
-                    material_id: self.batch_material,
-                });
+            if ui
+                .add_enabled(enabled, egui::Button::new("Conferir alteração de material"))
+                .clicked()
+            {
+                Self::preview_edit(
+                    actions,
+                    project,
+                    PrecalculationEdit::SetMaterialBatch {
+                        object_ids: self.selected.iter().copied().collect(),
+                        material_id: self.batch_material,
+                    },
+                );
                 self.confirm_batch = false;
             }
-            if ui.add_enabled(enabled, egui::Button::new("Conferir cópias")).clicked() {
-                Self::preview_edit(actions, project, PrecalculationEdit::CopyBatch {
-                    object_ids: self.selected.iter().copied().collect(),
-                    translation: PointInput { values: self.translation_m, unit: LengthUnit::Metre },
-                    linked: self.linked,
-                });
+            if ui
+                .add_enabled(enabled, egui::Button::new("Conferir cópias"))
+                .clicked()
+            {
+                Self::preview_edit(
+                    actions,
+                    project,
+                    PrecalculationEdit::CopyBatch {
+                        object_ids: self.selected.iter().copied().collect(),
+                        translation: PointInput {
+                            values: self.translation_m,
+                            unit: LengthUnit::Metre,
+                        },
+                        linked: self.linked,
+                    },
+                );
                 self.confirm_batch = false;
             }
         });
@@ -331,7 +482,10 @@ impl PrecalculationPanel {
             ui.colored_label(Color32::RED, "Não foi possível inspecionar o modelo.");
             return;
         };
-        ui.label(format!("Projeto {} | revisão {}", report.project_id, report.revision));
+        ui.label(format!(
+            "Projeto {} | revisão {}",
+            report.project_id, report.revision
+        ));
         for stage in &report.stages {
             ui.separator();
             ui.strong(stage.to_uppercase());
@@ -355,7 +509,9 @@ impl PrecalculationPanel {
         } else {
             "Revisão bloqueada: há dados ou condições de contorno a corrigir."
         });
-        ui.colored_label(Color32::YELLOW,
-            "Esta conferência não aprova esforços, estabilidade, resistência ou projeto executivo.");
+        ui.colored_label(
+            Color32::YELLOW,
+            "Esta conferência não aprova esforços, estabilidade, resistência ou projeto executivo.",
+        );
     }
 }
