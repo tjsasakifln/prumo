@@ -249,6 +249,21 @@ impl Desktop {
                     Err(error) => self.view.report(error.to_string(), true),
                 }
             }
+            UiAction::AnalysisTrial(input) => {
+                self.view.analysis.report = None;
+                match self.editor_service().and_then(|service|
+                    service.analysis_trial(input, None))
+                {
+                    Ok(report) => {
+                        self.view.analysis.report = Some(report);
+                        self.view.report(
+                            "Ensaio experimental concluído. Resultado não equivale ao cálculo do projeto.",
+                            false,
+                        );
+                    }
+                    Err(error) => self.view.report(error.to_string(), true),
+                }
+            }
             UiAction::RunVerification => {
                 self.view.geometry.verification = None;
                 match self
