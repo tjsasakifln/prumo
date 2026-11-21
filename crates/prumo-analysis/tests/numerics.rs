@@ -231,3 +231,42 @@ fn simply_supported_uniform_load_has_zero_end_moments_and_equal_reactions() {
     assert!(result.member_forces[0].local_end_forces_n_nm[2].abs()<1e-5);
     assert!(result.member_forces[0].local_end_forces_n_nm[5].abs()<1e-5);
 }
+
+
+#[test]
+fn plane_stress_membrane_passes_constant_strain_patch_reference() {
+    use prumo_analysis::membrane;
+    let mesh=mesh::Mesh {
+        points_m:vec![[0.0,0.0,0.0],[1.0,0.0,0.0],[0.0,1.0,0.0]],
+        triangles:vec![[0,1,2]], thickness_m:0.1,
+    };
+    let displacements=[[0.0,0.0],[0.001,0.0],[0.003,0.002]];
+    let mut supports=Vec::new();
+    for (vertex,values) in displacements.iter().enumerate(){
+        for axis in 0..2 {
+            supports.push(membrane::MembraneSupport{
+                vertex,axis,displacement_m:values[axis],
+            });
+        }
+    }
+    let input=membrane::Membrane {
+        mesh,material:membrane::MembraneMaterial{
+            elastic_modulus_pa:200e9,poisson_ratio:0.25,
+        },
+        forces:vec![],supports,
+    };
+    let result=membrane::solve(&input,None).unwrap();
+    let a=&result.elements[0];
+    for (got,ref_value) in a.strain.iter().zip([0.001,0.002,0.003]) {
+        assert!((*got-ref_value).abs()<1e-12);
+    }
+    for (got,ref_value) in a.stress_pa.iter().zip([320e6,480e6,240e6]) {
+        assert!((*got-ref_value).abs()<1e-2);
+    }
+    assert!((result.total_strain_energy_j-50_000.0).abs()<1e-5);
+    assert!(!result.engineering_release);
+    // Free membrane retains its rigid-body modes; never stabilize artificially.
+    let mut unsupported=input;
+    unsupported.supports.clear();
+    assert!(membrane::solve(&unsupported,None).is_err());
+}
