@@ -312,3 +312,42 @@ fn partial_grants_can_create_authorized_members_and_network_relationships() {
     assert_eq!(filtered.connections.len(), 1);
     assert!(!filtered.objects.iter().any(|object| object.id == member.id));
 }
+
+
+#[test]
+fn preparatory_edits_do_not_bypass_scoped_grants() {
+    use prumo_domain::precalculation::PrecalculationEdit;
+
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("precalculation-scopes.prumo");
+    let owner = ProjectService::open(&path, AccessMode::ReadWrite, "owner").unwrap();
+    let initial = owner.create("Escopos da revisão", LengthUnit::Metre).unwrap();
+    let project = owner
+        .add_member(initial.revision, "Pilar", [0.0, 0.0, 0.0], [0.0, 0.0, 4.0])
+        .unwrap();
+    let object_id = project.objects[0].id;
+    let restricted = ProjectService::open_scoped(
+        &path,
+        ProjectGrant {
+            project_id: Some(project.id),
+            scopes: vec![AccessScope::Read, AccessScope::Model],
+            disciplines: Some(vec![Discipline::Structure]),
+        },
+        "structural-editor",
+    )
+    .unwrap();
+    let edit = ModelEdit::EditPrecalculation {
+        command: PrecalculationEdit::SetMaterialBatch {
+            object_ids: vec![object_id],
+            material_id: None,
+        },
+    };
+    assert!(matches!(
+        restricted.edit_model(project.revision, edit.clone()),
+        Err(AppError::PermissionDenied)
+    ));
+    assert_eq!(owner.read().unwrap(), project);
+    let updated = owner.edit_model(project.revision, edit).unwrap();
+    assert_eq!(updated.revision, project.revision + 1);
+    assert_eq!(updated.objects[0].id, object_id);
+}
