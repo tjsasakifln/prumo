@@ -3,6 +3,7 @@
 #![forbid(unsafe_code)]
 
 pub mod constraints;
+pub mod frame;
 pub mod loads;
 pub mod mesh;
 pub mod sparse;
@@ -40,6 +41,7 @@ use std::sync::atomic::AtomicBool;
 pub enum TrialRequest {
     Linear { system: sparse::System },
     Truss { model: truss::Truss },
+    Frame2d { model: frame::Frame2D },
     MeshInspect { mesh: mesh::Mesh },
     MeshRefine { mesh: mesh::Mesh },
     MeshConvergence { points: Vec<mesh::ConvergencePoint>, relative_tolerance: f64 },
@@ -54,6 +56,8 @@ pub fn trial(request:&TrialRequest,cancelled:Option<&AtomicBool>)->Result<Value,
             serde_json::to_value(sparse::solve(system,cancelled)?),
         TrialRequest::Truss{model} =>
             serde_json::to_value(truss::solve(model)?),
+        TrialRequest::Frame2d{model} =>
+            serde_json::to_value(frame::solve(model,cancelled)?),
         TrialRequest::MeshInspect{mesh} =>
             serde_json::to_value(mesh::inspect(mesh)?),
         TrialRequest::MeshRefine{mesh} =>
