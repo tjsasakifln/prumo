@@ -32,7 +32,7 @@ pub(super) fn edit_schema() -> Value {
             item["properties"].as_object_mut().expect("properties").remove("operation");
             item["properties"]["kind"] = json!({"type":"string","const":value});
             for requirement in item["required"].as_array_mut().expect("required") {
-                if requirement == "operation" { *requirement = json!("kind"); }
+                if requirement.as_str() == Some("operation") { *requirement = json!("kind"); }
             }
         }
         f
