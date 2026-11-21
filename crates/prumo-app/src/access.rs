@@ -158,7 +158,8 @@ impl ProjectGrant {
         self.check_scope(AccessScope::Model)?;
         self.check_project(project)?;
         match edit {
-            ModelEdit::EditLayout { .. } => self.check_all_disciplines(),
+            ModelEdit::EditLayout { .. }
+            | ModelEdit::EditPrecalculation { .. } => self.check_all_disciplines(),
             ModelEdit::EditFraming { .. }
             | ModelEdit::EditSurfaces { .. }
             | ModelEdit::EditAssemblies { .. } => self.check_discipline(Discipline::Structure),
