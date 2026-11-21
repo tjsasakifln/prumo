@@ -49,31 +49,54 @@ pub struct Solution {
 }
 
 fn checked_assembly(system: &System) -> Result<BTreeMap<(usize, usize), f64>, AnalysisError> {
-    ensure((1..=MAX_DOF).contains(&system.dimension), "Quantidade de graus de liberdade inválida.")?;
-    ensure(system.forces_n.len() == system.dimension, "Vetor de forças não coincide com a matriz.")?;
+    ensure(
+        (1..=MAX_DOF).contains(&system.dimension),
+        "Quantidade de graus de liberdade inválida.",
+    )?;
+    ensure(
+        system.forces_n.len() == system.dimension,
+        "Vetor de forças não coincide com a matriz.",
+    )?;
     if system.terms.len() > MAX_TERMS {
-        return Err(AnalysisError::ResourceLimit("mais de 65536 contribuições".into()));
+        return Err(AnalysisError::ResourceLimit(
+            "mais de 65536 contribuições".into(),
+        ));
     }
-    ensure(system.forces_n.iter().all(|v| v.is_finite()), "Força não finita.")?;
+    ensure(
+        system.forces_n.iter().all(|v| v.is_finite()),
+        "Força não finita.",
+    )?;
     let mut map = BTreeMap::new();
     for term in &system.terms {
-        ensure(term.row < system.dimension && term.column < system.dimension,
-            "Índice de rigidez fora da dimensão informada.")?;
-        ensure(term.stiffness_n_per_m.is_finite() && term.stiffness_n_per_m.abs() <= 1e20,
-            "Rigidez ausente, não finita ou acima do limite.")?;
+        ensure(
+            term.row < system.dimension && term.column < system.dimension,
+            "Índice de rigidez fora da dimensão informada.",
+        )?;
+        ensure(
+            term.stiffness_n_per_m.is_finite() && term.stiffness_n_per_m.abs() <= 1e20,
+            "Rigidez ausente, não finita ou acima do limite.",
+        )?;
         let entry = map.entry((term.row, term.column)).or_insert(0.0_f64);
         *entry += term.stiffness_n_per_m;
-        ensure(entry.is_finite(), "Soma de coeficientes excede a representação numérica.")?;
+        ensure(
+            entry.is_finite(),
+            "Soma de coeficientes excede a representação numérica.",
+        )?;
     }
     let norm = (0..system.dimension)
-        .map(|i| map.range((i, 0)..=(i, system.dimension - 1))
-            .map(|(_, v)| v.abs()).sum::<f64>())
+        .map(|i| {
+            map.range((i, 0)..=(i, system.dimension - 1))
+                .map(|(_, v)| v.abs())
+                .sum::<f64>()
+        })
         .fold(0.0, f64::max);
     ensure(norm.is_finite() && norm > 0.0, "Matriz nula ou inválida.")?;
     for (&(i, j), &a) in &map {
         let b = map.get(&(j, i)).copied().unwrap_or(0.0);
-        ensure((a - b).abs() <= norm * 1e-12,
-            "Rigidez assimétrica: confira os termos (i,j) e (j,i).")?;
+        ensure(
+            (a - b).abs() <= norm * 1e-12,
+            "Rigidez assimétrica: confira os termos (i,j) e (j,i).",
+        )?;
     }
     Ok(map)
 }
@@ -84,7 +107,9 @@ fn factor_solve(
     cancelled: Option<&AtomicBool>,
 ) -> Result<(Vec<f64>, f64), AnalysisError> {
     let n = rhs.len();
-    if n == 0 { return Ok((Vec::new(), 1.0)); }
+    if n == 0 {
+        return Ok((Vec::new(), 1.0));
+    }
     let mut rows: Vec<BTreeMap<usize, f64>> = vec![BTreeMap::new(); n];
     for (&(i, j), &value) in stiffness {
         if i >= j && value != 0.0 {
@@ -108,7 +133,13 @@ fn factor_solve(
             return Err(AnalysisError::Conditioning(max_pivot / min_pivot));
         }
         let column: Vec<(usize, f64)> = ((pivot + 1)..n)
-            .filter_map(|i| rows[i].get(&pivot).copied().filter(|v| *v != 0.0).map(|v| (i, v)))
+            .filter_map(|i| {
+                rows[i]
+                    .get(&pivot)
+                    .copied()
+                    .filter(|v| *v != 0.0)
+                    .map(|v| (i, v))
+            })
             .collect();
         for &(i, value) in &column {
             rows[i].insert(pivot, value / diag);
@@ -117,7 +148,9 @@ fn factor_solve(
             for &(j, a_jk) in &column[at..] {
                 updates += 1;
                 if updates > MAX_TERMS * 4 {
-                    return Err(AnalysisError::ResourceLimit("preenchimento de fatoração excessivo".into()));
+                    return Err(AnalysisError::ResourceLimit(
+                        "preenchimento de fatoração excessivo".into(),
+                    ));
                 }
                 let previous = rows[j].get(&i).copied().unwrap_or(0.0);
                 let replacement = previous - a_ik * a_jk / diag;
@@ -150,8 +183,10 @@ fn factor_solve(
         }
         result[i] = value;
     }
-    ensure(result.iter().all(|x| x.is_finite() && x.abs() <= 1e9),
-        "Deslocamento não finito ou fora do perfil de ensaio.")?;
+    ensure(
+        result.iter().all(|x| x.is_finite() && x.abs() <= 1e9),
+        "Deslocamento não finito ou fora do perfil de ensaio.",
+    )?;
     Ok((result, max_pivot / min_pivot))
 }
 
@@ -161,14 +196,24 @@ pub fn solve(system: &System, cancelled: Option<&AtomicBool>) -> Result<Solution
     let k = checked_assembly(system)?;
     let mut fixed = BTreeMap::new();
     for condition in &system.prescribed {
-        ensure(condition.dof < system.dimension && condition.displacement_m.is_finite(),
-            "Restrição com índice ou deslocamento inválido.")?;
-        ensure(fixed.insert(condition.dof, condition.displacement_m).is_none(),
-            "Mesmo grau de liberdade prescrito duas vezes.")?;
+        ensure(
+            condition.dof < system.dimension && condition.displacement_m.is_finite(),
+            "Restrição com índice ou deslocamento inválido.",
+        )?;
+        ensure(
+            fixed
+                .insert(condition.dof, condition.displacement_m)
+                .is_none(),
+            "Mesmo grau de liberdade prescrito duas vezes.",
+        )?;
     }
-    let free: Vec<_> = (0..system.dimension).filter(|i| !fixed.contains_key(i)).collect();
+    let free: Vec<_> = (0..system.dimension)
+        .filter(|i| !fixed.contains_key(i))
+        .collect();
     let mut full = vec![0.0; system.dimension];
-    for (&i, &u) in &fixed { full[i] = u; }
+    for (&i, &u) in &fixed {
+        full[i] = u;
+    }
     let free_positions: BTreeMap<usize, usize> =
         free.iter().enumerate().map(|(j, &i)| (i, j)).collect();
     let mut right = free.iter().map(|&i| system.forces_n[i]).collect::<Vec<_>>();
@@ -187,22 +232,35 @@ pub fn solve(system: &System, cancelled: Option<&AtomicBool>) -> Result<Solution
         full[i] = unknowns[index];
     }
     let mut reactions = system.forces_n.iter().map(|f| -f).collect::<Vec<_>>();
-    for (&(i, j), &value) in &k { reactions[i] += value * full[j]; }
+    for (&(i, j), &value) in &k {
+        reactions[i] += value * full[j];
+    }
     let free_norm = free.iter().map(|&i| reactions[i].abs()).fold(0.0, f64::max);
     let max_load = system.forces_n.iter().map(|f| f.abs()).fold(0.0, f64::max);
     let max_u = full.iter().map(|u| u.abs()).fold(0.0, f64::max);
     let norm_k = (0..system.dimension)
-        .map(|i| k.range((i, 0)..=(i, system.dimension - 1))
-            .map(|(_, v)| v.abs()).sum::<f64>())
+        .map(|i| {
+            k.range((i, 0)..=(i, system.dimension - 1))
+                .map(|(_, v)| v.abs())
+                .sum::<f64>()
+        })
         .fold(0.0, f64::max);
     let denominator = norm_k * max_u + max_load;
-    let relative = if denominator == 0.0 { free_norm } else { free_norm / denominator };
+    let relative = if denominator == 0.0 {
+        free_norm
+    } else {
+        free_norm / denominator
+    };
     if !relative.is_finite() || relative > RESIDUAL_LIMIT {
         return Err(AnalysisError::Residual(relative));
     }
     Ok(Solution {
-        displacements_m: full, reactions_n: reactions,
-        free_relative_residual: relative, pivot_ratio_indicator,
-        method: METHOD, residual_limit: RESIDUAL_LIMIT, engineering_release: false,
+        displacements_m: full,
+        reactions_n: reactions,
+        free_relative_residual: relative,
+        pivot_ratio_indicator,
+        method: METHOD,
+        residual_limit: RESIDUAL_LIMIT,
+        engineering_release: false,
     })
 }
