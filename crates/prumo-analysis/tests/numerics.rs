@@ -270,3 +270,72 @@ fn plane_stress_membrane_passes_constant_strain_patch_reference() {
     unsupported.supports.clear();
     assert!(membrane::solve(&unsupported,None).is_err());
 }
+
+
+#[test]
+fn diaphragm_proposes_kine_preserving_planar_offsets_without_auto_approval() {
+    use prumo_analysis::diaphragm::{self,Diaphragm,DiaphragmMode,DiaphragmPoint};
+    let model=Diaphragm {
+        master:DiaphragmPoint{dofs:[0,1,2],position_m:[0.0,0.0]},
+        slaves:vec![DiaphragmPoint{dofs:[3,4,5],position_m:[4.0,2.0]}],
+        mode:DiaphragmMode::Rigid,justification:"Laje demonstrativamente rígida".into(),
+    };
+    let proposal=diaphragm::propose(&model).unwrap();
+    assert_eq!(proposal.constraints.len(),3);
+    assert!(!proposal.analysis_approved);
+    assert_eq!(proposal.constraints[0].slave_dof,3);
+    assert!(proposal.constraints[0].masters.iter().any(|m|
+        m.dof==2&&(m.coefficient+2.0).abs()<1e-12));
+    assert!(proposal.constraints[1].masters.iter().any(|m|
+        m.dof==2&&(m.coefficient-4.0).abs()<1e-12));
+    assert_eq!(proposal.constraints[2].masters[0].dof,2);
+    let mut semirigid=model;
+    semirigid.mode=DiaphragmMode::Semirigid;
+    assert!(diaphragm::propose(&semirigid).is_err());
+}
+#[test]
+fn load_paths_conserve_actions_through_pillar_slab_beams_and_supports() {
+    use prumo_analysis::path;
+    let (pillar,slab,beam_a,beam_b,support_a,support_b)=(
+        Uuid::new_v4(),Uuid::new_v4(),Uuid::new_v4(),
+        Uuid::new_v4(),Uuid::new_v4(),Uuid::new_v4());
+    let applied=loads::AppliedLoads{
+        points:vec![loads::NodalLoad {
+            id:Uuid::new_v4(),origin_id:Uuid::new_v4(),node_id:pillar,
+            location_m:[2.0,0.0,3.0],force_n:[0.0,0.0,-1000.0],
+            couple_nm:[0.0;3],
+        }],
+        lines:vec![],surfaces:vec![],
+    };
+    let ledger=loads::ledger(&applied).unwrap();
+    let model=path::PathModel {
+        nodes:vec![
+            path::Node{id:pillar,position_m:[2.0,0.0,3.0],is_support:false},
+            path::Node{id:slab,position_m:[2.0,0.0,2.0],is_support:false},
+            path::Node{id:beam_a,position_m:[1.0,0.0,2.0],is_support:false},
+            path::Node{id:beam_b,position_m:[3.0,0.0,2.0],is_support:false},
+            path::Node{id:support_a,position_m:[0.0,0.0,0.0],is_support:true},
+            path::Node{id:support_b,position_m:[4.0,0.0,0.0],is_support:true},
+        ],
+        transfers:vec![
+            path::Transfer{from_id:pillar,to_id:slab,share:1.0,assumption:"Pilar na laje".into()},
+            path::Transfer{from_id:slab,to_id:beam_a,share:0.5,assumption:"Faixa 1".into()},
+            path::Transfer{from_id:slab,to_id:beam_b,share:0.5,assumption:"Faixa 2".into()},
+            path::Transfer{from_id:beam_a,to_id:support_a,share:1.0,assumption:"Apoio A".into()},
+            path::Transfer{from_id:beam_b,to_id:support_b,share:1.0,assumption:"Apoio B".into()},
+        ],
+    };
+    let audit=path::audit(&model,&ledger).unwrap();
+    assert_eq!(audit.supports.len(),2);
+    assert!(audit.supports.iter().all(|s|
+        (s.required_force_reaction_n[2]-500.0).abs()<1e-9));
+    assert!(audit.global_force_imbalance_n.iter().all(|x|x.abs()<1e-8));
+    assert!(audit.global_moment_imbalance_nm.iter().all(|x|x.abs()<1e-8));
+    assert!(!audit.engineering_release);
+    let mut duplicate=model.clone();
+    duplicate.transfers[2].share=0.6;
+    assert!(path::audit(&duplicate,&ledger).is_err());
+    let mut lost=model.clone();
+    lost.transfers.retain(|edge|edge.from_id!=beam_b);
+    assert!(path::audit(&lost,&ledger).is_err());
+}
