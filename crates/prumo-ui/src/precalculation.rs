@@ -6,6 +6,7 @@ use prumo_domain::model::{ModelEdit, PointInput};
 use prumo_domain::precalculation::{
     self, Freedom, MemberEnd, MemberRelease, NodeSupport, PrecalculationEdit, Severity,
 };
+use prumo_domain::transactions::TransactionRequest;
 use prumo_domain::{Command, LengthUnit, Project};
 use uuid::Uuid;
 
@@ -79,6 +80,16 @@ impl PrecalculationPanel {
             expected_revision: project.revision,
             edit: ModelEdit::EditPrecalculation { command },
         }));
+    }
+
+    fn preview_edit(actions: &mut Vec<UiAction>, project: &Project, command: PrecalculationEdit) {
+        let operation = Command::EditModel {
+            expected_revision: project.revision,
+            edit: ModelEdit::EditPrecalculation { command },
+        };
+        actions.push(UiAction::PreviewTransaction(Box::new(
+            TransactionRequest::new(project, vec![operation]),
+        )));
     }
 
     fn freedoms(modes: [u8; 6], stiffness: [f64; 6]) -> [Freedom; 6] {
@@ -229,7 +240,7 @@ impl PrecalculationPanel {
                             trace.a, trace.b));
                         if ui.add_enabled(self.confirm_promotion && discrepancy <= 0.01 && trace.visible,
                             egui::Button::new("Promover com dimensões conferidas")).clicked() {
-                            Self::edit(actions, project, PrecalculationEdit::PromoteDrawing {
+                            Self::preview_edit(actions, project, PrecalculationEdit::PromoteDrawing {
                                 reference_id: drawing.id, trace_id: trace.id,
                                 name: format!("Traço {}", trace.id), material_id: None,
                                 confirm_dimensions: true,
@@ -250,7 +261,7 @@ impl PrecalculationPanel {
                         ui.label(format!("{} | {}", candidate.name, candidate.guid));
                         if ui.add_enabled(self.confirm_promotion,
                             egui::Button::new("Promover após conferência")).clicked() {
-                            Self::edit(actions, project, PrecalculationEdit::PromoteIfc {
+                            Self::preview_edit(actions, project, PrecalculationEdit::PromoteIfc {
                                 reference_id: source.id, guid: candidate.guid.clone(),
                                 material_id: None, confirm_hypotheses: true,
                             });
@@ -295,15 +306,15 @@ impl PrecalculationPanel {
         let enabled = self.confirm_batch && !self.selected.is_empty()
             && self.selected.len() <= 500;
         ui.horizontal(|ui| {
-            if ui.add_enabled(enabled, egui::Button::new("Aplicar material em lote")).clicked() {
-                Self::edit(actions, project, PrecalculationEdit::SetMaterialBatch {
+            if ui.add_enabled(enabled, egui::Button::new("Conferir alteração de material")).clicked() {
+                Self::preview_edit(actions, project, PrecalculationEdit::SetMaterialBatch {
                     object_ids: self.selected.iter().copied().collect(),
                     material_id: self.batch_material,
                 });
                 self.confirm_batch = false;
             }
-            if ui.add_enabled(enabled, egui::Button::new("Criar cópias")).clicked() {
-                Self::edit(actions, project, PrecalculationEdit::CopyBatch {
+            if ui.add_enabled(enabled, egui::Button::new("Conferir cópias")).clicked() {
+                Self::preview_edit(actions, project, PrecalculationEdit::CopyBatch {
                     object_ids: self.selected.iter().copied().collect(),
                     translation: PointInput { values: self.translation_m, unit: LengthUnit::Metre },
                     linked: self.linked,
@@ -311,7 +322,7 @@ impl PrecalculationPanel {
                 self.confirm_batch = false;
             }
         });
-        ui.label("Alterações usam a revisão do projeto; o histórico de transações permite desfazer.");
+        ui.label("A prévia indica cada objeto afetado e eventuais resultados invalidados. Confira e aplique no painel de transações, no início da página. Desfazer permanece disponível no histórico.");
     }
 
     fn review(&mut self, ui: &mut egui::Ui, project: &Project) {
