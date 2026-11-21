@@ -192,6 +192,7 @@ async fn ui_visual_object_then_real_mcp_typed_model_links_actions_and_restart() 
             "edit_assemblies",
             "edit_framing",
             "edit_layout",
+            "edit_precalculation",
             "edit_surfaces",
             "link_physical_analytical",
             "merge_physical",
