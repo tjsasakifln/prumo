@@ -45,6 +45,38 @@ pub struct CatalogueMaterialReport {
 }
 
 impl ProjectService {
+    /// Read-only, size-bounded experiment on explicitly supplied input. No
+    /// force, stiffness or load is silently extracted from the open BIM model.
+    pub fn analysis_trial(
+        &self,
+        input: serde_json::Value,
+        cancelled: Option<&std::sync::atomic::AtomicBool>,
+    ) -> Result<serde_json::Value, AppError> {
+        let project = self.read()?;
+        let bytes = serde_json::to_vec(&input)?;
+        if bytes.len() > 64 * 1024 {
+            return Err(AppError::InvalidInput(
+                "O ensaio excede o limite de 64 KiB de entrada.".into(),
+            ));
+        }
+        let request: prumo_analysis::TrialRequest =
+            serde_json::from_value(input).map_err(|error| {
+                AppError::InvalidInput(format!("Contrato do ensaio inválido: {error}"))
+            })?;
+        let snapshot = prumo_domain::canonical::model_snapshot(&project).map_err(invalid_input)?;
+        let evidence = prumo_analysis::trial(&request, cancelled)
+            .map_err(|error| AppError::InvalidInput(error.to_string()))?;
+        Ok(serde_json::json!({
+            "project_id":project.id,"revision":project.revision,
+            "snapshot_sha256":snapshot.sha256,
+            "input_sha256":prumo_domain::canonical::hash_bytes(&bytes),
+            "kernel":"prumo-analysis-0.1",
+            "purpose":"ensaios de matrizes, barras, malhas, vínculos e balanço",
+            "engineering_release":false,
+            "result":evidence
+        }))
+    }
+
     pub fn precalculation_state(&self) -> Result<serde_json::Value, AppError> {
         let project = self.read()?;
         let snapshot = prumo_domain::canonical::model_snapshot(&project).map_err(invalid_input)?;

@@ -75,7 +75,14 @@ struct AssemblyArgs {
     assembly: prumo_domain::assemblies::AssemblySpec,
 }
 
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct AnalysisTrialArgs {
+    trial: Value,
+}
+
 pub(super) enum Operation {
+    AnalysisTrial(Value),
     PrecalculationState,
     PrecalculationReview,
     ViewRead,
@@ -101,6 +108,9 @@ pub(super) enum Operation {
 impl Operation {
     pub(super) fn parse(name: &str, args: Value) -> Option<Result<Self, ErrorData>> {
         Some(match name {
+            "prumo.analysis.trial" => {
+                decode::<AnalysisTrialArgs>(args).map(|input| Self::AnalysisTrial(input.trial))
+            }
             "prumo.precalculation.read" => decode::<Empty>(args).map(|_| Self::PrecalculationState),
             "prumo.precalculation.review" => {
                 decode::<Empty>(args).map(|_| Self::PrecalculationReview)
@@ -167,6 +177,7 @@ impl Operation {
             ));
         }
         Ok(match self {
+            Self::AnalysisTrial(input) => service.analysis_trial(input, Some(cancel))?,
             Self::PrecalculationState => service.precalculation_state()?,
             Self::PrecalculationReview => service.precalculation_review()?,
             Self::ViewExport => serde_json::to_value(service.export_web_view()?)?,
@@ -210,6 +221,15 @@ pub(super) fn tool_catalog(grant: &ProjectGrant) -> Vec<Tool> {
         "vertices_m":{"type":"array","minItems":3,"maxItems":512,"items":point},"expected_normal":point
     }});
     let mut result = vec![
+        definition(
+            "prumo.analysis.trial",
+            "Executa ensaio analítico Rust sem mutar o projeto. Forneça unidades SI explícitas. As saídas não aprovam projeto, estabilidade, norma nem dimensionamento.",
+            json!({"trial":{"type":"object","required":["kind"],"properties":{
+                "kind":{"type":"string","enum":["linear","truss","frame2d","mesh_inspect","membrane","mesh_refine","mesh_convergence","multipoint","rigid_diaphragm","load_ledger","path_audit","load_equilibrium"]}
+            }}}),
+            &["trial"],
+            true,
+        ),
         definition(
             "prumo.precalculation.read",
             "Consulta vínculos, referências calibradas, candidatos IFC e instâncias em sua revisão, sem declarar dados como calculados.",

@@ -7,6 +7,7 @@ mod registry;
 pub use registry::RegistryView;
 mod components;
 pub use components::ComponentView;
+mod analysis;
 mod model;
 mod numeric;
 mod precalculation;
@@ -43,6 +44,7 @@ pub enum UiAction {
     PreviewGeometry(Vec<prumo_domain::geometry::GeometryRepair>),
     InspectFace(prumo_domain::geometry::FaceInput),
     RunVerification,
+    AnalysisTrial(serde_json::Value),
     AnalyseCatalogueSection(uuid::Uuid),
     InspectCatalogueMaterial(
         uuid::Uuid,
@@ -81,6 +83,7 @@ pub struct ProjectView {
     pub storage: StorageView,
     pub model: SemanticView,
     pub precalculation: precalculation::PrecalculationPanel,
+    pub analysis: analysis::AnalysisPanel,
     pub components: ComponentView,
     pub registry: RegistryView,
     pub path: String,
@@ -110,6 +113,7 @@ impl Default for ProjectView {
             storage: StorageView::default(),
             model: SemanticView::default(),
             precalculation: precalculation::PrecalculationPanel::default(),
+            analysis: analysis::AnalysisPanel::default(),
             components: ComponentView::default(),
             registry: RegistryView::default(),
             path: "meu-projeto.prumo".into(),
@@ -233,6 +237,7 @@ impl ProjectView {
                 ui.add_enabled_ui(selected, |ui| self.assemblies.show(ui, project, &mut actions));
                 ui.add_enabled_ui(selected, |ui| self.model.show(ui, project, &mut actions));
                 ui.add_enabled_ui(selected, |ui| self.precalculation.show(ui, project, &mut actions));
+                ui.add_enabled_ui(selected, |ui| self.analysis.show(ui, project, &mut actions));
                 ui.separator();
                 ui.heading("Objetos do projeto");
                 ui.label("Identidades físicas e analíticas são distintas e ligadas explicitamente. Nenhuma peça está dimensionada.");

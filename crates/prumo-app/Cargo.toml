@@ -6,6 +6,7 @@ rust-version.workspace = true
 publish = false
 
 [dependencies]
+prumo-analysis = { path = "../prumo-analysis" }
 prumo-domain = { path = "../prumo-domain" }
 prumo-registry = { path = "../prumo-registry" }
 prumo-components.workspace = true
