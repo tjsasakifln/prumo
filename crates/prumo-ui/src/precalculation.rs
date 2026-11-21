@@ -16,15 +16,18 @@ pub struct PrecalculationPanel {
     support_modes: [u8; 6],
     support_stiffness: [f64; 6],
     support_note: String,
+    support_rotation_deg: f64,
     member: Option<Uuid>,
     release_end: MemberEnd,
     release_modes: [u8; 6],
+    release_stiffness: [f64; 6],
     release_note: String,
     selected: BTreeSet<Uuid>,
     batch_material: Option<Uuid>,
     translation_m: [f64; 3],
     linked: bool,
     confirm_batch: bool,
+    confirm_promotion: bool,
     tab: u8,
 }
 
@@ -35,15 +38,18 @@ impl Default for PrecalculationPanel {
             support_modes: [1, 1, 1, 0, 0, 0],
             support_stiffness: [1000.0; 6],
             support_note: "Hipótese declarada pelo projetista".into(),
+            support_rotation_deg: 0.0,
             member: None,
             release_end: MemberEnd::Start,
             release_modes: [1, 1, 1, 0, 0, 0],
+            release_stiffness: [1000.0; 6],
             release_note: "Liberação explicitamente definida".into(),
             selected: BTreeSet::new(),
             batch_material: None,
             translation_m: [0.0, 0.0, 3.0],
             linked: false,
             confirm_batch: false,
+            confirm_promotion: false,
             tab: 0,
         }
     }
@@ -115,9 +121,29 @@ impl PrecalculationPanel {
                 .find(|n| n.id == id)).map_or("Selecione o nó", |n| n.name.as_str()))
             .show_ui(ui, |ui| {
                 for node in &project.model.analytical_nodes {
-                    ui.selectable_value(&mut self.node, Some(node.id), &node.name);
+                    if ui.selectable_value(&mut self.node, Some(node.id), &node.name).changed() {
+                        if let Some(existing) = saved.supports.iter().find(|s| s.node_id == node.id) {
+                            for (i, value) in existing.freedoms.iter().enumerate() {
+                                let (mode, stiffness) = match value {
+                                    Freedom::Free {} => (0, 0.0),
+                                    Freedom::Fixed {} => (1, 0.0),
+                                    Freedom::Spring { stiffness_si } => (2, *stiffness_si),
+                                    Freedom::CompressionOnly { stiffness_si } => (3, *stiffness_si),
+                                };
+                                self.support_modes[i] = mode;
+                                if mode >= 2 { self.support_stiffness[i] = stiffness; }
+                            }
+                            self.support_rotation_deg = existing.rotation_to_engineering[1][0]
+                                .atan2(existing.rotation_to_engineering[0][0]).to_degrees();
+                            self.support_note = existing.justification.clone();
+                        }
+                    }
                 }
             });
+        ui.horizontal(|ui| {
+            ui.label("Rotação em torno de Z global (graus)");
+            ui.add(egui::DragValue::new(&mut self.support_rotation_deg).speed(1.0));
+        });
         Self::degree_inputs(ui, &mut self.support_modes, &mut self.support_stiffness, "support");
         ui.label("Justificativa da hipótese");
         ui.text_edit_singleline(&mut self.support_note);
@@ -125,11 +151,12 @@ impl PrecalculationPanel {
             let node_id = self.node.expect("enabled");
             let id = saved.supports.iter().find(|s| s.node_id == node_id)
                 .map_or_else(Uuid::new_v4, |s| s.id);
+            let (sine, cosine) = self.support_rotation_deg.to_radians().sin_cos();
             Self::edit(actions, project, PrecalculationEdit::PutSupport {
                 support: NodeSupport {
                     id, node_id,
                     rotation_to_engineering: [
-                        [1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0],
+                        [cosine, -sine, 0.0], [sine, cosine, 0.0], [0.0, 0.0, 1.0],
                     ],
                     freedoms: Self::freedoms(self.support_modes, self.support_stiffness),
                     justification: self.support_note.clone(),
@@ -159,7 +186,7 @@ impl PrecalculationPanel {
             ui.selectable_value(&mut self.release_end, MemberEnd::Start, "Início");
             ui.selectable_value(&mut self.release_end, MemberEnd::End, "Fim");
         });
-        Self::degree_inputs(ui, &mut self.release_modes, &mut self.support_stiffness, "release");
+        Self::degree_inputs(ui, &mut self.release_modes, &mut self.release_stiffness, "release");
         ui.label("Justificativa");
         ui.text_edit_singleline(&mut self.release_note);
         if ui.add_enabled(self.member.is_some(), egui::Button::new("Gravar liberação")).clicked() {
@@ -169,7 +196,7 @@ impl PrecalculationPanel {
             Self::edit(actions, project, PrecalculationEdit::PutRelease {
                 release: MemberRelease {
                     id, member_id, end: self.release_end,
-                    freedoms: Self::freedoms(self.release_modes, self.support_stiffness),
+                    freedoms: Self::freedoms(self.release_modes, self.release_stiffness),
                     justification: self.release_note.clone(),
                 },
             });
@@ -187,6 +214,8 @@ impl PrecalculationPanel {
     fn references(&mut self, ui: &mut egui::Ui, project: &Project, actions: &mut Vec<UiAction>) {
         let Ok(saved) = precalculation::state(project) else { return; };
         ui.heading("Referências de desenho e IFC");
+        ui.checkbox(&mut self.confirm_promotion,
+            "Conferi a geometria, as duas cotas, o posicionamento e a finalidade do elemento selecionado");
         ui.label("O cadastro informa SHA e geometria candidata fornecidos pelo usuário. O Prumo ainda não interpreta PDF, DXF ou IFC completo; confira duas medidas antes de promover.");
         for drawing in &saved.drawings {
             let discrepancy = drawing.calibration.factors().map(|(_, _, d)| d).unwrap_or(f64::INFINITY);
@@ -196,13 +225,16 @@ impl PrecalculationPanel {
                 for trace in &drawing.traces {
                     ui.horizontal(|ui| {
                         ui.label(format!("Camada {} | traço {}", trace.layer, trace.id));
-                        if ui.add_enabled(discrepancy <= 0.01 && trace.visible,
+                        ui.label(format!("Origem {:?} até {:?} nas unidades da referência",
+                            trace.a, trace.b));
+                        if ui.add_enabled(self.confirm_promotion && discrepancy <= 0.01 && trace.visible,
                             egui::Button::new("Promover com dimensões conferidas")).clicked() {
                             Self::edit(actions, project, PrecalculationEdit::PromoteDrawing {
                                 reference_id: drawing.id, trace_id: trace.id,
                                 name: format!("Traço {}", trace.id), material_id: None,
                                 confirm_dimensions: true,
                             });
+                            self.confirm_promotion = false;
                         }
                     });
                 }
@@ -216,11 +248,13 @@ impl PrecalculationPanel {
                 for candidate in &source.candidates {
                     ui.horizontal(|ui| {
                         ui.label(format!("{} | {}", candidate.name, candidate.guid));
-                        if ui.button("Promover após conferência").clicked() {
+                        if ui.add_enabled(self.confirm_promotion,
+                            egui::Button::new("Promover após conferência")).clicked() {
                             Self::edit(actions, project, PrecalculationEdit::PromoteIfc {
                                 reference_id: source.id, guid: candidate.guid.clone(),
                                 material_id: None, confirm_hypotheses: true,
                             });
+                            self.confirm_promotion = false;
                         }
                     });
                 }
