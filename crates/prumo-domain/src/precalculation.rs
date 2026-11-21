@@ -91,11 +91,18 @@ pub struct Calibration {
 
 impl Calibration {
     pub fn factors(&self) -> Result<(f64, f64, f64), DomainError> {
-        if [self.measured_a, self.measured_b, self.actual_a_m, self.actual_b_m]
-            .iter()
-            .any(|v| !v.is_finite() || *v <= 0.0)
+        if [
+            self.measured_a,
+            self.measured_b,
+            self.actual_a_m,
+            self.actual_b_m,
+        ]
+        .iter()
+        .any(|v| !v.is_finite() || *v <= 0.0)
         {
-            return Err(invalid("A calibração exige duas medidas e cotas positivas."));
+            return Err(invalid(
+                "A calibração exige duas medidas e cotas positivas.",
+            ));
         }
         let a = self.actual_a_m / self.measured_a;
         let b = self.actual_b_m / self.measured_b;
@@ -182,12 +189,26 @@ pub struct PrecalculationState {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(tag = "operation", rename_all = "snake_case", deny_unknown_fields)]
 pub enum PrecalculationEdit {
-    PutSupport { support: NodeSupport },
-    RemoveSupport { id: Uuid },
-    PutRelease { release: MemberRelease },
-    RemoveRelease { id: Uuid },
-    PutDrawing { reference: DrawingReference, expected_sha256: Option<String> },
-    PutIfc { reference: IfcReference, expected_sha256: Option<String> },
+    PutSupport {
+        support: NodeSupport,
+    },
+    RemoveSupport {
+        id: Uuid,
+    },
+    PutRelease {
+        release: MemberRelease,
+    },
+    RemoveRelease {
+        id: Uuid,
+    },
+    PutDrawing {
+        reference: DrawingReference,
+        expected_sha256: Option<String>,
+    },
+    PutIfc {
+        reference: IfcReference,
+        expected_sha256: Option<String>,
+    },
     PromoteDrawing {
         reference_id: Uuid,
         trace_id: Uuid,
@@ -215,13 +236,18 @@ pub enum PrecalculationEdit {
 pub fn state(project: &Project) -> Result<PrecalculationState, DomainError> {
     project.extensions.get(KEY).map_or_else(
         || Ok(PrecalculationState::default()),
-        |value| serde_json::from_value(value.clone())
-            .map_err(|e| invalid(format!("Metadados de pré-cálculo inválidos: {e}"))),
+        |value| {
+            serde_json::from_value(value.clone())
+                .map_err(|e| invalid(format!("Metadados de pré-cálculo inválidos: {e}")))
+        },
     )
 }
 
 fn sha_ok(value: &str) -> bool {
-    value.len() == 64 && value.bytes().all(|b| b.is_ascii_hexdigit() && !b.is_ascii_uppercase())
+    value.len() == 64
+        && value
+            .bytes()
+            .all(|b| b.is_ascii_hexdigit() && !b.is_ascii_uppercase())
 }
 
 fn good_point(p: [f64; 3]) -> Result<(), DomainError> {
@@ -232,15 +258,19 @@ fn member_geometry_ok(a: [f64; 3], b: [f64; 3]) -> Result<(), DomainError> {
     good_point(a)?;
     good_point(b)?;
     if (0..3).map(|i| (a[i] - b[i]).powi(2)).sum::<f64>() <= 1e-12 {
-        return Err(invalid("A candidata tem comprimento nulo ou inferior à tolerância."));
+        return Err(invalid(
+            "A candidata tem comprimento nulo ou inferior à tolerância.",
+        ));
     }
     Ok(())
 }
 
 pub fn validate_project(project: &Project) -> Result<(), DomainError> {
     let s = state(project)?;
-    if s.supports.len() > MAX_ELEMENTS || s.releases.len() > MAX_ELEMENTS
-        || s.drawings.len() > MAX_SOURCES || s.ifc.len() > MAX_SOURCES
+    if s.supports.len() > MAX_ELEMENTS
+        || s.releases.len() > MAX_ELEMENTS
+        || s.drawings.len() > MAX_SOURCES
+        || s.ifc.len() > MAX_SOURCES
         || s.instances.len() > MAX_ELEMENTS
     {
         return Err(DomainError::ModelLimit);
@@ -252,14 +282,24 @@ pub fn validate_project(project: &Project) -> Result<(), DomainError> {
             return Err(invalid("Identidade repetida de apoio."));
         }
         if !target_nodes.insert(support.node_id) {
-            return Err(invalid(format!("Apoios contraditórios no nó {}.", support.node_id)));
+            return Err(invalid(format!(
+                "Apoios contraditórios no nó {}.",
+                support.node_id
+            )));
         }
-        if !project.model.analytical_nodes.iter().any(|n| n.id == support.node_id) {
+        if !project
+            .model
+            .analytical_nodes
+            .iter()
+            .any(|n| n.id == support.node_id)
+        {
             return Err(DomainError::UnknownReference(support.node_id));
         }
         crate::model::validate_rotation(support.rotation_to_engineering)?;
         validate_name(&support.justification)?;
-        for freedom in &support.freedoms { freedom.validate()?; }
+        for freedom in &support.freedoms {
+            freedom.validate()?;
+        }
         if support.freedoms.iter().all(|f| !f.restrained()) {
             return Err(invalid("Apoio integralmente livre não é um vínculo."));
         }
@@ -269,17 +309,26 @@ pub fn validate_project(project: &Project) -> Result<(), DomainError> {
         if release.id.is_nil() || !ids.insert(release.id) {
             return Err(invalid("Identidade repetida de liberação."));
         }
-        if !project.model.analytical_members.iter().any(|m| m.id == release.member_id) {
+        if !project
+            .model
+            .analytical_members
+            .iter()
+            .any(|m| m.id == release.member_id)
+        {
             return Err(DomainError::UnknownReference(release.member_id));
         }
         if !end_pairs.insert((release.member_id, release.end as u8)) {
             return Err(invalid("Liberações conflitantes na mesma extremidade."));
         }
         validate_name(&release.justification)?;
-        for freedom in &release.freedoms { freedom.validate()?; }
+        for freedom in &release.freedoms {
+            freedom.validate()?;
+        }
     }
     for drawing in &s.drawings {
-        if drawing.id.is_nil() || !ids.insert(drawing.id) || !sha_ok(&drawing.sha256)
+        if drawing.id.is_nil()
+            || !ids.insert(drawing.id)
+            || !sha_ok(&drawing.sha256)
             || drawing.traces.len() > MAX_ELEMENTS
         {
             return Err(invalid("Identidade, SHA ou limite de referência inválido."));
@@ -289,14 +338,19 @@ pub fn validate_project(project: &Project) -> Result<(), DomainError> {
         drawing.calibration.factors()?;
         let mut local = BTreeSet::new();
         for trace in &drawing.traces {
-            if trace.id.is_nil() || !local.insert(trace.id) { return Err(invalid("Traço repetido.")); }
+            if trace.id.is_nil() || !local.insert(trace.id) {
+                return Err(invalid("Traço repetido."));
+            }
             validate_name(&trace.layer)?;
             member_geometry_ok(trace.a, trace.b)?;
         }
     }
     for source in &s.ifc {
-        if source.id.is_nil() || !ids.insert(source.id) || !sha_ok(&source.sha256)
-            || source.candidates.len() > MAX_ELEMENTS || source.unknown_entity_count > 100_000
+        if source.id.is_nil()
+            || !ids.insert(source.id)
+            || !sha_ok(&source.sha256)
+            || source.candidates.len() > MAX_ELEMENTS
+            || source.unknown_entity_count > 100_000
         {
             return Err(invalid("Identidade, SHA ou limite IFC inválido."));
         }
@@ -314,7 +368,8 @@ pub fn validate_project(project: &Project) -> Result<(), DomainError> {
     }
     let mut children = BTreeSet::new();
     for instance in &s.instances {
-        if !children.insert(instance.object_id) || instance.source_id == instance.object_id
+        if !children.insert(instance.object_id)
+            || instance.source_id == instance.object_id
             || !project.objects.iter().any(|x| x.id == instance.object_id)
             || !project.model.identities.contains_key(&instance.source_id)
         {
@@ -324,7 +379,12 @@ pub fn validate_project(project: &Project) -> Result<(), DomainError> {
     Ok(())
 }
 
-fn upsert<T: Clone>(items: &mut Vec<T>, id: Uuid, mut identifier: impl FnMut(&T) -> Uuid, value: T) {
+fn upsert<T: Clone>(
+    items: &mut Vec<T>,
+    id: Uuid,
+    mut identifier: impl FnMut(&T) -> Uuid,
+    value: T,
+) {
     if let Some(existing) = items.iter_mut().find(|item| identifier(item) == id) {
         *existing = value;
     } else {
@@ -332,26 +392,39 @@ fn upsert<T: Clone>(items: &mut Vec<T>, id: Uuid, mut identifier: impl FnMut(&T)
     }
 }
 
-fn update_source<T>(items: &mut Vec<T>, id: Uuid, expected_sha: Option<&str>,
-    identifier: impl Fn(&T) -> Uuid, sha: impl Fn(&T) -> &str,
-    replacement: T) -> Result<(), DomainError>
-{
+fn update_source<T>(
+    items: &mut Vec<T>,
+    id: Uuid,
+    expected_sha: Option<&str>,
+    identifier: impl Fn(&T) -> Uuid,
+    sha: impl Fn(&T) -> &str,
+    replacement: T,
+) -> Result<(), DomainError> {
     if let Some(old) = items.iter_mut().find(|item| identifier(item) == id) {
         if Some(sha(old)) != expected_sha {
-            return Err(invalid("A referência mudou. Confirme o SHA anterior para substituir."));
+            return Err(invalid(
+                "A referência mudou. Confirme o SHA anterior para substituir.",
+            ));
         }
         *old = replacement;
     } else if expected_sha.is_some() {
-        return Err(invalid("Referência não encontrada para a revisão informada."));
+        return Err(invalid(
+            "Referência não encontrada para a revisão informada.",
+        ));
     } else {
         items.push(replacement);
     }
     Ok(())
 }
 
-fn insert_promoted(project: &mut Project, name: String,
-    points: ([f64; 3], [f64; 3]), material_id: Option<Uuid>,
-    provenance: (SourceOrigin, Option<IfcGuid>), actor: &str, revision: u64,
+fn insert_promoted(
+    project: &mut Project,
+    name: String,
+    points: ([f64; 3], [f64; 3]),
+    material_id: Option<Uuid>,
+    provenance: (SourceOrigin, Option<IfcGuid>),
+    actor: &str,
+    revision: u64,
 ) -> Result<(), DomainError> {
     let (a, b) = points;
     let (origin, guid) = provenance;
@@ -364,22 +437,36 @@ fn insert_promoted(project: &mut Project, name: String,
     }
     let id = Uuid::new_v4();
     project.objects.push(PhysicalObject {
-        id, name, discipline: Discipline::Structure,
-        start_m: Point3::try_from(a)?, end_m: Point3::try_from(b)?,
-        state: ModelState::Modelled, role: PhysicalRole::AnalyticalSource,
-        material_id, environment_id: None, extensions: BTreeMap::new(),
+        id,
+        name,
+        discipline: Discipline::Structure,
+        start_m: Point3::try_from(a)?,
+        end_m: Point3::try_from(b)?,
+        state: ModelState::Modelled,
+        role: PhysicalRole::AnalyticalSource,
+        material_id,
+        environment_id: None,
+        extensions: BTreeMap::new(),
     });
     crate::model::record_identity(project, id, actor, revision, true)?;
-    let identity = project.model.identities.get_mut(&id)
+    let identity = project
+        .model
+        .identities
+        .get_mut(&id)
         .ok_or(DomainError::UnknownReference(id))?;
     identity.origin = origin;
-    if let Some(guid) = guid { identity.ifc_guid = Some(guid); }
+    if let Some(guid) = guid {
+        identity.ifc_guid = Some(guid);
+    }
     Ok(())
 }
 
-pub fn apply(project: &mut Project, command: PrecalculationEdit,
-    actor: &str, revision: u64) -> Result<(), DomainError>
-{
+pub fn apply(
+    project: &mut Project,
+    command: PrecalculationEdit,
+    actor: &str,
+    revision: u64,
+) -> Result<(), DomainError> {
     validate_name(actor)?;
     let mut state = state(project)?;
     match command {
@@ -387,86 +474,176 @@ pub fn apply(project: &mut Project, command: PrecalculationEdit,
             upsert(&mut state.supports, support.id, |item| item.id, support);
         }
         PrecalculationEdit::RemoveSupport { id } => {
-            if !state.supports.iter().any(|item| item.id == id) { return Err(DomainError::UnknownReference(id)); }
+            if !state.supports.iter().any(|item| item.id == id) {
+                return Err(DomainError::UnknownReference(id));
+            }
             state.supports.retain(|item| item.id != id);
         }
         PrecalculationEdit::PutRelease { release } => {
             upsert(&mut state.releases, release.id, |item| item.id, release);
         }
         PrecalculationEdit::RemoveRelease { id } => {
-            if !state.releases.iter().any(|item| item.id == id) { return Err(DomainError::UnknownReference(id)); }
+            if !state.releases.iter().any(|item| item.id == id) {
+                return Err(DomainError::UnknownReference(id));
+            }
             state.releases.retain(|item| item.id != id);
         }
-        PrecalculationEdit::PutDrawing { reference, expected_sha256 } => {
-            update_source(&mut state.drawings, reference.id, expected_sha256.as_deref(),
-                |r| r.id, |r| r.sha256.as_str(), reference)?;
+        PrecalculationEdit::PutDrawing {
+            reference,
+            expected_sha256,
+        } => {
+            update_source(
+                &mut state.drawings,
+                reference.id,
+                expected_sha256.as_deref(),
+                |r| r.id,
+                |r| r.sha256.as_str(),
+                reference,
+            )?;
         }
-        PrecalculationEdit::PutIfc { reference, expected_sha256 } => {
-            update_source(&mut state.ifc, reference.id, expected_sha256.as_deref(),
-                |r| r.id, |r| r.sha256.as_str(), reference)?;
+        PrecalculationEdit::PutIfc {
+            reference,
+            expected_sha256,
+        } => {
+            update_source(
+                &mut state.ifc,
+                reference.id,
+                expected_sha256.as_deref(),
+                |r| r.id,
+                |r| r.sha256.as_str(),
+                reference,
+            )?;
         }
         PrecalculationEdit::PromoteDrawing {
-            reference_id, trace_id, name, material_id, confirm_dimensions,
+            reference_id,
+            trace_id,
+            name,
+            material_id,
+            confirm_dimensions,
         } => {
-            if !confirm_dimensions { return Err(invalid("Confira duas cotas antes de promover o traço.")); }
-            let drawing = state.drawings.iter().find(|r| r.id == reference_id)
+            if !confirm_dimensions {
+                return Err(invalid("Confira duas cotas antes de promover o traço."));
+            }
+            let drawing = state
+                .drawings
+                .iter()
+                .find(|r| r.id == reference_id)
                 .ok_or(DomainError::UnknownReference(reference_id))?;
             let (_, _, discrepancy) = drawing.calibration.factors()?;
             if discrepancy > 0.01 {
-                return Err(invalid("Escalas discrepantes em mais de 1%. Corrija a referência antes da promoção."));
+                return Err(invalid(
+                    "Escalas discrepantes em mais de 1%. Corrija a referência antes da promoção.",
+                ));
             }
-            let trace = drawing.traces.iter().find(|r| r.id == trace_id && r.visible)
+            let trace = drawing
+                .traces
+                .iter()
+                .find(|r| r.id == trace_id && r.visible)
                 .ok_or(DomainError::UnknownReference(trace_id))?;
             let (scale, _, _) = drawing.calibration.factors()?;
-            let mapped = |p: [f64; 3]| [
-                drawing.origin_m[0] + p[0] * scale,
-                drawing.origin_m[1] + p[1] * scale,
-                drawing.origin_m[2] + p[2] * scale,
-            ];
-            insert_promoted(project, name, (mapped(trace.a), mapped(trace.b)), material_id,
-                (SourceOrigin::Imported {
-                    system: format!("{:?}", drawing.format),
-                    reference: drawing.sha256.clone(),
-                    external_id: trace.id.to_string(),
-                }, None), actor, revision)?;
+            let mapped = |p: [f64; 3]| {
+                [
+                    drawing.origin_m[0] + p[0] * scale,
+                    drawing.origin_m[1] + p[1] * scale,
+                    drawing.origin_m[2] + p[2] * scale,
+                ]
+            };
+            insert_promoted(
+                project,
+                name,
+                (mapped(trace.a), mapped(trace.b)),
+                material_id,
+                (
+                    SourceOrigin::Imported {
+                        system: format!("{:?}", drawing.format),
+                        reference: drawing.sha256.clone(),
+                        external_id: trace.id.to_string(),
+                    },
+                    None,
+                ),
+                actor,
+                revision,
+            )?;
         }
         PrecalculationEdit::PromoteIfc {
-            reference_id, guid, material_id, confirm_hypotheses,
+            reference_id,
+            guid,
+            material_id,
+            confirm_hypotheses,
         } => {
             if !confirm_hypotheses {
-                return Err(invalid("A promoção IFC requer confirmação explícita das hipóteses físicas."));
+                return Err(invalid(
+                    "A promoção IFC requer confirmação explícita das hipóteses físicas.",
+                ));
             }
-            let source = state.ifc.iter().find(|r| r.id == reference_id)
+            let source = state
+                .ifc
+                .iter()
+                .find(|r| r.id == reference_id)
                 .ok_or(DomainError::UnknownReference(reference_id))?;
-            let c = source.candidates.iter().find(|c| c.guid == guid)
+            let c = source
+                .candidates
+                .iter()
+                .find(|c| c.guid == guid)
                 .ok_or_else(|| invalid("GUID não encontrado no IFC importado."))?;
-            if !["IFCBEAM", "IFCCOLUMN", "IFCMEMBER"].iter()
-                .any(|ty| c.entity_type.eq_ignore_ascii_case(ty)) {
-                return Err(invalid("O tipo IFC não representa uma barra estrutural suportada. Mantenha-o como referência."));
-            }
-            if project.model.identities.values().any(|identity|
-                matches!(&identity.origin, SourceOrigin::Imported {reference,external_id,..}
-                    if reference == &source.sha256 && external_id == &guid))
+            if !["IFCBEAM", "IFCCOLUMN", "IFCMEMBER"]
+                .iter()
+                .any(|ty| c.entity_type.eq_ignore_ascii_case(ty))
             {
-                return Err(invalid("Elemento IFC já foi promovido. Reimportação não duplica objetos."));
+                return Err(invalid(
+                    "O tipo IFC não representa uma barra estrutural suportada. Mantenha-o como referência.",
+                ));
             }
-            insert_promoted(project, c.name.clone(), (c.start_m, c.end_m), material_id,
-                (SourceOrigin::Imported {
-                    system: "IFC".into(), reference: source.sha256.clone(), external_id: guid.clone(),
-                }, Some(IfcGuid::try_from(guid)?)), actor, revision)?;
+            if project.model.identities.values().any(|identity| {
+                matches!(&identity.origin, SourceOrigin::Imported {reference,external_id,..}
+                    if reference == &source.sha256 && external_id == &guid)
+            }) {
+                return Err(invalid(
+                    "Elemento IFC já foi promovido. Reimportação não duplica objetos.",
+                ));
+            }
+            insert_promoted(
+                project,
+                c.name.clone(),
+                (c.start_m, c.end_m),
+                material_id,
+                (
+                    SourceOrigin::Imported {
+                        system: "IFC".into(),
+                        reference: source.sha256.clone(),
+                        external_id: guid.clone(),
+                    },
+                    Some(IfcGuid::try_from(guid)?),
+                ),
+                actor,
+                revision,
+            )?;
         }
-        PrecalculationEdit::CopyBatch { object_ids, translation, linked } => {
-            if object_ids.is_empty() || object_ids.len() > MAX_BATCH
+        PrecalculationEdit::CopyBatch {
+            object_ids,
+            translation,
+            linked,
+        } => {
+            if object_ids.is_empty()
+                || object_ids.len() > MAX_BATCH
                 || object_ids.iter().collect::<BTreeSet<_>>().len() != object_ids.len()
             {
-                return Err(invalid("Selecione de 1 a 500 peças distintas para a cópia."));
+                return Err(invalid(
+                    "Selecione de 1 a 500 peças distintas para a cópia.",
+                ));
             }
             let delta = translation.to_si()?.as_array();
             for source_id in object_ids {
-                let mut object = project.objects.iter().find(|x| x.id == source_id)
-                    .ok_or(DomainError::UnknownReference(source_id))?.clone();
+                let mut object = project
+                    .objects
+                    .iter()
+                    .find(|x| x.id == source_id)
+                    .ok_or(DomainError::UnknownReference(source_id))?
+                    .clone();
                 if !object.extensions.is_empty() {
-                    return Err(invalid("Peça com gerador paramétrico: copie pelo comando específico da geometria."));
+                    return Err(invalid(
+                        "Peça com gerador paramétrico: copie pelo comando específico da geometria.",
+                    ));
                 }
                 let id = Uuid::new_v4();
                 object.id = id;
@@ -480,15 +657,28 @@ pub fn apply(project: &mut Project, command: PrecalculationEdit,
                 object.end_m = offset(object.end_m)?;
                 project.objects.push(object);
                 crate::model::record_identity(project, id, actor, revision, true)?;
-                project.model.identities.get_mut(&id).expect("registered")
-                    .origin = SourceOrigin::Derived { operation: format!("copy_from:{source_id}") };
+                project
+                    .model
+                    .identities
+                    .get_mut(&id)
+                    .expect("registered")
+                    .origin = SourceOrigin::Derived {
+                    operation: format!("copy_from:{source_id}"),
+                };
                 state.instances.push(Instance {
-                    source_id, object_id: id, linked, overridden: false,
+                    source_id,
+                    object_id: id,
+                    linked,
+                    overridden: false,
                 });
             }
         }
-        PrecalculationEdit::SetMaterialBatch { object_ids, material_id } => {
-            if object_ids.is_empty() || object_ids.len() > MAX_BATCH
+        PrecalculationEdit::SetMaterialBatch {
+            object_ids,
+            material_id,
+        } => {
+            if object_ids.is_empty()
+                || object_ids.len() > MAX_BATCH
                 || object_ids.iter().collect::<BTreeSet<_>>().len() != object_ids.len()
             {
                 return Err(invalid("Selecione de 1 a 500 peças distintas para editar."));
@@ -499,7 +689,10 @@ pub fn apply(project: &mut Project, command: PrecalculationEdit,
                 return Err(DomainError::UnknownReference(id));
             }
             for id in object_ids {
-                let target = project.objects.iter_mut().find(|o| o.id == id)
+                let target = project
+                    .objects
+                    .iter_mut()
+                    .find(|o| o.id == id)
                     .ok_or(DomainError::UnknownReference(id))?;
                 target.material_id = material_id;
                 if let Some(instance) = state.instances.iter_mut().find(|x| x.object_id == id) {
@@ -508,14 +701,20 @@ pub fn apply(project: &mut Project, command: PrecalculationEdit,
             }
         }
     }
-    project.extensions.insert(KEY.into(), serde_json::to_value(state)
-        .map_err(|e| invalid(e.to_string()))?);
+    project.extensions.insert(
+        KEY.into(),
+        serde_json::to_value(state).map_err(|e| invalid(e.to_string()))?,
+    );
     validate_project(project)
 }
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "snake_case")]
-pub enum Severity { Blocker, Warning, Info }
+pub enum Severity {
+    Blocker,
+    Warning,
+    Info,
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -540,12 +739,22 @@ pub struct Review {
     pub calculation_approved: bool,
 }
 
-fn finding(stage: &str, code: &str, severity: Severity, entity_id: Option<Uuid>,
-    explanation: &str, consequence: &str, suggested_action: &str) -> Finding
-{
+fn finding(
+    stage: &str,
+    code: &str,
+    severity: Severity,
+    entity_id: Option<Uuid>,
+    explanation: &str,
+    consequence: &str,
+    suggested_action: &str,
+) -> Finding {
     Finding {
-        stage: stage.into(), code: code.into(), severity, entity_id,
-        explanation: explanation.into(), consequence: consequence.into(),
+        stage: stage.into(),
+        code: code.into(),
+        severity,
+        entity_id,
+        explanation: explanation.into(),
+        consequence: consequence.into(),
         suggested_action: suggested_action.into(),
     }
 }
@@ -554,54 +763,97 @@ pub fn review(project: &Project) -> Result<Review, DomainError> {
     let state = state(project)?;
     let mut findings = Vec::new();
     if project.objects.is_empty() {
-        findings.push(finding("projeto","empty_model",Severity::Blocker,None,
-            "Nenhuma peça foi modelada.", "Não há estrutura para avaliar.",
-            "Insira as peças com geometria e identidades explícitas."));
+        findings.push(finding(
+            "projeto",
+            "empty_model",
+            Severity::Blocker,
+            None,
+            "Nenhuma peça foi modelada.",
+            "Não há estrutura para avaliar.",
+            "Insira as peças com geometria e identidades explícitas.",
+        ));
     }
     for obj in &project.objects {
         if obj.discipline == Discipline::Structure
-            && obj.role == PhysicalRole::AnalyticalSource && obj.material_id.is_none()
+            && obj.role == PhysicalRole::AnalyticalSource
+            && obj.material_id.is_none()
         {
-            findings.push(finding("materiais","missing_material",Severity::Blocker,Some(obj.id),
+            findings.push(finding(
+                "materiais",
+                "missing_material",
+                Severity::Blocker,
+                Some(obj.id),
                 "Peça estrutural sem material associado.",
                 "Rigidez e peso próprio não podem ser determinados.",
-                "Escolha um material do catálogo e registre sua origem."));
+                "Escolha um material do catálogo e registre sua origem.",
+            ));
         }
     }
-    if project.objects.iter().any(|o| o.discipline == Discipline::Structure
-        && o.role == PhysicalRole::AnalyticalSource)
+    if project
+        .objects
+        .iter()
+        .any(|o| o.discipline == Discipline::Structure && o.role == PhysicalRole::AnalyticalSource)
         && project.model.analytical_members.is_empty()
     {
-        findings.push(finding("geometria", "no_analytical_members", Severity::Blocker,
-            None, "Peças estruturais físicas não possuem barras analíticas conectadas.",
+        findings.push(finding(
+            "geometria",
+            "no_analytical_members",
+            Severity::Blocker,
+            None,
+            "Peças estruturais físicas não possuem barras analíticas conectadas.",
             "Não é possível conferir a transferência de esforços entre as peças.",
-            "Defina os nós, barras e vínculos analíticos correspondentes."));
+            "Defina os nós, barras e vínculos analíticos correspondentes.",
+        ));
     }
     for obj in &project.objects {
         if obj.discipline != Discipline::Structure || obj.role != PhysicalRole::AnalyticalSource {
             continue;
         }
-        if !project.model.links.iter().any(|link| link.physical_id == obj.id) {
-            findings.push(finding("geometria", "unlinked_physical", Severity::Blocker, Some(obj.id),
+        if !project
+            .model
+            .links
+            .iter()
+            .any(|link| link.physical_id == obj.id)
+        {
+            findings.push(finding(
+                "geometria",
+                "unlinked_physical",
+                Severity::Blocker,
+                Some(obj.id),
                 "Peça física sem vínculo explícito com elemento ou região analítica.",
                 "A transferência de esforços desta peça não está definida.",
-                "Associe a peça ao elemento analítico correspondente."));
+                "Associe a peça ao elemento analítico correspondente.",
+            ));
         }
         if let Some(surface) = crate::surfaces::metadata(obj)?
             && surface.surface.supports.is_empty()
-            && surface.surface.edge_conditions.iter().all(|edge|
-                matches!(&edge.behavior, crate::surfaces::EdgeBehavior::Free {}))
+            && surface
+                .surface
+                .edge_conditions
+                .iter()
+                .all(|edge| matches!(&edge.behavior, crate::surfaces::EdgeBehavior::Free {}))
         {
-            findings.push(finding("vínculos", "unsupported_surface", Severity::Blocker, Some(obj.id),
+            findings.push(finding(
+                "vínculos",
+                "unsupported_surface",
+                Severity::Blocker,
+                Some(obj.id),
                 "Laje ou painel sem apoio explícito registrado.",
                 "Não há caminho de cargas declarado para o contorno.",
-                "Cadastre apoios de superfície ou vínculos de borda com peças existentes."));
+                "Cadastre apoios de superfície ou vínculos de borda com peças existentes.",
+            ));
         }
     }
     let mut adjacency: BTreeMap<Uuid, Vec<Uuid>> = BTreeMap::new();
     for member in &project.model.analytical_members {
-        adjacency.entry(member.start_node_id).or_default().push(member.end_node_id);
-        adjacency.entry(member.end_node_id).or_default().push(member.start_node_id);
+        adjacency
+            .entry(member.start_node_id)
+            .or_default()
+            .push(member.end_node_id);
+        adjacency
+            .entry(member.end_node_id)
+            .or_default()
+            .push(member.start_node_id);
     }
     let mut reached = BTreeSet::new();
     let supports: BTreeSet<_> = state.supports.iter().map(|item| item.node_id).collect();
@@ -614,92 +866,180 @@ pub fn review(project: &Project) -> Result<Review, DomainError> {
         while let Some(current) = pending.pop() {
             anchored |= supports.contains(&current);
             for next in adjacency.get(&current).into_iter().flatten() {
-                if reached.insert(*next) { pending.push(*next); }
+                if reached.insert(*next) {
+                    pending.push(*next);
+                }
             }
         }
         if !anchored {
-            findings.push(finding("vínculos", "unsupported_component", Severity::Blocker, Some(node.id),
+            findings.push(finding(
+                "vínculos",
+                "unsupported_component",
+                Severity::Blocker,
+                Some(node.id),
                 "Conjunto de nós e barras sem apoio em sua componente conectada.",
                 "O subconjunto pode se deslocar sem resistência de contorno.",
-                "Defina os apoios físicos ou conexões analíticas faltantes."));
+                "Defina os apoios físicos ou conexões analíticas faltantes.",
+            ));
         }
     }
     let mut coordinates = BTreeMap::new();
     for node in &project.model.analytical_nodes {
         let pos = node.position_m.as_array();
-        let key = [pos[0].to_bits(),pos[1].to_bits(),pos[2].to_bits()];
+        let key = [pos[0].to_bits(), pos[1].to_bits(), pos[2].to_bits()];
         if let Some(previous) = coordinates.insert(key, node.id) {
-            findings.push(finding("geometria","coincident_nodes",Severity::Warning,Some(node.id),
+            findings.push(finding(
+                "geometria",
+                "coincident_nodes",
+                Severity::Warning,
+                Some(node.id),
                 "Nós diferentes ocupam as mesmas coordenadas.",
                 "Peças podem parecer conectadas sem compartilhar nó.",
-                &format!("Inspecione os nós {previous} e {} e vincule-os explicitamente.",node.id)));
+                &format!(
+                    "Inspecione os nós {previous} e {} e vincule-os explicitamente.",
+                    node.id
+                ),
+            ));
         }
-        if !project.model.analytical_members.iter().any(|m|
-            m.start_node_id == node.id || m.end_node_id == node.id)
+        if !project
+            .model
+            .analytical_members
+            .iter()
+            .any(|m| m.start_node_id == node.id || m.end_node_id == node.id)
         {
-            findings.push(finding("geometria","disconnected_node",Severity::Blocker,Some(node.id),
+            findings.push(finding(
+                "geometria",
+                "disconnected_node",
+                Severity::Blocker,
+                Some(node.id),
                 "Nó analítico sem nenhuma barra conectada.",
                 "A transferência de esforços está indefinida.",
-                "Conecte o nó explicitamente à geometria estrutural pertinente."));
+                "Conecte o nó explicitamente à geometria estrutural pertinente.",
+            ));
         }
     }
     let mut actions = BTreeSet::new();
     for action in &project.model.actions {
-        let signature = serde_json::to_string(&(action.application_node_id, &action.force,
-            &action.couple, &action.frame)).map_err(|e| invalid(e.to_string()))?;
+        let signature = serde_json::to_string(&(
+            action.application_node_id,
+            &action.force,
+            &action.couple,
+            &action.frame,
+        ))
+        .map_err(|e| invalid(e.to_string()))?;
         if !actions.insert(signature) {
-            findings.push(finding("ações","duplicate_action",Severity::Blocker,Some(action.id),
+            findings.push(finding(
+                "ações",
+                "duplicate_action",
+                Severity::Blocker,
+                Some(action.id),
                 "A mesma ação nodal foi informada mais de uma vez.",
                 "Há risco de somar cargas duplicadas.",
-                "Remova a carga duplicada ou documente situações distintas."));
+                "Remova a carga duplicada ou documente situações distintas.",
+            ));
         }
     }
     for support in &state.supports {
-        if support.freedoms.iter().any(|f| matches!(f,Freedom::CompressionOnly{..})) {
-            findings.push(finding("vínculos","unilateral_support",Severity::Warning,Some(support.node_id),
-                "Apoio unilateral declarado.", "Exige análise não linear ainda indisponível.",
-                "Não interprete o vínculo como apoio bilateral linear."));
+        if support
+            .freedoms
+            .iter()
+            .any(|f| matches!(f, Freedom::CompressionOnly { .. }))
+        {
+            findings.push(finding(
+                "vínculos",
+                "unilateral_support",
+                Severity::Warning,
+                Some(support.node_id),
+                "Apoio unilateral declarado.",
+                "Exige análise não linear ainda indisponível.",
+                "Não interprete o vínculo como apoio bilateral linear.",
+            ));
         }
     }
     for member in &project.model.analytical_members {
-        let ends: Vec<_> = state.releases.iter().filter(|r| r.member_id == member.id).collect();
-        if ends.len() == 2 && ends.iter().all(|r| r.freedoms.iter().all(|d| !d.restrained())) {
-            findings.push(finding("vínculos","double_release_mechanism",Severity::Blocker,
-                Some(member.id), "As duas extremidades foram liberadas em todos os graus de liberdade.",
+        let ends: Vec<_> = state
+            .releases
+            .iter()
+            .filter(|r| r.member_id == member.id)
+            .collect();
+        if ends.len() == 2
+            && ends
+                .iter()
+                .all(|r| r.freedoms.iter().all(|d| !d.restrained()))
+        {
+            findings.push(finding(
+                "vínculos",
+                "double_release_mechanism",
+                Severity::Blocker,
+                Some(member.id),
+                "As duas extremidades foram liberadas em todos os graus de liberdade.",
                 "O membro pode produzir um mecanismo sem rigidez.",
-                "Defina vínculos físicos consistentes; não estabilize artificialmente."));
+                "Defina vínculos físicos consistentes; não estabilize artificialmente.",
+            ));
         }
     }
     if !project.model.analytical_nodes.is_empty() && state.supports.is_empty() {
-        findings.push(finding("vínculos","no_support",Severity::Blocker,None,
+        findings.push(finding(
+            "vínculos",
+            "no_support",
+            Severity::Blocker,
+            None,
             "Nenhum apoio analítico foi declarado.",
             "A estrutura não possui condições de contorno verificáveis.",
-            "Informe apoios e suas restrições por grau de liberdade."));
+            "Informe apoios e suas restrições por grau de liberdade.",
+        ));
     }
     for drawing in &state.drawings {
         if drawing.calibration.factors()?.2 > 0.01 {
-            findings.push(finding("geometria","distorted_reference",Severity::Blocker,Some(drawing.id),
+            findings.push(finding(
+                "geometria",
+                "distorted_reference",
+                Severity::Blocker,
+                Some(drawing.id),
                 "As duas cotas de calibração da referência divergem mais de 1%.",
                 "A escala pode distorcer dimensões de peças promovidas.",
-                "Corrija orientação, escala ou a origem do desenho antes da promoção."));
+                "Corrija orientação, escala ou a origem do desenho antes da promoção.",
+            ));
         }
     }
     for source in &state.ifc {
-        findings.push(finding("revisão","ifc_staging_only",Severity::Info,Some(source.id),
+        findings.push(finding(
+            "revisão",
+            "ifc_staging_only",
+            Severity::Info,
+            Some(source.id),
             "Candidatos IFC em estágio de referência, sem validação completa de schema.",
             "A geometria recebida não prova conectividade ou modelo analítico.",
-            "Confira GUIDs, unidades, localização e materiais antes da promoção."));
+            "Confira GUIDs, unidades, localização e materiais antes da promoção.",
+        ));
     }
-    findings.push(finding("revisão","solver_unavailable",Severity::Info,None,
+    findings.push(finding(
+        "revisão",
+        "solver_unavailable",
+        Severity::Info,
+        None,
         "Cálculo estrutural de projeto ainda não foi implementado.",
         "Concluir as verificações de modelagem não certifica esforços nem dimensionamento.",
-        "Somente uma etapa futura de solver qualificado poderá produzir resultados."));
+        "Somente uma etapa futura de solver qualificado poderá produzir resultados.",
+    ));
     Ok(Review {
-        project_id: project.id, revision: project.revision,
-        stages: ["projeto","geometria","vínculos","materiais","ações","revisão"]
-            .iter().map(|s| s.to_string()).collect(),
-        ready_for_engineering_calculation: !findings.iter().any(|f|
-            f.severity == Severity::Blocker) && !project.objects.is_empty(),
+        project_id: project.id,
+        revision: project.revision,
+        stages: [
+            "projeto",
+            "geometria",
+            "vínculos",
+            "materiais",
+            "ações",
+            "revisão",
+        ]
+        .iter()
+        .map(|s| s.to_string())
+        .collect(),
+        ready_for_engineering_calculation: !findings
+            .iter()
+            .any(|f| f.severity == Severity::Blocker)
+            && !project.objects.is_empty(),
         calculation_approved: false,
         findings,
     })
