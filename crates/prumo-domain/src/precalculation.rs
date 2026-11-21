@@ -440,7 +440,8 @@ pub fn apply(project: &mut Project, command: PrecalculationEdit,
                 .ok_or(DomainError::UnknownReference(reference_id))?;
             let c = source.candidates.iter().find(|c| c.guid == guid)
                 .ok_or_else(|| invalid("GUID não encontrado no IFC importado."))?;
-            if !matches!(c.entity_type.as_str(), "IfcBeam" | "IfcColumn" | "IfcMember") {
+            if !["IFCBEAM", "IFCCOLUMN", "IFCMEMBER"].iter()
+                .any(|ty| c.entity_type.eq_ignore_ascii_case(ty)) {
                 return Err(invalid("O tipo IFC não representa uma barra estrutural suportada. Mantenha-o como referência."));
             }
             if project.model.identities.values().any(|identity|
@@ -589,7 +590,7 @@ pub fn review(project: &Project) -> Result<Review, DomainError> {
         if let Some(surface) = crate::surfaces::metadata(obj)?
             && surface.surface.supports.is_empty()
             && surface.surface.edge_conditions.iter().all(|edge|
-                matches!(edge.behavior, crate::surfaces::EdgeBehavior::Free {}))
+                matches!(&edge.behavior, crate::surfaces::EdgeBehavior::Free {}))
         {
             findings.push(finding("vínculos", "unsupported_surface", Severity::Blocker, Some(obj.id),
                 "Laje ou painel sem apoio explícito registrado.",
