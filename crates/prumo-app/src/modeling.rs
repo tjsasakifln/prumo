@@ -48,8 +48,10 @@ impl ProjectService {
     pub fn precalculation_state(&self) -> Result<serde_json::Value, AppError> {
         let project = self.read()?;
         let snapshot = prumo_domain::canonical::model_snapshot(&project).map_err(invalid_input)?;
-        Ok(serde_json::json!({"project_id":project.id,"revision":project.revision,
-            "snapshot_sha256":snapshot.sha256,"state":prumo_domain::precalculation::state(&project).map_err(invalid_input)?}))
+        Ok(
+            serde_json::json!({"project_id":project.id,"revision":project.revision,
+            "snapshot_sha256":snapshot.sha256,"state":prumo_domain::precalculation::state(&project).map_err(invalid_input)?}),
+        )
     }
 
     pub fn precalculation_review(&self) -> Result<serde_json::Value, AppError> {
