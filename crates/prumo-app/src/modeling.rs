@@ -59,10 +59,10 @@ impl ProjectService {
                 "O ensaio excede o limite de 64 KiB de entrada.".into(),
             ));
         }
-        let request: prumo_analysis::TrialRequest = serde_json::from_value(input)
-            .map_err(|error| AppError::InvalidInput(format!(
-                "Contrato do ensaio inválido: {error}"
-            )))?;
+        let request: prumo_analysis::TrialRequest =
+            serde_json::from_value(input).map_err(|error| {
+                AppError::InvalidInput(format!("Contrato do ensaio inválido: {error}"))
+            })?;
         let snapshot = prumo_domain::canonical::model_snapshot(&project).map_err(invalid_input)?;
         let evidence = prumo_analysis::trial(&request, cancelled)
             .map_err(|error| AppError::InvalidInput(error.to_string()))?;
@@ -80,8 +80,10 @@ impl ProjectService {
     pub fn precalculation_state(&self) -> Result<serde_json::Value, AppError> {
         let project = self.read()?;
         let snapshot = prumo_domain::canonical::model_snapshot(&project).map_err(invalid_input)?;
-        Ok(serde_json::json!({"project_id":project.id,"revision":project.revision,
-            "snapshot_sha256":snapshot.sha256,"state":prumo_domain::precalculation::state(&project).map_err(invalid_input)?}))
+        Ok(
+            serde_json::json!({"project_id":project.id,"revision":project.revision,
+            "snapshot_sha256":snapshot.sha256,"state":prumo_domain::precalculation::state(&project).map_err(invalid_input)?}),
+        )
     }
 
     pub fn precalculation_review(&self) -> Result<serde_json::Value, AppError> {
