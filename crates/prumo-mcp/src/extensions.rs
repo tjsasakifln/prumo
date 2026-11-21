@@ -221,7 +221,7 @@ pub(super) fn tool_catalog(grant: &ProjectGrant) -> Vec<Tool> {
             "prumo.analysis.trial",
             "Executa ensaio analítico Rust sem mutar o projeto. Forneça unidades SI explícitas. As saídas não aprovam projeto, estabilidade, norma nem dimensionamento.",
             json!({"trial":{"type":"object","required":["kind"],"properties":{
-                "kind":{"type":"string","enum":["linear","truss","frame2d","mesh_inspect","mesh_refine","mesh_convergence","multipoint","load_ledger","load_equilibrium"]}
+                "kind":{"type":"string","enum":["linear","truss","frame2d","mesh_inspect","membrane","mesh_refine","mesh_convergence","multipoint","load_ledger","load_equilibrium"]}
             }}}),
             &["trial"],true,
         ),
