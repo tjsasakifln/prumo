@@ -108,9 +108,13 @@ pub(super) enum Operation {
 impl Operation {
     pub(super) fn parse(name: &str, args: Value) -> Option<Result<Self, ErrorData>> {
         Some(match name {
-            "prumo.analysis.trial" => decode::<AnalysisTrialArgs>(args).map(|input| Self::AnalysisTrial(input.trial)),
+            "prumo.analysis.trial" => {
+                decode::<AnalysisTrialArgs>(args).map(|input| Self::AnalysisTrial(input.trial))
+            }
             "prumo.precalculation.read" => decode::<Empty>(args).map(|_| Self::PrecalculationState),
-            "prumo.precalculation.review" => decode::<Empty>(args).map(|_| Self::PrecalculationReview),
+            "prumo.precalculation.review" => {
+                decode::<Empty>(args).map(|_| Self::PrecalculationReview)
+            }
             "prumo.view.export" => decode::<Empty>(args).map(|_| Self::ViewExport),
             "prumo.surfaces.preview" => {
                 decode::<SurfaceArgs>(args).map(|a| Self::SurfacePreview(Box::new(a.surface)))
@@ -223,10 +227,23 @@ pub(super) fn tool_catalog(grant: &ProjectGrant) -> Vec<Tool> {
             json!({"trial":{"type":"object","required":["kind"],"properties":{
                 "kind":{"type":"string","enum":["linear","truss","frame2d","mesh_inspect","membrane","mesh_refine","mesh_convergence","multipoint","rigid_diaphragm","load_ledger","path_audit","load_equilibrium"]}
             }}}),
-            &["trial"],true,
+            &["trial"],
+            true,
         ),
-        definition("prumo.precalculation.read", "Consulta vínculos, referências calibradas, candidatos IFC e instâncias em sua revisão, sem declarar dados como calculados.", json!({}), &[], true),
-        definition("prumo.precalculation.review", "Revisa geometria, vínculos, materiais e ações; retorna impedimentos localizados. Não aprova cálculo de engenharia.", json!({}), &[], true),
+        definition(
+            "prumo.precalculation.read",
+            "Consulta vínculos, referências calibradas, candidatos IFC e instâncias em sua revisão, sem declarar dados como calculados.",
+            json!({}),
+            &[],
+            true,
+        ),
+        definition(
+            "prumo.precalculation.review",
+            "Revisa geometria, vínculos, materiais e ações; retorna impedimentos localizados. Não aprova cálculo de engenharia.",
+            json!({}),
+            &[],
+            true,
+        ),
         definition(
             "prumo.surfaces.preview",
             "Confere contorno, aberturas, espessuras, nervuras, área material e quantidade por componente antes de salvar. Não produz malha ou cálculo de engenharia.",
