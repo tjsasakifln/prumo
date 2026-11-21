@@ -18,6 +18,7 @@ pub mod geometry;
 pub mod identity;
 pub mod layout;
 pub mod model;
+pub mod precalculation;
 mod numeric;
 pub mod registry;
 pub mod storage;
@@ -409,7 +410,8 @@ impl Project {
         layout::validate_project(self)?;
         framing::validate_project(self)?;
         surfaces::validate_project(self)?;
-        assemblies::validate_project(self)
+        assemblies::validate_project(self)?;
+        precalculation::validate_project(self)
     }
 }
 
