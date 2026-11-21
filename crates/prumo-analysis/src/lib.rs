@@ -29,3 +29,51 @@ pub enum AnalysisError {
 pub(crate) fn ensure(condition: bool, reason: &str) -> Result<(), AnalysisError> {
     if condition { Ok(()) } else { Err(AnalysisError::Invalid(reason.into())) }
 }
+
+
+use serde::{Deserialize, Serialize};
+use serde_json::{Value, json};
+use std::sync::atomic::AtomicBool;
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(tag="kind",rename_all="snake_case",deny_unknown_fields)]
+pub enum TrialRequest {
+    Linear { system: sparse::System },
+    Truss { model: truss::Truss },
+    MeshInspect { mesh: mesh::Mesh },
+    MeshRefine { mesh: mesh::Mesh },
+    MeshConvergence { points: Vec<mesh::ConvergencePoint>, relative_tolerance: f64 },
+    Multipoint { system: sparse::System, constraints: Vec<constraints::Constraint> },
+    LoadLedger { input: loads::AppliedLoads },
+    LoadEquilibrium { input: loads::AppliedLoads, reactions: Vec<loads::Reaction>, tolerance: f64 },
+}
+
+pub fn trial(request:&TrialRequest,cancelled:Option<&AtomicBool>)->Result<Value,AnalysisError>{
+    let serializable: Value = match request {
+        TrialRequest::Linear{system} =>
+            serde_json::to_value(sparse::solve(system,cancelled)?),
+        TrialRequest::Truss{model} =>
+            serde_json::to_value(truss::solve(model)?),
+        TrialRequest::MeshInspect{mesh} =>
+            serde_json::to_value(mesh::inspect(mesh)?),
+        TrialRequest::MeshRefine{mesh} =>
+            serde_json::to_value(mesh::refine(mesh)?),
+        TrialRequest::MeshConvergence{points,relative_tolerance} =>
+            serde_json::to_value(mesh::convergence(points,*relative_tolerance)?),
+        TrialRequest::Multipoint{system,constraints} => {
+            let condensed=constraints::reduce(system,constraints)?;
+            let solved=sparse::solve(&condensed.condensed,cancelled)?;
+            let recovered=constraints::recover(system,&condensed,&solved)?;
+            Ok(json!({"condensed":condensed,"solution":solved,"recovery":recovered}))
+        }
+        TrialRequest::LoadLedger{input} =>
+            serde_json::to_value(loads::ledger(input)?),
+        TrialRequest::LoadEquilibrium{input,reactions,tolerance} => {
+            let ledger=loads::ledger(input)?;
+            let balance=loads::check_equilibrium(&ledger,reactions,*tolerance)?;
+            Ok(json!({"ledger":ledger,"equilibrium":balance}))
+        }
+    }.map_err(|e|AnalysisError::Invalid(format!("Serialização da análise: {e}")))?;
+    Ok(json!({"result":serializable,"engineering_release":false,
+        "scope":"ensaio_experimental_nao_calculo_do_projeto"}))
+}
