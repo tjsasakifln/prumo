@@ -313,7 +313,6 @@ fn partial_grants_can_create_authorized_members_and_network_relationships() {
     assert!(!filtered.objects.iter().any(|object| object.id == member.id));
 }
 
-
 #[test]
 fn preparatory_edits_do_not_bypass_scoped_grants() {
     use prumo_domain::precalculation::PrecalculationEdit;
@@ -321,7 +320,9 @@ fn preparatory_edits_do_not_bypass_scoped_grants() {
     let dir = tempfile::tempdir().unwrap();
     let path = dir.path().join("precalculation-scopes.prumo");
     let owner = ProjectService::open(&path, AccessMode::ReadWrite, "owner").unwrap();
-    let initial = owner.create("Escopos da revisão", LengthUnit::Metre).unwrap();
+    let initial = owner
+        .create("Escopos da revisão", LengthUnit::Metre)
+        .unwrap();
     let project = owner
         .add_member(initial.revision, "Pilar", [0.0, 0.0, 0.0], [0.0, 0.0, 4.0])
         .unwrap();
