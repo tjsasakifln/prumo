@@ -149,6 +149,7 @@ pub fn apply_model_edit(
         }
     }
     if project.units != candidate.units
+        || project.extensions != candidate.extensions
         || project.model.engineering_frame != candidate.model.engineering_frame
         || project.model.georeference != candidate.model.georeference
     {
