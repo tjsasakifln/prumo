@@ -5,6 +5,7 @@
 pub mod constraints;
 pub mod frame;
 pub mod loads;
+pub mod membrane;
 pub mod mesh;
 pub mod sparse;
 pub mod truss;
@@ -43,6 +44,7 @@ pub enum TrialRequest {
     Truss { model: truss::Truss },
     Frame2d { model: frame::Frame2D },
     MeshInspect { mesh: mesh::Mesh },
+    Membrane { model: membrane::Membrane },
     MeshRefine { mesh: mesh::Mesh },
     MeshConvergence { points: Vec<mesh::ConvergencePoint>, relative_tolerance: f64 },
     Multipoint { system: sparse::System, constraints: Vec<constraints::Constraint> },
@@ -60,6 +62,8 @@ pub fn trial(request:&TrialRequest,cancelled:Option<&AtomicBool>)->Result<Value,
             serde_json::to_value(frame::solve(model,cancelled)?),
         TrialRequest::MeshInspect{mesh} =>
             serde_json::to_value(mesh::inspect(mesh)?),
+        TrialRequest::Membrane{model} =>
+            serde_json::to_value(membrane::solve(model,cancelled)?),
         TrialRequest::MeshRefine{mesh} =>
             serde_json::to_value(mesh::refine(mesh)?),
         TrialRequest::MeshConvergence{points,relative_tolerance} =>
