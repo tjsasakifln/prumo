@@ -2,7 +2,7 @@
 use crate::UiAction;
 use egui::{Color32, RichText};
 use prumo_domain::Project;
-use serde_json::{Value,json};
+use serde_json::{Value, json};
 
 pub struct AnalysisPanel {
     pub input: String,
@@ -24,15 +24,14 @@ impl Default for AnalysisPanel {
                     "forces_n":[1.0,2.0],
                     "prescribed":[]
                 }
-            })).unwrap_or_default(),
-            report:None,
+            }))
+            .unwrap_or_default(),
+            report: None,
         }
     }
 }
 impl AnalysisPanel {
-    pub fn show(
-        &mut self,ui:&mut egui::Ui,project:&Project,actions:&mut Vec<UiAction>,
-    ) {
+    pub fn show(&mut self, ui: &mut egui::Ui, project: &Project, actions: &mut Vec<UiAction>) {
         ui.collapsing("Ensaios numéricos experimentais",|ui|{
             ui.colored_label(Color32::YELLOW,
                 "Não é cálculo do projeto. O ensaio não libera estabilidade, dimensionamento, responsabilidade técnica ou emissão.");
