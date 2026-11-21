@@ -7,6 +7,7 @@ pub mod diaphragm;
 pub mod frame;
 pub mod loads;
 pub mod membrane;
+pub mod path;
 pub mod mesh;
 pub mod sparse;
 pub mod truss;
@@ -51,6 +52,7 @@ pub enum TrialRequest {
     Multipoint { system: sparse::System, constraints: Vec<constraints::Constraint> },
     RigidDiaphragm { diaphragm: diaphragm::Diaphragm },
     LoadLedger { input: loads::AppliedLoads },
+    PathAudit { input: loads::AppliedLoads, graph: path::PathModel },
     LoadEquilibrium { input: loads::AppliedLoads, reactions: Vec<loads::Reaction>, tolerance: f64 },
 }
 
@@ -80,6 +82,8 @@ pub fn trial(request:&TrialRequest,cancelled:Option<&AtomicBool>)->Result<Value,
         }
         TrialRequest::LoadLedger{input} =>
             serde_json::to_value(loads::ledger(input)?),
+        TrialRequest::PathAudit{input,graph} =>
+            serde_json::to_value(path::audit(graph,&loads::ledger(input)?)?),
         TrialRequest::LoadEquilibrium{input,reactions,tolerance} => {
             let ledger=loads::ledger(input)?;
             let balance=loads::check_equilibrium(&ledger,reactions,*tolerance)?;
