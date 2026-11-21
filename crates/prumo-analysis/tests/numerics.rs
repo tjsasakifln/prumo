@@ -161,3 +161,73 @@ fn line_and_surface_resultants_preserve_force_and_moment() {
     });
     assert!(loads::ledger(&repeated).is_err());
 }
+
+
+#[test]
+fn cantilever_frame_matches_closed_euler_and_timoshenko_references() {
+    use prumo_analysis::frame;
+    let a=Uuid::new_v4();let b=Uuid::new_v4();let bar=Uuid::new_v4();
+    let mut model=frame::Frame2D{
+        nodes:vec![
+            frame::FrameNode{id:a,position_m:[0.0,0.0]},
+            frame::FrameNode{id:b,position_m:[2.0,0.0]}
+        ],
+        members:vec![frame::FrameMember{
+            id:bar,start_id:a,end_id:b,
+            area_m2:0.02,second_moment_m4:8e-6,elastic_modulus_pa:200e9,
+            formulation:frame::Formulation::EulerBernoulli{
+                slenderness_justification:None
+            }
+        }],
+        nodal_loads:vec![frame::FrameLoad{
+            node_id:b,force_x_n:0.0,force_y_n:-1000.0,moment_z_nm:0.0
+        }],
+        line_loads:vec![],
+        supports:vec![frame::FrameSupport{node_id:a,fixed:[true;3]}],
+    };
+    let euler=frame::solve(&model,None).unwrap();
+    let closed=-1000.0*2.0_f64.powi(3)/(3.0*200e9*8e-6);
+    assert!((euler.solution.displacements_m[4]-closed).abs()<1e-11);
+    assert!((euler.solution.displacements_m[5]+0.00125).abs()<1e-11);
+    assert!((euler.solution.reactions_n[1]-1000.0).abs()<1e-6);
+    assert!((euler.solution.reactions_n[2]-2000.0).abs()<1e-6);
+    assert!(!euler.engineering_release);
+    model.members[0].formulation=frame::Formulation::Timoshenko{
+        shear_modulus_pa:80e9,shear_factor:5.0/6.0,
+    };
+    let tim=frame::solve(&model,None).unwrap();
+    let shear=-1000.0*2.0/(80e9*0.02*(5.0/6.0));
+    assert!((tim.solution.displacements_m[4]-(closed+shear)).abs()<1e-10);
+}
+#[test]
+fn simply_supported_uniform_load_has_zero_end_moments_and_equal_reactions() {
+    use prumo_analysis::frame;
+    let a=Uuid::new_v4();let b=Uuid::new_v4();let member=Uuid::new_v4();
+    let model=frame::Frame2D{
+        nodes:vec![
+            frame::FrameNode{id:a,position_m:[0.0,0.0]},
+            frame::FrameNode{id:b,position_m:[4.0,0.0]},
+        ],
+        members:vec![frame::FrameMember{
+            id:member,start_id:a,end_id:b,
+            area_m2:0.05,second_moment_m4:1e-4,
+            elastic_modulus_pa:200e9,
+            formulation:frame::Formulation::EulerBernoulli{
+                slenderness_justification:None,
+            },
+        }],
+        nodal_loads:vec![],
+        line_loads:vec![frame::FrameLineLoad{
+            member_id:member,transverse_n_per_m:-1000.0,
+        }],
+        supports:vec![
+            frame::FrameSupport{node_id:a,fixed:[true,true,false]},
+            frame::FrameSupport{node_id:b,fixed:[false,true,false]},
+        ],
+    };
+    let result=frame::solve(&model,None).unwrap();
+    assert!((result.solution.reactions_n[1]-2000.0).abs()<1e-6);
+    assert!((result.solution.reactions_n[4]-2000.0).abs()<1e-6);
+    assert!(result.member_forces[0].local_end_forces_n_nm[2].abs()<1e-5);
+    assert!(result.member_forces[0].local_end_forces_n_nm[5].abs()<1e-5);
+}
