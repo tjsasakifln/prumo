@@ -76,6 +76,8 @@ struct AssemblyArgs {
 }
 
 pub(super) enum Operation {
+    PrecalculationState,
+    PrecalculationReview,
     ViewRead,
     ViewExport,
     View(ViewCommand),
@@ -99,6 +101,10 @@ pub(super) enum Operation {
 impl Operation {
     pub(super) fn parse(name: &str, args: Value) -> Option<Result<Self, ErrorData>> {
         Some(match name {
+            "prumo.precalculation.read" => decode::<Empty>(args).map(|_| Self::PrecalculationState),
+            "prumo.precalculation.review" => {
+                decode::<Empty>(args).map(|_| Self::PrecalculationReview)
+            }
             "prumo.view.export" => decode::<Empty>(args).map(|_| Self::ViewExport),
             "prumo.surfaces.preview" => {
                 decode::<SurfaceArgs>(args).map(|a| Self::SurfacePreview(Box::new(a.surface)))
@@ -161,6 +167,8 @@ impl Operation {
             ));
         }
         Ok(match self {
+            Self::PrecalculationState => service.precalculation_state()?,
+            Self::PrecalculationReview => service.precalculation_review()?,
             Self::ViewExport => serde_json::to_value(service.export_web_view()?)?,
             Self::SurfacePreview(spec) => service.surface_preview(&spec)?,
             Self::Assembly(id) => service.assembly_inspection(id)?,
@@ -202,6 +210,20 @@ pub(super) fn tool_catalog(grant: &ProjectGrant) -> Vec<Tool> {
         "vertices_m":{"type":"array","minItems":3,"maxItems":512,"items":point},"expected_normal":point
     }});
     let mut result = vec![
+        definition(
+            "prumo.precalculation.read",
+            "Consulta vínculos, referências calibradas, candidatos IFC e instâncias em sua revisão, sem declarar dados como calculados.",
+            json!({}),
+            &[],
+            true,
+        ),
+        definition(
+            "prumo.precalculation.review",
+            "Revisa geometria, vínculos, materiais e ações; retorna impedimentos localizados. Não aprova cálculo de engenharia.",
+            json!({}),
+            &[],
+            true,
+        ),
         definition(
             "prumo.surfaces.preview",
             "Confere contorno, aberturas, espessuras, nervuras, área material e quantidade por componente antes de salvar. Não produz malha ou cálculo de engenharia.",

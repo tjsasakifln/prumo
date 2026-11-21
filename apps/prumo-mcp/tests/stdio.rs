@@ -117,6 +117,8 @@ fn assert_default_tool_catalog(value: &Value, writable: bool) {
         "prumo.model.query",
         "prumo.model.snapshot",
         "prumo.norms.package",
+        "prumo.precalculation.read",
+        "prumo.precalculation.review",
         "prumo.project.read",
         "prumo.registry.audit",
         "prumo.registry.read",

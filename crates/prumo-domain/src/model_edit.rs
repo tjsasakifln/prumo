@@ -149,6 +149,7 @@ pub fn apply_model_edit(
         }
     }
     if project.units != candidate.units
+        || project.extensions != candidate.extensions
         || project.model.engineering_frame != candidate.model.engineering_frame
         || project.model.georeference != candidate.model.georeference
     {
@@ -165,6 +166,9 @@ fn edit_inner(
     revision: u64,
 ) -> Result<(), DomainError> {
     match edit {
+        ModelEdit::EditPrecalculation { command } => {
+            crate::precalculation::apply(project, command, actor, revision)?;
+        }
         ModelEdit::EditLayout { command } => {
             crate::layout::apply(project, command, actor, revision)?;
         }

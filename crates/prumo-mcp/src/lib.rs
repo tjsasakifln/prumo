@@ -39,6 +39,7 @@ mod extensions;
 mod input;
 mod legacy;
 mod model_schema;
+mod precalculation_schema;
 mod resources;
 mod surface_assembly_schema;
 mod transaction_schema;
