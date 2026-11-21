@@ -349,10 +349,12 @@ fn update_source<T>(items: &mut Vec<T>, id: Uuid, expected_sha: Option<&str>,
     Ok(())
 }
 
-fn insert_promoted(project: &mut Project, name: String, a: [f64; 3], b: [f64; 3],
-    material_id: Option<Uuid>, origin: SourceOrigin, guid: Option<IfcGuid>,
-    actor: &str, revision: u64) -> Result<(), DomainError>
-{
+fn insert_promoted(project: &mut Project, name: String,
+    points: ([f64; 3], [f64; 3]), material_id: Option<Uuid>,
+    provenance: (SourceOrigin, Option<IfcGuid>), actor: &str, revision: u64,
+) -> Result<(), DomainError> {
+    let (a, b) = points;
+    let (origin, guid) = provenance;
     validate_name(&name)?;
     member_geometry_ok(a, b)?;
     if let Some(id) = material_id
@@ -421,12 +423,12 @@ pub fn apply(project: &mut Project, command: PrecalculationEdit,
                 drawing.origin_m[1] + p[1] * scale,
                 drawing.origin_m[2] + p[2] * scale,
             ];
-            insert_promoted(project, name, mapped(trace.a), mapped(trace.b), material_id,
-                SourceOrigin::Imported {
+            insert_promoted(project, name, (mapped(trace.a), mapped(trace.b)), material_id,
+                (SourceOrigin::Imported {
                     system: format!("{:?}", drawing.format),
                     reference: drawing.sha256.clone(),
                     external_id: trace.id.to_string(),
-                }, None, actor, revision)?;
+                }, None), actor, revision)?;
         }
         PrecalculationEdit::PromoteIfc {
             reference_id, guid, material_id, confirm_hypotheses,
@@ -444,10 +446,10 @@ pub fn apply(project: &mut Project, command: PrecalculationEdit,
             {
                 return Err(invalid("Elemento IFC já foi promovido. Reimportação não duplica objetos."));
             }
-            insert_promoted(project, c.name.clone(), c.start_m, c.end_m, material_id,
-                SourceOrigin::Imported {
+            insert_promoted(project, c.name.clone(), (c.start_m, c.end_m), material_id,
+                (SourceOrigin::Imported {
                     system: "IFC".into(), reference: source.sha256.clone(), external_id: guid.clone(),
-                }, Some(IfcGuid::try_from(guid)?), actor, revision)?;
+                }, Some(IfcGuid::try_from(guid)?)), actor, revision)?;
         }
         PrecalculationEdit::CopyBatch { object_ids, translation, linked } => {
             if object_ids.is_empty() || object_ids.len() > MAX_BATCH
@@ -608,7 +610,7 @@ pub fn review(project: &Project) -> Result<Review, DomainError> {
                 "Defina vínculos físicos consistentes; não estabilize artificialmente."));
         }
     }
-    if project.model.analytical_nodes.len() > 0 && state.supports.is_empty() {
+    if !project.model.analytical_nodes.is_empty() && state.supports.is_empty() {
         findings.push(finding("vínculos","no_support",Severity::Blocker,None,
             "Nenhum apoio analítico foi declarado.",
             "A estrutura não possui condições de contorno verificáveis.",
